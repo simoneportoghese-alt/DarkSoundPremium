@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const ytdlp = require('yt-dlp-exec');
+const youtubedl = require('youtube-dl-exec');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,30 +14,22 @@ app.get('/api/search', async (req, res) => {
     if (!query) return res.json([]);
 
     try {
-        const output = await ytdlp(`ytsearch10:${query} audio`, {
-            dumpJson: true,
+        const output = await youtubedl(`ytsearch10:${query} audio`, {
+            dumpSingleJson: true,
             noCheckCertificates: true,
             noWarnings: true,
             preferFreeFormats: true,
             addHeader: ['referer:https://www.youtube.com']
         });
 
-        // yt-dlp-exec restituisce un singolo oggetto JSON o stringhe multiple per riga
-        const lines = output.trim().split('\n');
-        const results = lines.map(line => {
-            try {
-                const item = JSON.parse(line);
-                return {
-                    id: item.id,
-                    name: item.title || "Brano sconosciuto",
-                    artist_name: item.uploader || "Artista",
-                    image: item.thumbnail || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=150",
-                    duration: item.duration || 0
-                };
-            } catch (e) {
-                return null;
-            }
-        }).filter(item => item !== null);
+        let entries = output.entries || [output];
+        const results = entries.map(item => ({
+            id: item.id,
+            name: item.title || "Brano sconosciuto",
+            artist_name: item.uploader || "Artista",
+            image: item.thumbnail || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=150",
+            duration: item.duration || 0
+        }));
 
         res.json(results);
     } catch (error) {
@@ -52,14 +44,13 @@ app.get('/api/stream/:id', async (req, res) => {
     const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
     try {
-        const output = await ytdlp(videoUrl, {
-            dumpJson: true,
+        const info = await youtubedl(videoUrl, {
+            dumpSingleJson: true,
             noCheckCertificates: true,
             noWarnings: true,
             preferFreeFormats: true
         });
 
-        const info = JSON.parse(output.trim());
         const audioFormat = info.formats.find(f => f.acodec !== 'none' && f.vcodec === 'none') || info.formats[0];
         
         if (audioFormat && audioFormat.url) {
