@@ -155,7 +155,6 @@
         .nav-item i { font-size: 1.2rem; }
         .nav-item.active { color: var(--text-main); }
         
-        /* YouTube player dimensionato per evitare sospensioni a schermo spento */
         #youtube-player {
             position: fixed;
             bottom: 0;
@@ -200,19 +199,19 @@
 
         <div class="home-grid-shortcuts">
             <div class="shortcut-card" onclick="selectSearchTerm('Sfera Ebbasta')">
-                <img src="https://i.scdn.co/image/ab67616d0000b2734493b8e8f810167cbe9c00b0" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop'" alt="Sfera">
+                <img src="https://i.scdn.co/image/ab67616d0000b2734493b8e8f810167cbe9c00b0" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop'" alt="Sfera">
                 <span>Radio di Sfera Ebbasta</span>
             </div>
             <div class="shortcut-card" onclick="selectSearchTerm('Geolier')">
-                <img src="https://i.scdn.co/image/ab67616d0000b273062fa883049b6b7971752b0d" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop'" alt="Geolier">
+                <img src="https://i.scdn.co/image/ab67616d0000b273062fa883049b6b7971752b0d" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop'" alt="Geolier">
                 <span>This Is Geolier</span>
             </div>
             <div class="shortcut-card" onclick="selectSearchTerm('Ultimo')">
-                <img src="https://i.scdn.co/image/ab67616d0000b2731e847c2111d4314777579893" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop'" alt="Ultimo">
+                <img src="https://i.scdn.co/image/ab67616d0000b2731e847c2111d4314777579893" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop'" alt="Ultimo">
                 <span>Radio di Ultimo</span>
             </div>
             <div class="shortcut-card" onclick="openLikedSongs()">
-                <img src="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=100&auto=format&fit=crop" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop'" alt="Preferiti">
+                <img src="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=100&auto=format&fit=crop" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop'" alt="Preferiti">
                 <span>Brani Piaciuti</span>
             </div>
         </div>
@@ -284,7 +283,7 @@
         </div>
         <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;" id="libraryContentList">
             <div class="lib-item" onclick="openLikedSongs()">
-                <img src="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=100&auto=format&fit=crop" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop'" alt="Brani piaciuti">
+                <img src="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=100&auto=format&fit=crop" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop'" alt="Brani piaciuti">
                 <div>
                     <h4>Brani piaciuti</h4>
                     <p><i class="fas fa-thumbtack" style="color:var(--accent);"></i> Playlist • <span id="likedCount">0</span> brani</p>
@@ -321,7 +320,7 @@
             <i class="fas fa-ellipsis-vertical"></i>
         </div>
         <div class="fs-cover-container">
-            <img id="fsCover" class="fs-cover" src="" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&auto=format&fit=crop'" alt="Album Cover">
+            <img id="fsCover" class="fs-cover" src="" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&auto=format&fit=crop'" alt="Album Cover">
         </div>
         <div class="fs-info-row">
             <div class="fs-titles">
@@ -348,12 +347,12 @@
         </div>
     </div>
 
-    <!-- YOUTUBE PLAYER (CONFIGURATO PER BACKGROUND PLAY) -->
+    <!-- YOUTUBE PLAYER -->
     <div id="youtube-player"></div>
 
     <!-- MINI PLAYER BAR -->
     <div class="player-bar" id="playerBar" onclick="toggleFullscreenPlayer()">
-        <img id="playerImg" src="" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop'" alt="Cover">
+        <img id="playerImg" src="" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop'" alt="Cover">
         <div class="player-meta">
             <div class="p-title" id="playerTitle">-</div>
             <div class="p-artist" id="playerArtist">-</div>
@@ -517,12 +516,12 @@
 
                 let html = '';
                 const first = tracks[0];
-                const artistImage = first.image || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop';
+                const artistImage = (first.image && first.image.startsWith('http')) ? first.image : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop';
 
                 html += `
                     <div class="artist-result-card" onclick="selectSearchTerm('${first.artist}')">
                         <div class="artist-left">
-                            <img src="${artistImage}" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop'">
+                            <img src="${artistImage}" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop'">
                             <div class="artist-info">
                                 <h4>${first.artist} <i class="fas fa-check-circle verified-badge"></i></h4>
                                 <p>Artista • Radio correlata</p>
@@ -533,15 +532,15 @@
                 `;
 
                 html += tracks.map(t => {
-                    const safeImg = t.image || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop';
-                    const safeName = (t.name || 'Brano').replace(/'/g, "\\'");
-                    const safeArtist = (t.artist || 'Artista').replace(/'/g, "\\'");
+                    const safeImg = (t.image && t.image.startsWith('http')) ? t.image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop';
+                    const safeName = (t.name || 'Brano').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    const safeArtist = (t.artist || 'Artista').replace(/'/g, "\\'").replace(/"/g, '&quot;');
                     const isLiked = likedSongs.some(s => s.id === t.id);
 
                     return `
                         <div class="playlist-result-card">
                             <div class="playlist-left" onclick="playTrack('${t.id}', '${safeName}', '${safeArtist}', '${safeImg}')">
-                                <img src="${safeImg}" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop'">
+                                <img src="${safeImg}" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop'">
                                 <div class="playlist-info">
                                     <h4>${t.name}</h4>
                                     <p>Brano • ${t.artist}</p>
@@ -564,10 +563,11 @@
 
         function toggleLike(id, name, artist, image) {
             const index = likedSongs.findIndex(s => s.id === id);
+            const validImage = (image && image.startsWith('http')) ? image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop';
             if (index > -1) {
                 likedSongs.splice(index, 1);
             } else {
-                likedSongs.push({ id, name, artist, image: image || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop' });
+                likedSongs.push({ id, name, artist, image: validImage });
             }
             localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
             updateLibraryCounts();
@@ -603,17 +603,20 @@
             document.getElementById('detailPlaylistTitle').innerText = "Brani piaciuti";
             document.getElementById('detailPlaylistInfo').innerText = `Playlist • ${likedSongs.length} brani`;
             
-            let html = likedSongs.map(t => `
-                <div class="playlist-result-card" onclick="playTrack('${t.id}', '${t.name.replace(/'/g, "\\'")}', '${t.artist.replace(/'/g, "\\'")}', '${t.image}')">
-                    <div class="playlist-left">
-                        <img src="${t.image}" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop'">
-                        <div class="playlist-info">
-                            <h4>${t.name}</h4>
-                            <p>Brano • ${t.artist}</p>
+            let html = likedSongs.map(t => {
+                const trackImg = (t.image && t.image.startsWith('http')) ? t.image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop';
+                return `
+                    <div class="playlist-result-card" onclick="playTrack('${t.id}', '${t.name.replace(/'/g, "\\'")}', '${t.artist.replace(/'/g, "\\'")}', '${trackImg}')">
+                        <div class="playlist-left">
+                            <img src="${trackImg}" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop'">
+                            <div class="playlist-info">
+                                <h4>${t.name}</h4>
+                                <p>Brano • ${t.artist}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             document.getElementById('detailPlaylistTracks').innerHTML = html || '<p style="color:var(--text-sub);">Nessun brano salvato nei preferiti.</p>';
             switchView('playlist-detail');
@@ -637,7 +640,7 @@
 
         function renderLibCollab() {
             let html = collaborativePlaylists.map(p => {
-                let coverImg = (p.tracks.length > 0 && p.tracks[0].image) ? p.tracks[0].image : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop';
+                let coverImg = (p.tracks.length > 0 && p.tracks[0].image && p.tracks[0].image.startsWith('http')) ? p.tracks[0].image : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop';
                 return `
                     <div class="lib-item" onclick="openPlaylistDetailById('${p.id}')">
                         <img src="${coverImg}" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop'">
@@ -660,7 +663,8 @@
             let choice = prompt(`Aggiungi a quale playlist:\n${listNames}`);
             let idx = parseInt(choice) - 1;
             if (!isNaN(idx) && collaborativePlaylists[idx]) {
-                collaborativePlaylists[idx].tracks.push({ id, name, artist, image: image || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop' });
+                const validImage = (image && image.startsWith('http')) ? image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop';
+                collaborativePlaylists[idx].tracks.push({ id, name, artist, image: validImage });
                 localStorage.setItem('darksound_collab', JSON.stringify(collaborativePlaylists));
                 renderLibCollab();
                 alert('Brano aggiunto con successo alla playlist collaborativa!');
@@ -677,11 +681,11 @@
             document.getElementById('detailPlaylistInfo').innerText = `Playlist Collaborativa • Creatore: ${playlist.creator} • ${playlist.tracks.length} brani`;
 
             let html = playlist.tracks.map(t => {
-                let trackImg = t.image || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop';
+                let trackImg = (t.image && t.image.startsWith('http')) ? t.image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop';
                 return `
                     <div class="playlist-result-card" onclick="playTrack('${t.id}', '${t.name.replace(/'/g, "\\'")}', '${t.artist.replace(/'/g, "\\'")}', '${trackImg}')">
                         <div class="playlist-left">
-                            <img src="${trackImg}" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop'">
+                            <img src="${trackImg}" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop'">
                             <div class="playlist-info">
                                 <h4>${t.name}</h4>
                                 <p>Brano • ${t.artist}</p>
@@ -696,7 +700,7 @@
         }
 
         function playTrack(id, name, artist, image) {
-            const validImage = image || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&auto=format&fit=crop';
+            const validImage = (image && image.startsWith('http')) ? image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&auto=format&fit=crop';
             currentTrackData = { id, name, artist, image: validImage };
             
             document.getElementById('playerBar').style.display = 'flex';
@@ -710,11 +714,20 @@
 
             updateLikeUIStates();
 
-            if (player && player.loadVideoById) {
+            if (player && typeof player.loadVideoById === 'function') {
                 player.loadVideoById(id);
                 player.playVideo();
                 isPlaying = true;
                 updateIcons(true);
+            } else {
+                setTimeout(() => {
+                    if (player && typeof player.loadVideoById === 'function') {
+                        player.loadVideoById(id);
+                        player.playVideo();
+                        isPlaying = true;
+                        updateIcons(true);
+                    }
+                }, 500);
             }
         }
 
