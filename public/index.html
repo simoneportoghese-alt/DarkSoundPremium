@@ -529,6 +529,9 @@
                     'fs': 0
                 },
                 events: {
+                    'onReady': () => {
+                        console.log("Player YouTube pronto");
+                    },
                     'onStateChange': onPlayerStateChange
                 }
             });
@@ -536,8 +539,6 @@
 
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.PLAYING) {
-                player.unMute();
-                player.setVolume(100);
                 updateIcons(true);
             } else if (event.data === YT.PlayerState.PAUSED) {
                 updateIcons(false);
@@ -555,7 +556,6 @@
 
         window.addEventListener('DOMContentLoaded', async () => {
             try {
-                // Modificato per richiedere specificamente singoli brani ufficiali anziché mix
                 const res = await fetch(`/api/search?q=hit+italia+official+audio`);
                 const tracks = await res.json();
                 const container = document.getElementById('homeTrackList');
@@ -695,8 +695,11 @@
             if (player && typeof player.loadVideoById === 'function') {
                 player.unMute();
                 player.setVolume(100);
+                // Utilizziamo cueVideoById seguito da playVideo per evitare blocchi del browser o della policy autoplay
                 player.loadVideoById({'videoId': id, 'startSeconds': 0});
-                player.playVideo();
+                setTimeout(() => {
+                    player.playVideo();
+                }, 100);
                 startProgressTracker();
             } else {
                 setTimeout(() => {
@@ -707,7 +710,7 @@
                         player.playVideo();
                         startProgressTracker();
                     }
-                }, 300);
+                }, 400);
             }
         }
 
