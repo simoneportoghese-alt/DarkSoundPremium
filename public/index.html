@@ -30,23 +30,26 @@
             min-height: 100vh;
         }
 
-        /* --- LOGIN --- */
+        /* --- LOGIN / REGISTER VIEW --- */
         #view-login {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #121212 0%, #000000 100%);
             z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center;
         }
-        #view-login h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; color: var(--accent); }
-        #view-login p { color: var(--text-sub); font-size: 0.95rem; margin-bottom: 30px; }
-        .login-card { background: rgba(255, 255, 255, 0.05); padding: 24px; border-radius: 12px; width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 15px; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .login-input { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.2); padding: 12px 16px; border-radius: 8px; color: white; font-size: 1rem; outline: none; width: 100%; }
-        .google-btn { background: white; color: black; font-weight: 700; border: none; padding: 12px; border-radius: 500px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 0.95rem; }
+        #view-login h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; color: var(--accent); }
+        #view-login p { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 25px; }
+        .login-card { background: rgba(255, 255, 255, 0.05); padding: 24px; border-radius: 12px; width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 12px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .login-input { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.2); padding: 12px 16px; border-radius: 8px; color: white; font-size: 0.95rem; outline: none; width: 100%; }
+        .login-btn { background: var(--accent); color: black; font-weight: 700; border: none; padding: 12px; border-radius: 500px; cursor: pointer; font-size: 0.95rem; margin-top: 5px; transition: opacity 0.2s; }
+        .login-btn:active { opacity: 0.8; }
+        .auth-switch { font-size: 0.8rem; color: var(--text-sub); margin-top: 10px; cursor: pointer; }
+        .auth-switch span { color: var(--text-main); font-weight: 600; text-decoration: underline; }
 
         .view { display: none; padding: 20px; }
         .view.active { display: block; }
 
         .top-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #555; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: white; cursor: pointer; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #555; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: white; cursor: pointer; overflow: hidden; }
         .header-title { font-size: 1.5rem; font-weight: 800; }
 
         .search-box { background: var(--bg-card); padding: 12px 16px; border-radius: 500px; display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
@@ -129,15 +132,17 @@
 </head>
 <body>
 
-    <!-- LOGIN -->
+    <!-- LOGIN / REGISTRATION VIEW -->
     <div id="view-login">
-        <h1>DarkSound</h1>
-        <p>I tuoi brani, preferiti e playlist salvati</p>
+        <h1 id="authTitle">DarkSound</h1>
+        <p id="authSubtitle">Accedi per ascoltare la tua musica</p>
         <div class="login-card">
-            <input type="text" id="loginNameInput" class="login-input" placeholder="Il tuo nome" value="Utente">
-            <button class="google-btn" onclick="saveUserLogin()">
-                <i class="fab fa-google" style="color: #ea4335;"></i> Accedi
-            </button>
+            <input type="email" id="loginEmail" class="login-input" placeholder="La tua email">
+            <input type="password" id="loginPassword" class="login-input" placeholder="Password">
+            <button class="login-btn" id="authSubmitBtn" onclick="handleAuthSubmit()">Accedi</button>
+            <div class="auth-switch" id="authSwitchText" onclick="toggleAuthMode()">
+                Non hai un account? <span>Registrati</span>
+            </div>
         </div>
     </div>
 
@@ -271,17 +276,20 @@
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         let player, isPlaying = false, progressInterval, currentTrackData = null, trackToAddToPlaylist = null;
+        let isPlayerReady = false, pendingTrack = null;
         let isShuffle = false, isRepeat = false;
+        let isRegisterMode = false;
         const defaultCover = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150';
 
-        let appData = JSON.parse(localStorage.getItem('darksound_data')) || {
-            username: '',
+        let appData = JSON.parse(localStorage.getItem('darksound_session')) || {
+            currentUser: null,
+            usersDb: {},
             likedTracks: [],
             playlists: []
         };
 
         window.onload = function() {
-            if (appData.username) {
+            if (appData.currentUser) {
                 document.getElementById('view-login').style.display = 'none';
                 updateUserUI();
                 initAppData();
@@ -289,29 +297,76 @@
             }
         };
 
-        function saveUserLogin() {
-            const name = document.getElementById('loginNameInput').value.trim() || 'Utente';
-            appData.username = name;
-            saveData();
-            document.getElementById('view-login').style.display = 'none';
-            updateUserUI();
-            initAppData();
-            renderLibrary();
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('authTitle').innerText = isRegisterMode ? 'Registrati' : 'DarkSound';
+            document.getElementById('authSubtitle').innerText = isRegisterMode ? 'Crea un account gratuito' : 'Accedi per ascoltare la tua musica';
+            document.getElementById('authSubmitBtn').innerText = isRegisterMode ? 'Registrati' : 'Accedi';
+            document.getElementById('authSwitchText').innerHTML = isRegisterMode 
+                ? 'Hai già un account? <span>Accedi</span>' 
+                : 'Non hai un account? <span>Registrati</span>';
+        }
+
+        function handleAuthSubmit() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                alert("Inserisci email e password validi.");
+                return;
+            }
+
+            if (!appData.usersDb) appData.usersDb = {};
+
+            if (isRegisterMode) {
+                if (appData.usersDb[email]) {
+                    alert("Esiste già un account con questa email. Effettua l'accesso.");
+                    return;
+                }
+                appData.usersDb[email] = {
+                    password: password,
+                    likedTracks: [],
+                    playlists: []
+                };
+                alert("Registrazione completata con successo! Ora puoi accedere.");
+                toggleAuthMode();
+            } else {
+                const userRecord = appData.usersDb[email];
+                if (!userRecord || userRecord.password !== password) {
+                    alert("Email o password errati.");
+                    return;
+                }
+                appData.currentUser = email;
+                appData.likedTracks = userRecord.likedTracks || [];
+                appData.playlists = userRecord.playlists || [];
+                saveSession();
+
+                document.getElementById('view-login').style.display = 'none';
+                updateUserUI();
+                initAppData();
+                renderLibrary();
+            }
         }
 
         function logout() {
-            if(confirm("Vuoi uscire e cancellare i dati salvati?")) {
-                localStorage.removeItem('darksound_data');
+            if(confirm("Vuoi effettuare il logout?")) {
+                appData.currentUser = null;
+                saveSession();
                 location.reload();
             }
         }
 
-        function saveData() {
-            localStorage.setItem('darksound_data', JSON.stringify(appData));
+        function saveSession() {
+            if (appData.currentUser && appData.usersDb[appData.currentUser]) {
+                appData.usersDb[appData.currentUser].likedTracks = appData.likedTracks;
+                appData.usersDb[appData.currentUser].playlists = appData.playlists;
+            }
+            localStorage.setItem('darksound_session', JSON.stringify(appData));
         }
 
         function updateUserUI() {
-            const initial = appData.username.charAt(0).toUpperCase();
+            if (!appData.currentUser) return;
+            const initial = appData.currentUser.charAt(0).toUpperCase();
             document.getElementById('userAvatarContainer').innerText = initial;
             document.getElementById('libAvatarContainer').innerText = initial;
         }
@@ -320,8 +375,19 @@
             player = new YT.Player('youtube-player', {
                 height: '0', width: '0',
                 playerVars: { 'autoplay': 1, 'controls': 0, 'enablejsapi': 1 },
-                events: { 'onStateChange': onPlayerStateChange }
+                events: { 
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange 
+                }
             });
+        }
+
+        function onPlayerReady(event) {
+            isPlayerReady = true;
+            if (pendingTrack) {
+                playTrack(pendingTrack);
+                pendingTrack = null;
+            }
         }
 
         function onPlayerStateChange(event) {
@@ -396,7 +462,23 @@
         }
 
         function playTrack(t) {
+            if (!isPlayerReady) {
+                pendingTrack = t;
+                showPlayerUI(t);
+                return;
+            }
+
             currentTrackData = t;
+            showPlayerUI(t);
+
+            if (player && player.loadVideoById) {
+                player.loadVideoById(t.id);
+                player.playVideo();
+                startProgressTracker();
+            }
+        }
+
+        function showPlayerUI(t) {
             const finalImg = t.image || defaultCover;
             document.getElementById('playerBar').style.display = 'flex';
             document.getElementById('playerTitle').innerText = t.name;
@@ -408,12 +490,6 @@
             document.getElementById('fsCover').src = finalImg;
 
             updateLikeButtonsUI();
-
-            if (player && player.loadVideoById) {
-                player.loadVideoById(t.id);
-                player.playVideo();
-                startProgressTracker();
-            }
         }
 
         function togglePlay() {
@@ -436,14 +512,14 @@
             } else {
                 appData.likedTracks.push(currentTrackData);
             }
-            saveData();
+            saveSession();
             updateLikeButtonsUI();
             renderLibrary();
         }
 
         function removeLikedTrack(id) {
             appData.likedTracks = appData.likedTracks.filter(item => item.id !== id);
-            saveData();
+            saveSession();
             renderLibrary();
             updateLikeButtonsUI();
         }
@@ -486,7 +562,7 @@
             const name = prompt("Nome della nuova playlist:");
             if (name) {
                 appData.playlists.push({ name: name, tracks: [] });
-                saveData();
+                saveSession();
                 renderLibrary();
             }
         }
@@ -494,14 +570,14 @@
         function deletePlaylist(index) {
             if(confirm("Vuoi eliminare questa playlist?")) {
                 appData.playlists.splice(index, 1);
-                saveData();
+                saveSession();
                 renderLibrary();
             }
         }
 
         function removeTrackFromPlaylist(pIndex, tIndex) {
             appData.playlists[pIndex].tracks.splice(tIndex, 1);
-            saveData();
+            saveSession();
             renderLibrary();
         }
 
@@ -523,7 +599,7 @@
             const exists = appData.playlists[pIndex].tracks.some(item => item.id === trackToAddToPlaylist.id);
             if (!exists) {
                 appData.playlists[pIndex].tracks.push(trackToAddToPlaylist);
-                saveData();
+                saveSession();
                 renderLibrary();
                 alert("Brano aggiunto alla playlist!");
             } else {
