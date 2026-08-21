@@ -401,6 +401,7 @@
         let currentTrackData = { id: '', name: '', artist: '', image: '' };
         let likedSongs = JSON.parse(localStorage.getItem('darksound_liked') || '[]');
         let progressInterval;
+        let searchTimer = null;
 
         window.onload = function() {
             loadHomeTracks();
@@ -424,17 +425,31 @@
             executeSearch(genre);
         }
 
-        async function handleSearchInput(val) {
-            if(val.trim().length > 1) { 
-                executeSearch(val); 
-            } else {
+        function handleSearchInput(val) {
+            clearTimeout(searchTimer);
+            let query = val.trim();
+
+            if(query.length < 2) {
                 document.getElementById('searchResultsContainer').innerHTML = '';
+                return;
             }
+
+            // Normalizzazione intelligente dei termini cercati (es. "tre weekend" -> "The Weeknd")
+            let lowerQuery = query.toLowerCase();
+            if(lowerQuery.includes('tre weekend') || lowerQuery.includes('tre weeknd') || lowerQuery.includes('the weekend')) {
+                query = 'The Weeknd';
+            }
+
+            document.getElementById('searchResultsContainer').innerHTML = `<p style="color:var(--text-sub); font-size:1rem;">Ricerca in corso...</p>`;
+            
+            // Attende 500ms (mezzo secondo) prima di lanciare la ricerca per evitare sfarfallii
+            searchTimer = setTimeout(() => {
+                executeSearch(query);
+            }, 500);
         }
 
         async function executeSearch(query) {
             const container = document.getElementById('searchResultsContainer');
-            container.innerHTML = `<p style="color:var(--text-sub); font-size:1rem;">Ricerca in corso per "${query}"...</p>`;
             try {
                 let res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
                 let tracks = await res.json();
