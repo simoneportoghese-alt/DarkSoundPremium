@@ -734,7 +734,7 @@
             }
 
             let html = tracks.map((t, idx) => {
-                // Se la traccia ha già la copertina originale la mantiene, altrimenti ne assegna una unica differenziata
+                // Se la traccia ha la copertina originale viene mantenuta, altrimenti ne riceve una unica dedicata
                 const trackImage = (t.image && t.image.trim() !== "") 
                     ? t.image 
                     : `https://picsum.photos/seed/track_${t.id || idx}_${Math.floor(Math.random()*1000)}/200/200`;
@@ -844,6 +844,7 @@
                 `;
 
                 html += tracks.map((t, idx) => {
+                    // Garantisce che ogni traccia nella ricerca abbia un'immagine valida (originale o unica generata)
                     const trackImage = (t.image && t.image.trim() !== "") 
                         ? t.image 
                         : `https://picsum.photos/seed/search_${t.id || idx}_${Math.floor(Math.random()*1000)}/200/200`;
@@ -884,7 +885,7 @@
         }
 
         function playTrackInternal(id, name, artist, image) {
-            const validImage = image || findArtistImage(artist);
+            const validImage = (image && image.trim() !== "") ? image : findArtistImage(artist);
             currentTrackData = { id, name, artist, image: validImage };
             
             document.getElementById('playerBar').style.display = 'flex';
