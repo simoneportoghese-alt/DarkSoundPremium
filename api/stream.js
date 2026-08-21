@@ -2,39 +2,39 @@ import ytsr from 'ytsr';
 import ytdl from '@distube/ytdl-core';
 
 export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET');
+
   const { q } = req.query;
 
   if (!q) {
-    return res.status(400).json({ error: 'Parametro di ricerca mancante' });
+    return res.status(400).json({ error: 'Query mancante' });
   }
 
   try {
-    // 1. Cerca il brano su YouTube
-    const searchResults = await ytsr(q, { limit: 1 });
+    const searchResults = await ytsr(q, { limit: 5 });
     const video = searchResults.items.find(item => item.type === 'video');
 
     if (!video) {
-      return res.status(404).json({ error: 'Nessun brano trovato' });
+      return res.status(404).json({ error: 'Nessun video trovato' });
     }
 
-    // 2. Estrai il link audio diretto
     const info = await ytdl.getInfo(video.url);
-    const audioFormat = ytdl.chooseFormat(info.formats, { filter: 'audioonly', quality: 'highestaudio' });
+    const format = ytdl.chooseFormat(info.formats, { filter: 'audioonly', quality: 'highestaudio' });
 
-    if (!audioFormat || !audioFormat.url) {
-      return res.status(500).json({ error: 'Impossibile estrarre lo stream audio' });
+    if (!format || !format.url) {
+      return res.status(500).json({ error: 'Formato audio non disponibile' });
     }
 
-    // 3. Restituisci i dati al frontend
     return res.status(200).json({
       title: video.title,
-      artist: video.author ? video.author.name : 'Unknown Artist',
+      artist: video.author ? video.author.name : 'Artista Sconosciuto',
       artwork: video.bestThumbnail?.url || 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=500&h=500&fit=crop',
-      audioUrl: audioFormat.url
+      audioUrl: format.url
     });
 
-  } catch (error) {
-    console.error("Errore Backend:", error);
-    return res.status(500).json({ error: 'Errore durante la ricerca del brano' });
+  } catch (err) {
+    console.error('Errore streaming:', err);
+    return res.status(500).json({ error: 'Errore interno del server' });
   }
 }
