@@ -609,11 +609,10 @@
                 }
 
                 const topResult = tracks[0];
-                const otherTracks = tracks.slice(1, 5); // Primi 4 brani per la sezione laterale
+                const otherTracks = tracks.slice(1, 5);
 
                 let html = '';
 
-                // Layout in stile Spotify: Griglia con Risultato Principale a sinistra e Brani correlati a destra
                 const topImg = topResult.image || 'https://via.placeholder.com/92';
                 const topName = (topResult.name || '').replace(/'/g, "\\'");
                 const topArtist = (topResult.artist || '').replace(/'/g, "\\'");
@@ -654,7 +653,6 @@
 
                 html += `</div></div></div>`;
 
-                // Sezione Altri brani / Simili sotto
                 const remainingTracks = tracks.slice(5);
                 if (remainingTracks.length > 0) {
                     html += `<div class="section-title">Brani simili consigliati</div>`;
@@ -684,22 +682,35 @@
             const safeImage = image || 'https://via.placeholder.com/340';
             currentTrackData = { id, name, artist, image: safeImage };
 
+            // Aggiorna subito l'interfaccia e forza lo stato di riproduzione al primo tocco
+            document.getElementById('playerBar').style.display = 'flex';
+            document.getElementById('playerTitle').innerText = name;
+            document.getElementById('playerArtist').innerText = artist;
+            document.getElementById('playerImg').src = safeImage;
+
+            document.getElementById('fsTitle').innerText = name;
+            document.getElementById('fsArtist').innerText = artist;
+            document.getElementById('fsCover').src = safeImage;
+
+            isPlaying = true;
+            updateIcons(true);
+
             if (player && typeof player.loadVideoById === 'function') {
                 player.unMute();
                 player.setVolume(100);
                 player.loadVideoById(id);
                 player.playVideo();
-                
-                document.getElementById('playerBar').style.display = 'flex';
-                document.getElementById('playerTitle').innerText = name;
-                document.getElementById('playerArtist').innerText = artist;
-                document.getElementById('playerImg').src = safeImage;
-
-                document.getElementById('fsTitle').innerText = name;
-                document.getElementById('fsArtist').innerText = artist;
-                document.getElementById('fsCover').src = safeImage;
-
                 startProgressTracker();
+            } else {
+                setTimeout(() => {
+                    if (player && typeof player.loadVideoById === 'function') {
+                        player.unMute();
+                        player.setVolume(100);
+                        player.loadVideoById(id);
+                        player.playVideo();
+                        startProgressTracker();
+                    }
+                }, 400);
             }
         }
 
