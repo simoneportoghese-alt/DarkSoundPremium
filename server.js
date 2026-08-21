@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const yts = require('yt-search');
+const youtubedl = require('youtube-dl-exec');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,42 +8,61 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Logica di ricerca stile Lyra: rapida, leggera e senza crash
 app.get('/api/search', async (req, res) => {
     const query = req.query.q;
     if (!query) return res.json([]);
 
     try {
-        const searchResult = await yts(query);
-        const tracks = searchResult.videos.slice(0, 15).map(video => ({
-            id: video.videoId,
-            name: video.title,
-            artist_name: video.author.name,
-            image: video.thumbnail,
-            duration: video.duration.seconds
+        const output = await youtubedl(`ytsearch15:${query}`, {
+            dumpSingleJson: true,
+            noCheckCertificates: true,
+            noWarnings: true,
+            preferFreeFormats: true,
+            extractorArgs: 'youtube:player_client=web'
+        });
+
+        let entries = output.entries || [output];
+        const results = entries.map(item => ({
+            id: item.id,
+            name: item.title || "Brano sconosciuto",
+            artist_name: item.uploader || "Artista",
+            image: item.thumbnail || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300",
+            duration: item.duration || 0
         }));
 
-        res.json(tracks);
-    } catch (err) {
-        console.error("Errore durante la ricerca:", err);
+        res.json(results);
+    } catch (error) {
+        console.error("Errore ricerca:", error.message);
         res.json([]);
     }
 });
 
-// Endpoint di streaming pulito e compatibile con il player mobile
 app.get('/api/stream/:id', async (req, res) => {
     const videoId = req.params.id;
-    
+    const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+
     try {
-        // Indirizzo diretto di fallback stabile o proxy audio
-        const audioUrl = `https://www.youtube.com/watch?v=${videoId}`;
-        // Reindirizzamento diretto al flusso compatibile
-        res.redirect(`https://invidious.io/api/v1/videos/${videoId}`); // oppure un fallback pulito
-    } catch (err) {
-        res.status(500).json({ error: "Impossibile avviare lo streaming" });
+        const info = await youtubedl(videoUrl, {
+            dumpSingleJson: true,
+            noCheckCertificates: true,
+            noWarnings: true,
+            preferFreeFormats: true,
+            extractorArgs: 'youtube:player_client=web'
+        });
+
+        const audioFormat = info.formats.find(f => f.acodec !== 'none' && f.vcodec === 'none') || info.formats[0];
+        
+        if (audioFormat && audioFormat.url) {
+            return res.redirect(audioFormat.url);
+        } else {
+            res.status(404).json({ error: "Flusso audio non trovato" });
+        }
+    } catch (error) {
+        console.error("Errore streaming:", error.message);
+        res.status(500).json({ error: "Impossibile riprodurre il brano" });
     }
 });
 
 app.listen(PORT, () => {
-    console.log(`Server Lyra-logic avviato sulla porta ${PORT}`);
+    console.log(`Server Railway avviato sulla porta ${PORT}`);
 });
