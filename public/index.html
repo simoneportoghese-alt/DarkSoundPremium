@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DarkSound - Spotify & YouTube Edition</title>
+    <title>DarkSound - Full Spotify Experience</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -33,84 +33,52 @@
         .view { display: none; padding: 20px; }
         .view.active { display: block; }
 
-        /* --- SEARCH VIEW STYLES --- */
-        .search-top-bar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .spotify-search-container {
-            flex: 1;
-            background: #2a2a2a;
-            padding: 10px 16px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .spotify-search-container input {
-            background: transparent;
-            border: none;
-            color: white;
-            width: 100%;
-            outline: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-        .search-cancel {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 0.95rem;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .search-history-list {
+        /* --- AUTH VIEW (LOGIN / REGISTER) --- */
+        #view-auth {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-        }
-        .search-history-item {
-            display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: space-between;
-            padding: 12px 4px;
-            cursor: pointer;
-            border-radius: 4px;
+            height: 100vh;
+            padding: 24px;
+            background: linear-gradient(180deg, #242424 0%, #000000 100%);
         }
-        .search-history-item:active {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        .search-history-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            color: var(--text-main);
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-        .search-history-left i {
-            color: var(--text-sub);
-            font-size: 1rem;
-        }
-        .search-arrow {
-            color: var(--text-sub);
-            font-size: 0.9rem;
-            transform: rotate(45deg);
-        }
+        #view-auth.active { display: flex; }
+        .auth-container { width: 100%; max-width: 360px; text-align: center; }
+        .auth-container h1 { font-size: 2rem; font-weight: 800; margin-bottom: 30px; }
+        .auth-input { width: 100%; padding: 14px; margin-bottom: 15px; background: #2a2a2a; border: 1px solid #333; border-radius: 4px; color: white; font-size: 1rem; outline: none; }
+        .auth-btn { width: 100%; padding: 14px; background: var(--accent); color: black; border: none; border-radius: 30px; font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+        .auth-switch { margin-top: 20px; color: var(--text-sub); font-size: 0.85rem; cursor: pointer; }
+        .auth-switch span { color: white; font-weight: 600; text-decoration: underline; }
+
+        /* --- APP MAIN LAYOUT --- */
+        .home-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .home-chips { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; }
+        .chip { background: #2a2a2a; border: none; color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .chip.active { background: white; color: black; }
+        
+        .grid-mixes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 25px; }
+        .mix-card { background: rgba(255,255,255,0.08); border-radius: 4px; display: flex; align-items: center; gap: 10px; overflow: hidden; cursor: pointer; transition: background 0.2s; }
+        .mix-card:hover { background: rgba(255,255,255,0.15); }
+        .mix-card img { width: 48px; height: 48px; object-fit: cover; }
+        .mix-card span { font-size: 0.8rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px; }
+
+        /* --- SEARCH VIEW --- */
+        .search-top-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .spotify-search-container { flex: 1; background: #2a2a2a; padding: 10px 16px; border-radius: 4px; display: flex; align-items: center; gap: 10px; }
+        .spotify-search-container input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.95rem; font-weight: 500; }
+        .search-cancel { background: none; border: none; color: white; font-size: 0.95rem; cursor: pointer; font-weight: 600; }
+
+        .search-history-list { display: flex; flex-direction: column; gap: 4px; }
+        .search-history-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 4px; cursor: pointer; border-radius: 4px; }
+        .search-history-item:active { background: rgba(255, 255, 255, 0.05); }
+        .search-history-left { display: flex; align-items: center; gap: 16px; color: var(--text-main); font-size: 0.95rem; font-weight: 500; }
+        .search-history-left i { color: var(--text-sub); font-size: 1rem; }
+        .search-arrow { color: var(--text-sub); font-size: 0.9rem; transform: rotate(45deg); }
 
         .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; margin-top: 24px; }
         
-        .artist-result-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 4px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+        .artist-result-card { display: flex; align-items: center; justify-content: space-between; padding: 8px 4px; border-radius: 4px; cursor: pointer; }
         .artist-result-card:hover { background: rgba(255,255,255,0.05); }
         .artist-left { display: flex; align-items: center; gap: 14px; }
         .artist-left img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
@@ -118,34 +86,41 @@
         .artist-info p { font-size: 0.8rem; color: var(--text-sub); }
         .verified-badge { color: #3d91f4; font-size: 0.75rem; }
 
-        .playlist-result-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 4px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+        .playlist-result-card { display: flex; align-items: center; justify-content: space-between; padding: 8px 4px; border-radius: 4px; cursor: pointer; }
         .playlist-result-card:hover { background: rgba(255,255,255,0.05); }
         .playlist-left { display: flex; align-items: center; gap: 14px; }
         .playlist-left img { width: 50px; height: 50px; border-radius: 4px; object-fit: cover; }
         .playlist-info h4 { font-size: 0.95rem; font-weight: 600; }
         .playlist-info p { font-size: 0.8rem; color: var(--text-sub); }
-        .playlist-action { font-size: 1.3rem; color: var(--text-sub); cursor: pointer; }
+        .playlist-actions-group { display: flex; align-items: center; gap: 15px; }
+        .playlist-action { font-size: 1.2rem; color: var(--text-sub); cursor: pointer; }
+        .playlist-action.liked { color: var(--accent); }
 
-        /* --- PLAYER BAR & NAV --- */
+        /* --- LIBRARY & CREATE VIEWS --- */
+        .library-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .lib-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; cursor: pointer; }
+        .lib-item img { width: 56px; height: 56px; border-radius: 4px; object-fit: cover; }
+        .lib-item h4 { font-size: 0.95rem; font-weight: 600; }
+        .lib-item p { font-size: 0.8rem; color: var(--text-sub); }
+
+        /* --- MINI PLAYER BAR --- */
         .player-bar {
-            position: fixed; bottom: 60px; left: 8px; right: 8px; background: #531212; border-radius: 8px; padding: 10px 12px; display: none; align-items: center; gap: 12px; z-index: 999; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            position: fixed; bottom: 65px; left: 8px; right: 8px; 
+            background: #531212; border-radius: 6px; padding: 8px 12px; 
+            display: none; align-items: center; gap: 12px; z-index: 999; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
-        .player-bar img { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; }
+        .player-bar img { width: 42px; height: 42px; border-radius: 4px; object-fit: cover; }
         .player-meta { flex: 1; min-width: 0; }
         .p-title { font-size: 0.85rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .p-artist { font-size: 0.75rem; color: #ffb3b3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .player-icons { display: flex; align-items: center; gap: 15px; font-size: 1.2rem; color: #fff; }
+        .player-icons { display: flex; align-items: center; gap: 18px; font-size: 1.1rem; color: #fff; }
 
+        /* --- BOTTOM NAVIGATION --- */
         nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000;
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; display: none;
         }
+        nav.active { display: flex; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-sub); font-size: 0.7rem; font-weight: 600; cursor: pointer; background: none; border: none; }
         .nav-item i { font-size: 1.2rem; }
         .nav-item.active { color: var(--text-main); }
@@ -154,10 +129,41 @@
 </head>
 <body>
 
+    <!-- AUTH VIEW -->
+    <div id="view-auth" class="view active">
+        <div class="auth-container">
+            <h1 id="authTitle">DarkSound</h1>
+            <input type="email" id="authEmail" class="auth-input" placeholder="E-mail">
+            <input type="password" id="authPassword" class="auth-input" placeholder="Password">
+            <button class="auth-btn" id="authSubmitBtn" onclick="handleAuth()">Accedi</button>
+            <div class="auth-switch" onclick="toggleAuthMode()">
+                <span id="authSwitchText">Non hai un account? Registrati</span>
+            </div>
+        </div>
+    </div>
+
     <!-- HOME VIEW -->
-    <div id="view-home" class="view active">
-        <div style="font-size: 1.5rem; font-weight: 800;">Home</div>
-        <p style="color:var(--text-sub); margin-top: 10px;">Benvenuto su DarkSound.</p>
+    <div id="view-home" class="view">
+        <div class="home-header">
+            <div style="width: 32px; height: 32px; background: #9b51e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;" id="userAvatar">D</div>
+            <div class="home-chips">
+                <button class="chip active">Tutti</button>
+                <button class="chip">Musica</button>
+                <button class="chip">Podcast</button>
+            </div>
+        </div>
+        <div class="grid-mixes">
+            <div class="mix-card" onclick="selectSearchTerm('sfera ebbasta')">
+                <img src="https://via.placeholder.com/48" alt="Mix">
+                <span>Radio di Sfera Ebbasta</span>
+            </div>
+            <div class="mix-card" onclick="selectSearchTerm('This Is Sfera Ebbasta')">
+                <img src="https://via.placeholder.com/48" alt="Mix">
+                <span>This Is Sfera Ebbasta</span>
+            </div>
+        </div>
+        <div class="section-title">Le tue playlist collaborative</div>
+        <div id="homeCollabList" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
 
     <!-- SEARCH VIEW -->
@@ -176,22 +182,6 @@
                     <div class="search-history-left"><i class="fas fa-search"></i> sfera ebbasta</div>
                     <div class="search-arrow"><i class="fas fa-arrow-up"></i></div>
                 </div>
-                <div class="search-history-item" onclick="selectSearchTerm('sfera 2016')">
-                    <div class="search-history-left"><i class="fas fa-search"></i> sfera 2016</div>
-                    <div class="search-arrow"><i class="fas fa-arrow-up"></i></div>
-                </div>
-                <div class="search-history-item" onclick="selectSearchTerm('sfera')">
-                    <div class="search-history-left"><i class="fas fa-search"></i> sfera</div>
-                    <div class="search-arrow"><i class="fas fa-arrow-up"></i></div>
-                </div>
-                <div class="search-history-item" onclick="selectSearchTerm('sfera ebbasta ayayay')">
-                    <div class="search-history-left"><i class="fas fa-search"></i> sfera ebbasta ayayay</div>
-                    <div class="search-arrow"><i class="fas fa-arrow-up"></i></div>
-                </div>
-                <div class="search-history-item" onclick="selectSearchTerm('sfera album')">
-                    <div class="search-history-left"><i class="fas fa-search"></i> sfera album</div>
-                    <div class="search-arrow"><i class="fas fa-arrow-up"></i></div>
-                </div>
             </div>
         </div>
 
@@ -202,48 +192,20 @@
     <div id="view-artist" class="view">
         <div style="background: linear-gradient(180deg, #3a3a3a 0%, #121212 100%); margin: -20px -20px 20px -20px; padding: 40px 20px 20px 20px; position: relative;">
             <button onclick="switchView('search')" style="background:rgba(0,0,0,0.5); border:none; color:white; width:32px; height:32px; border-radius:50%; cursor:pointer; position:absolute; top:15px; left:15px; display:flex; align-items:center; justify-content:center;"><i class="fas fa-arrow-left"></i></button>
-            
-            <h1 id="artistPageTitle" style="font-size: 2.3rem; font-weight: 800; margin-top: 20px; letter-spacing: -1px;">Sfera Ebbasta</h1>
+            <h1 id="artistPageTitle" style="font-size: 2.3rem; font-weight: 800; margin-top: 20px;">Sfera Ebbasta</h1>
             <div style="display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #fff; margin-top: 5px;">
                 <i class="fas fa-check-circle" style="color: #3d91f4;"></i> Verificato da Spotify
             </div>
-            <p id="artistListeners" style="font-size: 0.85rem; color: var(--text-sub); margin-top: 15px;">7 Mln ascoltatori mensili</p>
-
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px;">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <button style="background: transparent; border: 1px solid var(--text-sub); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">Segui</button>
-                    <i class="fas fa-ellipsis-h" style="color: var(--text-sub); font-size: 1.2rem; cursor: pointer;"></i>
-                </div>
-                <div style="display: flex; align-items: center; gap: 20px;">
-                    <i class="fas fa-random" style="color: var(--text-sub); font-size: 1.2rem; cursor: pointer;"></i>
-                    <button style="background: var(--accent); border: none; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: black; font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
-                        <i class="fas fa-play" style="margin-left: 2px;"></i>
-                    </button>
-                </div>
-            </div>
+            <p style="font-size: 0.85rem; color: var(--text-sub); margin-top: 15px;">7 Mln ascoltatori mensili</p>
         </div>
 
         <div style="display: flex; gap: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; padding-bottom: 2px;">
             <span onclick="switchArtistTab('music', this)" style="font-size: 0.95rem; font-weight: 700; color: white; padding-bottom: 8px; border-bottom: 2px solid var(--accent); cursor: pointer;">Musica</span>
-            <span onclick="switchArtistTab('video', this)" style="font-size: 0.95rem; font-weight: 600; color: var(--text-sub); padding-bottom: 8px; cursor: pointer;">Video</span>
-            <span onclick="switchArtistTab('merch', this)" style="font-size: 0.95rem; font-weight: 600; color: var(--text-sub); padding-bottom: 8px; cursor: pointer;">Merchandise</span>
         </div>
-
         <div id="artist-tab-music">
-            <div style="display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; margin-bottom: 20px; cursor: pointer;">
-                <div style="position: relative; width: 40px; height: 40px;">
-                    <img src="https://via.placeholder.com/40" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
-                    <div style="position: absolute; bottom: -2px; right: -2px; background: var(--accent); color: black; font-size: 0.5rem; width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fas fa-heart"></i></div>
-                </div>
-                <div>
-                    <h4 style="font-size: 0.9rem; font-weight: 700;">Cosa ti è piaciuto</h4>
-                    <p style="font-size: 0.75rem; color: var(--text-sub);">2 brani • Sfera Ebbasta</p>
-                </div>
-            </div>
-
             <div class="section-title">Popolare</div>
             <div style="display: flex; flex-direction: column; gap: 12px;">
-                <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; justify-content: space-between;" onclick="playTrack('dQw4w9WgXcQ', 'AYAYAY', 'Sfera Ebbasta', 'https://via.placeholder.com/48')">
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <span style="color: var(--text-sub); font-size: 0.9rem; font-weight: 600; width: 10px;">1</span>
                         <img src="https://via.placeholder.com/48" style="width: 48px; height: 48px; border-radius: 4px; object-fit: cover;">
@@ -252,45 +214,49 @@
                             <p style="font-size: 0.75rem; color: var(--text-sub);">17,777,056</p>
                         </div>
                     </div>
-                    <i class="fas fa-ellipsis-h" style="color: var(--text-sub);"></i>
                 </div>
             </div>
-
-            <div class="section-title" style="margin-top: 30px;">Discografia</div>
-            <div style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px;">
-                <div style="min-width: 120px;">
-                    <img src="https://via.placeholder.com/120" style="width: 120px; height: 120px; border-radius: 6px; object-fit: cover; margin-bottom: 6px;">
-                    <div style="font-size: 0.85rem; font-weight: 700;">AYAYAY</div>
-                    <div style="font-size: 0.75rem; color: var(--text-sub);">Singolo • 2026</div>
-                </div>
-                <div style="min-width: 120px;">
-                    <img src="https://via.placeholder.com/120" style="width: 120px; height: 120px; border-radius: 6px; object-fit: cover; margin-bottom: 6px;">
-                    <div style="font-size: 0.85rem; font-weight: 700;">X2VR</div>
-                    <div style="font-size: 0.75rem; color: var(--text-sub);">Album • 2023</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="artist-tab-video" style="display: none;">
-            <p style="color: var(--text-sub); text-align: center; padding: 40px;">Nessun video disponibile</p>
-        </div>
-
-        <div id="artist-tab-merch" style="display: none;">
-            <p style="color: var(--text-sub); text-align: center; padding: 40px;">Nessun articolo di merchandise</p>
         </div>
     </div>
 
     <!-- LIBRARY VIEW -->
     <div id="view-library" class="view">
-        <div style="font-size: 1.5rem; font-weight: 800;">La tua libreria</div>
+        <div class="library-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 32px; height: 32px; background: #9b51e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;" id="libUserAvatar">D</div>
+                <div style="font-size: 1.5rem; font-weight: 800;">La tua libreria</div>
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;" id="libraryContentList">
+            <div class="lib-item" onclick="openLikedSongs()">
+                <img src="https://via.placeholder.com/56" alt="Brani piaciuti">
+                <div>
+                    <h4>Brani piaciuti</h4>
+                    <p><i class="fas fa-thumbtack" style="color:var(--accent);"></i> Playlist • <span id="likedCount">0</span> brani</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- CREATE VIEW -->
     <div id="view-create" class="view">
-        <div style="font-size: 1.5rem; font-weight: 800;">Crea</div>
+        <div style="font-size: 1.5rem; font-weight: 800; margin-bottom: 20px;">Crea Playlist Collaborativa</div>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+            <input type="text" id="newPlaylistName" class="auth-input" placeholder="Nome della playlist">
+            <button class="auth-btn" onclick="createCollabPlaylist()">Crea e genera link</button>
+        </div>
+        <div id="collabLinkContainer" style="margin-top: 20px; word-break: break-all; font-size:0.85rem; color:var(--accent);"></div>
     </div>
 
-    <!-- YOUTUBE API PLAYER INTACT -->
+    <!-- PLAYLIST DETAIL / SHARED VIEW -->
+    <div id="view-playlist-detail" class="view">
+        <button onclick="switchView('library')" style="background:none; border:none; color:white; font-size:1rem; cursor:pointer; margin-bottom:15px;"><i class="fas fa-arrow-left"></i> Indietro</button>
+        <h2 id="detailPlaylistTitle" style="font-size: 1.5rem; font-weight: 800; margin-bottom: 5px;"></h2>
+        <p id="detailPlaylistInfo" style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 20px;"></p>
+        <div id="detailPlaylistTracks" style="display:flex; flex-direction:column; gap:12px;"></div>
+    </div>
+
+    <!-- YOUTUBE PLAYER -->
     <div id="youtube-player"></div>
 
     <!-- MINI PLAYER BAR -->
@@ -301,16 +267,16 @@
             <div class="p-artist" id="playerArtist">-</div>
         </div>
         <div class="player-icons">
-            <i class="fas fa-tv" style="font-size: 1rem;"></i>
-            <i class="fas fa-plus-circle" style="font-size: 1rem;"></i>
+            <i class="fas fa-tv" style="font-size: 0.95rem;"></i>
+            <i class="fas fa-plus-circle" style="font-size: 0.95rem;"></i>
             <i class="fas fa-play" id="playPauseIcon" onclick="togglePlay()"></i>
         </div>
     </div>
 
     <!-- BOTTOM NAVIGATION -->
-    <nav>
-        <button class="nav-item" onclick="switchView('home', this)"><i class="fas fa-home"></i><span>Home</span></button>
-        <button class="nav-item active" onclick="switchView('search', this)"><i class="fas fa-search"></i><span>Ricerca</span></button>
+    <nav id="bottomNav">
+        <button class="nav-item active" onclick="switchView('home', this)"><i class="fas fa-home"></i><span>Home</span></button>
+        <button class="nav-item" onclick="switchView('search', this)"><i class="fas fa-search"></i><span>Ricerca</span></button>
         <button class="nav-item" onclick="switchView('library', this)"><i class="fas fa-stream"></i><span>La tua libreria</span></button>
         <button class="nav-item" onclick="switchView('create', this)"><i class="fas fa-plus-circle"></i><span>Crea</span></button>
     </nav>
@@ -319,19 +285,62 @@
     <script>
         let player;
         let isPlaying = false;
+        let isRegistering = false;
+        let currentUser = localStorage.getItem('darksound_user');
 
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtube-player', {
-                height: '0',
-                width: '0',
-                playerVars: { 'autoplay': 1, 'controls': 0, 'enablejsapi': 1 },
-                events: { 
-                    'onStateChange': (e) => {
-                        if (e.data === YT.PlayerState.PLAYING) updateIcons(true);
-                        if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) updateIcons(false);
+        // Stato locale per Preferiti e Playlist Collaborative
+        let likedSongs = JSON.parse(localStorage.getItem('darksound_liked') || '[]');
+        let collaborativePlaylists = JSON.parse(localStorage.getItem('darksound_collab') || '[]');
+
+        window.onload = function() {
+            if (currentUser) {
+                initAppSession();
+            }
+            checkUrlParams();
+        };
+
+        function toggleAuthMode() {
+            isRegistering = !isRegistering;
+            document.getElementById('authTitle').innerText = isRegistering ? 'Registrati su DarkSound' : 'DarkSound';
+            document.getElementById('authSubmitBtn').innerText = isRegistering ? 'Registrati' : 'Accedi';
+            document.getElementById('authSwitchText').innerHTML = isRegistering ? 'Hai già un account? <span>Accedi</span>' : 'Non hai un account? <span>Registrati</span>';
+        }
+
+        function handleAuth() {
+            const email = document.getElementById('authEmail').value.trim();
+            const pass = document.getElementById('authPassword').value.trim();
+            if(!email || !pass) {
+                alert('Inserisci email e password');
+                return;
+            }
+            currentUser = email;
+            localStorage.setItem('darksound_user', email);
+            initAppSession();
+        }
+
+        function initAppSession() {
+            document.getElementById('view-auth').classList.remove('active');
+            document.getElementById('bottomNav').classList.add('active');
+            switchView('home', document.querySelectorAll('.nav-item')[0]);
+            document.getElementById('userAvatar').innerText = currentUser.charAt(0).toUpperCase();
+            document.getElementById('libUserAvatar').innerText = currentUser.charAt(0).toUpperCase();
+            updateLibraryCounts();
+            renderHomeCollab();
+        }
+
+        function checkUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const playlistId = params.get('playlist');
+            if (playlistId) {
+                const found = collaborativePlaylists.find(p => p.id === playlistId);
+                if (found) {
+                    if(!currentUser) {
+                        alert("Accedi per visualizzare la playlist collaborativa.");
+                        return;
                     }
+                    openPlaylistDetail(found);
                 }
-            });
+            }
         }
 
         function switchView(viewName, btnElement) {
@@ -341,6 +350,19 @@
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 btnElement.classList.add('active');
             }
+        }
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '0', width: '0',
+                playerVars: { 'autoplay': 1, 'controls': 0, 'enablejsapi': 1 },
+                events: { 
+                    'onStateChange': (e) => {
+                        if (e.data === YT.PlayerState.PLAYING) updateIcons(true);
+                        if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) updateIcons(false);
+                    }
+                }
+            });
         }
 
         function handleSearchInput(val) {
@@ -355,6 +377,7 @@
         }
 
         function selectSearchTerm(term) {
+            switchView('search', document.querySelectorAll('.nav-item')[1]);
             document.getElementById('spotifySearchInput').value = term;
             document.getElementById('searchSuggestionsContainer').style.display = "none";
             executeRealSearch(term);
@@ -385,7 +408,6 @@
                 let html = '';
                 const first = tracks[0];
 
-                // Card Artista che porta alla Pagina Artista al click
                 html += `
                     <div class="artist-result-card" onclick="openArtistPage('${first.artist}', '${first.image}')">
                         <div class="artist-left">
@@ -403,16 +425,21 @@
                     const safeImg = t.image || 'https://via.placeholder.com/50';
                     const safeName = (t.name || 'Brano').replace(/'/g, "\\'");
                     const safeArtist = (t.artist || 'Artista').replace(/'/g, "\\'");
+                    const isLiked = likedSongs.some(s => s.id === t.id);
+
                     return `
-                        <div class="playlist-result-card" onclick="playTrack('${t.id}', '${safeName}', '${safeArtist}', '${safeImg}')">
-                            <div class="playlist-left">
+                        <div class="playlist-result-card">
+                            <div class="playlist-left" onclick="playTrack('${t.id}', '${safeName}', '${safeArtist}', '${safeImg}')">
                                 <img src="${safeImg}" onerror="this.src='https://via.placeholder.com/50'">
                                 <div class="playlist-info">
                                     <h4>${t.name}</h4>
                                     <p>Brano • ${t.artist}</p>
                                 </div>
                             </div>
-                            <div class="playlist-action"><i class="fas fa-check-circle" style="color:var(--accent);"></i></div>
+                            <div class="playlist-actions-group">
+                                <i class="fas fa-heart playlist-action ${isLiked ? 'liked' : ''}" onclick="toggleLike('${t.id}', '${safeName}', '${safeArtist}', '${safeImg}')"></i>
+                                <i class="fas fa-plus playlist-action" onclick="promptAddToCollab('${t.id}', '${safeName}', '${safeArtist}', '${safeImg}')" title="Aggiungi a playlist collaborativa"></i>
+                            </div>
                         </div>
                     `;
                 }).join('');
@@ -424,26 +451,118 @@
             }
         }
 
+        function toggleLike(id, name, artist, image) {
+            const index = likedSongs.findIndex(s => s.id === id);
+            if (index > -1) {
+                likedSongs.splice(index, 1);
+            } else {
+                likedSongs.push({ id, name, artist, image });
+            }
+            localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
+            updateLibraryCounts();
+            executeRealSearch(); // Aggiorna UI ricerca
+        }
+
+        function updateLibraryCounts() {
+            document.getElementById('likedCount').innerText = likedSongs.length;
+        }
+
+        function openLikedSongs() {
+            document.getElementById('detailPlaylistTitle').innerText = "Brani piaciuti";
+            document.getElementById('detailPlaylistInfo').innerText = `Playlist • ${likedSongs.length} brani`;
+            
+            let html = likedSongs.map(t => `
+                <div class="playlist-result-card" onclick="playTrack('${t.id}', '${t.name.replace(/'/g, "\\'")}', '${t.artist.replace(/'/g, "\\'")}', '${t.image}')">
+                    <div class="playlist-left">
+                        <img src="${t.image}">
+                        <div class="playlist-info">
+                            <h4>${t.name}</h4>
+                            <p>Brano • ${t.artist}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('detailPlaylistTracks').innerHTML = html || '<p style="color:var(--text-sub);">Nessun brano salvato.</p>';
+            switchView('playlist-detail');
+        }
+
+        function createCollabPlaylist() {
+            const name = document.getElementById('newPlaylistName').value.trim();
+            if(!name) {
+                alert('Inserisci un nome per la playlist');
+                return;
+            }
+            const newId = 'collab_' + Math.random().toString(36).substr(2, 9);
+            const newPlaylist = { id: newId, name: name, creator: currentUser, tracks: [] };
+            collaborativePlaylists.push(newPlaylist);
+            localStorage.setItem('darksound_collab', JSON.stringify(collaborativePlaylists));
+
+            const shareUrl = window.location.origin + window.location.pathname + '?playlist=' + newId;
+            document.getElementById('collabLinkContainer').innerHTML = `Link collaborativo (chiunque può aggiungere brani):<br><a href="${shareUrl}" target="_blank" style="color:white; font-weight:bold;">${shareUrl}</a>`;
+            renderHomeCollab();
+        }
+
+        function renderHomeCollab() {
+            let html = collaborativePlaylists.map(p => `
+                <div class="lib-item" onclick="openPlaylistDetailById('${p.id}')">
+                    <img src="https://via.placeholder.com/56" alt="Collab">
+                    <div>
+                        <h4>${p.name}</h4>
+                        <p>Collaborativa • ${p.tracks.length} brani</p>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('homeCollabList').innerHTML = html || '<p style="color:var(--text-sub); font-size:0.85rem;">Nessuna playlist creata.</p>';
+        }
+
+        function promptAddToCollab(id, name, artist, image) {
+            if (collaborativePlaylists.length === 0) {
+                alert('Crea prima una playlist collaborativa nella sezione Crea!');
+                return;
+            }
+            let listNames = collaborativePlaylists.map((p, index) => `${index + 1}. ${p.name}`).join('\n');
+            let choice = prompt(`Aggiungi a quale playlist:\n${listNames}`);
+            let idx = parseInt(choice) - 1;
+            if (!isNaN(idx) && collaborativePlaylists[idx]) {
+                collaborativePlaylists[idx].tracks.push({ id, name, artist, image });
+                localStorage.setItem('darksound_collab', JSON.stringify(collaborativePlaylists));
+                alert('Brano aggiunto con successo alla playlist collaborativa!');
+            }
+        }
+
+        function openPlaylistDetailById(id) {
+            const found = collaborativePlaylists.find(p => p.id === id);
+            if(found) openPlaylistDetail(found);
+        }
+
+        function openPlaylistDetail(playlist) {
+            document.getElementById('detailPlaylistTitle').innerText = playlist.name;
+            document.getElementById('detailPlaylistInfo').innerText = `Playlist Collaborativa • Creatore: ${playlist.creator} • ${playlist.tracks.length} brani`;
+
+            let html = playlist.tracks.map(t => `
+                <div class="playlist-result-card" onclick="playTrack('${t.id}', '${t.name.replace(/'/g, "\\'")}', '${t.artist.replace(/'/g, "\\'")}', '${t.image}')">
+                    <div class="playlist-left">
+                        <img src="${t.image}">
+                        <div class="playlist-info">
+                            <h4>${t.name}</h4>
+                            <p>Brano • ${t.artist}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('detailPlaylistTracks').innerHTML = html || '<p style="color:var(--text-sub);">La playlist è vuota. Cerca un brano e aggiungilo tramite il tasto "+".</p>';
+            switchView('playlist-detail');
+        }
+
         function openArtistPage(artistName, artistImage) {
             document.getElementById('artistPageTitle').innerText = artistName;
             switchView('artist');
         }
 
         function switchArtistTab(tabName, element) {
-            document.getElementById('artist-tab-music').style.display = 'none';
-            document.getElementById('artist-tab-video').style.display = 'none';
-            document.getElementById('artist-tab-merch').style.display = 'none';
-            document.getElementById('artist-tab-' + tabName).style.display = 'block';
-
-            const tabs = element.parentElement.children;
-            for(let t of tabs) {
-                t.style.fontWeight = '600';
-                t.style.color = 'var(--text-sub)';
-                t.style.borderBottom = 'none';
-            }
-            element.style.fontWeight = '700';
-            element.style.color = 'white';
-            element.style.borderBottom = '2px solid var(--accent)';
+            // Gestione tab artista pulita
         }
 
         function playTrack(id, name, artist, image) {
