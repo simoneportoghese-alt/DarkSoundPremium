@@ -18,7 +18,7 @@ app.get('/api/search', async (req, res) => {
             noCheckCertificates: true,
             noWarnings: true,
             preferFreeFormats: true,
-            extractorArgs: 'youtube:player_client=web'
+            extractorArgs: 'youtube:player_client=web,mweb'
         });
 
         let entries = output.entries || [output];
@@ -47,7 +47,7 @@ app.get('/api/stream/:id', async (req, res) => {
             noCheckCertificates: true,
             noWarnings: true,
             preferFreeFormats: true,
-            extractorArgs: 'youtube:player_client=web'
+            extractorArgs: 'youtube:player_client=web,mweb'
         });
 
         const audioFormat = info.formats.find(f => f.acodec !== 'none' && f.vcodec === 'none') || info.formats[0];
