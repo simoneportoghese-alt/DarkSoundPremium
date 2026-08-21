@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-base: #000000;
-            --bg-card: #121212;
+            --bg-base: #121212;
+            --bg-card: #181818;
             --text-main: #ffffff;
             --text-sub: #b3b3b3;
             --accent: #1ed760;
@@ -33,20 +33,17 @@
         .view { display: none; padding: 20px; }
         .view.active { display: block; }
 
-        /* --- AUTH VIEW (LOGIN / REGISTER) --- */
+        /* --- AUTH VIEW --- */
         #view-auth {
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
+            top: 0; left: 0; width: 100%; height: 100vh;
             padding: 24px;
             background: linear-gradient(180deg, #242424 0%, #000000 100%);
-            z-index: 2000;
+            z-index: 3000;
         }
         #view-auth.active { display: flex; }
         .auth-container { width: 100%; max-width: 360px; text-align: center; }
@@ -56,17 +53,27 @@
         .auth-switch { margin-top: 20px; color: var(--text-sub); font-size: 0.85rem; cursor: pointer; }
         .auth-switch span { color: white; font-weight: 600; text-decoration: underline; }
 
-        /* --- APP MAIN LAYOUT --- */
-        .home-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .home-chips { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; }
-        .chip { background: #2a2a2a; border: none; color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        /* --- HOME SPOTIFY STYLE --- */
+        .home-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .home-chips { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
+        .home-chips::-webkit-scrollbar { display: none; }
+        .chip { background: #2a2a2a; border: none; color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
         .chip.active { background: white; color: black; }
         
-        .grid-mixes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 25px; }
-        .mix-card { background: rgba(255,255,255,0.08); border-radius: 4px; display: flex; align-items: center; gap: 10px; overflow: hidden; cursor: pointer; transition: background 0.2s; }
-        .mix-card:hover { background: rgba(255,255,255,0.15); }
-        .mix-card img { width: 48px; height: 48px; object-fit: cover; }
-        .mix-card span { font-size: 0.8rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px; }
+        .home-grid-shortcuts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 25px; }
+        .shortcut-card { background: rgba(255,255,255,0.07); border-radius: 4px; display: flex; align-items: center; gap: 10px; overflow: hidden; cursor: pointer; transition: background 0.2s; }
+        .shortcut-card:hover { background: rgba(255,255,255,0.15); }
+        .shortcut-card img { width: 48px; height: 48px; object-fit: cover; }
+        .shortcut-card span { font-size: 0.8rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px; }
+
+        .section-row-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 12px; margin-top: 24px; }
+        .horizontal-scroll { display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none; padding-bottom: 10px; }
+        .horizontal-scroll::-webkit-scrollbar { display: none; }
+        
+        .horiz-card { min-width: 140px; max-width: 140px; cursor: pointer; }
+        .horiz-card img { width: 140px; height: 140px; border-radius: 6px; object-fit: cover; margin-bottom: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .horiz-card h4 { font-size: 0.85rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .horiz-card p { font-size: 0.75rem; color: var(--text-sub); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 2px; }
 
         /* --- SEARCH VIEW --- */
         .search-top-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
@@ -74,14 +81,9 @@
         .spotify-search-container input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.95rem; font-weight: 500; }
         .search-cancel { background: none; border: none; color: white; font-size: 0.95rem; cursor: pointer; font-weight: 600; }
 
-        .search-history-list { display: flex; flex-direction: column; gap: 4px; }
         .search-history-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 4px; cursor: pointer; border-radius: 4px; }
-        .search-history-item:active { background: rgba(255, 255, 255, 0.05); }
         .search-history-left { display: flex; align-items: center; gap: 16px; color: var(--text-main); font-size: 0.95rem; font-weight: 500; }
         .search-history-left i { color: var(--text-sub); font-size: 1rem; }
-        .search-arrow { color: var(--text-sub); font-size: 0.9rem; transform: rotate(45deg); }
-
-        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; margin-top: 24px; }
         
         .artist-result-card { display: flex; align-items: center; justify-content: space-between; padding: 8px 4px; border-radius: 4px; cursor: pointer; }
         .artist-result-card:hover { background: rgba(255,255,255,0.05); }
@@ -110,20 +112,43 @@
 
         /* --- MINI PLAYER BAR --- */
         .player-bar {
-            position: fixed; bottom: 65px; left: 8px; right: 8px; 
-            background: #531212; border-radius: 6px; padding: 8px 12px; 
-            display: none; align-items: center; gap: 12px; z-index: 999; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            position: fixed; bottom: 60px; left: 6px; right: 6px; 
+            background: #282828; border-radius: 6px; padding: 8px 12px; 
+            display: none; align-items: center; gap: 12px; z-index: 1900; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); cursor: pointer;
         }
         .player-bar img { width: 42px; height: 42px; border-radius: 4px; object-fit: cover; }
         .player-meta { flex: 1; min-width: 0; }
         .p-title { font-size: 0.85rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .p-artist { font-size: 0.75rem; color: #ffb3b3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .p-artist { font-size: 0.75rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .player-icons { display: flex; align-items: center; gap: 18px; font-size: 1.1rem; color: #fff; }
+
+        /* --- SPOTIFY FULLSCREEN PLAYER (MODAL) --- */
+        #fullscreen-player {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: linear-gradient(180deg, #533535 0%, #121212 100%);
+            z-index: 2500; display: none; flex-direction: column; padding: 30px 24px;
+            justify-content: space-between;
+        }
+        #fullscreen-player.active { display: flex; }
+        .fs-top { display: flex; justify-content: space-between; align-items: center; color: white; font-size: 1.1rem; }
+        .fs-cover-container { width: 100%; display: flex; justify-content: center; margin: 20px 0; }
+        .fs-cover { width: 100%; max-width: 320px; aspect-ratio: 1; border-radius: 8px; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+        .fs-info-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .fs-titles h3 { font-size: 1.3rem; font-weight: 700; color: white; margin-bottom: 4px; }
+        .fs-titles p { font-size: 0.95rem; color: var(--text-sub); }
+        
+        .progress-container { width: 100%; margin-bottom: 20px; }
+        .progress-bar-bg { width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; position: relative; cursor: pointer; }
+        .progress-bar-fill { width: 0%; height: 100%; background: white; border-radius: 2px; position: relative; }
+        .progress-times { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-sub); margin-top: 6px; }
+
+        .fs-controls { display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; color: white; margin-bottom: 30px; }
+        .fs-play-btn { width: 64px; height: 64px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; }
 
         /* --- BOTTOM NAVIGATION --- */
         nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #000; display: none; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000;
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #000; display: none; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); z-index: 2000;
         }
         nav.active { display: flex; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-sub); font-size: 0.7rem; font-weight: 600; cursor: pointer; background: none; border: none; }
@@ -150,25 +175,69 @@
     <!-- HOME VIEW -->
     <div id="view-home" class="view">
         <div class="home-header">
-            <div style="width: 32px; height: 32px; background: #9b51e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;" id="userAvatar">D</div>
-            <div class="home-chips">
-                <button class="chip active">Tutti</button>
-                <button class="chip">Musica</button>
-                <button class="chip">Podcast</button>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width: 32px; height: 32px; background: #9b51e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;" id="userAvatar">D</div>
+                <h2 style="font-size:1.3rem; font-weight:800;">Buongiorno</h2>
             </div>
         </div>
-        <div class="grid-mixes">
-            <div class="mix-card" onclick="selectSearchTerm('sfera ebbasta')">
-                <img src="https://via.placeholder.com/48" alt="Mix">
+        
+        <div class="home-chips">
+            <button class="chip active">Tutti</button>
+            <button class="chip" onclick="selectSearchTerm('Hit Italia')">Musica</button>
+            <button class="chip" onclick="selectSearchTerm('Podcast')">Podcast</button>
+        </div>
+
+        <div class="home-grid-shortcuts">
+            <div class="shortcut-card" onclick="selectSearchTerm('Sfera Ebbasta')">
+                <img src="https://i.scdn.co/image/ab67616d0000b2734493b8e8f810167cbe9c00b0" onerror="this.src='https://via.placeholder.com/48'" alt="Sfera">
                 <span>Radio di Sfera Ebbasta</span>
             </div>
-            <div class="mix-card" onclick="selectSearchTerm('This Is Sfera Ebbasta')">
-                <img src="https://via.placeholder.com/48" alt="Mix">
-                <span>This Is Sfera Ebbasta</span>
+            <div class="shortcut-card" onclick="selectSearchTerm('Geolier')">
+                <img src="https://i.scdn.co/image/ab67616d0000b273062fa883049b6b7971752b0d" onerror="this.src='https://via.placeholder.com/48'" alt="Geolier">
+                <span>This Is Geolier</span>
+            </div>
+            <div class="shortcut-card" onclick="selectSearchTerm('Ultimo')">
+                <img src="https://i.scdn.co/image/ab67616d0000b2731e847c2111d4314777579893" onerror="this.src='https://via.placeholder.com/48'" alt="Ultimo">
+                <span>Radio di Ultimo</span>
+            </div>
+            <div class="shortcut-card" onclick="openLikedSongs()">
+                <img src="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=100&auto=format&fit=crop" onerror="this.src='https://via.placeholder.com/48'" alt="Preferiti">
+                <span>Brani Piaciuti</span>
             </div>
         </div>
-        <div class="section-title">Le tue playlist collaborative</div>
-        <div id="homeCollabList" style="display:flex; flex-direction:column; gap:10px;"></div>
+
+        <div class="section-row-title">I tuoi mix consigliati</div>
+        <div class="horizontal-scroll">
+            <div class="horiz-card" onclick="selectSearchTerm('Top Italia')">
+                <img src="https://i.scdn.co/image/ab67706f000000037144e0bcfcb67eb0155b1114" onerror="this.src='https://via.placeholder.com/140'">
+                <h4>Mix Popolare</h4>
+                <p>Sfera Ebbasta, Geolier, Lazza e altri</p>
+            </div>
+            <div class="horiz-card" onclick="selectSearchTerm('Rap Italiano')">
+                <img src="https://i.scdn.co/image/ab67706f00000003b30fc2ec0b4e07a3c30164c8" onerror="this.src='https://via.placeholder.com/140'">
+                <h4>Mix Rap Italiano</h4>
+                <p>Le tracce urban del momento</p>
+            </div>
+            <div class="horiz-card" onclick="selectSearchTerm('Club Hits')">
+                <img src="https://i.scdn.co/image/ab67706f00000003f57bc82c9ab14798e16fd1d7" onerror="this.src='https://via.placeholder.com/140'">
+                <h4>Club Hits</h4>
+                <p>I brani dance più ballati</p>
+            </div>
+        </div>
+
+        <div class="section-row-title">Ascoltati di recente</div>
+        <div class="horizontal-scroll">
+            <div class="horiz-card" onclick="selectSearchTerm('thasup')">
+                <img src="https://i.scdn.co/image/ab67616d0000b273e8a76d54832442468f7f2b1c" onerror="this.src='https://via.placeholder.com/140'">
+                <h4>thasup</h4>
+                <p>Artista</p>
+            </div>
+            <div class="horiz-card" onclick="selectSearchTerm('Blanco')">
+                <img src="https://i.scdn.co/image/ab67616d0000b27344fa0511855675f922eb727e" onerror="this.src='https://via.placeholder.com/140'">
+                <h4>Blanco</h4>
+                <p>Artista</p>
+            </div>
+        </div>
     </div>
 
     <!-- SEARCH VIEW -->
@@ -182,27 +251,16 @@
         </div>
 
         <div id="searchSuggestionsContainer">
-            <div class="search-history-list" id="searchHistoryList">
-                <div class="search-history-item" onclick="selectSearchTerm('sfera ebbasta')">
-                    <div class="search-history-left"><i class="fas fa-search"></i> sfera ebbasta</div>
-                    <div class="search-arrow"><i class="fas fa-arrow-up"></i></div>
-                </div>
+            <div class="section-row-title" style="margin-top:0;">Ricerche recenti</div>
+            <div class="search-history-item" onclick="selectSearchTerm('sfera ebbasta')">
+                <div class="search-history-left"><i class="fas fa-search"></i> sfera ebbasta</div>
+            </div>
+            <div class="search-history-item" onclick="selectSearchTerm('hit estate')">
+                <div class="search-history-left"><i class="fas fa-search"></i> hit estate</div>
             </div>
         </div>
 
         <div id="searchResultsContainer"></div>
-    </div>
-
-    <!-- ARTIST PAGE VIEW -->
-    <div id="view-artist" class="view">
-        <div style="background: linear-gradient(180deg, #3a3a3a 0%, #121212 100%); margin: -20px -20px 20px -20px; padding: 40px 20px 20px 20px; position: relative;">
-            <button onclick="switchView('search')" style="background:rgba(0,0,0,0.5); border:none; color:white; width:32px; height:32px; border-radius:50%; cursor:pointer; position:absolute; top:15px; left:15px; display:flex; align-items:center; justify-content:center;"><i class="fas fa-arrow-left"></i></button>
-            <h1 id="artistPageTitle" style="font-size: 2.3rem; font-weight: 800; margin-top: 20px;">Sfera Ebbasta</h1>
-            <div style="display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #fff; margin-top: 5px;">
-                <i class="fas fa-check-circle" style="color: #3d91f4;"></i> Verificato da Spotify
-            </div>
-            <p style="font-size: 0.85rem; color: var(--text-sub); margin-top: 15px;">7 Mln ascoltatori mensili</p>
-        </div>
     </div>
 
     <!-- LIBRARY VIEW -->
@@ -215,13 +273,15 @@
         </div>
         <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;" id="libraryContentList">
             <div class="lib-item" onclick="openLikedSongs()">
-                <img src="https://via.placeholder.com/56" alt="Brani piaciuti">
+                <img src="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=100&auto=format&fit=crop" onerror="this.src='https://via.placeholder.com/56'" alt="Brani piaciuti">
                 <div>
                     <h4>Brani piaciuti</h4>
                     <p><i class="fas fa-thumbtack" style="color:var(--accent);"></i> Playlist • <span id="likedCount">0</span> brani</p>
                 </div>
             </div>
         </div>
+        <div class="section-row-title">Playlist Collaborative Salvate</div>
+        <div id="libCollabList" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
 
     <!-- CREATE VIEW -->
@@ -234,7 +294,7 @@
         <div id="collabLinkContainer" style="margin-top: 20px; word-break: break-all; font-size:0.85rem; color:var(--accent);"></div>
     </div>
 
-    <!-- PLAYLIST DETAIL / SHARED VIEW -->
+    <!-- PLAYLIST DETAIL VIEW -->
     <div id="view-playlist-detail" class="view">
         <button onclick="switchView('library')" style="background:none; border:none; color:white; font-size:1rem; cursor:pointer; margin-bottom:15px;"><i class="fas fa-arrow-left"></i> Indietro</button>
         <h2 id="detailPlaylistTitle" style="font-size: 1.5rem; font-weight: 800; margin-bottom: 5px;"></h2>
@@ -242,19 +302,53 @@
         <div id="detailPlaylistTracks" style="display:flex; flex-direction:column; gap:12px;"></div>
     </div>
 
-    <!-- YOUTUBE PLAYER -->
+    <!-- FULLSCREEN SPOTIFY PLAYER MODAL -->
+    <div id="fullscreen-player">
+        <div class="fs-top">
+            <i class="fas fa-chevron-down" onclick="toggleFullscreenPlayer()" style="cursor:pointer;"></i>
+            <span style="font-size:0.85rem; font-weight:600;">Riproduzione in corso</span>
+            <i class="fas fa-ellipsis-vertical"></i>
+        </div>
+        <div class="fs-cover-container">
+            <img id="fsCover" class="fs-cover" src="" onerror="this.src='https://via.placeholder.com/320'" alt="Album Cover">
+        </div>
+        <div class="fs-info-row">
+            <div class="fs-titles">
+                <h3 id="fsTitle">-</h3>
+                <p id="fsArtist">-</p>
+            </div>
+            <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.4rem; color: var(--text-sub); cursor:pointer;" onclick="toggleLikeCurrent()"></i>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar-bg" id="progressBarBg" onclick="seekTrack(event)">
+                <div class="progress-bar-fill" id="progressBarFill"></div>
+            </div>
+            <div class="progress-times">
+                <span id="currentTime">0:00</span>
+                <span id="totalDuration">0:00</span>
+            </div>
+        </div>
+        <div class="fs-controls">
+            <i class="fas fa-random" style="color:var(--text-sub);"></i>
+            <i class="fas fa-step-backward" style="cursor:pointer;" onclick="alert('Primo brano')"></i>
+            <div class="fs-play-btn" onclick="togglePlay()"><i class="fas fa-play" id="fsPlayIcon"></i></div>
+            <i class="fas fa-step-forward" style="cursor:pointer;" onclick="alert('Fine playlist')"></i>
+            <i class="fas fa-redo" style="color:var(--text-sub);"></i>
+        </div>
+    </div>
+
+    <!-- YOUTUBE PLAYER (BASE ORIGINALE INTATTA) -->
     <div id="youtube-player"></div>
 
     <!-- MINI PLAYER BAR -->
-    <div class="player-bar" id="playerBar">
-        <img id="playerImg" src="" alt="Cover">
+    <div class="player-bar" id="playerBar" onclick="toggleFullscreenPlayer()">
+        <img id="playerImg" src="" onerror="this.src='https://via.placeholder.com/42'" alt="Cover">
         <div class="player-meta">
             <div class="p-title" id="playerTitle">-</div>
             <div class="p-artist" id="playerArtist">-</div>
         </div>
-        <div class="player-icons">
-            <i class="fas fa-tv" style="font-size: 0.95rem;"></i>
-            <i class="fas fa-plus-circle" style="font-size: 0.95rem;"></i>
+        <div class="player-icons" onclick="event.stopPropagation()">
+            <i class="fas fa-heart" id="miniLikeBtn" onclick="toggleLikeCurrent()"></i>
             <i class="fas fa-play" id="playPauseIcon" onclick="togglePlay()"></i>
         </div>
     </div>
@@ -267,12 +361,15 @@
         <button class="nav-item" onclick="switchView('create', this)"><i class="fas fa-plus-circle"></i><span>Crea</span></button>
     </nav>
 
+    <!-- YOUTUBE API (INVARIATA) -->
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         let player;
         let isPlaying = false;
         let isRegistering = false;
         let currentUser = localStorage.getItem('darksound_user');
+        let currentTrackData = { id: '', name: '', artist: '', image: '' };
+        let progressInterval;
 
         let likedSongs = JSON.parse(localStorage.getItem('darksound_liked') || '[]');
         let collaborativePlaylists = JSON.parse(localStorage.getItem('darksound_collab') || '[]');
@@ -306,7 +403,6 @@
         }
 
         function initAppSession() {
-            // Rimuove completamente la schermata di login e attiva la navigazione
             document.getElementById('view-auth').classList.remove('active');
             document.getElementById('bottomNav').classList.add('active');
             switchView('home', document.querySelectorAll('.nav-item')[0]);
@@ -314,7 +410,7 @@
             document.getElementById('userAvatar').innerText = currentUser.charAt(0).toUpperCase();
             document.getElementById('libUserAvatar').innerText = currentUser.charAt(0).toUpperCase();
             updateLibraryCounts();
-            renderHomeCollab();
+            renderLibCollab();
         }
 
         function checkUrlParams() {
@@ -349,8 +445,14 @@
                 playerVars: { 'autoplay': 1, 'controls': 0, 'enablejsapi': 1 },
                 events: { 
                     'onStateChange': (e) => {
-                        if (e.data === YT.PlayerState.PLAYING) updateIcons(true);
-                        if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) updateIcons(false);
+                        if (e.data === YT.PlayerState.PLAYING) {
+                            updateIcons(true);
+                            startProgressInterval();
+                        }
+                        if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) {
+                            updateIcons(false);
+                            clearInterval(progressInterval);
+                        }
                     }
                 }
             });
@@ -381,39 +483,46 @@
         }
 
         async function executeRealSearch(queryOverride) {
-            const q = queryOverride || document.getElementById('spotifySearchInput').value.trim();
+            let q = queryOverride || document.getElementById('spotifySearchInput').value.trim();
             if (!q) return;
 
             const container = document.getElementById('searchResultsContainer');
             container.innerHTML = `<p style="color:var(--text-sub); text-align:center; padding:20px;">Ricerca in corso...</p>`;
 
             try {
-                const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+                let res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
                 let tracks = await res.json();
 
                 if (tracks.length === 0) {
-                    container.innerHTML = `<p style="color:var(--text-sub); text-align:center; padding:20px;">Nessun risultato</p>`;
+                    let fallbackTerm = q.split(' ')[0];
+                    const resFallback = await fetch(`/api/search?q=${encodeURIComponent(fallbackTerm)}`);
+                    tracks = await resFallback.json();
+                }
+
+                if (tracks.length === 0) {
+                    container.innerHTML = `<p style="color:var(--text-sub); text-align:center; padding:20px;">Nessun risultato trovato.</p>`;
                     return;
                 }
 
                 let html = '';
                 const first = tracks[0];
+                const artistImage = first.image || 'https://via.placeholder.com/50';
 
                 html += `
-                    <div class="artist-result-card" onclick="openArtistPage('${first.artist}', '${first.image}')">
+                    <div class="artist-result-card" onclick="selectSearchTerm('${first.artist}')">
                         <div class="artist-left">
-                            <img src="${first.image}" onerror="this.src='https://via.placeholder.com/50'">
+                            <img src="${artistImage}" onerror="this.src='https://via.placeholder.com/50'">
                             <div class="artist-info">
                                 <h4>${first.artist} <i class="fas fa-check-circle verified-badge"></i></h4>
-                                <p>Artista</p>
+                                <p>Artista • Radio correlata</p>
                             </div>
                         </div>
                     </div>
-                    <div class="section-title">Brani e Playlist</div>
+                    <div class="section-row-title">Brani e Risultati simili</div>
                 `;
 
                 html += tracks.map(t => {
-                    const safeImg = t.image || 'https://via.placeholder.com/50';
+                    const safeImg = t.image || artistImage;
                     const safeName = (t.name || 'Brano').replace(/'/g, "\\'");
                     const safeArtist = (t.artist || 'Artista').replace(/'/g, "\\'");
                     const isLiked = likedSongs.some(s => s.id === t.id);
@@ -451,7 +560,28 @@
             }
             localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
             updateLibraryCounts();
-            executeRealSearch();
+            updateLikeUIStates();
+        }
+
+        function toggleLikeCurrent() {
+            if(!currentTrackData.id) return;
+            toggleLike(currentTrackData.id, currentTrackData.name, currentTrackData.artist, currentTrackData.image);
+        }
+
+        function updateLikeUIStates() {
+            const isLiked = likedSongs.some(s => s.id === currentTrackData.id);
+            const fsLike = document.getElementById('fsLikeBtn');
+            const miniLike = document.getElementById('miniLikeBtn');
+            
+            if(isLiked) {
+                fsLike.style.color = 'var(--accent)';
+                miniLike.style.color = 'var(--accent)';
+                miniLike.className = "fas fa-heart playlist-action liked";
+            } else {
+                fsLike.style.color = 'var(--text-sub)';
+                miniLike.style.color = 'var(--text-sub)';
+                miniLike.className = "fas fa-heart playlist-action";
+            }
         }
 
         function updateLibraryCounts() {
@@ -465,7 +595,7 @@
             let html = likedSongs.map(t => `
                 <div class="playlist-result-card" onclick="playTrack('${t.id}', '${t.name.replace(/'/g, "\\'")}', '${t.artist.replace(/'/g, "\\'")}', '${t.image}')">
                     <div class="playlist-left">
-                        <img src="${t.image}">
+                        <img src="${t.image}" onerror="this.src='https://via.placeholder.com/50'">
                         <div class="playlist-info">
                             <h4>${t.name}</h4>
                             <p>Brano • ${t.artist}</p>
@@ -474,7 +604,7 @@
                 </div>
             `).join('');
 
-            document.getElementById('detailPlaylistTracks').innerHTML = html || '<p style="color:var(--text-sub);">Nessun brano salvato.</p>';
+            document.getElementById('detailPlaylistTracks').innerHTML = html || '<p style="color:var(--text-sub);">Nessun brano salvato nei preferiti.</p>';
             switchView('playlist-detail');
         }
 
@@ -490,21 +620,24 @@
             localStorage.setItem('darksound_collab', JSON.stringify(collaborativePlaylists));
 
             const shareUrl = window.location.origin + window.location.pathname + '?playlist=' + newId;
-            document.getElementById('collabLinkContainer').innerHTML = `Link collaborativo (chiunque può aggiungere brani):<br><a href="${shareUrl}" target="_blank" style="color:white; font-weight:bold;">${shareUrl}</a>`;
-            renderHomeCollab();
+            document.getElementById('collabLinkContainer').innerHTML = `Link collaborativo:<br><a href="${shareUrl}" target="_blank" style="color:white; font-weight:bold;">${shareUrl}</a>`;
+            renderLibCollab();
         }
 
-        function renderHomeCollab() {
-            let html = collaborativePlaylists.map(p => `
-                <div class="lib-item" onclick="openPlaylistDetailById('${p.id}')">
-                    <img src="https://via.placeholder.com/56" alt="Collab">
-                    <div>
-                        <h4>${p.name}</h4>
-                        <p>Collaborativa • ${p.tracks.length} brani</p>
+        function renderLibCollab() {
+            let html = collaborativePlaylists.map(p => {
+                let coverImg = p.tracks.length > 0 ? p.tracks[0].image : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop';
+                return `
+                    <div class="lib-item" onclick="openPlaylistDetailById('${p.id}')">
+                        <img src="${coverImg}" onerror="this.src='https://via.placeholder.com/56'">
+                        <div>
+                            <h4>${p.name}</h4>
+                            <p>Collaborativa • ${p.tracks.length} brani</p>
+                        </div>
                     </div>
-                </div>
-            `).join('');
-            document.getElementById('homeCollabList').innerHTML = html || '<p style="color:var(--text-sub); font-size:0.85rem;">Nessuna playlist creata.</p>';
+                `;
+            }).join('');
+            document.getElementById('libCollabList').innerHTML = html || '<p style="color:var(--text-sub); font-size:0.85rem;">Nessuna playlist collaborativa creata.</p>';
         }
 
         function promptAddToCollab(id, name, artist, image) {
@@ -518,6 +651,7 @@
             if (!isNaN(idx) && collaborativePlaylists[idx]) {
                 collaborativePlaylists[idx].tracks.push({ id, name, artist, image });
                 localStorage.setItem('darksound_collab', JSON.stringify(collaborativePlaylists));
+                renderLibCollab();
                 alert('Brano aggiunto con successo alla playlist collaborativa!');
             }
         }
@@ -534,7 +668,7 @@
             let html = playlist.tracks.map(t => `
                 <div class="playlist-result-card" onclick="playTrack('${t.id}', '${t.name.replace(/'/g, "\\'")}', '${t.artist.replace(/'/g, "\\'")}', '${t.image}')">
                     <div class="playlist-left">
-                        <img src="${t.image}">
+                        <img src="${t.image}" onerror="this.src='https://via.placeholder.com/50'">
                         <div class="playlist-info">
                             <h4>${t.name}</h4>
                             <p>Brano • ${t.artist}</p>
@@ -543,20 +677,24 @@
                 </div>
             `).join('');
 
-            document.getElementById('detailPlaylistTracks').innerHTML = html || '<p style="color:var(--text-sub);">La playlist è vuota. Cerca un brano e aggiungilo tramite il tasto "+".</p>';
+            document.getElementById('detailPlaylistTracks').innerHTML = html || '<p style="color:var(--text-sub);">La playlist è vuota.</p>';
             switchView('playlist-detail');
         }
 
-        function openArtistPage(artistName, artistImage) {
-            document.getElementById('artistPageTitle').innerText = artistName;
-            switchView('artist');
-        }
-
         function playTrack(id, name, artist, image) {
+            const validImage = image || 'https://via.placeholder.com/320';
+            currentTrackData = { id, name, artist, image: validImage };
+            
             document.getElementById('playerBar').style.display = 'flex';
             document.getElementById('playerTitle').innerText = name;
             document.getElementById('playerArtist').innerText = artist;
-            document.getElementById('playerImg').src = image;
+            document.getElementById('playerImg').src = validImage;
+
+            document.getElementById('fsTitle').innerText = name;
+            document.getElementById('fsArtist').innerText = artist;
+            document.getElementById('fsCover').src = validImage;
+
+            updateLikeUIStates();
 
             if (player && player.loadVideoById) {
                 player.loadVideoById(id);
@@ -580,6 +718,46 @@
 
         function updateIcons(playing) {
             document.getElementById('playPauseIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
+            document.getElementById('fsPlayIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
+        }
+
+        function toggleFullscreenPlayer() {
+            const fs = document.getElementById('fullscreen-player');
+            fs.classList.toggle('active');
+        }
+
+        function startProgressInterval() {
+            clearInterval(progressInterval);
+            progressInterval = setInterval(() => {
+                if (player && player.getCurrentTime && player.getDuration) {
+                    const current = player.getCurrentTime();
+                    const duration = player.getDuration();
+                    if (duration) {
+                        const percent = (current / duration) * 100;
+                        document.getElementById('progressBarFill').style.width = percent + '%';
+                        document.getElementById('currentTime').innerText = formatTime(current);
+                        document.getElementById('totalDuration').innerText = formatTime(duration);
+                    }
+                }
+            }, 1000);
+        }
+
+        function seekTrack(event) {
+            const bg = document.getElementById('progressBarBg');
+            const rect = bg.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const width = rect.width;
+            const percent = clickX / width;
+            if (player && player.getDuration) {
+                const targetTime = player.getDuration() * percent;
+                player.seekTo(targetTime, true);
+            }
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
     </script>
 </body>
