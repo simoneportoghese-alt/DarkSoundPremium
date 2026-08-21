@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DarkSound Pro - Complete Edition</title>
+    <title>DarkSound Pro - Lyrics Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -12,8 +12,6 @@
             --text-main: #ffffff;
             --text-sub: #98989f;
             --accent: #30d158;
-            --glass-bg: rgba(28, 28, 30, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.12);
             --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
         }
 
@@ -87,7 +85,7 @@
             gap: 8px;
         }
 
-        /* Pannello Profilo Utente (stile Spotify Drawer) */
+        /* Pannello Profilo Utente (Spotify Drawer) */
         .profile-drawer {
             position: fixed; top: 0; right: -100%; width: 100%; max-width: 380px; height: 100vh;
             background: rgba(18, 18, 22, 0.95); backdrop-filter: blur(35px);
@@ -116,7 +114,7 @@
         .friend-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
         .friend-bubble span { font-size: 0.72rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
-        /* Modale Autenticazione & Onboarding */
+        /* Modali */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(30px);
@@ -203,27 +201,57 @@
         .p-artist { font-size: 0.82rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .player-icons { display: flex; align-items: center; gap: 18px; font-size: 1.3rem; color: #fff; }
 
+        /* Fullscreen Player & Lyrics Styles */
         #fullscreen-player {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: linear-gradient(180deg, rgba(40,25,38,0.98) 0%, rgba(10,10,12,0.99) 100%);
-            backdrop-filter: blur(40px); z-index: 2500; display: none; flex-direction: column; padding: 40px 24px;
-            justify-content: space-between;
+            background: linear-gradient(180deg, rgba(30,30,40,0.98) 0%, rgba(10,10,12,0.99) 100%);
+            backdrop-filter: blur(40px); z-index: 2500; display: none; flex-direction: column; padding: 30px 24px;
+            justify-content: space-between; transition: background 0.5s ease;
         }
         #fullscreen-player.active { display: flex; }
-        .fs-top { display: flex; justify-content: space-between; align-items: center; color: white; font-size: 1.35rem; }
-        .fs-cover { width: 100%; max-width: 340px; aspect-ratio: 1; border-radius: 20px; object-fit: cover; margin: 20px auto; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
-        .fs-info-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .fs-titles { flex: 1; min-width: 0; padding-right: 10px; }
-        .fs-titles h3 { font-size: 1.6rem; font-weight: 700; color: white; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .fs-titles p { font-size: 1.05rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .fs-top { display: flex; justify-content: space-between; align-items: center; color: white; font-size: 1.2rem; }
         
-        .progress-container { width: 100%; margin-bottom: 24px; }
+        .fs-content-container { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; margin: 10px 0; }
+        
+        /* Modalità Normale (Cover) */
+        .standard-player-view { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; transition: 0.3s; }
+        .standard-player-view.hidden { display: none; }
+        .fs-cover { width: 100%; max-width: 300px; aspect-ratio: 1; border-radius: 20px; object-fit: cover; margin-bottom: 20px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
+        .fs-info-row { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 340px; margin-bottom: 10px; }
+        .fs-titles { flex: 1; min-width: 0; padding-right: 10px; }
+        .fs-titles h3 { font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .fs-titles p { font-size: 1rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Modalità Lyrics (Testi Animati Spotify Style) */
+        .lyrics-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; overflow-y: auto; padding: 20px 10px; text-align: center; scroll-behavior: smooth; }
+        .lyrics-view.active { display: flex; }
+        .lyrics-view::-webkit-scrollbar { display: none; }
+        
+        .lyric-line {
+            font-size: 1.5rem; font-weight: 800; color: rgba(255, 255, 255, 0.35);
+            margin: 16px 0; transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer; line-height: 1.4;
+        }
+        .lyric-line.active {
+            color: #ffffff;
+            transform: scale(1.08);
+            text-shadow: 0 0 25px rgba(255,255,255,0.4);
+        }
+
+        .lyrics-toggle-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+            color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; gap: 6px;
+        }
+        .lyrics-toggle-btn.active { background: var(--accent); color: black; border-color: var(--accent); }
+
+        .progress-container { width: 100%; margin-bottom: 16px; }
         .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px; position: relative; cursor: pointer; }
         .progress-bar-fill { width: 0%; height: 100%; background: white; border-radius: 3px; position: relative; }
-        .progress-times { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-sub); margin-top: 8px; }
+        .progress-times { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-sub); margin-top: 6px; }
 
-        .fs-controls { display: flex; justify-content: space-between; align-items: center; font-size: 1.6rem; color: white; margin-bottom: 20px; }
-        .fs-play-btn { width: 72px; height: 72px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; }
+        .fs-controls { display: flex; justify-content: space-between; align-items: center; font-size: 1.5rem; color: white; width: 100%; max-width: 340px; margin: 0 auto; }
+        .fs-play-btn { width: 64px; height: 64px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; }
 
         nav {
             position: fixed; bottom: 12px; left: 16px; right: 16px; height: 64px; 
@@ -304,7 +332,7 @@
         </div>
     </div>
 
-    <!-- Modale Login / Nome Utente -->
+    <!-- Modale Login -->
     <div id="auth-modal" class="modal-overlay">
         <div class="auth-card">
             <h2>Benvenuto su DarkSound</h2>
@@ -317,11 +345,11 @@
         </div>
     </div>
 
-    <!-- Modale Onboarding (Preferenze Musicali) -->
+    <!-- Modale Onboarding -->
     <div id="onboarding-modal" class="modal-overlay">
         <div class="auth-card">
             <h2>I tuoi gusti</h2>
-            <p>Seleziona i tuoi generi musicali preferiti per creare la tua radio personalizzata:</p>
+            <p>Seleziona i tuoi generi musicali preferiti:</p>
             <div class="genre-grid" id="genreGrid">
                 <div class="genre-tag" onclick="toggleGenre(this)">🔥 Pop & Hit</div>
                 <div class="genre-tag" onclick="toggleGenre(this)">🎤 Rap & Trap</div>
@@ -332,13 +360,13 @@
             </div>
             <div class="auth-input-group">
                 <label>Artista preferito (opzionale)</label>
-                <input type="text" id="favArtistInput" placeholder="Es. Blanco, Sfera Ebbasta, Coldplay...">
+                <input type="text" id="favArtistInput" placeholder="Es. Blanco, Sfera Ebbasta...">
             </div>
             <button class="auth-btn" onclick="completeOnboarding()">Crea la mia Radio</button>
         </div>
     </div>
 
-    <!-- Modale Condivisione Brano -->
+    <!-- Modale Condivisione -->
     <div id="share-modal" class="modal-overlay">
         <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:400px;">
             <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px;">Condividi brano</h3>
@@ -353,7 +381,7 @@
         </div>
     </div>
 
-    <!-- Modale Selezione Playlist -->
+    <!-- Modale Playlist -->
     <div id="playlist-select-modal" class="modal-overlay">
         <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:400px;">
             <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Aggiungi a playlist</h3>
@@ -396,7 +424,6 @@
         
         <h1 class="home-title" id="homeWelcomeTitle">Esplora</h1>
         
-        <!-- Sezione Radio Personalizzata -->
         <div id="personalizedRadioSection">
             <div class="section-title">La tua Radio Personale <span style="font-size:0.75rem; color:var(--accent); background:rgba(48,209,88,0.15); padding:3px 8px; border-radius:6px;">Basata sui tuoi gusti</span></div>
             <div id="radioTracksContainer"><p style="color:var(--text-sub);">Generazione radio in corso...</p></div>
@@ -428,25 +455,41 @@
         <div id="libContentList"><p style="color:var(--text-sub);">Nessun elemento.</p></div>
     </div>
 
+    <!-- Fullscreen Player con Lyrics Integrati -->
     <div id="fullscreen-player">
         <div class="fs-top">
             <i class="fas fa-chevron-down" onclick="toggleFullscreen()" style="cursor:pointer;"></i>
-            <span>IN RIPRODUZIONE</span>
-            <i class="fas fa-ellipsis-vertical"></i>
+            <button class="lyrics-toggle-btn" id="lyricsToggleBtn" onclick="toggleLyricsView()">
+                <i class="fas fa-microphone-lines"></i> Lyrics
+            </button>
+            <i class="fas fa-ellipsis-vertical" style="cursor:pointer;" onclick="openShareModal()"></i>
         </div>
-        <img id="fsCover" class="fs-cover" src="">
-        <div class="fs-info-row">
-            <div class="fs-titles">
-                <h3 id="fsTitle">-</h3>
-                <p id="fsArtist">-</p>
+
+        <div class="fs-content-container">
+            <!-- Vista Normale Cover -->
+            <div class="standard-player-view" id="standardPlayerView">
+                <img id="fsCover" class="fs-cover" src="">
+                <div class="fs-info-row">
+                    <div class="fs-titles">
+                        <h3 id="fsTitle">-</h3>
+                        <p id="fsArtist">-</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <i class="fas fa-folder-plus" style="font-size: 1.1rem; color: var(--text-sub); cursor:pointer; padding: 8px;" title="Aggiungi a playlist" onclick="openPlaylistSelectorForCurrent()"></i>
+                        <i class="fas fa-download" id="fsDownloadDirectBtn" style="font-size: 1.1rem; color: var(--text-sub); cursor:pointer; padding: 8px;" title="Salva Offline" onclick="toggleDownloadCurrent()"></i>
+                        <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.3rem; color: var(--text-sub); cursor:pointer; padding: 8px;" onclick="toggleLikeCurrent()"></i>
+                    </div>
+                </div>
             </div>
-            <div style="display: flex; align-items: center; gap: 6px;">
-                <i class="fas fa-share-nodes" style="font-size: 1.2rem; color: var(--text-sub); cursor:pointer; padding: 8px;" title="Condividi brano" onclick="openShareModal()"></i>
-                <i class="fas fa-folder-plus" style="font-size: 1.2rem; color: var(--text-sub); cursor:pointer; padding: 8px;" title="Aggiungi a playlist" onclick="openPlaylistSelectorForCurrent()"></i>
-                <i class="fas fa-download" id="fsDownloadDirectBtn" style="font-size: 1.2rem; color: var(--text-sub); cursor:pointer; padding: 8px;" title="Salva Offline" onclick="toggleDownloadCurrent()"></i>
-                <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.4rem; color: var(--text-sub); cursor:pointer; padding: 8px;" onclick="toggleLikeCurrent()"></i>
+
+            <!-- Vista Testi Animati (Lyrics) -->
+            <div class="lyrics-view" id="lyricsView">
+                <div id="lyricsContainer" style="width: 100%; max-width: 360px; margin: auto; padding: 40px 0;">
+                    <!-- Verranno inserite dinamicamente le righe del testo -->
+                </div>
             </div>
         </div>
+
         <div class="progress-container">
             <div class="progress-bar-bg" id="progressBarBg" onclick="seekTrack(event)">
                 <div class="progress-bar-fill" id="progressBarFill"></div>
@@ -456,12 +499,13 @@
                 <span id="totalDuration">0:00</span>
             </div>
         </div>
+
         <div class="fs-controls">
-            <i class="fas fa-random" style="color:var(--text-sub);"></i>
+            <i class="fas fa-random" style="color:var(--text-sub); cursor:pointer;"></i>
             <i class="fas fa-step-backward" style="cursor:pointer;" onclick="prevTrack()"></i>
             <div class="fs-play-btn" onclick="togglePlay()"><i class="fas fa-play" id="fsPlayIcon"></i></div>
             <i class="fas fa-step-forward" style="cursor:pointer;" onclick="nextTrack()"></i>
-            <i class="fas fa-redo" style="color:var(--text-sub);"></i>
+            <i class="fas fa-redo" style="color:var(--text-sub); cursor:pointer;"></i>
         </div>
     </div>
 
@@ -497,6 +541,24 @@
         let globalPublicPlaylists = JSON.parse(localStorage.getItem('darksound_global_public_playlists') || '[]');
         let progressInterval, searchTimer = null, currentLibTab = 'liked', selectedTrackForPlaylist = null;
         let tempAuthName = '';
+        let isLyricsActive = false;
+
+        // Dataset di esempio con timestamp (secondi) per i testi sincronizzati
+        const sampleLyricsDatabase = [
+            { time: 0, text: "(Intro musicale)" },
+            { time: 5, text: "Cammino per la strada senza meta" },
+            { time: 10, text: "Le luci della città brillano di fretta" },
+            { time: 15, text: "Ascolto le note dentro le cuffie ormai" },
+            { time: 20, text: "Un suono che non dimenticherai mai" },
+            { time: 26, text: "E tu, dove sei adesso?" },
+            { time: 32, text: "Sei parte di questo stesso flusso" },
+            { time: 39, text: "Accendi la notte con un beat profondo" },
+            { time: 46, text: "Siamo la musica che muove il mondo." },
+            { time: 55, text: "(Ritornello)" },
+            { time: 62, text: "DarkSound Pro è qui con te" },
+            { time: 70, text: "Ovunque tu vada, comunque tu sia." },
+            { time: 80, text: "(Solo strumentale)" }
+        ];
 
         window.onload = function() {
             updateUserUI();
@@ -883,8 +945,10 @@
                 document.getElementById('fsArtist').innerText = t.artist;
                 document.getElementById('fsCover').src = t.image;
 
+                loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
+                
                 if(player && player.loadVideoById) {
                     player.loadVideoById(t.id);
                     player.playVideo();
@@ -935,6 +999,65 @@
 
         function toggleFullscreen() { document.getElementById('fullscreen-player').classList.toggle('active'); }
 
+        // Gestione Lyrics Animati
+        function toggleLyricsView() {
+            isLyricsActive = !isLyricsActive;
+            const btn = document.getElementById('lyricsToggleBtn');
+            const standardView = document.getElementById('standardPlayerView');
+            const lyricsView = document.getElementById('lyricsView');
+
+            if(isLyricsActive) {
+                btn.classList.add('active');
+                standardView.classList.add('hidden');
+                lyricsView.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+                standardView.classList.remove('hidden');
+                lyricsView.classList.remove('active');
+            }
+        }
+
+        function loadLyricsForCurrentTrack() {
+            const container = document.getElementById('lyricsContainer');
+            // Genera le righe dei testi con attributo data-time
+            container.innerHTML = sampleLyricsDatabase.map((item, idx) => `
+                <div class="lyric-line ${idx === 0 ? 'active' : ''}" data-time="${item.time}" onclick="seekToLyric(${item.time})">
+                    ${item.text}
+                </div>
+            `).join('');
+        }
+
+        function seekToLyric(timeSec) {
+            if(player && player.seekTo) {
+                player.seekTo(timeSec, true);
+            }
+        }
+
+        function updateActiveLyric(currentTime) {
+            if(!isLyricsActive) return;
+            const lines = document.querySelectorAll('.lyric-line');
+            let activeIndex = 0;
+
+            lines.forEach((line, idx) => {
+                let t = parseFloat(line.getAttribute('data-time'));
+                if(currentTime >= t) {
+                    activeIndex = idx;
+                }
+            });
+
+            lines.forEach((line, idx) => {
+                if(idx === activeIndex) {
+                    if(!line.classList.contains('active')) {
+                        line.classList.add('active');
+                        // Scroll automatico centrato come su Spotify
+                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    line.classList.remove('active');
+                }
+            });
+        }
+
         function toggleLikeCurrent() {
             if(!currentTrackData.id) return;
             const exists = likedSongs.findIndex(s => s.id === currentTrackData.id);
@@ -953,7 +1076,6 @@
             saveUserData();
         }
 
-        ('updateLikeButtonUI') // placeholder logic sync
         function updateLikeButtonUI() {
             const isLiked = likedSongs.some(s => s.id === currentTrackData.id);
             document.getElementById('fsLikeBtn').style.color = isLiked ? 'var(--accent)' : 'var(--text-sub)';
@@ -973,9 +1095,10 @@
                         document.getElementById('progressBarFill').style.width = ((cur/dur)*100) + '%';
                         document.getElementById('currentTime').innerText = formatTime(cur);
                         document.getElementById('totalDuration').innerText = formatTime(dur);
+                        updateActiveLyric(cur);
                     }
                 }
-            }, 1000);
+            }, 500);
         }
 
         function seekTrack(event) {
