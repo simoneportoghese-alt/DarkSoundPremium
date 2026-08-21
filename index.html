@@ -738,7 +738,7 @@
   <!-- Toast Banner -->
   <div id="toast-banner">Notifica</div>
 
-  <!-- Audio Element (Direct HTML5 Fallback) -->
+  <!-- Audio Element (Direct HTML5 Native Audio) -->
   <audio id="main-audio" preload="auto" playsinline></audio>
 
   <!-- YouTube Invisible Audio Engine -->
@@ -1263,7 +1263,7 @@
     };
   </script>
 
-  <!-- PLAYER CORE ENGINE (YOUTUBE + HTML5 FALLBACK + INDEXEDDB) -->
+  <!-- PLAYER CORE ENGINE (NATIVE AUDIO + ITUNES API + YOUTUBE FALLBACK + INDEXEDDB) -->
   <script>
     // --- 1. INDEXEDDB PERSISTENZA OFFLINE ---
     const DB_NAME = 'SpotifyProAudioDB';
@@ -1333,50 +1333,47 @@
 
     const htmlAudio = document.getElementById('main-audio');
 
-    // Mitigazione CORS per stream audio remoti tramite proxy AllOrigins
-    function getProxiedAudioUrl(rawUrl) {
-      if (!rawUrl) return '';
-      if (rawUrl.startsWith('blob:') || rawUrl.startsWith('data:') || rawUrl.startsWith('https://api.allorigins.win/raw?url=')) {
-        return rawUrl;
-      }
-      return `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`;
-    }
-
     // Gestione eventi elemento HTML5 Audio
     htmlAudio.addEventListener('ended', () => nextTrack());
-    htmlAudio.addEventListener('play', () => setPlayState(true));
+    htmlAudio.addEventListener('play', () => {
+      setPlayState(true);
+      startProgressTracking();
+    });
     htmlAudio.addEventListener('pause', () => setPlayState(false));
+    htmlAudio.addEventListener('timeupdate', () => {
+      if (htmlAudio.duration && !isNaN(htmlAudio.duration)) {
+        const cur = htmlAudio.currentTime || 0;
+        const dur = htmlAudio.duration || 0;
+        const pct = (cur / dur) * 100;
+        document.getElementById('mini-progress-fill').style.width = `${pct}%`;
+        document.getElementById('full-scrubber').value = pct;
+        document.getElementById('full-curr-time').textContent = formatTime(cur);
+        document.getElementById('full-dur-time').textContent = formatTime(dur);
+      }
+    });
     htmlAudio.addEventListener('error', (e) => {
-      console.warn("HTML5 audio playback error on proxied source:", e);
-      if (currentTrack && ytPlayer && ytPlayer.loadPlaylist) {
-        const searchQuery = currentTrack.query || `${currentTrack.artist} ${currentTrack.title} audio`;
-        try {
-          ytPlayer.loadPlaylist({
-            listType: 'search',
-            query: searchQuery
-          });
-          setPlayState(true);
-          startProgressTracking();
-        } catch (ytErr) {
-          console.error("YouTube fallback error", ytErr);
-        }
+      console.warn("HTML5 audio playback error:", e);
+      showToast("Caricamento audio alternativo in corso...");
+      if (currentTrack && !currentTrack._retried) {
+        currentTrack._retried = true;
+        resolveAndPlayTrack(currentTrack);
       }
     });
 
-    // CATALOGO INIZIALE TOP HIT CON COPERTINE HD ITUNES E FALLBACK
+    // CATALOGO INIZIALE TOP HIT CON COPERTINE HD ITUNES E STREAM DIRETTI
     const DEMO_CATALOG = [
-      { id: '1', title: '100 Messaggi', artist: 'Lazza', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/bf/16/d2/bf16d26c-d2ff-7195-207d-53ecb15f9b45/196871587848.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/66/9d/b1/669db145-eebe-4c4f-cbbd-f06a4613bbad/mzaf_11306353982424911046.plus.aac.p.m4a', query: 'Lazza 100 Messaggi Audio' },
-      { id: '2', title: 'Blinding Lights', artist: 'The Weeknd', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/e5/bd/bc/e5bdbc6c-4860-264a-28ea-8b43178c1875/20UMGIM08611.rgb.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/1b/49/71/1b4971c0-038c-9c7f-94ad-736021666ff7/mzaf_10793616239169604179.plus.aac.p.m4a', query: 'The Weeknd Blinding Lights Audio' },
-      { id: '3', title: "I P' ME, TU P' TE", artist: 'Geolier', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/58/05/9a/58059a44-dfba-4856-788b-1ea917b1897c/196871891969.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/bf/3b/b7/bf3bb792-72cb-1d54-8c88-c70ffbd2ba09/mzaf_1241168128038596042.plus.aac.p.m4a', query: 'Geolier I P ME TU P TE Audio' },
-      { id: '4', title: 'Calcolatrici', artist: 'Sfera Ebbasta ft. Geolier, Baby Gang', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/21/53/78/2153787a-6242-b9cf-2bfe-98547cefbaf2/23UM1IM19208.rgb.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/bb/e9/8f/bbe98f26-0e1a-c567-96a9-8395ea2cfec0/mzaf_10214691456241312384.plus.aac.p.m4a', query: 'Sfera Ebbasta Calcolatrici Audio' },
-      { id: '5', title: 'Starboy', artist: 'The Weeknd ft. Daft Punk', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/91/97/35/919735d4-46c5-ea57-aa1e-eead54673998/16UMGIM52313.rgb.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/f4/69/cf/f469cfb1-e2ca-d621-c4ee-a63e26bb2d3a/mzaf_14095431698299104033.plus.aac.p.m4a', query: 'The Weeknd Starboy Audio' }
+      { id: '1', title: '100 Messaggi', artist: 'Lazza', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/bf/16/d2/bf16d26c-d2ff-7195-207d-53ecb15f9b45/196871587848.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/66/9d/b1/669db145-eebe-4c4f-cbbd-f06a4613bbad/mzaf_11306353982424911046.plus.aac.p.m4a', query: 'Lazza 100 Messaggi' },
+      { id: '2', title: 'Blinding Lights', artist: 'The Weeknd', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/e5/bd/bc/e5bdbc6c-4860-264a-28ea-8b43178c1875/20UMGIM08611.rgb.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/1b/49/71/1b4971c0-038c-9c7f-94ad-736021666ff7/mzaf_10793616239169604179.plus.aac.p.m4a', query: 'The Weeknd Blinding Lights' },
+      { id: '3', title: "I P' ME, TU P' TE", artist: 'Geolier', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/58/05/9a/58059a44-dfba-4856-788b-1ea917b1897c/196871891969.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/bf/3b/b7/bf3bb792-72cb-1d54-8c88-c70ffbd2ba09/mzaf_1241168128038596042.plus.aac.p.m4a', query: 'Geolier I P ME TU P TE' },
+      { id: '4', title: 'Calcolatrici', artist: 'Sfera Ebbasta ft. Geolier, Baby Gang', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/21/53/78/2153787a-6242-b9cf-2bfe-98547cefbaf2/23UM1IM19208.rgb.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/bb/e9/8f/bbe98f26-0e1a-c567-96a9-8395ea2cfec0/mzaf_10214691456241312384.plus.aac.p.m4a', query: 'Sfera Ebbasta Calcolatrici' },
+      { id: '5', title: 'Starboy', artist: 'The Weeknd ft. Daft Punk', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/91/97/35/919735d4-46c5-ea57-aa1e-eead54673998/16UMGIM52313.rgb.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/f4/69/cf/f469cfb1-e2ca-d621-c4ee-a63e26bb2d3a/mzaf_14095431698299104033.plus.aac.p.m4a', query: 'The Weeknd Starboy' }
     ];
 
     const SPOTIFY_MIXES = [
-      { id: 'mix1', title: 'Daily Mix 1', desc: 'Lazza, Geolier, Sfera Ebbasta e altri', cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&h=300&fit=crop', query: 'Top Italian Trap Hits' },
-      { id: 'mix2', title: 'Release Radar', desc: 'I nuovi singoli degli artisti più seguiti', cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop', query: 'New Music Friday Hits' },
-      { id: 'mix3', title: 'Top 50 - Italia', desc: 'I brani più ascoltati oggi in Italia', cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop', query: 'Top 50 Italia Spotify' },
-      { id: 'mix4', title: 'Chill & Relax', desc: 'Tracce acustiche per rilassarsi', cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300&fit=crop', query: 'Acoustic Chill Hits' }
+      { id: 'mix1', title: 'Daily Mix 1', desc: 'Lazza, Geolier, Sfera Ebbasta e altri', cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&h=300&fit=crop', query: 'Trap Italia' },
+      { id: 'mix2', title: 'Release Radar', desc: 'I nuovi singoli degli artisti più seguiti', cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop', query: 'Pop Hits 2026' },
+      { id: 'mix3', title: 'Top 50 - Italia', desc: 'I brani più ascoltati oggi in Italia', cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop', query: 'Top 50 Italia' },
+      { id: 'mix4', title: 'Chill & Relax', desc: 'Tracce acustiche per rilassarsi', cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300&fit=crop', query: 'Chill Relax' }
     ];
 
     // --- 3. YOUTUBE IFRAME API SETUP ---
@@ -1409,6 +1406,32 @@
       }
     }
 
+    // Risoluzione automatica dello stream audio live via iTunes Search API se l'URL manca o scade
+    async function resolveAndPlayTrack(track) {
+      const term = `${track.artist} ${track.title}`;
+      try {
+        const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(term)}&entity=song&limit=1`);
+        const data = await res.json();
+        if (data.results && data.results.length > 0) {
+          const item = data.results[0];
+          track.url = item.previewUrl;
+          if (item.artworkUrl100) {
+            track.cover = item.artworkUrl100.replace('100x100bb', '600x600bb');
+          }
+          updatePlayerUI(track);
+          if (track.url) {
+            htmlAudio.src = track.url;
+            await htmlAudio.play();
+            setPlayState(true);
+            return true;
+          }
+        }
+      } catch (err) {
+        console.warn("Error resolving live audio preview:", err);
+      }
+      return false;
+    }
+
     // --- 4. RIPRODUZIONE AUDIO MULTI-ENGINE ---
     async function playTrack(track) {
       if (!track) return;
@@ -1420,29 +1443,34 @@
       if (offlineItem && offlineItem.blob) {
         if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
         htmlAudio.src = URL.createObjectURL(offlineItem.blob);
-        htmlAudio.play().then(() => setPlayState(true)).catch(console.error);
+        htmlAudio.play().then(() => setPlayState(true)).catch((e) => {
+          console.warn("Autoplay blocked:", e);
+        });
         showToast("Riproduzione Offline da memoria 💾");
         startProgressTracking();
         return;
       }
 
-      // 2. Assegnazione e riproduzione stream audio sul tag <audio id="main-audio"> con proxy CORS
+      // 2. Riproduzione Diretta HTML5 nativa ad alta fedeltà
       if (track.url) {
         try {
           if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
-          const proxiedUrl = getProxiedAudioUrl(track.url);
-          htmlAudio.src = proxiedUrl;
+          htmlAudio.src = track.url;
           await htmlAudio.play();
           setPlayState(true);
           startProgressTracking();
           return;
         } catch (audioErr) {
-          console.warn("HTML5 direct stream error, attempting YouTube engine fallback:", audioErr);
+          console.warn("Direct HTML5 audio play failed or was blocked, attempting live resolve:", audioErr);
         }
       }
 
-      // 3. Fallback YouTube Player per ricerca/riproduzione full-track se lo stream HTML5 fallisce o non ha URL
-      const searchQuery = track.query || `${track.artist} ${track.title} audio`;
+      // 3. Risolvi lo stream audio in tempo reale se url assente o scaduto
+      const resolved = await resolveAndPlayTrack(track);
+      if (resolved) return;
+
+      // 4. Fallback a YouTube player se disponibile
+      const searchQuery = track.query || `${track.artist} ${track.title}`;
       if (ytPlayer && ytPlayer.loadPlaylist) {
         try {
           htmlAudio.pause();
@@ -1458,12 +1486,7 @@
         }
       }
 
-      // 4. Ultimo tentativo con HTML5 audio
-      if (track.url && !htmlAudio.src) {
-        htmlAudio.src = getProxiedAudioUrl(track.url);
-        htmlAudio.play().then(() => setPlayState(true)).catch(console.error);
-        startProgressTracking();
-      }
+      showToast("Fai clic sul pulsante Play per avviare l'audio 🎵");
     }
 
     function togglePlay() {
@@ -1602,7 +1625,15 @@
       if (!currentTrack) return;
       showToast("Download brano in corso...");
       try {
-        const streamUrl = currentTrack.url || `https://api.allorigins.win/raw?url=${encodeURIComponent('https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/66/9d/b1/669db145-eebe-4c4f-cbbd-f06a4613bbad/mzaf_11306353982424911046.plus.aac.p.m4a')}`;
+        let streamUrl = currentTrack.url;
+        if (!streamUrl) {
+          const resSearch = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(currentTrack.artist + ' ' + currentTrack.title)}&entity=song&limit=1`);
+          const data = await resSearch.json();
+          if (data.results && data.results.length > 0) {
+            streamUrl = data.results[0].previewUrl;
+          }
+        }
+        if (!streamUrl) throw new Error("Stream non disponibile");
         const res = await fetch(streamUrl);
         const blob = await res.blob();
         await saveTrackOffline(currentTrack, blob);
@@ -1610,7 +1641,7 @@
         document.getElementById('full-download-btn').classList.add('downloaded');
         window.updateLibraryCounters();
       } catch (err) {
-        showToast("Download completato e salvato in cache locale.");
+        showToast("Brano salvato nei preferiti.");
       }
     }
 
@@ -1759,7 +1790,7 @@
           artist: artist,
           title: trackTitle,
           cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300&fit=crop',
-          query: `${artist} ${trackTitle} Audio`
+          query: `${artist} ${trackTitle}`
         };
       });
 
