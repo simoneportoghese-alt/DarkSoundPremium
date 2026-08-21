@@ -9,14 +9,13 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Ricerca istantanea con yt-search
 app.get('/api/search', async (req, res) => {
     const query = req.query.q;
     if (!query) return res.json([]);
 
     try {
         const searchResult = await yts(query);
-        const videos = searchResult.videos.slice(0, 15);
+        const videos = searchResult.videos.slice(0, 20);
 
         const results = videos.map(item => ({
             id: item.videoId,
@@ -33,7 +32,6 @@ app.get('/api/search', async (req, res) => {
     }
 });
 
-// Streaming del brano completo
 app.get('/api/stream/:id', async (req, res) => {
     const videoId = req.params.id;
     const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
@@ -44,13 +42,22 @@ app.get('/api/stream/:id', async (req, res) => {
             noCheckCertificates: true,
             noWarnings: true,
             preferFreeFormats: true,
+            format: 'bestaudio/best',
             extractorArgs: 'youtube:player_client=web'
         });
 
-        const audioFormat = output.formats.find(f => f.acodec !== 'none' && f.vcodec === 'none') || output.formats[0];
-        
-        if (audioFormat && audioFormat.url) {
-            return res.redirect(audioFormat.url);
+        let audioUrl = null;
+        if (output.formats) {
+            const audioFormat = output.formats.reverse().find(f => f.acodec !== 'none' && f.vcodec === 'none');
+            if (audioFormat) {
+                audioUrl = audioFormat.url;
+            } else if (output.url) {
+                audioUrl = output.url;
+            }
+        }
+
+        if (audioUrl) {
+            return res.redirect(audioUrl);
         } else {
             res.status(404).json({ error: "Flusso audio non trovato" });
         }
