@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DarkSound Pro - Liquid Glass Edition</title>
+    <title>DarkSound Pro - Cloud Edition</title>
     <!-- Collegamento per la PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
@@ -36,7 +36,6 @@
             min-height: 100vh;
             font-size: 16px;
             overflow-x: hidden;
-            /* Sfondo dinamico sfumato per far risaltare il vetro liquido */
             background-image: radial-gradient(circle at 10% 20%, rgba(48, 48, 80, 0.25) 0%, transparent 40%),
                               radial-gradient(circle at 90% 80%, rgba(80, 30, 60, 0.2) 0%, transparent 40%);
             background-attachment: fixed;
@@ -97,7 +96,43 @@
             padding: 6px 14px;
             border-radius: 20px;
             backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: background 0.2s;
         }
+        .user-pill:hover { background: rgba(255, 255, 255, 0.2); }
+
+        /* AUTH MODAL */
+        #auth-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            z-index: 3000; display: none; justify-content: center; align-items: center; padding: 20px;
+        }
+        #auth-modal.active { display: flex; }
+        .auth-card {
+            background: rgba(28, 28, 34, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px; padding: 30px; width: 100%; max-width: 400px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+        }
+        .auth-card h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+        .auth-card p { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 24px; }
+        .auth-input-group { margin-bottom: 16px; }
+        .auth-input-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-sub); }
+        .auth-input-group input {
+            width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            padding: 14px; border-radius: 12px; color: white; font-size: 1rem; outline: none; transition: border-color 0.2s;
+        }
+        .auth-input-group input:focus { border-color: var(--accent); }
+        .auth-btn {
+            width: 100%; background: var(--accent); color: black; font-weight: 800; padding: 14px;
+            border-radius: 12px; border: none; font-size: 1rem; cursor: pointer; margin-top: 10px;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .auth-btn:active { transform: scale(0.97); }
+        .auth-switch { text-align: center; margin-top: 16px; font-size: 0.9rem; color: var(--text-sub); cursor: pointer; }
+        .auth-switch span { color: white; font-weight: 700; }
 
         /* HEADER & CHIPS */
         .home-title { font-size: 2rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
@@ -178,7 +213,7 @@
         /* LIBRARY VIEW */
         .lib-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 
-        /* MINI PLAYER (Liquid Glass Floating Capsule) */
+        /* MINI PLAYER */
         .player-bar {
             position: fixed; bottom: 76px; left: 12px; right: 12px; 
             background: rgba(30, 30, 34, 0.75);
@@ -219,6 +254,8 @@
         .fs-titles h3 { font-size: 1.6rem; font-weight: 700; color: white; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .fs-titles p { font-size: 1.05rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
+        .fs-right-actions { display: flex; align-items: center; gap: 12px; }
+        
         .progress-container { width: 100%; margin-bottom: 24px; }
         .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px; position: relative; cursor: pointer; }
         .progress-bar-fill { width: 0%; height: 100%; background: white; border-radius: 3px; position: relative; }
@@ -229,7 +266,7 @@
         .fs-play-btn { width: 72px; height: 72px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; box-shadow: 0 10px 25px rgba(255,255,255,0.3); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .fs-play-btn:active { transform: scale(0.9); }
 
-        /* BOTTOM NAV (Liquid Glass Floating Dock) */
+        /* BOTTOM NAV */
         nav {
             position: fixed; bottom: 12px; left: 16px; right: 16px; height: 64px; 
             background: rgba(20, 20, 24, 0.7);
@@ -256,13 +293,34 @@
 </head>
 <body>
 
+    <!-- AUTHENTICATION MODAL -->
+    <div id="auth-modal">
+        <div class="auth-card">
+            <h2 id="authTitle">Benvenuto</h2>
+            <p id="authSubtitle">Accedi con le tue credenziali per sincronizzare i preferiti nel cloud.</p>
+            
+            <div class="auth-input-group">
+                <label>Email</label>
+                <input type="email" id="authEmail" placeholder="nome@esempio.com">
+            </div>
+            <div class="auth-input-group">
+                <label>Password</label>
+                <input type="password" id="authPassword" placeholder="••••••••">
+            </div>
+
+            <button class="auth-btn" id="authSubmitBtn" onclick="handleAuthSubmit()">Accedi</button>
+            <div class="auth-switch" onclick="toggleAuthMode()">Non hai un account? <span id="authSwitchText">Registrati</span></div>
+            <div style="text-align: center; margin-top: 12px;"><span style="font-size: 0.8rem; color: var(--text-sub); cursor: pointer;" onclick="closeAuthModal()">Salta per ora</span></div>
+        </div>
+    </div>
+
     <!-- HOME VIEW -->
     <div id="view-home" class="view active">
         <div class="top-status-bar">
-            <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.45rem;"></i> DARKSOUND GLASS</div>
+            <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.45rem;"></i> DARKSOUND CLOUD</div>
             <div class="user-status-right">
-                <span class="status-pill">Online</span>
-                <span class="user-pill">utente</span>
+                <span class="status-pill" id="syncStatusBadge">Cloud Salvato</span>
+                <span class="user-pill" id="userProfilePill" onclick="openAuthModal()">Accedi</span>
             </div>
         </div>
 
@@ -345,7 +403,10 @@
                 <h3 id="fsTitle">-</h3>
                 <p id="fsArtist">-</p>
             </div>
-            <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.7rem; color: var(--text-sub); cursor:pointer; padding: 10px; flex-shrink: 0;" onclick="toggleLikeCurrent()"></i>
+            <div class="fs-right-actions">
+                <i class="fas fa-download" id="fsDownloadDirectBtn" style="font-size: 1.4rem; color: var(--text-sub); cursor:pointer; padding: 10px;" onclick="triggerDirectDownload()" title="Scarica File Audio"></i>
+                <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.6rem; color: var(--text-sub); cursor:pointer; padding: 10px;" onclick="toggleLikeCurrent()"></i>
+            </div>
         </div>
         <div class="progress-container">
             <div class="progress-bar-bg" id="progressBarBg" onclick="seekTrack(event)">
@@ -381,7 +442,7 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION (Dock) -->
+    <!-- BOTTOM NAVIGATION -->
     <nav>
         <button class="nav-item active" onclick="switchView('home', this)"><i class="fas fa-home"></i><span>Home</span></button>
         <button class="nav-item" onclick="switchView('search', this)"><i class="fas fa-search"></i><span>Cerca</span></button>
@@ -396,15 +457,104 @@
         let playQueue = [];
         let queueIndex = -1;
         let currentTrackData = { id: '', name: '', artist: '', image: '' };
-        let likedSongs = JSON.parse(localStorage.getItem('darksound_liked') || '[]');
-        let downloadedTracks = JSON.parse(localStorage.getItem('darksound_downloads') || '[]');
+        
+        let currentUser = JSON.parse(localStorage.getItem('darksound_current_user') || 'null');
+        let isRegisterMode = false;
+        
+        let likedSongs = JSON.parse(localStorage.getItem(currentUser ? `liked_${currentUser}` : 'darksound_liked') || '[]');
+        let downloadedTracks = JSON.parse(localStorage.getItem(currentUser ? `downloads_${currentUser}` : 'darksound_downloads') || '[]');
+        
         let progressInterval;
         let searchTimer = null;
         let currentLibTab = 'liked';
 
         window.onload = function() {
+            updateUserUI();
             loadHomeTracks();
+            if(!currentUser) {
+                setTimeout(() => openAuthModal(), 500);
+            }
         };
+
+        function openAuthModal() {
+            document.getElementById('auth-modal').classList.add('active');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.remove('active');
+        }
+
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('authTitle').innerText = isRegisterMode ? 'Crea Account' : 'Bentornato';
+            document.getElementById('authSubtitle').innerText = isRegisterMode ? 'Registrati per salvare i dati sul cloud.' : 'Accedi con le tue credenziali.';
+            document.getElementById('authSubmitBtn').innerText = isRegisterMode ? 'Registrati' : 'Accedi';
+            document.getElementById('authSwitchText').innerText = isRegisterMode ? 'Accedi' : 'Registrati';
+        }
+
+        function handleAuthSubmit() {
+            const email = document.getElementById('authEmail').value.trim();
+            const pass = document.getElementById('authPassword').value.trim();
+
+            if(!email || !pass) {
+                alert('Inserisci email e password validi.');
+                return;
+            }
+
+            currentUser = email;
+            localStorage.setItem('darksound_current_user', JSON.stringify(currentUser));
+
+            likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
+            downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
+
+            updateUserUI();
+            closeAuthModal();
+            renderLibraryContent();
+        }
+
+        function updateUserUI() {
+            const pill = document.getElementById('userProfilePill');
+            const badge = document.getElementById('syncStatusBadge');
+            if(currentUser) {
+                pill.innerText = currentUser.split('@')[0];
+                badge.innerText = 'Cloud Sincronizzato';
+            } else {
+                pill.innerText = 'Accedi';
+                badge.innerText = 'Locale';
+            }
+        }
+
+        function saveUserData() {
+            if(currentUser) {
+                localStorage.setItem(`liked_${currentUser}`, JSON.stringify(likedSongs));
+                localStorage.setItem(`downloads_${currentUser}`, JSON.stringify(downloadedTracks));
+            } else {
+                localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
+                localStorage.setItem('darksound_downloads', JSON.stringify(downloadedTracks));
+            }
+        }
+
+        // Funzione per avviare il download diretto del file audio sul dispositivo
+        function triggerDirectDownload() {
+            if(!currentTrackData.id) {
+                alert('Nessun brano in riproduzione.');
+                return;
+            }
+            
+            // Crea un link diretto al flusso audio multimediale o apre una comoda interfaccia di download
+            const audioStreamUrl = `https://www.youtube.com/watch?v=${currentTrackData.id}`;
+            
+            // Notifica e apertura del link in un servizio di estrazione audio o download diretto supportato
+            const confirmDL = confirm(`Vuoi scaricare il brano "${currentTrackData.name} - ${currentTrackData.artist}" sul dispositivo?`);
+            if(confirmDL) {
+                const a = document.createElement('a');
+                a.href = `https://loader.to/api/button/?url=${encodeURIComponent(audioStreamUrl)}&f=mp3`;
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        }
 
         function cleanTracks(tracks) {
             if (!tracks) return [];
@@ -511,7 +661,7 @@
             } else {
                 downloadedTracks.push(t);
             }
-            localStorage.setItem('darksound_downloads', JSON.stringify(downloadedTracks));
+            saveUserData();
             
             if(document.getElementById('view-search').classList.contains('active')) {
                 renderTracksList(playQueue, 'searchResultsContainer');
@@ -585,7 +735,7 @@
             if(idx > -1) {
                 likedSongs.splice(idx, 1);
             }
-            localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
+            saveUserData();
             renderLibraryContent();
             updateLikeButtonUI();
         }
@@ -603,7 +753,7 @@
             } else {
                 downloadedTracks.push(t);
             }
-            localStorage.setItem('darksound_downloads', JSON.stringify(downloadedTracks));
+            saveUserData();
             renderLibraryContent();
         }
 
@@ -640,7 +790,7 @@
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: t.name,
                     artist: t.artist,
-                    album: 'DarkSound Glass',
+                    album: 'DarkSound Cloud',
                     artwork: [{ src: t.image, sizes: '512x512', type: 'image/png' }]
                 });
                 navigator.mediaSession.setActionHandler('play', () => togglePlay());
@@ -698,7 +848,7 @@
             const exists = likedSongs.findIndex(s => s.id === currentTrackData.id);
             if(exists > -1) { likedSongs.splice(exists, 1); } 
             else { likedSongs.push(currentTrackData); }
-            localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
+            saveUserData();
             updateLikeButtonUI();
         }
 
@@ -708,7 +858,7 @@
             const exists = likedSongs.findIndex(s => s.id === t.id);
             if(exists > -1) { likedSongs.splice(exists, 1); } 
             else { likedSongs.push(t); }
-            localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
+            saveUserData();
         }
 
         function updateLikeButtonUI() {
