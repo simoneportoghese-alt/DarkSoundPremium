@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DarkSound Pro - Offline & Cloud Edition</title>
+    <title>DarkSound Pro - Social & Share Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -86,14 +86,12 @@
 
         #auth-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(30px);
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(30px);
             z-index: 3000; display: none; justify-content: center; align-items: center; padding: 20px;
         }
         #auth-modal.active { display: flex; }
         .auth-card {
-            background: rgba(28, 28, 34, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(28, 28, 34, 0.85); border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 24px; padding: 30px; width: 100%; max-width: 400px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.8);
         }
@@ -101,7 +99,7 @@
         .auth-card p { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 24px; }
         .auth-input-group { margin-bottom: 16px; }
         .auth-input-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-sub); }
-        .auth-input-group input {
+        .auth-input-group input, .auth-input-group select {
             width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
             padding: 14px; border-radius: 12px; color: white; font-size: 1rem; outline: none;
         }
@@ -109,31 +107,9 @@
             width: 100%; background: var(--accent); color: black; font-weight: 800; padding: 14px;
             border-radius: 12px; border: none; font-size: 1rem; cursor: pointer; margin-top: 10px;
         }
-        .auth-switch { text-align: center; margin-top: 16px; font-size: 0.9rem; color: var(--text-sub); cursor: pointer; }
-        .auth-switch span { color: white; font-weight: 700; }
 
         .home-title { font-size: 2rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
-        .home-chips { display: flex; gap: 10px; margin-bottom: 22px; overflow-x: auto; scrollbar-width: none; }
-        .home-chips::-webkit-scrollbar { display: none; }
-        
-        .chip {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: white; padding: 10px 18px; border-radius: 20px; 
-            font-size: 0.95rem; font-weight: 600; cursor: pointer; white-space: nowrap; 
-        }
-        .chip.active { background: white; color: black; border-color: white; }
-
-        .shortcut-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 30px; }
-        .shortcut-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 14px; display: flex; align-items: center; gap: 12px; overflow: hidden; 
-            cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .shortcut-card img { width: 56px; height: 56px; object-fit: cover; }
-        .shortcut-card span { font-size: 0.95rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .section-title { font-size: 1.35rem; font-weight: 800; margin-bottom: 16px; }
+        .section-title { font-size: 1.35rem; font-weight: 800; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
 
         .track-row { 
             display: flex; align-items: center; justify-content: space-between; 
@@ -146,16 +122,37 @@
         .track-meta h4 { font-size: 1.05rem; font-weight: 700; color: white; white-space: nowrap; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; }
         .track-meta p { font-size: 0.85rem; color: var(--text-sub); display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .badge-full { background: rgba(48,209,88,0.2); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
-        .track-actions { display: flex; align-items: center; gap: 18px; color: var(--text-sub); font-size: 1.2rem; padding: 6px; flex-shrink: 0; }
-        .btn-download-action.saved { color: var(--accent); }
+        .badge-public { background: rgba(0, 122, 255, 0.2); color: #007aff; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
+        .badge-private { background: rgba(255, 149, 0, 0.2); color: #ff9500; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
+        .track-actions { display: flex; align-items: center; gap: 14px; color: var(--text-sub); font-size: 1.2rem; padding: 6px; flex-shrink: 0; }
 
         .search-box { 
             background: rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 14px 18px; 
             display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.1); 
         }
         .search-box input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 1.05rem; }
-        .genre-browse-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-        .genre-card { height: 115px; border-radius: 14px; padding: 16px; font-size: 1.25rem; font-weight: 800; color: white; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-start; }
+
+        .btn-action-primary {
+            background: var(--accent); color: black; font-weight: 700; border: none; 
+            padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 0.85rem;
+        }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(20px);
+            z-index: 4000; display: none; justify-content: center; align-items: center; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-card {
+            background: rgba(28, 28, 34, 0.95); border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px; padding: 24px; width: 100%; max-width: 400px; max-height: 80vh; overflow-y: auto;
+        }
+
+        .share-option-btn {
+            display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px; background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; font-weight: 700; font-size: 1rem; cursor: pointer; margin-bottom: 10px;
+        }
+        .share-option-btn i { font-size: 1.3rem; }
 
         .player-bar {
             position: fixed; bottom: 76px; left: 12px; right: 12px; 
@@ -210,45 +207,70 @@
 
     <div id="auth-modal">
         <div class="auth-card">
-            <h2 id="authTitle">Benvenuto</h2>
-            <p id="authSubtitle">Accedi con le tue credenziali per sincronizzare i preferiti.</p>
+            <h2>Benvenuto</h2>
+            <p>Accedi per creare playlist e sincronizzare i brani.</p>
             <div class="auth-input-group">
-                <label>Email</label>
-                <input type="email" id="authEmail" placeholder="nome@esempio.com">
+                <label>Nome Utente</label>
+                <input type="text" id="authEmail" placeholder="mario_rossi">
+            </div>
+            <button class="auth-btn" onclick="handleAuthSubmit()">Accedi</button>
+        </div>
+    </div>
+
+    <!-- Modale Condivisione Brano -->
+    <div id="share-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px;">Condividi brano</h3>
+            <p id="shareTrackSubtitle" style="color:var(--text-sub); font-size:0.9rem; margin-bottom:20px;"></p>
+            <button class="share-option-btn" style="color:#25D366;" onclick="shareViaWhatsApp()">
+                <i class="fab fa-whatsapp"></i> Invia su WhatsApp
+            </button>
+            <button class="share-option-btn" onclick="copyTrackLink()">
+                <i class="fas fa-link" style="color:#007aff;"></i> Copia Link Brano
+            </button>
+            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:10px;" onclick="closeShareModal()">Chiudi</button>
+        </div>
+    </div>
+
+    <!-- Modale Selezione Playlist -->
+    <div id="playlist-select-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Aggiungi a playlist</h3>
+            <div id="playlistSelectList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;"></div>
+            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white;" onclick="closePlaylistModal()">Chiudi</button>
+        </div>
+    </div>
+
+    <!-- Modale Nuova Playlist -->
+    <div id="new-playlist-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Crea Nuova Playlist</h3>
+            <div class="auth-input-group">
+                <label>Nome Playlist</label>
+                <input type="text" id="newPlaylistName" placeholder="Es. I miei preferiti">
             </div>
             <div class="auth-input-group">
-                <label>Password</label>
-                <input type="password" id="authPassword" placeholder="••••••••">
+                <label>Visibilità</label>
+                <select id="newPlaylistVisibility">
+                    <option value="private">Privata (Solo tu)</option>
+                    <option value="public">Pubblica (Tutti possono cercarla)</option>
+                </select>
             </div>
-            <button class="auth-btn" id="authSubmitBtn" onclick="handleAuthSubmit()">Accedi</button>
-            <div class="auth-switch" onclick="toggleAuthMode()">Non hai un account? <span id="authSwitchText">Registrati</span></div>
+            <button class="auth-btn" onclick="submitNewPlaylist()">Crea</button>
+            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="closeNewPlaylistModal()">Annulla</button>
         </div>
     </div>
 
     <div id="view-home" class="view active">
         <div class="top-status-bar">
-            <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.45rem;"></i> DARKSOUND OFFLINE</div>
+            <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.45rem;"></i> DARKSOUND SOCIAL</div>
             <div class="user-status-right">
-                <span class="status-pill" id="syncStatusBadge">Sincronizzato</span>
+                <span class="status-pill" id="syncStatusBadge">Online</span>
                 <span class="user-pill" id="userProfilePill" onclick="openAuthModal()">Accedi</span>
             </div>
         </div>
-        <h1 class="home-title">Buon pomeriggio</h1>
-        <div class="home-chips">
-            <button class="chip active" onclick="loadHomeTracks()">Tutto</button>
-            <button class="chip" onclick="selectSearchGenre('Hit Italia')">Musica</button>
-        </div>
-        <div class="shortcut-grid">
-            <div class="shortcut-card" onclick="openLikedSongs()">
-                <div style="width:56px;height:56px;background:linear-gradient(135deg,#5e35b1,#d81b60);display:flex;align-items:center;justify-content:center;"><i class="fas fa-heart" style="color:white;"></i></div>
-                <span>Preferiti</span>
-            </div>
-            <div class="shortcut-card" onclick="openDownloadedSongs()">
-                <div style="width:56px;height:56px;background:linear-gradient(135deg,#0288d1,#00897b);display:flex;align-items:center;justify-content:center;"><i class="fas fa-download" style="color:white;"></i></div>
-                <span>Scaricati</span>
-            </div>
-        </div>
-        <div class="section-title">Top Hit Nazionali & Globali</div>
+        <h1 class="home-title">Esplora</h1>
+        <div class="section-title">Top Hit Nazionali</div>
         <div id="homeTracksContainer"><p style="color:var(--text-sub);">Caricamento...</p></div>
     </div>
 
@@ -256,21 +278,20 @@
         <h1 class="home-title">Cerca</h1>
         <div class="search-box">
             <i class="fas fa-search" style="color: var(--text-sub);"></i>
-            <input type="text" id="spotifySearchInput" placeholder="Cosa vuoi ascoltare?" oninput="handleSearchInput(this.value)">
-        </div>
-        <div class="section-title">Sfoglia tutto</div>
-        <div class="genre-browse-grid">
-            <div class="genre-card" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);" onclick="selectSearchGenre('Pop')">Pop</div>
-            <div class="genre-card" style="background: linear-gradient(135deg, #2193b0, #6dd5ed);" onclick="selectSearchGenre('Hip-Hop')">Hip-Hop</div>
+            <input type="text" id="spotifySearchInput" placeholder="Cerca brani o playlist pubbliche..." oninput="handleSearchInput(this.value)">
         </div>
         <div id="searchResultsContainer" style="margin-top:24px;"></div>
     </div>
 
     <div id="view-library" class="view">
-        <h1 class="home-title">La tua Libreria</h1>
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <button class="chip active" id="btnTabLiked" onclick="switchLibraryTab('liked')">Preferiti (<span id="countLiked">0</span>)</button>
-            <button class="chip" id="btnTabDownloads" onclick="switchLibraryTab('downloads')">Scaricati (<span id="countDownloads">0</span>)</button>
+        <div class="section-title">
+            La tua Libreria
+            <button class="btn-action-primary" onclick="openNewPlaylistModal()"><i class="fas fa-plus"></i> Nuova Playlist</button>
+        </div>
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x:auto;">
+            <button class="chip active" id="btnTabLiked" onclick="switchLibraryTab('liked')">Preferiti</button>
+            <button class="chip" id="btnTabDownloads" onclick="switchLibraryTab('downloads')">Scaricati</button>
+            <button class="chip" id="btnTabPlaylists" onclick="switchLibraryTab('playlists')">Le tue Playlist</button>
         </div>
         <div id="libContentList"><p style="color:var(--text-sub);">Nessun elemento.</p></div>
     </div>
@@ -287,10 +308,11 @@
                 <h3 id="fsTitle">-</h3>
                 <p id="fsArtist">-</p>
             </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <!-- Pulsante per scaricare direttamente nella memoria offline dell'app -->
-                <i class="fas fa-download" id="fsDownloadDirectBtn" style="font-size: 1.4rem; color: var(--text-sub); cursor:pointer; padding: 10px;" title="Salva Offline" onclick="toggleDownloadCurrent()"></i>
-                <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.6rem; color: var(--text-sub); cursor:pointer; padding: 10px;" onclick="toggleLikeCurrent()"></i>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-share-nodes" style="font-size: 1.3rem; color: var(--text-sub); cursor:pointer; padding: 10px;" title="Condividi brano" onclick="openShareModal()"></i>
+                <i class="fas fa-folder-plus" style="font-size: 1.3rem; color: var(--text-sub); cursor:pointer; padding: 10px;" title="Aggiungi a playlist" onclick="openPlaylistSelectorForCurrent()"></i>
+                <i class="fas fa-download" id="fsDownloadDirectBtn" style="font-size: 1.3rem; color: var(--text-sub); cursor:pointer; padding: 10px;" title="Salva Offline" onclick="toggleDownloadCurrent()"></i>
+                <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.5rem; color: var(--text-sub); cursor:pointer; padding: 10px;" onclick="toggleLikeCurrent()"></i>
             </div>
         </div>
         <div class="progress-container">
@@ -328,59 +350,60 @@
     <nav>
         <button class="nav-item active" onclick="switchView('home', this)"><i class="fas fa-home"></i><span>Home</span></button>
         <button class="nav-item" onclick="switchView('search', this)"><i class="fas fa-search"></i><span>Cerca</span></button>
-        <button class="nav-item" onclick="switchView('library', this)"><i class="fas fa-download"></i><span>Libreria</span></button>
+        <button class="nav-item" onclick="switchView('library', this)"><i class="fas fa-bookmark"></i><span>Libreria</span></button>
     </nav>
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         let player, isPlaying = false, playQueue = [], queueIndex = -1;
         let currentTrackData = { id: '', name: '', artist: '', image: '' };
-        let currentUser = JSON.parse(localStorage.getItem('darksound_current_user') || 'null');
-        let isRegisterMode = false;
+        let currentUser = localStorage.getItem('darksound_current_user') || null;
         let likedSongs = JSON.parse(localStorage.getItem(currentUser ? `liked_${currentUser}` : 'darksound_liked') || '[]');
         let downloadedTracks = JSON.parse(localStorage.getItem(currentUser ? `downloads_${currentUser}` : 'darksound_downloads') || '[]');
-        let progressInterval, searchTimer = null, currentLibTab = 'liked';
+        let userPlaylists = JSON.parse(localStorage.getItem(currentUser ? `playlists_${currentUser}` : 'darksound_playlists') || '[]');
+        let globalPublicPlaylists = JSON.parse(localStorage.getItem('darksound_global_public_playlists') || '[]');
+        let progressInterval, searchTimer = null, currentLibTab = 'liked', selectedTrackForPlaylist = null;
 
         window.onload = function() {
             updateUserUI();
             loadHomeTracks();
-            if(!currentUser) setTimeout(() => openAuthModal(), 500);
+            if(!currentUser) setTimeout(() => openAuthModal(), 400);
         };
 
         function openAuthModal() { document.getElementById('auth-modal').classList.add('active'); }
         function closeAuthModal() { document.getElementById('auth-modal').classList.remove('active'); }
 
-        function toggleAuthMode() {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('authTitle').innerText = isRegisterMode ? 'Crea Account' : 'Bentornato';
-            document.getElementById('authSubmitBtn').innerText = isRegisterMode ? 'Registrati' : 'Accedi';
-            document.getElementById('authSwitchText').innerText = isRegisterMode ? 'Accedi' : 'Registrati';
-        }
-
         function handleAuthSubmit() {
-            const email = document.getElementById('authEmail').value.trim();
-            const pass = document.getElementById('authPassword').value.trim();
-            if(!email || !pass) return alert('Inserisci credenziali valide.');
-            currentUser = email;
-            localStorage.setItem('darksound_current_user', JSON.stringify(currentUser));
+            const name = document.getElementById('authEmail').value.trim();
+            if(!name) return alert('Inserisci un nome utente.');
+            currentUser = name;
+            localStorage.setItem('darksound_current_user', currentUser);
             likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
             downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
+            userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
             updateUserUI();
             closeAuthModal();
+            loadHomeTracks();
         }
 
         function updateUserUI() {
-            document.getElementById('userProfilePill').innerText = currentUser ? currentUser.split('@')[0] : 'Accedi';
+            document.getElementById('userProfilePill').innerText = currentUser ? currentUser : 'Accedi';
         }
 
         function saveUserData() {
             if(currentUser) {
                 localStorage.setItem(`liked_${currentUser}`, JSON.stringify(likedSongs));
                 localStorage.setItem(`downloads_${currentUser}`, JSON.stringify(downloadedTracks));
-            } else {
-                localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
-                localStorage.setItem('darksound_downloads', JSON.stringify(downloadedTracks));
+                localStorage.setItem(`playlists_${currentUser}`, JSON.stringify(userPlaylists));
+                syncGlobalPublicPlaylists();
             }
+        }
+
+        function syncGlobalPublicPlaylists() {
+            let others = globalPublicPlaylists.filter(p => p.owner !== currentUser);
+            let minePublic = userPlaylists.filter(p => p.visibility === 'public').map(p => ({...p, owner: currentUser}));
+            globalPublicPlaylists = [...others, ...minePublic];
+            localStorage.setItem('darksound_global_public_playlists', JSON.stringify(globalPublicPlaylists));
         }
 
         async function loadHomeTracks() {
@@ -394,15 +417,12 @@
             }
         }
 
-        function selectSearchGenre(genre) {
-            switchView('search', document.querySelectorAll('.nav-item')[1]);
-            document.getElementById('spotifySearchInput').value = genre;
-            executeSearch(genre);
-        }
-
         function handleSearchInput(val) {
             clearTimeout(searchTimer);
-            if(val.trim().length < 2) return;
+            if(val.trim().length < 2) {
+                document.getElementById('searchResultsContainer').innerHTML = '';
+                return;
+            }
             searchTimer = setTimeout(() => executeSearch(val), 250);
         }
 
@@ -410,36 +430,236 @@
             try {
                 let res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
                 let tracks = await res.json();
+                let matchedPlaylists = globalPublicPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+
+                let container = document.getElementById('searchResultsContainer');
+                let html = '';
+
+                if(matchedPlaylists.length > 0) {
+                    html += `<div class="section-title">Playlist Pubbliche</div>`;
+                    html += matchedPlaylists.map(pl => `
+                        <div class="track-row" onclick="openPublicPlaylist('${pl.id}')">
+                            <div class="track-row-left">
+                                <div style="width:52px;height:52px;background:linear-gradient(135deg,#007aff,#5856d6);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:white;"></i></div>
+                                <div class="track-meta">
+                                    <h4>${pl.name}</h4>
+                                    <p><span class="badge-public">PUBBLICA</span> Di ${pl.owner} • ${pl.tracks.length} brani</p>
+                                </div>
+                            </div>
+                            <div class="track-actions" onclick="event.stopPropagation()">
+                                <button class="btn-action-primary" onclick="savePublicPlaylistToLibrary('${pl.id}')">Salva</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                html += `<div class="section-title" style="margin-top:20px;">Brani Musicali</div>`;
+                container.innerHTML = html;
+                
                 playQueue = tracks;
-                renderTracksList(tracks, 'searchResultsContainer');
+                container.innerHTML += tracks.map((t, idx) => renderSingleTrackRow(t, idx)).join('');
             } catch(e) {}
+        }
+
+        function renderSingleTrackRow(t, idx) {
+            const isLiked = likedSongs.some(s => s.id === t.id);
+            const isDownloaded = downloadedTracks.some(s => s.id === t.id);
+            return `
+                <div class="track-row" onclick="playQueueIndex(${idx})">
+                    <div class="track-row-left">
+                        <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${idx}/200'">
+                        <div class="track-meta">
+                            <h4>${t.name}</h4>
+                            <p><span class="badge-full">AUDIO</span> ${t.artist}</p>
+                        </div>
+                    </div>
+                    <div class="track-actions" onclick="event.stopPropagation()">
+                        <i class="fas fa-folder-plus" title="Aggiungi a playlist" onclick="openPlaylistSelectorForTrack(${idx})"></i>
+                        <i class="fas fa-download ${isDownloaded ? 'saved' : ''}" onclick="toggleDownloadTrack(${idx})"></i>
+                        <i class="${isLiked ? 'fas fa-heart' : 'far fa-heart'}" style="${isLiked ? 'color:var(--accent);' : ''}" onclick="toggleLikeTrack(${idx})"></i>
+                    </div>
+                </div>
+            `;
         }
 
         function renderTracksList(tracks, containerId) {
             if(!tracks || tracks.length === 0) {
-                document.getElementById(containerId).innerHTML = `<p style="color:var(--text-sub);">Nessun brano trovato.</p>`;
+                document.getElementById(containerId).innerHTML = `<p style="color:var(--text-sub);">Nessun elemento.</p>`;
                 return;
             }
-            let html = tracks.map((t, idx) => {
-                const isLiked = likedSongs.some(s => s.id === t.id);
-                const isDownloaded = downloadedTracks.some(s => s.id === t.id);
-                return `
-                    <div class="track-row" onclick="playQueueIndex(${idx})">
+            document.getElementById(containerId).innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx)).join('');
+        }
+
+        // Condivisione WhatsApp & Link
+        function openShareModal() {
+            if(!currentTrackData.id) return;
+            document.getElementById('shareTrackSubtitle').innerText = `${currentTrackData.name} - ${currentTrackData.artist}`;
+            document.getElementById('share-modal').classList.add('active');
+        }
+        function closeShareModal() { document.getElementById('share-modal').classList.remove('active'); }
+
+        function copyTrackLink() {
+            const shareText = `Ascolta "${currentTrackData.name}" di ${currentTrackData.artist} su DarkSound Pro! https://www.youtube.com/watch?v=${currentTrackData.id}`;
+            navigator.clipboard.writeText(shareText).then(() => {
+                alert('Link copiato negli appunti!');
+                closeShareModal();
+            });
+        }
+
+        function shareViaWhatsApp() {
+            const shareText = encodeURIComponent(`Ascolta "${currentTrackData.name}" di ${currentTrackData.artist} su DarkSound Pro! https://www.youtube.com/watch?v=${currentTrackData.id}`);
+            window.open(`https://api.whatsapp.com/send?text=${shareText}`, '_blank');
+            closeShareModal();
+        }
+
+        // Gestione Playlist Utente
+        function openNewPlaylistModal() {
+            if(!currentUser) return openAuthModal();
+            document.getElementById('new-playlist-modal').classList.add('active');
+        }
+        function closeNewPlaylistModal() { document.getElementById('new-playlist-modal').classList.remove('active'); }
+
+        function submitNewPlaylist() {
+            const name = document.getElementById('newPlaylistName').value.trim();
+            const visibility = document.getElementById('newPlaylistVisibility').value;
+            if(!name) return alert('Inserisci un nome.');
+
+            userPlaylists.push({
+                id: 'pl_' + Date.now(),
+                name: name,
+                visibility: visibility,
+                owner: currentUser,
+                tracks: []
+            });
+            saveUserData();
+            closeNewPlaylistModal();
+            document.getElementById('newPlaylistName').value = '';
+            if(currentLibTab === 'playlists') renderLibraryContent();
+        }
+
+        function openPlaylistSelectorForCurrent() {
+            selectedTrackForPlaylist = currentTrackData;
+            showPlaylistSelectorModal();
+        }
+
+        function openPlaylistSelectorForTrack(idx) {
+            selectedTrackForPlaylist = playQueue[idx];
+            showPlaylistSelectorModal();
+        }
+
+        function showPlaylistSelectorModal() {
+            if(!currentUser) return openAuthModal();
+            const listEl = document.getElementById('playlistSelectList');
+            if(userPlaylists.length === 0) {
+                listEl.innerHTML = `<p style="color:var(--text-sub);">Nessuna playlist creata.</p>`;
+            } else {
+                listEl.innerHTML = userPlaylists.map(pl => `
+                    <div class="track-row" style="background:rgba(255,255,255,0.05); margin-bottom:6px;" onclick="addTrackToPlaylist('${pl.id}')">
+                        <div class="track-meta">
+                            <h4>${pl.name}</h4>
+                            <p>${pl.visibility === 'public' ? 'Pubblica' : 'Privata'} • ${pl.tracks.length} brani</p>
+                        </div>
+                        <i class="fas fa-plus" style="color:var(--accent);"></i>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('playlist-select-modal').classList.add('active');
+        }
+
+        function closePlaylistModal() { document.getElementById('playlist-select-modal').classList.remove('active'); }
+
+        function addTrackToPlaylist(playlistId) {
+            let pl = userPlaylists.find(p => p.id === playlistId);
+            if(pl && selectedTrackForPlaylist) {
+                if(!pl.tracks.some(t => t.id === selectedTrackForPlaylist.id)) {
+                    pl.tracks.push(selectedTrackForPlaylist);
+                    saveUserData();
+                    alert(`Brano aggiunto a "${pl.name}"!`);
+                } else {
+                    alert('Brano già presente nella playlist.');
+                }
+            }
+            closePlaylistModal();
+        }
+
+        function switchLibraryTab(tab) {
+            currentLibTab = tab;
+            document.getElementById('btnTabLiked').className = tab === 'liked' ? 'chip active' : 'chip';
+            document.getElementById('btnTabDownloads').className = tab === 'downloads' ? 'chip active' : 'chip';
+            document.getElementById('btnTabPlaylists').className = tab === 'playlists' ? 'chip active' : 'chip';
+            renderLibraryContent();
+        }
+
+        function renderLibraryContent() {
+            const container = document.getElementById('libContentList');
+            if(currentLibTab === 'liked') {
+                renderTracksList(likedSongs, 'libContentList');
+            } else if(currentLibTab === 'downloads') {
+                renderTracksList(downloadedTracks, 'libContentList');
+            } else if(currentLibTab === 'playlists') {
+                if(userPlaylists.length === 0) {
+                    container.innerHTML = `<p style="color:var(--text-sub); margin-top:20px;">Nessuna playlist.</p>`;
+                    return;
+                }
+                container.innerHTML = userPlaylists.map(pl => `
+                    <div class="track-row" onclick="openUserPlaylistDetails('${pl.id}')">
                         <div class="track-row-left">
-                            <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${idx}/200'">
+                            <div style="width:52px;height:52px;background:linear-gradient(135deg,#30d158,#007aff);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:black;"></i></div>
                             <div class="track-meta">
-                                <h4>${t.name}</h4>
-                                <p><span class="badge-full">AUDIO</span> ${t.artist}</p>
+                                <h4>${pl.name}</h4>
+                                <p><span class="${pl.visibility === 'public' ? 'badge-public' : 'badge-private'}">${pl.visibility === 'public' ? 'PUBBLICA' : 'PRIVATA'}</span> ${pl.tracks.length} brani</p>
                             </div>
                         </div>
                         <div class="track-actions" onclick="event.stopPropagation()">
-                            <i class="fas fa-download btn-download-action ${isDownloaded ? 'saved' : ''}" onclick="toggleDownloadTrack(${idx})"></i>
-                            <i class="${isLiked ? 'fas fa-heart' : 'far fa-heart'}" style="${isLiked ? 'color:var(--accent);' : ''}" onclick="toggleLikeTrack(${idx})"></i>
+                            <i class="fas fa-trash" style="color:#ff4d4d; font-size:1rem;" onclick="deleteUserPlaylist('${pl.id}')"></i>
                         </div>
                     </div>
-                `;
-            }).join('');
-            document.getElementById(containerId).innerHTML = html;
+                `).join('');
+            }
+        }
+
+        function openUserPlaylistDetails(playlistId) {
+            let pl = userPlaylists.find(p => p.id === playlistId);
+            if(!pl) return;
+            playQueue = pl.tracks;
+            const container = document.getElementById('libContentList');
+            container.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                    <button class="chip" onclick="renderLibraryContent()"><i class="fas fa-arrow-left"></i> Indietro</button>
+                    <h3 style="font-size:1.1rem; font-weight:800;">${pl.name}</h3>
+                </div>
+            `;
+            container.innerHTML += pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx)).join('');
+        }
+
+        function openPublicPlaylist(playlistId) {
+            let pl = globalPublicPlaylists.find(p => p.id === playlistId);
+            if(!pl) return;
+            playQueue = pl.tracks;
+            switchView('search', document.querySelectorAll('.nav-item')[1]);
+            const container = document.getElementById('searchResultsContainer');
+            container.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                    <button class="chip" onclick="document.getElementById('searchResultsContainer').innerHTML=''"><i class="fas fa-arrow-left"></i> Indietro</button>
+                    <h3 style="font-size:1.1rem; font-weight:800;">${pl.name} (di ${pl.owner})</h3>
+                </div>
+            `;
+            container.innerHTML += pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx)).join('');
+        }
+
+        function savePublicPlaylistToLibrary(playlistId) {
+            let pl = globalPublicPlaylists.find(p => p.id === playlistId);
+            if(pl) {
+                userPlaylists.push({...pl, id: 'pl_saved_' + Date.now(), owner: currentUser + ' (Salvata)'});
+                saveUserData();
+                alert(`Playlist "${pl.name}" aggiunta alla tua libreria!`);
+            }
+        }
+
+        function deleteUserPlaylist(playlistId) {
+            userPlaylists = userPlaylists.filter(p => p.id !== playlistId);
+            saveUserData();
+            renderLibraryContent();
         }
 
         function toggleDownloadTrack(idx) {
@@ -449,8 +669,7 @@
             if(exists > -1) downloadedTracks.splice(exists, 1);
             else downloadedTracks.push(t);
             saveUserData();
-            renderTracksList(playQueue, currentLibTab === 'liked' ? 'libContentList' : 'homeTracksContainer');
-            if(document.getElementById('view-library').classList.contains('active')) renderLibraryContent();
+            renderTracksList(playQueue, 'libContentList');
         }
 
         function toggleDownloadCurrent() {
@@ -460,45 +679,6 @@
             else downloadedTracks.push(currentTrackData);
             saveUserData();
             updateDownloadButtonUI();
-        }
-
-        function openLikedSongs() { switchView('library', document.querySelectorAll('.nav-item')[2]); switchLibraryTab('liked'); }
-        function openDownloadedSongs() { switchView('library', document.querySelectorAll('.nav-item')[2]); switchLibraryTab('downloads'); }
-
-        function switchLibraryTab(tab) {
-            currentLibTab = tab;
-            document.getElementById('btnTabLiked').className = tab === 'liked' ? 'chip active' : 'chip';
-            document.getElementById('btnTabDownloads').className = tab === 'downloads' ? 'chip active' : 'chip';
-            renderLibraryContent();
-        }
-
-        function renderLibraryContent() {
-            const container = document.getElementById('libContentList');
-            const items = currentLibTab === 'liked' ? likedSongs : downloadedTracks;
-            document.getElementById('countLiked').innerText = likedSongs.length;
-            document.getElementById('countDownloads').innerText = downloadedTracks.length;
-
-            if(!items || items.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-sub); margin-top:20px;">Nessun elemento.</p>`;
-                return;
-            }
-
-            container.innerHTML = items.map((t, idx) => `
-                <div class="track-row" onclick="playLibraryItem(${idx})">
-                    <div class="track-row-left">
-                        <img src="${t.image}">
-                        <div class="track-meta">
-                            <h4>${t.name}</h4>
-                            <p>${t.artist}</p>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function playLibraryItem(idx) {
-            playQueue = currentLibTab === 'liked' ? likedSongs : downloadedTracks;
-            playQueueIndex(idx);
         }
 
         function playQueueIndex(index) {
