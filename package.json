@@ -1,0 +1,9 @@
+{
+  "name": "darksound-pro",
+  "version": "1.0.0",
+  "main": "index.html",
+  "dependencies": {
+    "@distube/ytdl-core": "^4.14.4",
+    "ytsr": "^3.8.4"
+  }
+}
