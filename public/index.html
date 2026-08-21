@@ -369,10 +369,18 @@
 
             renderList(currentTracks);
 
-            audio.src = `/api/stream/${track.id}`;
             try {
-                await audio.play();
-                document.getElementById('playPauseIcon').className = 'fas fa-pause';
+                const response = await fetch(`/api/stream/${track.id}`);
+                const data = await response.json();
+                
+                if (data.streamUrl) {
+                    audio.src = data.streamUrl;
+                    await audio.play();
+                    document.getElementById('playPauseIcon').className = 'fas fa-pause';
+                } else {
+                    alert("Impossibile avviare il brano");
+                    document.getElementById('playPauseIcon').className = 'fas fa-play';
+                }
             } catch (err) {
                 console.error("Errore riproduzione:", err);
                 document.getElementById('playPauseIcon').className = 'fas fa-play';
