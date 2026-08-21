@@ -157,7 +157,6 @@
         .home-title { font-size: 2rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
         .section-title { font-size: 1.35rem; font-weight: 800; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* Nuovi Widget Premium (AI DJ, Prompted Playlist, Blend) */
         .premium-features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -239,7 +238,6 @@
         }
         #fullscreen-player.active { display: flex; }
 
-        /* Canvas Animato di Sfondo */
         .canvas-bg-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1; opacity: 0.25; filter: blur(50px) saturate(2);
@@ -376,7 +374,6 @@
         </div>
     </div>
 
-    <!-- Modale AI DJ -->
     <div id="ai-dj-modal" class="modal-overlay">
         <div class="auth-card" style="text-align: center;">
             <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 1.8rem; color: white;">
@@ -389,7 +386,6 @@
         </div>
     </div>
 
-    <!-- Modale Prompted Playlists (IA) -->
     <div id="ai-playlist-modal" class="modal-overlay">
         <div class="auth-card">
             <h2>Crea Playlist con IA</h2>
@@ -402,7 +398,6 @@
         </div>
     </div>
 
-    <!-- Modale Blend -->
     <div id="blend-modal" class="modal-overlay">
         <div class="auth-card" style="text-align: center;">
             <div style="font-size: 2.2rem; color: var(--accent); margin-bottom: 10px;"><i class="fas fa-users-viewfinder"></i></div>
@@ -420,7 +415,6 @@
         </div>
     </div>
 
-    <!-- Modale Wrapped / Statistiche -->
     <div id="wrapped-modal" class="modal-overlay">
         <div class="auth-card" style="text-align: center; background: linear-gradient(135deg, #1f1147, #120b24);">
             <div style="font-size: 2.5rem; color: #ff007f; margin-bottom: 10px;"><i class="fas fa-fire"></i></div>
@@ -518,7 +512,6 @@
         
         <h1 class="home-title" id="homeWelcomeTitle">Esplora</h1>
 
-        <!-- Nuove funzioni avanzate in stile Spotify Premium -->
         <div class="premium-features-grid">
             <div class="feature-card" onclick="openAiDjModal()">
                 <i class="fas fa-robot"></i>
@@ -537,7 +530,6 @@
             </div>
         </div>
 
-        <!-- NUOVA MODIFICA: Conto alla rovescia evento inserito sotto i widget -->
         <div style="background: linear-gradient(135deg, #30d158 0%, #1a8a3a 100%); border-radius: 18px; padding: 20px; margin-bottom: 24px; text-align: center; color: white;">
             <h4 style="font-size: 0.9rem; font-weight: 700; opacity: 0.9; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Prossimo DarkSound Event</h4>
             <div id="countdown" style="font-size: 1.8rem; font-weight: 800; font-family: monospace;">00:00:00</div>
@@ -574,7 +566,6 @@
         <div id="libContentList"><p style="color:var(--text-sub);">Nessun elemento.</p></div>
     </div>
 
-    <!-- Vista Artist Stile Spotify -->
     <div id="view-artist" class="view">
         <div style="position:relative; width:100%; height:320px;">
             <img id="artistHeroImg" src="" style="width:100%; height:100%; object-fit:cover; filter: brightness(0.7);" onerror="this.src='https://picsum.photos/seed/artist/600'">
@@ -599,7 +590,6 @@
         </div>
     </div>
 
-    <!-- Vista "Brani che ti piacciono" in stile Spotify -->
     <div id="view-liked-songs" class="view">
         <div style="position:relative; width:100%; padding: 40px 20px 24px 20px; background: linear-gradient(180deg, #3d2c8d 0%, #120b24 100%);">
             <div style="margin-bottom: 20px;">
@@ -739,7 +729,7 @@
         window.onload = function() {
             updateUserUI();
             loadHomeTracks();
-            updateCountdown(); // <-- Avvio script conto alla rovescia aggiunto
+            updateCountdown();
             if(!currentUser) {
                 setTimeout(() => openAuthModal(), 400);
             } else if(!userPreferences) {
@@ -747,9 +737,8 @@
             }
         };
 
-        // Funzione aggiunta per gestire il Countdown dell'evento
         function updateCountdown() {
-            const eventDate = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 ore da ora (modificabile)
+            const eventDate = new Date().getTime() + (24 * 60 * 60 * 1000);
             
             setInterval(() => {
                 const now = new Date().getTime();
@@ -826,7 +815,6 @@
             localStorage.setItem('darksound_global_public_playlists', JSON.stringify(globalPublicPlaylists));
         }
 
-        // Funzioni per le funzionalità avanzate Spotify
         function openAiDjModal() { document.getElementById('ai-dj-modal').classList.add('active'); }
         async function runAiDjSelection() {
             document.getElementById('aiDjStatusText').innerText = "Sto selezionando le migliori tracce per te...";
@@ -986,6 +974,7 @@
             document.getElementById(containerId).innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, sectionTracks)).join('');
         }
 
+        // Funzione openArtistPage CORRETTA
         async function openArtistPage(artistName, artistImageOverride) {
             switchView('artist'); 
             const heroImgEl = document.getElementById('artistHeroImg');
@@ -1001,15 +990,17 @@
                 let response = await fetch(`/api/search?q=${encodeURIComponent(artistName)}`);
                 let tracks = await response.json();
                 
-                if (tracks.length > 0) {
+                if (Array.isArray(tracks) && tracks.length > 0) {
                     heroImgEl.src = tracks[0].image;
                     renderTracksList(tracks, 'artistTracksContainer', tracks);
                 } else {
-                    container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano trovato per questo artista.</p>`;
+                    container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano popolare trovato per ${artistName}.</p>`;
                 }
                 heroImgEl.style.opacity = '1';
             } catch(e) {
-                container.innerHTML = `<p style="color:#ff4d4d;">Errore di caricamento.</p>`;
+                container.innerHTML = `<p style="color:#ff4d4d;">Errore: Impossibile recuperare i brani. Riprova più tardi.</p>`;
+                heroImgEl.style.opacity = '1';
+                console.error("Errore API Artist:", e);
             }
         }
 
