@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DarkSound Pro - Full Edition with Real Lyrics</title>
+    <title>DarkSound Pro - Fast Artist Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -47,47 +47,11 @@
             to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
         }
 
-        .top-status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-
-        .badge-pro {
-            background: rgba(48, 209, 88, 0.15);
-            border: 1px solid rgba(48, 209, 88, 0.3);
-            color: var(--accent);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
+        .top-status-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .badge-pro { background: rgba(48, 209, 88, 0.15); border: 1px solid rgba(48, 209, 88, 0.3); color: var(--accent); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
         .user-status-right { display: flex; gap: 8px; align-items: center; }
-        .status-pill {
-            background: rgba(46, 189, 89, 0.2);
-            color: #30d158;
-            font-size: 0.85rem;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 20px;
-        }
-        .user-pill {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 0.85rem;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .status-pill { background: rgba(46, 189, 89, 0.2); color: #30d158; font-size: 0.85rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; }
+        .user-pill { background: rgba(255, 255, 255, 0.1); color: white; font-size: 0.85rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 
         .profile-drawer {
             position: fixed; top: 0; right: -100%; width: 100%; max-width: 380px; height: 100vh;
@@ -97,18 +61,13 @@
             border-left: 1px solid rgba(255,255,255,0.1); overflow-y: auto;
         }
         .profile-drawer.active { right: 0; }
-        
         .drawer-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
         .drawer-user-info { display: flex; align-items: center; gap: 14px; }
         .drawer-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #007aff, #30d158); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; color: black; }
         .drawer-user-text h3 { font-size: 1.25rem; font-weight: 800; }
         .drawer-user-text p { font-size: 0.85rem; color: var(--text-sub); cursor: pointer; }
 
-        .drawer-menu-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
-            color: white; font-weight: 600; font-size: 1rem; cursor: pointer;
-        }
+        .drawer-menu-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); color: white; font-weight: 600; font-size: 1rem; cursor: pointer; }
         .drawer-menu-item i { font-size: 1.2rem; color: var(--text-sub); width: 30px; }
         .drawer-menu-left { display: flex; align-items: center; gap: 12px; }
 
@@ -117,46 +76,24 @@
         .friend-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
         .friend-bubble span { font-size: 0.72rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(30px);
-            z-index: 3000; display: none; justify-content: center; align-items: center; padding: 20px;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(30px); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .auth-card {
-            background: rgba(28, 28, 34, 0.95); border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px; padding: 30px; width: 100%; max-width: 420px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto;
-        }
+        .auth-card { background: rgba(28, 28, 34, 0.95); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px; padding: 30px; width: 100%; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto; }
         .auth-card h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
         .auth-card p { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 20px; }
         .auth-input-group { margin-bottom: 16px; }
         .auth-input-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-sub); }
-        .auth-input-group input, .auth-input-group select {
-            width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-            padding: 14px; border-radius: 12px; color: white; font-size: 1rem; outline: none;
-        }
-        .auth-btn {
-            width: 100%; background: var(--accent); color: black; font-weight: 800; padding: 14px;
-            border-radius: 12px; border: none; font-size: 1rem; cursor: pointer; margin-top: 10px;
-        }
+        .auth-input-group input, .auth-input-group select { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 12px; color: white; font-size: 1rem; outline: none; }
+        .auth-btn { width: 100%; background: var(--accent); color: black; font-weight: 800; padding: 14px; border-radius: 12px; border: none; font-size: 1rem; cursor: pointer; margin-top: 10px; }
 
         .genre-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
-        .genre-tag {
-            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-            padding: 12px; border-radius: 12px; text-align: center; font-weight: 600; font-size: 0.9rem;
-            cursor: pointer; transition: 0.2s; color: var(--text-sub);
-        }
+        .genre-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; text-align: center; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.2s; color: var(--text-sub); }
         .genre-tag.selected { background: var(--accent); color: black; border-color: var(--accent); }
 
         .home-title { font-size: 2rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
         .section-title { font-size: 1.35rem; font-weight: 800; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
 
-        .track-row { 
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 10px 12px; cursor: pointer; border-radius: 12px; margin-bottom: 4px; 
-            position: relative; z-index: 10;
-        }
+        .track-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; cursor: pointer; border-radius: 12px; margin-bottom: 4px; position: relative; z-index: 10; }
         .track-row:active { background: rgba(255,255,255,0.08); }
         .track-row-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; overflow: hidden; pointer-events: none; }
         .track-row-left img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: #333; flex-shrink: 0; }
@@ -168,53 +105,27 @@
         .badge-private { background: rgba(255, 149, 0, 0.2); color: #ff9500; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
         .track-actions { display: flex; align-items: center; gap: 14px; color: var(--text-sub); font-size: 1.2rem; padding: 6px; flex-shrink: 0; position: relative; z-index: 11; }
 
-        .search-box { 
-            background: rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 14px 18px; 
-            display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.1); 
-        }
+        .search-box { background: rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.1); }
         .search-box input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 1.05rem; }
 
-        .btn-action-primary {
-            background: var(--accent); color: black; font-weight: 700; border: none; 
-            padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 0.85rem;
-        }
-
-        .chip {
-            background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.08);
-            color: white; padding: 10px 18px; border-radius: 20px; 
-            font-size: 0.95rem; font-weight: 600; cursor: pointer; white-space: nowrap; 
-        }
+        .btn-action-primary { background: var(--accent); color: black; font-weight: 700; border: none; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 0.85rem; }
+        .chip { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.08); color: white; padding: 10px 18px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
         .chip.active { background: white; color: black; border-color: white; }
 
-        .share-option-btn {
-            display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px; background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; font-weight: 700; font-size: 1rem; cursor: pointer; margin-bottom: 10px;
-        }
+        .share-option-btn { display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; font-weight: 700; font-size: 1rem; cursor: pointer; margin-bottom: 10px; }
         .share-option-btn i { font-size: 1.3rem; }
 
-        .player-bar {
-            position: fixed; bottom: 76px; left: 12px; right: 12px; 
-            background: rgba(30, 30, 34, 0.85); backdrop-filter: blur(30px);
-            border-radius: 16px; padding: 10px 14px; display: none; align-items: center; gap: 14px; z-index: 100; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6); cursor: pointer;
-        }
+        .player-bar { position: fixed; bottom: 76px; left: 12px; right: 12px; background: rgba(30, 30, 34, 0.85); backdrop-filter: blur(30px); border-radius: 16px; padding: 10px 14px; display: none; align-items: center; gap: 14px; z-index: 100; box-shadow: 0 20px 40px rgba(0,0,0,0.6); cursor: pointer; }
         .player-bar img { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; }
         .player-meta { flex: 1; min-width: 0; }
         .p-title { font-size: 0.95rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .p-artist { font-size: 0.82rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .player-icons { display: flex; align-items: center; gap: 18px; font-size: 1.3rem; color: #fff; }
 
-        #fullscreen-player {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: linear-gradient(180deg, rgba(30,30,40,0.98) 0%, rgba(10,10,12,0.99) 100%);
-            backdrop-filter: blur(40px); z-index: 2500; display: none; flex-direction: column; padding: 30px 24px;
-            justify-content: space-between; transition: background 0.5s ease;
-        }
+        #fullscreen-player { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: linear-gradient(180deg, rgba(30,30,40,0.98) 0%, rgba(10,10,12,0.99) 100%); backdrop-filter: blur(40px); z-index: 2500; display: none; flex-direction: column; padding: 30px 24px; justify-content: space-between; transition: background 0.5s ease; }
         #fullscreen-player.active { display: flex; }
         .fs-top { display: flex; justify-content: space-between; align-items: center; color: white; font-size: 1.2rem; }
-        
         .fs-content-container { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; margin: 10px 0; }
-        
         .standard-player-view { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; transition: 0.3s; }
         .standard-player-view.hidden { display: none; }
         .fs-cover { width: 100%; max-width: 300px; aspect-ratio: 1; border-radius: 20px; object-fit: cover; margin-bottom: 20px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
@@ -226,23 +137,10 @@
         .lyrics-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; overflow-y: auto; padding: 20px 10px; text-align: center; scroll-behavior: smooth; }
         .lyrics-view.active { display: flex; }
         .lyrics-view::-webkit-scrollbar { display: none; }
-        
-        .lyric-line {
-            font-size: 1.4rem; font-weight: 700; color: rgba(255, 255, 255, 0.35);
-            margin: 16px 0; transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
-            cursor: pointer; line-height: 1.4;
-        }
-        .lyric-line.active {
-            color: #ffffff;
-            transform: scale(1.08);
-            text-shadow: 0 0 25px rgba(255,255,255,0.4);
-        }
+        .lyric-line { font-size: 1.4rem; font-weight: 700; color: rgba(255, 255, 255, 0.35); margin: 16px 0; transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1); cursor: pointer; line-height: 1.4; }
+        .lyric-line.active { color: #ffffff; transform: scale(1.08); text-shadow: 0 0 25px rgba(255,255,255,0.4); }
 
-        .lyrics-toggle-btn {
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
-            color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
-            cursor: pointer; display: flex; align-items: center; gap: 6px;
-        }
+        .lyrics-toggle-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
         .lyrics-toggle-btn.active { background: var(--accent); color: black; border-color: var(--accent); }
 
         .progress-container { width: 100%; margin-bottom: 16px; }
@@ -253,24 +151,14 @@
         .fs-controls { display: flex; justify-content: space-between; align-items: center; font-size: 1.5rem; color: white; width: 100%; max-width: 340px; margin: 0 auto; }
         .fs-play-btn { width: 64px; height: 64px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; }
 
-        nav {
-            position: fixed; bottom: 12px; left: 16px; right: 16px; height: 64px; 
-            background: rgba(20, 20, 24, 0.8); backdrop-filter: blur(30px);
-            display: flex; justify-content: space-around; align-items: center; border-radius: 22px;
-            border: 1px solid rgba(255, 255, 255, 0.12); z-index: 90;
-        }
-        .nav-item { 
-            display: flex; flex-direction: column; align-items: center; gap: 3px; 
-            color: var(--text-sub); font-size: 0.75rem; font-weight: 600; 
-            cursor: pointer; background: none; border: none; padding: 6px 16px; 
-        }
+        nav { position: fixed; bottom: 12px; left: 16px; right: 16px; height: 64px; background: rgba(20, 20, 24, 0.8); backdrop-filter: blur(30px); display: flex; justify-content: space-around; align-items: center; border-radius: 22px; border: 1px solid rgba(255, 255, 255, 0.12); z-index: 90; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--text-sub); font-size: 0.75rem; font-weight: 600; cursor: pointer; background: none; border: none; padding: 6px 16px; }
         .nav-item.active { color: var(--text-main); }
         #youtube-player { position: fixed; bottom: 0; left: 0; width: 200px; height: 200px; opacity: 0.01; pointer-events: none; z-index: -1000; }
     </style>
 </head>
 <body>
 
-    <!-- Menu Utente Laterale -->
     <div id="profileDrawer" class="profile-drawer">
         <div class="drawer-header">
             <div class="drawer-user-info">
@@ -282,7 +170,6 @@
             </div>
             <i class="fas fa-xmark" style="font-size: 1.4rem; cursor: pointer; color: var(--text-sub);" onclick="toggleProfileDrawer()"></i>
         </div>
-
         <div class="drawer-menu-item" onclick="openAuthModal()">
             <div class="drawer-menu-left"><i class="fas fa-user-plus"></i> Aggiungi account</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
@@ -291,48 +178,20 @@
             <div class="drawer-menu-left"><i class="fab fa-spotify" style="color:var(--accent);"></i> Piano DarkSound</div>
             <span style="background:rgba(48,209,88,0.2); color:var(--accent); font-size:0.75rem; padding:3px 8px; border-radius:6px; font-weight:800;">PRO</span>
         </div>
-        <div class="drawer-menu-item" onclick="alert('Statistiche: Hai ascoltato 14 ore di musica questa settimana!')">
-            <div class="drawer-menu-left"><i class="fas fa-chart-line"></i> Statistiche di ascolto</div>
-            <span style="font-size:0.7rem; color:var(--accent); font-weight:700;">Novità</span>
-        </div>
         <div class="drawer-menu-item" onclick="switchView('library', document.querySelectorAll('.nav-item')[2]); toggleProfileDrawer();">
             <div class="drawer-menu-left"><i class="fas fa-clock-rotate-left"></i> Recenti e Salvati</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
         </div>
-        <div class="drawer-menu-item" onclick="alert('Nessun nuovo aggiornamento.')">
-            <div class="drawer-menu-left"><i class="fas fa-bullhorn"></i> I tuoi aggiornamenti</div>
-        </div>
-        <div class="drawer-menu-item" onclick="alert('Impostazioni privacy e audio salvate correttamente.')">
-            <div class="drawer-menu-left"><i class="fas fa-gear"></i> Impostazioni e privacy</div>
-            <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
-        </div>
-
         <div style="margin-top: 24px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">Attività amici</div>
         <div class="drawer-friends-scroll">
-            <div class="friend-bubble" onclick="alert('Giancarlo sta ascoltando: Sfera Ebbasta')">
-                <img class="friend-avatar" src="https://picsum.photos/seed/friend1/100">
-                <span>Giancarlo</span>
-            </div>
-            <div class="friend-bubble" onclick="alert('Claudio sta ascoltando: Club Dogo')">
-                <img class="friend-avatar" src="https://picsum.photos/seed/friend2/100">
-                <span>Claudio</span>
-            </div>
-            <div class="friend-bubble" onclick="alert('Martina sta ascoltando: Annalisa')">
-                <img class="friend-avatar" src="https://picsum.photos/seed/friend3/100">
-                <span>Martina</span>
-            </div>
-            <div class="friend-bubble" onclick="alert('Invita un amico tramite link!')">
-                <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;"><i class="fas fa-plus"></i></div>
-                <span>Invita</span>
-            </div>
+            <div class="friend-bubble"><img class="friend-avatar" src="https://picsum.photos/seed/friend1/100"><span>Giancarlo</span></div>
+            <div class="friend-bubble"><img class="friend-avatar" src="https://picsum.photos/seed/friend2/100"><span>Claudio</span></div>
         </div>
-
         <div style="margin-top: auto; padding-top: 20px;">
             <button class="auth-btn" style="background:rgba(255,77,77,0.2); color:#ff4d4d; margin-top:0;" onclick="logoutUser()">Esci dall'account</button>
         </div>
     </div>
 
-    <!-- Modali -->
     <div id="auth-modal" class="modal-overlay">
         <div class="auth-card">
             <h2>Benvenuto su DarkSound</h2>
@@ -354,8 +213,6 @@
                 <div class="genre-tag" onclick="toggleGenre(this)">🎤 Rap & Trap</div>
                 <div class="genre-tag" onclick="toggleGenre(this)">🎸 Rock & Alternative</div>
                 <div class="genre-tag" onclick="toggleGenre(this)">🎧 Techno & House</div>
-                <div class="genre-tag" onclick="toggleGenre(this)">🎷 Jazz & Chill</div>
-                <div class="genre-tag" onclick="toggleGenre(this)">🌴 Reggaeton & Latin</div>
             </div>
             <div class="auth-input-group">
                 <label>Artista preferito (opzionale)</label>
@@ -402,7 +259,6 @@
         </div>
     </div>
 
-    <!-- Home View -->
     <div id="view-home" class="view active">
         <div class="top-status-bar">
             <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.45rem;"></i> DARKSOUND RADIO</div>
@@ -414,19 +270,11 @@
                 </div>
             </div>
         </div>
-        
         <h1 class="home-title" id="homeWelcomeTitle">Esplora</h1>
-        
-        <div id="personalizedRadioSection">
-            <div class="section-title">La tua Radio Personale <span style="font-size:0.75rem; color:var(--accent); background:rgba(48,209,88,0.15); padding:3px 8px; border-radius:6px;">Basata sui tuoi gusti</span></div>
-            <div id="radioTracksContainer"><p style="color:var(--text-sub);">Generazione radio in corso...</p></div>
-        </div>
-
         <div class="section-title" style="margin-top:24px;">Top Hit Nazionali</div>
         <div id="homeTracksContainer"><p style="color:var(--text-sub);">Caricamento...</p></div>
     </div>
 
-    <!-- Search View -->
     <div id="view-search" class="view">
         <h1 class="home-title">Cerca</h1>
         <div class="search-box">
@@ -436,7 +284,6 @@
         <div id="searchResultsContainer" style="margin-top:24px;"></div>
     </div>
 
-    <!-- Library View -->
     <div id="view-library" class="view">
         <div class="section-title">
             La tua Libreria
@@ -450,7 +297,6 @@
         <div id="libContentList"><p style="color:var(--text-sub);">Nessun elemento.</p></div>
     </div>
 
-    <!-- Fullscreen Player & Lyrics -->
     <div id="fullscreen-player">
         <div class="fs-top">
             <i class="fas fa-chevron-down" onclick="toggleFullscreen()" style="cursor:pointer;"></i>
@@ -459,7 +305,6 @@
             </button>
             <i class="fas fa-ellipsis-vertical" style="cursor:pointer;" onclick="openShareModal()"></i>
         </div>
-
         <div class="fs-content-container">
             <div class="standard-player-view" id="standardPlayerView">
                 <img id="fsCover" class="fs-cover" src="">
@@ -475,12 +320,10 @@
                     </div>
                 </div>
             </div>
-
             <div class="lyrics-view" id="lyricsView">
                 <div id="lyricsContainer" style="width: 100%; max-width: 360px; margin: auto; padding: 40px 0;"></div>
             </div>
         </div>
-
         <div class="progress-container">
             <div class="progress-bar-bg" id="progressBarBg" onclick="seekTrack(event)">
                 <div class="progress-bar-fill" id="progressBarFill"></div>
@@ -490,7 +333,6 @@
                 <span id="totalDuration">0:00</span>
             </div>
         </div>
-
         <div class="fs-controls">
             <i class="fas fa-random" style="color:var(--text-sub); cursor:pointer;"></i>
             <i class="fas fa-step-backward" style="cursor:pointer;" onclick="prevTrack()"></i>
@@ -530,9 +372,10 @@
         let downloadedTracks = JSON.parse(localStorage.getItem(currentUser ? `downloads_${currentUser}` : 'darksound_downloads') || '[]');
         let userPlaylists = JSON.parse(localStorage.getItem(currentUser ? `playlists_${currentUser}` : 'darksound_playlists') || '[]');
         let globalPublicPlaylists = JSON.parse(localStorage.getItem('darksound_global_public_playlists') || '[]');
-        
-        // Nuova variabile per gli artisti seguiti con persistenza
         let followedArtists = JSON.parse(localStorage.getItem('followedArtists') || '[]');
+
+        // Variabile di cache globale per memorizzare i risultati di ricerca correnti
+        let lastSearchResults = [];
 
         let progressInterval, searchTimer = null, currentLibTab = 'liked', selectedTrackForPlaylist = null;
         let tempAuthName = '';
@@ -542,11 +385,8 @@
         window.onload = function() {
             updateUserUI();
             loadHomeTracks();
-            if(!currentUser) {
-                setTimeout(() => openAuthModal(), 400);
-            } else if(!userPreferences) {
-                setTimeout(() => openOnboardingModal(), 400);
-            }
+            if(!currentUser) setTimeout(() => openAuthModal(), 400);
+            else if(!userPreferences) setTimeout(() => openOnboardingModal(), 400);
         };
 
         function toggleProfileDrawer() { document.getElementById('profileDrawer').classList.toggle('active'); }
@@ -610,11 +450,6 @@
 
         async function loadHomeTracks() {
             try {
-                let radioQuery = userPreferences ? (userPreferences.artist !== 'Hit Italia' ? userPreferences.artist : userPreferences.genres[0]) : 'Hit Italia';
-                let resRadio = await fetch(`/api/search?q=${encodeURIComponent(radioQuery)}`);
-                let radioTracks = await resRadio.json();
-                renderTracksList(radioTracks.slice(0, 5), 'radioTracksContainer', radioTracks.slice(0, 5));
-
                 let res = await fetch('/api/search?q=Hit Italia');
                 let homeTracks = await res.json();
                 renderTracksList(homeTracks, 'homeTracksContainer', homeTracks);
@@ -629,16 +464,16 @@
                 document.getElementById('searchResultsContainer').innerHTML = '';
                 return;
             }
-            searchTimer = setTimeout(() => executeSearch(val), 250);
+            searchTimer = setTimeout(() => executeSearch(val), 200);
         }
 
-        // --- RICERCA AVANZATA AGGIORNATA (Stile Spotify, Risultato migliore & Ordinamento intelligente) ---
         async function executeSearch(query) {
             try {
                 let res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
                 let tracks = await res.json();
+                lastSearchResults = tracks; // Salviamo i risultati in memoria per accesso istantaneo
+                
                 let matchedPlaylists = globalPublicPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
-
                 let container = document.getElementById('searchResultsContainer');
                 let html = '';
 
@@ -653,9 +488,6 @@
                                     <p><span class="badge-public">PUBBLICA</span> Di ${pl.owner} • ${pl.tracks.length} brani</p>
                                 </div>
                             </div>
-                            <div class="track-actions" onclick="event.stopPropagation()">
-                                <button class="btn-action-primary" onclick="savePublicPlaylistToLibrary('${pl.id}')">Salva</button>
-                            </div>
                         </div>
                     `).join('');
                 }
@@ -669,7 +501,6 @@
                     let mainArtistName = exactArtistTracks[0].artist;
                     let mainArtistImage = exactArtistTracks[0].image;
                     
-                    // Box "Risultato migliore" cliccabile per aprire la pagina dedicata dell'artista
                     html += `<div class="section-title" style="margin-top:10px; margin-bottom:15px;">Risultato migliore</div>`;
                     html += `
                         <div onclick="openArtistPage('${mainArtistName.replace(/'/g, "\\'")}')" style="background: #181818; padding: 20px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer;">
@@ -696,7 +527,6 @@
                 } else {
                     html += `<div class="section-title" style="margin-top:20px;">Brani Musicali</div>`;
                     container.innerHTML = html;
-                    
                     let tempContainer = document.createElement('div');
                     tempContainer.innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, tracks)).join('');
                     container.appendChild(tempContainer);
@@ -704,71 +534,57 @@
             } catch(e) { console.error(e); }
         }
 
-        // --- SCHERMATA DEDICATA DELL'ARTISTA CON COPERTINA E TASTO SEGUI ---
-        async function openArtistPage(artistName) {
-            try {
-                let res = await fetch(`/api/search?q=${encodeURIComponent(artistName)}`);
-                let tracks = await res.json();
-                let artistTracks = tracks.filter(t => t.artist.toLowerCase().includes(artistName.toLowerCase()));
-                if(artistTracks.length === 0) artistTracks = tracks;
+        // --- APERTURA ISTANNEA DELLA PAGINA ARTISTA (SENZA FETCH DI ATTESA) ---
+        function openArtistPage(artistName) {
+            // Filtra direttamente dai brani già scaricati in memoria, rendendo l'apertura istantanea
+            let artistTracks = lastSearchResults.filter(t => t.artist.toLowerCase().includes(artistName.toLowerCase()));
+            if(artistTracks.length === 0) artistTracks = lastSearchResults;
 
-                let artistImage = artistTracks[0]?.image || 'https://via.placeholder.com/300';
-                let isFollowed = followedArtists.includes(artistName);
+            let artistImage = artistTracks[0]?.image || 'https://picsum.photos/seed/artist/300';
+            let isFollowed = followedArtists.includes(artistName);
+            let container = document.getElementById('searchResultsContainer');
+            
+            container.innerHTML = `
+                <div style="position: relative; width: calc(100% + 40px); height: 300px; background: url('${artistImage}') center/cover no-repeat; margin: -20px -20px 0 -20px;">
+                    <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.2), #000000);"></div>
+                    <div style="position: absolute; top: 20px; left: 20px; cursor: pointer; color: white; font-size: 18px; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;" onclick="goBackToSearch()">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                    <div style="position: absolute; bottom: 20px; left: 20px;">
+                        <h1 style="color: white; font-size: 38px; font-weight: 800; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">${artistName}</h1>
+                    </div>
+                </div>
 
-                let container = document.getElementById('searchResultsContainer');
-                
-                container.innerHTML = `
-                    <div style="position: relative; width: calc(100% + 40px); height: 300px; background: url('${artistImage}') center/cover no-repeat; margin: -20px -20px 0 -20px;">
-                        <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.2), #000000);"></div>
-                        <div style="position: absolute; top: 20px; left: 20px; cursor: pointer; color: white; font-size: 18px; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;" onclick="goBackToSearch()">
-                            <i class="fas fa-chevron-left"></i>
+                <div style="padding-top: 20px; min-height: 50vh;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <button id="followBtn" onclick="toggleFollowArtist('${artistName.replace(/'/g, "\\'")}')" style="background: ${isFollowed ? 'transparent' : 'white'}; color: ${isFollowed ? 'white' : 'black'}; border: ${isFollowed ? '1px solid rgba(255,255,255,0.3)' : 'none'}; padding: 8px 24px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 14px;">
+                                ${isFollowed ? 'Seguito' : 'Segui'}
+                            </button>
                         </div>
-                        <div style="position: absolute; bottom: 20px; left: 20px;">
-                            <h1 style="color: white; font-size: 38px; font-weight: 800; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">${artistName}</h1>
+                        <div style="background: var(--accent); width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.4);" onclick="playSelectedTrack(encodeURIComponent(JSON.stringify(artistTracks[0])), encodeURIComponent(JSON.stringify(artistTracks)), 0)">
+                            <i class="fas fa-play" style="color: black; font-size: 20px; margin-left: 2px;"></i>
                         </div>
                     </div>
 
-                    <div style="padding-top: 20px; min-height: 50vh;">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px;">
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <button id="followBtn" onclick="toggleFollowArtist('${artistName.replace(/'/g, "\\'")}')" style="background: ${isFollowed ? 'transparent' : 'white'}; color: ${isFollowed ? 'white' : 'black'}; border: ${isFollowed ? '1px solid rgba(255,255,255,0.3)' : 'none'}; padding: 8px 24px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 14px;">
-                                    ${isFollowed ? 'Seguito' : 'Segui'}
-                                </button>
-                                <button style="background: none; border: none; color: var(--text-sub); font-size: 22px; cursor: pointer;"><i class="fas fa-ellipsis-vertical"></i></button>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <button style="background: none; border: none; color: var(--text-sub); font-size: 22px; cursor: pointer;"><i class="fas fa-random"></i></button>
-                                <div style="background: var(--accent); width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.4);" onclick="playSelectedTrack(encodeURIComponent(JSON.stringify(artistTracks[0])), encodeURIComponent(JSON.stringify(artistTracks)), 0)">
-                                    <i class="fas fa-play" style="color: black; font-size: 20px; margin-left: 2px;"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h3 style="color: white; font-size: 20px; font-weight: 700; margin-bottom: 15px;">Popolare</h3>
-                        <div id="artistTracksContainer">
-                            ${artistTracks.map((t, idx) => renderSingleTrackRow(t, idx, artistTracks)).join('')}
-                        </div>
+                    <h3 style="color: white; font-size: 20px; font-weight: 700; margin-bottom: 15px;">Popolare</h3>
+                    <div id="artistTracksContainer">
+                        ${artistTracks.map((t, idx) => renderSingleTrackRow(t, idx, artistTracks)).join('')}
                     </div>
-                `;
-            } catch(e) { console.error(e); }
+                </div>
+            `;
         }
 
-        // --- GESTIONE PERSISTENTE DEL PULSANTE SEGUI/SEGUITO ---
         function toggleFollowArtist(artistName) {
             let index = followedArtists.indexOf(artistName);
             let btn = document.getElementById('followBtn');
-            
             if(index > -1) {
                 followedArtists.splice(index, 1);
-                btn.style.background = 'white';
-                btn.style.color = 'black';
-                btn.style.border = 'none';
+                btn.style.background = 'white'; btn.style.color = 'black'; btn.style.border = 'none';
                 btn.innerText = 'Segui';
             } else {
                 followedArtists.push(artistName);
-                btn.style.background = 'transparent';
-                btn.style.color = 'white';
-                btn.style.border = '1px solid rgba(255,255,255,0.3)';
+                btn.style.background = 'transparent'; btn.style.color = 'white'; btn.style.border = '1px solid rgba(255,255,255,0.3)';
                 btn.innerText = 'Seguito';
             }
             localStorage.setItem('followedArtists', JSON.stringify(followedArtists));
@@ -797,8 +613,8 @@
                     </div>
                     <div class="track-actions" onclick="event.stopPropagation()">
                         <i class="fas fa-folder-plus" title="Aggiungi a playlist" onclick="openPlaylistSelectorForTrackObj('${trackJson}')"></i>
-                        <i class="fas fa-download ${isDownloaded ? 'saved' : ''}" onclick="toggleDownloadTrackObj('${trackJson}', this)"></i>
-                        <i class="${isLiked ? 'fas fa-heart' : 'far fa-heart'}" style="${isLiked ? 'color:var(--accent);' : ''}" onclick="toggleLikeTrackObj('${trackJson}', this)"></i>
+                        <i class="fas fa-download ${isDownloaded ? 'saved' : ''}" onclick="toggleDownloadTrackObj('${trackJson}')"></i>
+                        <i class="${isLiked ? 'fas fa-heart' : 'far fa-heart'}" style="${isLiked ? 'color:var(--accent);' : ''}" onclick="toggleLikeTrackObj('${trackJson}')"></i>
                     </div>
                 </div>
             `;
@@ -822,7 +638,6 @@
             document.getElementById('playerTitle').innerText = t.name;
             document.getElementById('playerArtist').innerText = t.artist;
             document.getElementById('playerImg').src = t.image;
-
             document.getElementById('fsTitle').innerText = t.name;
             document.getElementById('fsArtist').innerText = t.artist;
             document.getElementById('fsCover').src = t.image;
@@ -848,10 +663,7 @@
 
         function copyTrackLink() {
             const shareText = `Ascolta "${currentTrackData.name}" di ${currentTrackData.artist} su DarkSound Pro! https://www.youtube.com/watch?v=${currentTrackData.id}`;
-            navigator.clipboard.writeText(shareText).then(() => {
-                alert('Link copiato negli appunti!');
-                closeShareModal();
-            });
+            navigator.clipboard.writeText(shareText).then(() => { alert('Link copiato negli appunti!'); closeShareModal(); });
         }
 
         function shareViaWhatsApp() {
@@ -860,59 +672,37 @@
             closeShareModal();
         }
 
-        function openNewPlaylistModal() {
-            if(!currentUser) return openAuthModal();
-            document.getElementById('new-playlist-modal').classList.add('active');
-        }
+        function openNewPlaylistModal() { if(!currentUser) return openAuthModal(); document.getElementById('new-playlist-modal').classList.add('active'); }
         function closeNewPlaylistModal() { document.getElementById('new-playlist-modal').classList.remove('active'); }
 
         function submitNewPlaylist() {
             const name = document.getElementById('newPlaylistName').value.trim();
             const visibility = document.getElementById('newPlaylistVisibility').value;
             if(!name) return alert('Inserisci un nome.');
-
-            userPlaylists.push({
-                id: 'pl_' + Date.now(),
-                name: name,
-                visibility: visibility,
-                owner: currentUser,
-                tracks: []
-            });
+            userPlaylists.push({ id: 'pl_' + Date.now(), name: name, visibility: visibility, owner: currentUser, tracks: [] });
             saveUserData();
             closeNewPlaylistModal();
             document.getElementById('newPlaylistName').value = '';
             if(currentLibTab === 'playlists') renderLibraryContent();
         }
 
-        function openPlaylistSelectorForCurrent() {
-            selectedTrackForPlaylist = currentTrackData;
-            showPlaylistSelectorModal();
-        }
-
-        function openPlaylistSelectorForTrackObj(trackJson) {
-            selectedTrackForPlaylist = JSON.parse(decodeURIComponent(trackJson));
-            showPlaylistSelectorModal();
-        }
+        function openPlaylistSelectorForCurrent() { selectedTrackForPlaylist = currentTrackData; showPlaylistSelectorModal(); }
+        function openPlaylistSelectorForTrackObj(trackJson) { selectedTrackForPlaylist = JSON.parse(decodeURIComponent(trackJson)); showPlaylistSelectorModal(); }
 
         function showPlaylistSelectorModal() {
             if(!currentUser) return openAuthModal();
             const listEl = document.getElementById('playlistSelectList');
-            if(userPlaylists.length === 0) {
-                listEl.innerHTML = `<p style="color:var(--text-sub);">Nessuna playlist creata.</p>`;
-            } else {
+            if(userPlaylists.length === 0) listEl.innerHTML = `<p style="color:var(--text-sub);">Nessuna playlist creata.</p>`;
+            else {
                 listEl.innerHTML = userPlaylists.map(pl => `
                     <div class="track-row" style="background:rgba(255,255,255,0.05); margin-bottom:6px;" onclick="addTrackToPlaylist('${pl.id}')">
-                        <div class="track-meta">
-                            <h4>${pl.name}</h4>
-                            <p>${pl.visibility === 'public' ? 'Pubblica' : 'Privata'} • ${pl.tracks.length} brani</p>
-                        </div>
+                        <div class="track-meta"><h4>${pl.name}</h4><p>${pl.visibility === 'public' ? 'Pubblica' : 'Privata'} • ${pl.tracks.length} brani</p></div>
                         <i class="fas fa-plus" style="color:var(--accent);"></i>
                     </div>
                 `).join('');
             }
             document.getElementById('playlist-select-modal').classList.add('active');
         }
-
         function closePlaylistModal() { document.getElementById('playlist-select-modal').classList.remove('active'); }
 
         function addTrackToPlaylist(playlistId) {
@@ -922,9 +712,7 @@
                     pl.tracks.push(selectedTrackForPlaylist);
                     saveUserData();
                     alert(`Brano aggiunto a "${pl.name}"!`);
-                } else {
-                    alert('Brano già presente nella playlist.');
-                }
+                } else alert('Brano già presente nella playlist.');
             }
             closePlaylistModal();
         }
@@ -939,27 +727,17 @@
 
         function renderLibraryContent() {
             const container = document.getElementById('libContentList');
-            if(currentLibTab === 'liked') {
-                renderTracksList(likedSongs, 'libContentList', likedSongs);
-            } else if(currentLibTab === 'downloads') {
-                renderTracksList(downloadedTracks, 'libContentList', downloadedTracks);
-            } else if(currentLibTab === 'playlists') {
-                if(userPlaylists.length === 0) {
-                    container.innerHTML = `<p style="color:var(--text-sub); margin-top:20px;">Nessuna playlist.</p>`;
-                    return;
-                }
+            if(currentLibTab === 'liked') renderTracksList(likedSongs, 'libContentList', likedSongs);
+            else if(currentLibTab === 'downloads') renderTracksList(downloadedTracks, 'libContentList', downloadedTracks);
+            else if(currentLibTab === 'playlists') {
+                if(userPlaylists.length === 0) { container.innerHTML = `<p style="color:var(--text-sub); margin-top:20px;">Nessuna playlist.</p>`; return; }
                 container.innerHTML = userPlaylists.map(pl => `
                     <div class="track-row" onclick="openUserPlaylistDetails('${pl.id}')">
                         <div class="track-row-left">
                             <div style="width:52px;height:52px;background:linear-gradient(135deg,#30d158,#007aff);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:black;"></i></div>
-                            <div class="track-meta">
-                                <h4>${pl.name}</h4>
-                                <p><span class="${pl.visibility === 'public' ? 'badge-public' : 'badge-private'}">${pl.visibility === 'public' ? 'PUBBLICA' : 'PRIVATA'}</span> ${pl.tracks.length} brani</p>
-                            </div>
+                            <div class="track-meta"><h4>${pl.name}</h4><p><span class="${pl.visibility === 'public' ? 'badge-public' : 'badge-private'}">${pl.visibility === 'public' ? 'PUBBLICA' : 'PRIVATA'}</span> ${pl.tracks.length} brani</p></div>
                         </div>
-                        <div class="track-actions" onclick="event.stopPropagation()">
-                            <i class="fas fa-trash" style="color:#ff4d4d; font-size:1rem;" onclick="deleteUserPlaylist('${pl.id}')"></i>
-                        </div>
+                        <div class="track-actions" onclick="event.stopPropagation()"><i class="fas fa-trash" style="color:#ff4d4d; font-size:1rem;" onclick="deleteUserPlaylist('${pl.id}')"></i></div>
                     </div>
                 `).join('');
             }
@@ -969,40 +747,10 @@
             let pl = userPlaylists.find(p => p.id === playlistId);
             if(!pl) return;
             const container = document.getElementById('libContentList');
-            container.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                    <button class="chip" onclick="renderLibraryContent()"><i class="fas fa-arrow-left"></i> Indietro</button>
-                    <h3 style="font-size:1.1rem; font-weight:800;">${pl.name}</h3>
-                </div>
-            `;
+            container.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;"><button class="chip" onclick="renderLibraryContent()"><i class="fas fa-arrow-left"></i> Indietro</button><h3 style="font-size:1.1rem; font-weight:800;">${pl.name}</h3></div>`;
             let tempDiv = document.createElement('div');
             tempDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
             container.appendChild(tempDiv);
-        }
-
-        function openPublicPlaylist(playlistId) {
-            let pl = globalPublicPlaylists.find(p => p.id === playlistId);
-            if(!pl) return;
-            switchView('search', document.querySelectorAll('.nav-item')[1]);
-            const container = document.getElementById('searchResultsContainer');
-            container.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                    <button class="chip" onclick="document.getElementById('searchResultsContainer').innerHTML=''"><i class="fas fa-arrow-left"></i> Indietro</button>
-                    <h3 style="font-size:1.1rem; font-weight:800;">${pl.name} (di ${pl.owner})</h3>
-                </div>
-            `;
-            let tempDiv = document.createElement('div');
-            tempDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
-            container.appendChild(tempDiv);
-        }
-
-        function savePublicPlaylistToLibrary(playlistId) {
-            let pl = globalPublicPlaylists.find(p => p.id === playlistId);
-            if(pl) {
-                userPlaylists.push({...pl, id: 'pl_saved_' + Date.now(), owner: currentUser + ' (Salvata)'});
-                saveUserData();
-                alert(`Playlist "${pl.name}" aggiunta alla tua libreria!`);
-            }
         }
 
         function deleteUserPlaylist(playlistId) {
@@ -1063,26 +811,17 @@
                 queueIndex = index;
                 const t = playQueue[queueIndex];
                 currentTrackData = t;
-
                 document.getElementById('playerBar').style.display = 'flex';
                 document.getElementById('playerTitle').innerText = t.name;
                 document.getElementById('playerArtist').innerText = t.artist;
                 document.getElementById('playerImg').src = t.image;
-
                 document.getElementById('fsTitle').innerText = t.name;
                 document.getElementById('fsArtist').innerText = t.artist;
                 document.getElementById('fsCover').src = t.image;
-
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
-                
-                if(player && player.loadVideoById) {
-                    player.loadVideoById(t.id);
-                    player.playVideo();
-                    isPlaying = true;
-                    updatePlayIcons(true);
-                }
+                if(player && player.loadVideoById) { player.loadVideoById(t.id); player.playVideo(); isPlaying = true; updatePlayIcons(true); }
             }
         }
 
@@ -1103,114 +842,64 @@
             const btn = document.getElementById('lyricsToggleBtn');
             const standardView = document.getElementById('standardPlayerView');
             const lyricsView = document.getElementById('lyricsView');
-
-            if(isLyricsActive) {
-                btn.classList.add('active');
-                standardView.classList.add('hidden');
-                lyricsView.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-                standardView.classList.remove('hidden');
-                lyricsView.classList.remove('active');
-            }
+            if(isLyricsActive) { btn.classList.add('active'); standardView.classList.add('hidden'); lyricsView.classList.add('active'); } 
+            else { btn.classList.remove('active'); standardView.classList.remove('hidden'); lyricsView.classList.remove('active'); }
         }
 
         async function loadLyricsForCurrentTrack() {
             const container = document.getElementById('lyricsContainer');
             container.innerHTML = `<div class="lyric-line active">Ricerca testo in corso...</div>`;
             parsedSyncedLyrics = [];
-            
             try {
                 const res = await fetch(`https://lrclib.net/api/search?track_name=${encodeURIComponent(currentTrackData.name)}&artist_name=${encodeURIComponent(currentTrackData.artist)}`);
                 const data = await res.json();
-                
                 if (data && data.length > 0) {
                     const matchedTrack = data.find(item => item.syncedLyrics) || data[0];
-                    
-                    if (matchedTrack.syncedLyrics) {
-                        parseAndRenderSyncedLyrics(matchedTrack.syncedLyrics);
-                    } else if (matchedTrack.plainLyrics) {
-                        renderPlainLyrics(matchedTrack.plainLyrics);
-                    } else {
-                        container.innerHTML = `<div class="lyric-line active">Testo non disponibile per questo brano.</div>`;
-                    }
-                } else {
-                    container.innerHTML = `<div class="lyric-line active">Nessun testo trovato.</div>`;
-                }
-            } catch (e) {
-                container.innerHTML = `<div class="lyric-line active">Errore di caricamento del testo.</div>`;
-            }
+                    if (matchedTrack.syncedLyrics) parseAndRenderSyncedLyrics(matchedTrack.syncedLyrics);
+                    else if (matchedTrack.plainLyrics) renderPlainLyrics(matchedTrack.plainLyrics);
+                    else container.innerHTML = `<div class="lyric-line active">Testo non disponibile.</div>`;
+                } else container.innerHTML = `<div class="lyric-line active">Nessun testo trovato.</div>`;
+            } catch (e) { container.innerHTML = `<div class="lyric-line active">Errore caricamento testo.</div>`; }
         }
 
         function parseAndRenderSyncedLyrics(lrcString) {
             const container = document.getElementById('lyricsContainer');
             const lines = lrcString.split('\n');
             parsedSyncedLyrics = [];
-
             const timeRegex = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/;
-
             for (let line of lines) {
                 const match = timeRegex.exec(line);
                 if (match) {
-                    const minutes = parseInt(match[1], 10);
-                    const seconds = parseInt(match[2], 10);
-                    const milliseconds = parseInt(match[3].padEnd(3, '0'), 10);
-                    const totalSeconds = minutes * 60 + seconds + milliseconds / 1000;
-                    
+                    const totalSeconds = parseInt(match[1], 10) * 60 + parseInt(match[2], 10) + parseInt(match[3].padEnd(3, '0'), 10) / 1000;
                     const text = line.replace(timeRegex, '').trim();
-                    if (text) {
-                        parsedSyncedLyrics.push({ time: totalSeconds, text: text });
-                    }
+                    if (text) parsedSyncedLyrics.push({ time: totalSeconds, text: text });
                 }
             }
-
-            if (parsedSyncedLyrics.length === 0) {
-                container.innerHTML = `<div class="lyric-line active">Formato testo non valido.</div>`;
-                return;
-            }
-
-            container.innerHTML = parsedSyncedLyrics.map((item, idx) => `
-                <div class="lyric-line ${idx === 0 ? 'active' : ''}" data-time="${item.time}" onclick="seekToLyric(${item.time})">
-                    ${item.text}
-                </div>
-            `).join('');
+            if (parsedSyncedLyrics.length === 0) { container.innerHTML = `<div class="lyric-line active">Formato testo non valido.</div>`; return; }
+            container.innerHTML = parsedSyncedLyrics.map((item, idx) => `<div class="lyric-line ${idx === 0 ? 'active' : ''}" data-time="${item.time}" onclick="seekToLyric(${item.time})">${item.text}</div>`).join('');
         }
 
         function renderPlainLyrics(plainText) {
             const container = document.getElementById('lyricsContainer');
             parsedSyncedLyrics = [];
             const lines = plainText.split('\n').filter(l => l.trim() !== '');
-            
-            container.innerHTML = lines.map((text, idx) => `
-                <div class="lyric-line ${idx === 0 ? 'active' : ''}" data-time="0">
-                    ${text}
-                </div>
-            `).join('');
+            container.innerHTML = lines.map((text, idx) => `<div class="lyric-line ${idx === 0 ? 'active' : ''}" data-time="0">${text}</div>`).join('');
         }
 
-        function seekToLyric(timeSec) {
-            if(player && player.seekTo) player.seekTo(timeSec, true);
-        }
+        function seekToLyric(timeSec) { if(player && player.seekTo) player.seekTo(timeSec, true); }
 
         function updateActiveLyric(currentTime) {
             if (!isLyricsActive || parsedSyncedLyrics.length === 0) return;
             const lines = document.querySelectorAll('.lyric-line');
             let activeIndex = 0;
-
             lines.forEach((line, idx) => {
                 let t = parseFloat(line.getAttribute('data-time'));
                 if (currentTime >= t) activeIndex = idx;
             });
-
             lines.forEach((line, idx) => {
                 if (idx === activeIndex) {
-                    if (!line.classList.contains('active')) {
-                        line.classList.add('active');
-                        line.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                } else {
-                    line.classList.remove('active');
-                }
+                    if (!line.classList.contains('active')) { line.classList.add('active'); line.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+                } else line.classList.remove('active');
             });
         }
 
