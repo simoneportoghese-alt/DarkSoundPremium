@@ -125,15 +125,28 @@
         /* SECTION TITLES */
         .section-title { font-size: 1.35rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.3px; }
 
-        /* TRACK LISTS */
+        /* TRACK LISTS & SCROLLING MARQUEE FIX */
         .track-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.02); }
         .track-row:hover { background: rgba(255,255,255,0.02); }
-        .track-row-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
-        .track-row-left img { width: 56px; height: 56px; border-radius: 6px; object-fit: cover; background: #333; }
-        .track-meta h4 { font-size: 1.05rem; font-weight: 700; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
-        .track-meta p { font-size: 0.85rem; color: var(--text-sub); display: flex; align-items: center; gap: 8px; }
-        .badge-full { background: rgba(30,215,96,0.2); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; }
-        .track-actions { display: flex; align-items: center; gap: 18px; color: var(--text-sub); font-size: 1.2rem; padding: 6px; }
+        .track-row-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; overflow: hidden; }
+        .track-row-left img { width: 56px; height: 56px; border-radius: 6px; object-fit: cover; background: #333; flex-shrink: 0; }
+        
+        .track-meta { flex: 1; min-width: 0; overflow: hidden; position: relative; }
+        .track-meta h4 { font-size: 1.05rem; font-weight: 700; color: white; white-space: nowrap; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Animazione marquee se il titolo è lungo */
+        .track-meta.scrolling h4 {
+            display: inline-block;
+            animation: marqueeText 8s linear infinite alternate;
+        }
+        @keyframes marqueeText {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-30%); }
+        }
+
+        .track-meta p { font-size: 0.85rem; color: var(--text-sub); display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .badge-full { background: rgba(30,215,96,0.2); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; flex-shrink: 0; }
+        .track-actions { display: flex; align-items: center; gap: 18px; color: var(--text-sub); font-size: 1.2rem; padding: 6px; flex-shrink: 0; }
 
         /* SEARCH VIEW & COLORFUL GRID */
         .search-box { background: #242424; border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.05); }
@@ -153,12 +166,13 @@
             display: none; align-items: center; gap: 14px; z-index: 1900; 
             box-shadow: 0 12px 35px rgba(0,0,0,0.8); cursor: pointer;
             border: 1px solid rgba(255,255,255,0.08);
+            overflow: hidden;
         }
-        .player-bar img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; background: #333; }
-        .player-meta { flex: 1; min-width: 0; }
+        .player-bar img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; background: #333; flex-shrink: 0; }
+        .player-meta { flex: 1; min-width: 0; overflow: hidden; }
         .p-title { font-size: 1rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
         .p-artist { font-size: 0.85rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .player-icons { display: flex; align-items: center; gap: 20px; font-size: 1.35rem; color: #fff; padding: 4px; }
+        .player-icons { display: flex; align-items: center; gap: 20px; font-size: 1.35rem; color: #fff; padding: 4px; flex-shrink: 0; }
 
         /* FULLSCREEN PLAYER */
         #fullscreen-player {
@@ -171,8 +185,9 @@
         .fs-top { display: flex; justify-content: space-between; align-items: center; color: white; font-size: 1.35rem; }
         .fs-cover { width: 100%; max-width: 360px; aspect-ratio: 1; border-radius: 12px; object-fit: cover; box-shadow: 0 15px 40px rgba(0,0,0,0.7); margin: 20px auto; background: #333; }
         .fs-info-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .fs-titles h3 { font-size: 1.65rem; font-weight: 700; color: white; margin-bottom: 6px; }
-        .fs-titles p { font-size: 1.1rem; color: var(--text-sub); }
+        .fs-titles { flex: 1; min-width: 0; overflow: hidden; padding-right: 10px; }
+        .fs-titles h3 { font-size: 1.65rem; font-weight: 700; color: white; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .fs-titles p { font-size: 1.1rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .progress-container { width: 100%; margin-bottom: 28px; }
         .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; position: relative; cursor: pointer; }
@@ -333,7 +348,7 @@
                 <h3 id="fsTitle">-</h3>
                 <p id="fsArtist">-</p>
             </div>
-            <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.75rem; color: var(--text-sub); cursor:pointer; padding: 10px;" onclick="toggleLikeCurrent()"></i>
+            <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.75rem; color: var(--text-sub); cursor:pointer; padding: 10px; flex-shrink: 0;" onclick="toggleLikeCurrent()"></i>
         </div>
         <div class="progress-container">
             <div class="progress-bar-bg" id="progressBarBg" onclick="seekTrack(event)">
@@ -376,7 +391,7 @@
         <button class="nav-item" onclick="switchView('library', this)"><i class="fas fa-stream"></i><span>Libreria</span></button>
     </nav>
 
-    <!-- YOUTUBE API & JAVASCRIPT LOGIC EXTENDED -->
+    <!-- YOUTUBE API & JAVASCRIPT LOGIC -->
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         let player;
@@ -438,11 +453,12 @@
             let html = tracks.map((t, idx) => {
                 const safeImg = (t.image && t.image.trim() !== '') ? t.image : `https://picsum.photos/seed/track_${idx}_${Math.floor(Math.random()*1000)}/200/200`;
                 const isLiked = likedSongs.some(s => s.id === t.id);
+                const isLongText = t.name && t.name.length > 25;
                 return `
                     <div class="track-row" onclick="playQueueIndex(${idx})">
                         <div class="track-row-left">
                             <img src="${safeImg}" onerror="this.src='https://picsum.photos/seed/fallback_${idx}/200/200'" loading="lazy">
-                            <div class="track-meta">
+                            <div class="track-meta ${isLongText ? 'scrolling' : ''}">
                                 <h4>${t.name}</h4>
                                 <p><span class="badge-full">FULL AUDIO</span> ${t.artist}</p>
                             </div>
