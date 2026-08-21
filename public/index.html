@@ -15,92 +15,27 @@
             --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
-        body {
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            min-height: 100vh;
-            font-size: 16px;
-            overflow-x: hidden;
-            background-image: radial-gradient(circle at 10% 20%, rgba(48, 48, 80, 0.25) 0%, transparent 40%),
-                              radial-gradient(circle at 90% 80%, rgba(80, 30, 60, 0.2) 0%, transparent 40%);
-            background-attachment: fixed;
-        }
+        body { background-color: var(--bg-base); color: var(--text-main); min-height: 100vh; font-size: 16px; overflow-x: hidden; background-attachment: fixed; }
 
-        .view { 
-            display: none; 
-            padding: 20px; 
-            padding-bottom: 280px; 
-            animation: iosFadeIn 0.45s var(--transition-smooth) forwards; 
-        }
+        .view { display: none; padding: 20px; padding-bottom: 280px; animation: iosFadeIn 0.45s var(--transition-smooth) forwards; }
         .view.active { display: block; }
         
-        #view-artist, #view-liked-songs {
-            padding: 0;
-            padding-bottom: 280px;
-        }
+        #view-artist, #view-liked-songs { padding: 0; padding-bottom: 280px; }
 
         @keyframes iosFadeIn {
             from { opacity: 0; transform: scale(0.97) translateY(10px); filter: blur(4px); }
             to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
         }
 
-        .top-status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-
-        .badge-pro {
-            background: rgba(48, 209, 88, 0.15);
-            border: 1px solid rgba(48, 209, 88, 0.3);
-            color: var(--accent);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
+        .top-status-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .badge-pro { background: rgba(48, 209, 88, 0.15); border: 1px solid rgba(48, 209, 88, 0.3); color: var(--accent); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
         .user-status-right { display: flex; gap: 8px; align-items: center; }
-        .status-pill {
-            background: rgba(46, 189, 89, 0.2);
-            color: #30d158;
-            font-size: 0.85rem;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 20px;
-        }
-        .user-pill {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 0.85rem;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .status-pill { background: rgba(46, 189, 89, 0.2); color: #30d158; font-size: 0.85rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; }
+        .user-pill { background: rgba(255, 255, 255, 0.1); color: white; font-size: 0.85rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
 
-        .profile-drawer {
-            position: fixed; top: 0; right: -100%; width: 100%; max-width: 380px; height: 100vh;
-            background: rgba(18, 18, 22, 0.95); backdrop-filter: blur(35px);
-            z-index: 4000; transition: right 0.4s var(--transition-smooth);
-            display: flex; flex-direction: column; padding: 24px; box-shadow: -20px 0 50px rgba(0,0,0,0.8);
-            border-left: 1px solid rgba(255,255,255,0.1); overflow-y: auto;
-        }
+        .profile-drawer { position: fixed; top: 0; right: -100%; width: 100%; max-width: 380px; height: 100vh; background: rgba(18, 18, 22, 0.95); backdrop-filter: blur(35px); z-index: 4000; transition: right 0.4s var(--transition-smooth); display: flex; flex-direction: column; padding: 24px; box-shadow: -20px 0 50px rgba(0,0,0,0.8); border-left: 1px solid rgba(255,255,255,0.1); overflow-y: auto; }
         .profile-drawer.active { right: 0; }
         
         .drawer-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
@@ -109,11 +44,7 @@
         .drawer-user-text h3 { font-size: 1.25rem; font-weight: 800; }
         .drawer-user-text p { font-size: 0.85rem; color: var(--text-sub); cursor: pointer; }
 
-        .drawer-menu-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
-            color: white; font-weight: 600; font-size: 1rem; cursor: pointer;
-        }
+        .drawer-menu-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); color: white; font-weight: 600; font-size: 1rem; cursor: pointer; }
         .drawer-menu-item i { font-size: 1.2rem; color: var(--text-sub); width: 30px; }
         .drawer-menu-left { display: flex; align-items: center; gap: 12px; }
 
@@ -122,66 +53,31 @@
         .friend-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
         .friend-bubble span { font-size: 0.72rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(30px);
-            z-index: 3000; display: none; justify-content: center; align-items: center; padding: 20px;
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(30px); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .auth-card {
-            background: rgba(28, 28, 34, 0.95); border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px; padding: 30px; width: 100%; max-width: 420px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto;
-        }
+        .auth-card { background: rgba(28, 28, 34, 0.95); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px; padding: 30px; width: 100%; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto; }
         .auth-card h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
         .auth-card p { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 20px; }
         .auth-input-group { margin-bottom: 16px; }
         .auth-input-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-sub); }
-        .auth-input-group input, .auth-input-group select {
-            width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-            padding: 14px; border-radius: 12px; color: white; font-size: 1rem; outline: none;
-        }
-        .auth-btn {
-            width: 100%; background: var(--accent); color: black; font-weight: 800; padding: 14px;
-            border-radius: 12px; border: none; font-size: 1rem; cursor: pointer; margin-top: 10px;
-        }
+        .auth-input-group input, .auth-input-group select { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 12px; color: white; font-size: 1rem; outline: none; }
+        .auth-btn { width: 100%; background: var(--accent); color: black; font-weight: 800; padding: 14px; border-radius: 12px; border: none; font-size: 1rem; cursor: pointer; margin-top: 10px; }
 
         .genre-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
-        .genre-tag {
-            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-            padding: 12px; border-radius: 12px; text-align: center; font-weight: 600; font-size: 0.9rem;
-            cursor: pointer; transition: 0.2s; color: var(--text-sub);
-        }
+        .genre-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; text-align: center; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.2s; color: var(--text-sub); }
         .genre-tag.selected { background: var(--accent); color: black; border-color: var(--accent); }
 
         .home-title { font-size: 2rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
         .section-title { font-size: 1.35rem; font-weight: 800; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
 
-        .premium-features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 26px;
-        }
-        .feature-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 18px;
-            padding: 16px 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+        .premium-features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 26px; }
+        .feature-card { background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 16px 12px; text-align: center; cursor: pointer; transition: 0.3s; }
         .feature-card:active { transform: scale(0.96); background: rgba(255,255,255,0.12); }
         .feature-card i { font-size: 1.6rem; color: var(--accent); margin-bottom: 8px; display: block; }
         .feature-card h4 { font-size: 0.9rem; font-weight: 700; color: white; margin-bottom: 4px; }
         .feature-card p { font-size: 0.72rem; color: var(--text-sub); }
 
-        .track-row { 
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 10px 12px; cursor: pointer; border-radius: 12px; margin-bottom: 4px; 
-            position: relative; z-index: 10;
-        }
+        .track-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; cursor: pointer; border-radius: 12px; margin-bottom: 4px; position: relative; z-index: 10; }
         .track-row:active { background: rgba(255,255,255,0.08); }
         .track-row-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; overflow: hidden; pointer-events: none; }
         .track-row-left img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: #333; flex-shrink: 0; }
@@ -189,70 +85,30 @@
         .track-meta h4 { font-size: 1.05rem; font-weight: 700; color: white; white-space: nowrap; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; }
         .track-meta p { font-size: 0.85rem; color: var(--text-sub); display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .badge-full { background: rgba(48,209,88,0.2); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
-        .badge-public { background: rgba(0, 122, 255, 0.2); color: #007aff; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
-        .badge-private { background: rgba(255, 149, 0, 0.2); color: #ff9500; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
         .track-actions { display: flex; align-items: center; gap: 14px; color: var(--text-sub); font-size: 1.2rem; padding: 6px; flex-shrink: 0; position: relative; z-index: 11; }
 
-        .search-box { 
-            background: rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 14px 18px; 
-            display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.1); 
-        }
+        .search-box { background: rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.1); }
         .search-box input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 1.05rem; }
 
-        .btn-action-primary {
-            background: var(--accent); color: black; font-weight: 700; border: none; 
-            padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 0.85rem;
-        }
-
-        .chip {
-            background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.08);
-            color: white; padding: 10px 18px; border-radius: 20px; 
-            font-size: 0.95rem; font-weight: 600; cursor: pointer; white-space: nowrap; 
-        }
+        .btn-action-primary { background: var(--accent); color: black; font-weight: 700; border: none; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 0.85rem; }
+        .chip { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.08); color: white; padding: 10px 18px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
         .chip.active { background: white; color: black; border-color: white; }
 
-        .share-option-btn {
-            display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px; background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; font-weight: 700; font-size: 1rem; cursor: pointer; margin-bottom: 10px;
-        }
-        .share-option-btn i { font-size: 1.3rem; }
-
-        .player-bar {
-            position: fixed; bottom: 76px; left: 12px; right: 12px; 
-            background: rgba(30, 30, 34, 0.85); backdrop-filter: blur(30px);
-            border-radius: 16px; padding: 10px 14px; display: none; align-items: center; gap: 14px; z-index: 100; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6); cursor: pointer;
-        }
+        .share-option-btn { display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; font-weight: 700; font-size: 1rem; cursor: pointer; margin-bottom: 10px; }
+        
+        .player-bar { position: fixed; bottom: 76px; left: 12px; right: 12px; background: rgba(30, 30, 34, 0.85); backdrop-filter: blur(30px); border-radius: 16px; padding: 10px 14px; display: none; align-items: center; gap: 14px; z-index: 100; box-shadow: 0 20px 40px rgba(0,0,0,0.6); cursor: pointer; }
         .player-bar img { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; }
         .player-meta { flex: 1; min-width: 0; }
         .p-title { font-size: 0.95rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .p-artist { font-size: 0.82rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .player-icons { display: flex; align-items: center; gap: 18px; font-size: 1.3rem; color: #fff; }
 
-        #fullscreen-player {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: linear-gradient(180deg, rgba(30,30,40,0.98) 0%, rgba(10,10,12,0.99) 100%);
-            backdrop-filter: blur(40px); z-index: 2500; display: none; flex-direction: column; padding: 30px 24px;
-            justify-content: space-between; transition: background 0.5s ease;
-            overflow: hidden;
-        }
+        #fullscreen-player { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: linear-gradient(180deg, rgba(30,30,40,0.98) 0%, rgba(10,10,12,0.99) 100%); backdrop-filter: blur(40px); z-index: 2500; display: none; flex-direction: column; padding: 30px 24px; justify-content: space-between; overflow: hidden; }
         #fullscreen-player.active { display: flex; }
-
-        .canvas-bg-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; opacity: 0.25; filter: blur(50px) saturate(2);
-            background-size: cover; background-position: center;
-            animation: canvasPulse 8s ease-in-out infinite alternate;
-            pointer-events: none;
-        }
-        @keyframes canvasPulse {
-            0% { transform: scale(1) rotate(0deg); }
-            100% { transform: scale(1.15) rotate(3deg); }
-        }
-
+        .canvas-bg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.25; filter: blur(50px) saturate(2); background-size: cover; background-position: center; pointer-events: none; }
+        
         .fs-top { display: flex; justify-content: space-between; align-items: center; color: white; font-size: 1.2rem; z-index: 2; }
         .fs-content-container { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; margin: 10px 0; z-index: 2; }
-        
         .standard-player-view { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; transition: 0.3s; }
         .standard-player-view.hidden { display: none; }
         .fs-cover { width: 100%; max-width: 300px; aspect-ratio: 1; border-radius: 20px; object-fit: cover; margin-bottom: 20px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
@@ -261,393 +117,144 @@
         .fs-titles h3 { font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .fs-titles p { font-size: 1rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .lyrics-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; overflow-y: auto; padding: 20px 10px; text-align: center; scroll-behavior: smooth; }
+        .lyrics-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; overflow-y: auto; padding: 20px 10px; text-align: center; }
         .lyrics-view.active { display: flex; }
-        .lyrics-view::-webkit-scrollbar { display: none; }
-        
-        .lyric-line {
-            font-size: 1.4rem; font-weight: 700; color: rgba(255, 255, 255, 0.35);
-            margin: 16px 0; transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
-            cursor: pointer; line-height: 1.4;
-        }
-        .lyric-line.active {
-            color: #ffffff;
-            transform: scale(1.08);
-            text-shadow: 0 0 25px rgba(255,255,255,0.4);
-        }
-
-        .lyrics-toggle-btn {
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
-            color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
-            cursor: pointer; display: flex; align-items: center; gap: 6px;
-        }
-        .lyrics-toggle-btn.active { background: var(--accent); color: black; border-color: var(--accent); }
+        .lyric-line { font-size: 1.4rem; font-weight: 700; color: rgba(255, 255, 255, 0.35); margin: 16px 0; cursor: pointer; transition: 0.3s; }
+        .lyric-line.active { color: #ffffff; transform: scale(1.08); }
+        .lyrics-toggle-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+        .lyrics-toggle-btn.active { background: var(--accent); color: black; }
 
         .progress-container { width: 100%; margin-bottom: 16px; z-index: 2; }
         .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px; position: relative; cursor: pointer; }
-        .progress-bar-fill { width: 0%; height: 100%; background: white; border-radius: 3px; position: relative; }
+        .progress-bar-fill { width: 0%; height: 100%; background: white; border-radius: 3px; }
         .progress-times { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-sub); margin-top: 6px; }
-
-        .fs-controls { display: flex; justify-content: space-between; align-items: center; font-size: 1.5rem; color: white; width: 100%; max-width: 340px; margin: 0 auto; z-index: 2; }
         .fs-play-btn { width: 64px; height: 64px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; }
+        .fs-controls { display: flex; justify-content: space-between; align-items: center; font-size: 1.5rem; color: white; width: 100%; max-width: 340px; margin: 0 auto; z-index: 2; }
 
-        nav {
-            position: fixed; bottom: 12px; left: 16px; right: 16px; height: 64px; 
-            background: rgba(20, 20, 24, 0.8); backdrop-filter: blur(30px);
-            display: flex; justify-content: space-around; align-items: center; border-radius: 22px;
-            border: 1px solid rgba(255, 255, 255, 0.12); z-index: 90;
-        }
-        .nav-item { 
-            display: flex; flex-direction: column; align-items: center; gap: 3px; 
-            color: var(--text-sub); font-size: 0.75rem; font-weight: 600; 
-            cursor: pointer; background: none; border: none; padding: 6px 16px; 
-        }
+        nav { position: fixed; bottom: 12px; left: 16px; right: 16px; height: 64px; background: rgba(20, 20, 24, 0.8); backdrop-filter: blur(30px); display: flex; justify-content: space-around; align-items: center; border-radius: 22px; border: 1px solid rgba(255, 255, 255, 0.12); z-index: 90; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--text-sub); font-size: 0.75rem; font-weight: 600; cursor: pointer; background: none; border: none; padding: 6px 16px; }
         .nav-item.active { color: var(--text-main); }
         #youtube-player { position: fixed; bottom: 0; left: 0; width: 200px; height: 200px; opacity: 0.01; pointer-events: none; z-index: -1000; }
-
-        #artistHeroImg {
-            transition: opacity 0.3s ease-in-out;
-            background-color: #1a1a1a;
-        }
-        #artistTracksContainer {
-            min-height: 200px;
-        }
     </style>
 </head>
 <body>
 
-    <div id="profileDrawer" class="profile-drawer">
-        <div class="drawer-header">
-            <div class="drawer-user-info">
-                <div class="drawer-avatar" id="drawerAvatarInitial">S</div>
-                <div class="drawer-user-text">
-                    <h3 id="drawerUserName">Ospite</h3>
-                    <p onclick="openAuthModal()">Visualizza profilo</p>
-                </div>
-            </div>
-            <i class="fas fa-xmark" style="font-size: 1.4rem; cursor: pointer; color: var(--text-sub);" onclick="toggleProfileDrawer()"></i>
-        </div>
-
-        <div class="drawer-menu-item" onclick="openAuthModal()">
-            <div class="drawer-menu-left"><i class="fas fa-user-plus"></i> Aggiungi account</div>
-            <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
-        </div>
-        <div class="drawer-menu-item">
-            <div class="drawer-menu-left"><i class="fab fa-spotify" style="color:var(--accent);"></i> Piano DarkSound</div>
-            <span style="background:rgba(48,209,88,0.2); color:var(--accent); font-size:0.75rem; padding:3px 8px; border-radius:6px; font-weight:800;">PRO</span>
-        </div>
-        <div class="drawer-menu-item" onclick="openWrappedModal()">
-            <div class="drawer-menu-left"><i class="fas fa-chart-line"></i> DarkSound Wrapped / Stats</div>
-            <span style="font-size:0.7rem; color:var(--accent); font-weight:700;">Novità</span>
-        </div>
-        <div class="drawer-menu-item" onclick="switchView('library', document.querySelectorAll('.nav-item')[2]); toggleProfileDrawer();">
-            <div class="drawer-menu-left"><i class="fas fa-clock-rotate-left"></i> Recenti e Salvati</div>
-            <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
-        </div>
-        <div class="drawer-menu-item" onclick="alert('Impostazioni privacy e audio Lossless attive.')">
-            <div class="drawer-menu-left"><i class="fas fa-gear"></i> Impostazioni e privacy</div>
-            <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
-        </div>
-
-        <div style="margin-top: 24px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">Attività amici</div>
-        <div class="drawer-friends-scroll">
-            <div class="friend-bubble" onclick="alert('Giancarlo sta ascoltando: Sfera Ebbasta')">
-                <img class="friend-avatar" src="https://picsum.photos/seed/friend1/100">
-                <span>Giancarlo</span>
-            </div>
-            <div class="friend-bubble" onclick="alert('Claudio sta ascoltando: Club Dogo')">
-                <img class="friend-avatar" src="https://picsum.photos/seed/friend2/100">
-                <span>Claudio</span>
-            </div>
-            <div class="friend-bubble" onclick="alert('Martina sta ascoltando: Annalisa')">
-                <img class="friend-avatar" src="https://picsum.photos/seed/friend3/100">
-                <span>Martina</span>
-            </div>
-            <div class="friend-bubble" onclick="openBlendModal()">
-                <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;"><i class="fas fa-users" style="color:var(--accent);"></i></div>
-                <span>Blend</span>
-            </div>
-        </div>
-
-        <div style="margin-top: auto; padding-top: 20px;">
-            <button class="auth-btn" style="background:rgba(255,77,77,0.2); color:#ff4d4d; margin-top:0;" onclick="logoutUser()">Esci dall'account</button>
-        </div>
-    </div>
-
-    <div id="ai-dj-modal" class="modal-overlay">
-        <div class="auth-card" style="text-align: center;">
-            <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 1.8rem; color: white;">
-                <i class="fas fa-robot"></i>
-            </div>
-            <h2>AI DJ</h2>
-            <p id="aiDjStatusText">"Ciao! Sono il tuo DJ virtuale. Sto analizzando i tuoi gusti per mixare la prossima traccia perfetta per te..."</p>
-            <button class="auth-btn" onclick="runAiDjSelection()">Avvia Mix Intelligente</button>
-            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('ai-dj-modal').classList.remove('active')">Chiudi</button>
-        </div>
-    </div>
-
-    <div id="ai-playlist-modal" class="modal-overlay">
-        <div class="auth-card">
-            <h2>Crea Playlist con IA</h2>
-            <p>Descrivi l'atmosfera o il momento che stai vivendo:</p>
-            <div class="auth-input-group">
-                <input type="text" id="aiPromptInput" placeholder="Es. Notte elettronica chill in autostrada...">
-            </div>
-            <button class="auth-btn" onclick="generateAiPromptPlaylist()">Genera con IA</button>
-            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('ai-playlist-modal').classList.remove('active')">Annulla</button>
-        </div>
-    </div>
-
-    <div id="blend-modal" class="modal-overlay">
-        <div class="auth-card" style="text-align: center;">
-            <div style="font-size: 2.2rem; color: var(--accent); margin-bottom: 10px;"><i class="fas fa-users-viewfinder"></i></div>
-            <h2>Crea Blend con un Amico</h2>
-            <p>Fondi i tuoi gusti musicali con quelli di un tuo contatto in tempo reale.</p>
-            <div class="auth-input-group">
-                <select id="blendFriendSelect">
-                    <option value="Giancarlo">Giancarlo (Rap & Trap)</option>
-                    <option value="Claudio">Claudio (Club Dogo & Hip Hop)</option>
-                    <option value="Martina">Martina (Pop & Hit)</option>
-                </select>
-            </div>
-            <button class="auth-btn" onclick="createBlendPlaylist()">Crea Playlist Blend</button>
-            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('blend-modal').classList.remove('active')">Chiudi</button>
-        </div>
-    </div>
-
-    <div id="wrapped-modal" class="modal-overlay">
-        <div class="auth-card" style="text-align: center; background: linear-gradient(135deg, #1f1147, #120b24);">
-            <div style="font-size: 2.5rem; color: #ff007f; margin-bottom: 10px;"><i class="fas fa-fire"></i></div>
-            <h2 style="color:white;">Il tuo DarkSound Stats</h2>
-            <p style="color:var(--text-sub); margin-bottom:15px;">Ecco il riepilogo delle tue abitudini di ascolto recenti:</p>
-            <div style="background: rgba(255,255,255,0.06); padding: 14px; border-radius: 14px; text-align: left; margin-bottom: 15px; font-size:0.9rem;">
-                <p>🎧 <b>Minuti di ascolto:</b> 1,420 min</p>
-                <p style="margin-top:6px;">👑 <b>Genere Top:</b> Elettronica / Pop</p>
-                <p style="margin-top:6px;">🔥 <b>Brano più riprodotto:</b> Chlorine (Twenty One Pilots)</p>
-            </div>
-            <button class="auth-btn" onclick="document.getElementById('wrapped-modal').classList.remove('active')">Fantastico!</button>
-        </div>
-    </div>
-
-    <div id="auth-modal" class="modal-overlay">
-        <div class="auth-card">
-            <h2>Benvenuto su DarkSound</h2>
-            <p>Inserisci il tuo nome utente per iniziare.</p>
-            <div class="auth-input-group">
-                <label>Nome Utente</label>
-                <input type="text" id="authEmail" placeholder="mario_rossi">
-            </div>
-            <button class="auth-btn" onclick="proceedToOnboarding()">Continua</button>
-        </div>
-    </div>
-
-    <div id="onboarding-modal" class="modal-overlay">
-        <div class="auth-card">
-            <h2>I tuoi gusti</h2>
-            <p>Seleziona i tuoi generi musicali preferiti:</p>
-            <div class="genre-grid" id="genreGrid">
-                <div class="genre-tag" onclick="toggleGenre(this)">🔥 Pop & Hit</div>
-                <div class="genre-tag" onclick="toggleGenre(this)">🎤 Rap & Trap</div>
-                <div class="genre-tag" onclick="toggleGenre(this)">🎸 Rock & Alternative</div>
-                <div class="genre-tag" onclick="toggleGenre(this)">🎧 Techno & House</div>
-                <div class="genre-tag" onclick="toggleGenre(this)">🎷 Jazz & Chill</div>
-                <div class="genre-tag" onclick="toggleGenre(this)">🌴 Reggaeton & Latin</div>
-            </div>
-            <div class="auth-input-group">
-                <label>Artista preferito (opzionale)</label>
-                <input type="text" id="favArtistInput" placeholder="Es. Travis Scott, Sfera Ebbasta...">
-            </div>
-            <button class="auth-btn" onclick="completeOnboarding()">Crea la mia Radio</button>
-        </div>
-    </div>
-
-    <div id="share-modal" class="modal-overlay">
-        <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:400px;">
-            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px;">Condividi brano</h3>
-            <p id="shareTrackSubtitle" style="color:var(--text-sub); font-size:0.9rem; margin-bottom:20px;"></p>
-            <button class="share-option-btn" style="color:#25D366;" onclick="shareViaWhatsApp()"><i class="fab fa-whatsapp"></i> Invia su WhatsApp</button>
-            <button class="share-option-btn" onclick="copyTrackLink()"><i class="fas fa-link" style="color:#007aff;"></i> Copia Link Brano</button>
-            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:10px;" onclick="closeShareModal()">Chiudi</button>
-        </div>
-    </div>
-
-    <div id="playlist-select-modal" class="modal-overlay">
-        <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:400px;">
-            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Aggiungi a playlist</h3>
-            <div id="playlistSelectList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;"></div>
-            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white;" onclick="closePlaylistModal()">Chiudi</button>
-        </div>
-    </div>
-
-    <div id="new-playlist-modal" class="modal-overlay">
-        <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:400px;">
-            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Crea Nuova Playlist</h3>
-            <div class="auth-input-group">
-                <label>Nome Playlist</label>
-                <input type="text" id="newPlaylistName" placeholder="Es. I miei preferiti">
-            </div>
-            <div class="auth-input-group">
-                <label>Visibilità</label>
-                <select id="newPlaylistVisibility">
-                    <option value="private">Privata (Solo tu)</option>
-                    <option value="public">Pubblica (Tutti possono cercarla)</option>
-                </select>
-            </div>
-            <button class="auth-btn" onclick="submitNewPlaylist()">Crea</button>
-            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="closeNewPlaylistModal()">Annulla</button>
-        </div>
-    </div>
-
+    <!-- HOME VIEW -->
     <div id="view-home" class="view active">
         <div class="top-status-bar">
-            <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.45rem;"></i> LOSSLESS 24-BIT</div>
+            <div class="badge-pro"><i class="fa-solid fa-crown"></i> PRO ACTIVE</div>
             <div class="user-status-right">
-                <span class="status-pill" id="syncStatusBadge">Online</span>
-                <div class="user-pill" id="userProfilePill" onclick="toggleProfileDrawer()">
-                    <i class="fas fa-user-circle" style="font-size: 1.1rem;"></i>
-                    <span id="pillUserNameBtn">Ospite</span>
-                </div>
+                <div class="status-pill">Hi-Fi</div>
+                <div class="user-pill" onclick="toggleProfileDrawer()"><i class="fa-solid fa-user-circle"></i> <span id="userNamePill">Utente</span></div>
             </div>
         </div>
-        
-        <h1 class="home-title" id="homeWelcomeTitle">Esplora</h1>
-
+        <h1 class="home-title">In Primo Piano</h1>
         <div class="premium-features-grid">
-            <div class="feature-card" onclick="openAiDjModal()">
-                <i class="fas fa-robot"></i>
-                <h4>AI DJ</h4>
-                <p>Mix automatico</p>
+            <div class="feature-card" onclick="openAIGeneratorModal()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <h4>AI Studio</h4>
+                <p>Crea tracce con AI</p>
             </div>
-            <div class="feature-card" onclick="openAiPlaylistModal()">
-                <i class="fas fa-wand-magic-sparkles"></i>
-                <h4>AI Playlist</h4>
-                <p>Crea da prompt</p>
+            <div class="feature-card" onclick="switchView('liked-songs')">
+                <i class="fa-solid fa-heart"></i>
+                <h4>Preferiti</h4>
+                <p>I tuoi brani salvati</p>
             </div>
-            <div class="feature-card" onclick="openBlendModal()">
-                <i class="fas fa-users-viewfinder"></i>
-                <h4>Blend</h4>
-                <p>Unisci gusti</p>
+            <div class="feature-card" onclick="openConcertModal()">
+                <i class="fa-solid fa-ticket"></i>
+                <h4>Live</h4>
+                <p>Concerti & Eventi</p>
             </div>
         </div>
-
-        <div style="background: linear-gradient(135deg, #30d158 0%, #1a8a3a 100%); border-radius: 18px; padding: 20px; margin-bottom: 24px; text-align: center; color: white;">
-            <h4 style="font-size: 0.9rem; font-weight: 700; opacity: 0.9; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Prossimo DarkSound Event</h4>
-            <div id="countdown" style="font-size: 1.8rem; font-weight: 800; font-family: monospace;">00:00:00</div>
-        </div>
-        
-        <div id="personalizedRadioSection">
-            <div class="section-title">La tua Radio Personale <span style="font-size:0.75rem; color:var(--accent); background:rgba(48,209,88,0.15); padding:3px 8px; border-radius:6px;">Basata sui tuoi gusti</span></div>
-            <div id="radioTracksContainer"><p style="color:var(--text-sub);">Generazione radio in corso...</p></div>
-        </div>
-
-        <div class="section-title" style="margin-top:24px;">Top Hit Nazionali</div>
-        <div id="homeTracksContainer"><p style="color:var(--text-sub);">Caricamento...</p></div>
+        <div class="section-title">Consigliati per te</div>
+        <div id="homeTracksContainer"></div>
     </div>
 
+    <!-- SEARCH VIEW -->
     <div id="view-search" class="view">
         <h1 class="home-title">Cerca</h1>
         <div class="search-box">
-            <i class="fas fa-search" style="color: var(--text-sub);"></i>
-            <input type="text" id="spotifySearchInput" placeholder="Cerca brani o playlist pubbliche..." oninput="handleSearchInput(this.value)">
+            <i class="fa-solid fa-magnifying-glass" style="color:var(--text-sub);"></i>
+            <input type="text" id="searchInput" placeholder="Canta, cerca brani o artisti..." oninput="handleSearchInput(this.value)">
         </div>
-        <div id="searchResultsContainer" style="margin-top:24px;"></div>
+        <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:12px; margin-bottom:16px;">
+            <div class="chip active" onclick="filterGenre('all', this)">Tutti</div>
+            <div class="chip" onclick="filterGenre('Pop', this)">Pop</div>
+            <div class="chip" onclick="filterGenre('Hip-Hop', this)">Hip-Hop</div>
+            <div class="chip" onclick="filterGenre('Rock', this)">Rock</div>
+            <div class="chip" onclick="filterGenre('Electronic', this)">Elettronica</div>
+        </div>
+        <div id="searchResultsContainer"></div>
     </div>
 
-    <div id="view-library" class="view">
-        <div class="section-title">
-            La tua Libreria
-            <button class="btn-action-primary" onclick="openNewPlaylistModal()"><i class="fas fa-plus"></i> Nuova Playlist</button>
-        </div>
-        <div style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x:auto;">
-            <button class="chip active" id="btnTabLiked" onclick="switchLibraryTab('liked')">Preferiti</button>
-            <button class="chip" id="btnTabDownloads" onclick="switchLibraryTab('downloads')">Scaricati</button>
-            <button class="chip" id="btnTabPlaylists" onclick="switchLibraryTab('playlists')">Le tue Playlist</button>
-        </div>
-        <div id="libContentList"><p style="color:var(--text-sub);">Nessun elemento.</p></div>
-    </div>
-
-    <div id="view-artist" class="view">
-        <div style="position:relative; width:100%; height:320px;">
-            <img id="artistHeroImg" src="" style="width:100%; height:100%; object-fit:cover; filter: brightness(0.7);" onerror="this.src='https://picsum.photos/seed/artist/600'">
-            <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.9) 100%);"></div>
-            
-            <div style="position:absolute; top:20px; left:20px; z-index:10;">
-                <button class="chip" onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:rgba(0,0,0,0.5); backdrop-filter:blur(10px); border:none;"><i class="fas fa-arrow-left"></i></button>
-            </div>
-
-            <div style="position:absolute; bottom:20px; left:20px; right:20px; z-index:10;">
-                <h1 id="artistNameTitle" style="font-size:2.4rem; font-weight:800; color:white; line-height:1.1; margin-bottom:12px;">Artista</h1>
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <button class="btn-action-primary" style="padding:10px 24px; border-radius:20px; font-weight:700;" onclick="alert('Hai iniziato a seguire l\'artista!')">Segui</button>
-                    <i class="fas fa-ellipsis-vertical" style="font-size:1.4rem; color:white; cursor:pointer;" onclick="alert('Opzioni artista')"></i>
-                </div>
-            </div>
-        </div>
-
-        <div style="padding: 20px;">
-            <div class="section-title" style="margin-top:10px;">Popolare</div>
-            <div id="artistTracksContainer"><p style="color:var(--text-sub);">Caricamento brani...</p></div>
-        </div>
-    </div>
-
+    <!-- LIKED SONGS VIEW -->
     <div id="view-liked-songs" class="view">
-        <div style="position:relative; width:100%; padding: 40px 20px 24px 20px; background: linear-gradient(180deg, #3d2c8d 0%, #120b24 100%);">
-            <div style="margin-bottom: 20px;">
-                <button class="chip" onclick="switchView('library', document.querySelectorAll('.nav-item')[2])" style="background:rgba(0,0,0,0.4); backdrop-filter:blur(10px); border:none;"><i class="fas fa-arrow-left"></i></button>
-            </div>
-            <h1 style="font-size: 2.2rem; font-weight: 800; color: white; margin-bottom: 8px; line-height: 1.1;">Brani che ti piacciono</h1>
-            <p id="likedSongsCountSub" style="color: var(--text-sub); font-size: 0.95rem; font-weight: 600;">0 brani</p>
-
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 24px;">
-                <div style="display: flex; align-items: center; gap: 16px;">
-                    <div id="likedHeaderThumb" style="width: 44px; height: 44px; border-radius: 8px; background: linear-gradient(135deg, #450af5, #c4efd9); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white;">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <i class="fas fa-circle-arrow-down" style="font-size: 1.8rem; color: var(--accent); cursor: pointer;" title="Scaricati"></i>
-                </div>
-                <div style="display: flex; align-items: center; gap: 16px;">
-                    <i class="fas fa-shuffle" style="font-size: 1.3rem; color: white; cursor: pointer;" onclick="playLikedShuffled()" title="Riproduzione casuale"></i>
-                    <div style="width: 56px; height: 56px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: black; font-size: 1.4rem; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.5);" onclick="playLikedFirst()">
-                        <i class="fas fa-play" style="margin-left: 3px;"></i>
-                    </div>
-                </div>
-            </div>
+        <div style="background: linear-gradient(180deg, rgba(48,209,88,0.2) 0%, transparent 100%); padding: 30px 20px 20px 20px;">
+            <button onclick="switchView('home')" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer; margin-bottom:14px;"><i class="fa-solid fa-arrow-left"></i></button>
+            <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 6px;"><i class="fa-solid fa-heart" style="color:var(--accent);"></i> Brani Preferiti</h1>
+            <p style="color: var(--text-sub); font-size: 0.95rem;" id="likedSongsCount">0 brani salvati</p>
         </div>
+        <div style="padding: 0 20px;" id="likedSongsContainer"></div>
+    </div>
 
-        <div style="padding: 20px;">
-            <div id="likedSongsFullContainer"></div>
+    <!-- ARTIST VIEW -->
+    <div id="view-artist" class="view">
+        <div style="position:relative; width:100%; height:260px;">
+            <img id="artistHeroImg" src="" style="width:100%; height:100%; object-fit:cover;" alt="Artist">
+            <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.2) 0%, var(--bg-base) 100%);"></div>
+            <button onclick="switchView('home')" style="position:absolute; top:20px; left:20px; background:rgba(0,0,0,0.5); border:none; color:white; width:40px; height:40px; border-radius:50%; cursor:pointer; backdrop-filter:blur(10px); font-size:1rem;"><i class="fa-solid fa-arrow-left"></i></button>
+        </div>
+        <div style="padding: 0 20px;">
+            <h1 id="artistNameTitle" style="font-size:2.2rem; font-weight:800; margin-bottom:16px;">Nome Artista</h1>
+            <div class="section-title">Brani Popolari</div>
+            <div id="artistTracksContainer"></div>
         </div>
     </div>
 
-    <div id="fullscreen-player">
-        <div class="canvas-bg-layer" id="canvasBgLayer" style="background-image: url('');"></div>
-        
-        <div class="fs-top">
-            <i class="fas fa-chevron-down" onclick="toggleFullscreen()" style="cursor:pointer;"></i>
-            <button class="lyrics-toggle-btn" id="lyricsToggleBtn" onclick="toggleLyricsView()">
-                <i class="fas fa-microphone-lines"></i> Lyrics
-            </button>
-            <i class="fas fa-ellipsis-vertical" style="cursor:pointer;" onclick="openShareModal()"></i>
-        </div>
+    <!-- LIBRARY VIEW -->
+    <div id="view-library" class="view">
+        <h1 class="home-title">La tua Libreria</h1>
+        <p style="color:var(--text-sub); margin-bottom:20px;">Gestisci i tuoi download e playlist offline.</p>
+        <div class="section-title">Brani Scaricati Offline</div>
+        <div id="downloadedTracksContainer"></div>
+    </div>
 
+    <!-- PLAYER BAR -->
+    <div class="player-bar" id="playerBar" onclick="openFullscreenPlayer()">
+        <img id="playerImg" src="" alt="Cover">
+        <div class="player-meta">
+            <div class="p-title" id="playerTitle">Titolo</div>
+            <div class="p-artist" id="playerArtist">Artista</div>
+        </div>
+        <div class="player-icons">
+            <i class="fa-solid fa-heart" id="miniLikeBtn" onclick="event.stopPropagation(); toggleLikeCurrentTrack()"></i>
+            <i class="fa-solid fa-play" id="miniPlayBtn" onclick="event.stopPropagation(); togglePlayPause()"></i>
+        </div>
+    </div>
+
+    <!-- FULLSCREEN PLAYER -->
+    <div id="fullscreen-player">
+        <div class="canvas-bg-layer" id="canvasBgLayer"></div>
+        <div class="fs-top">
+            <i class="fa-solid fa-chevron-down" onclick="closeFullscreenPlayer()" style="cursor:pointer;"></i>
+            <span style="font-size:0.85rem; font-weight:700; letter-spacing:1px;" id="fsHeaderSubtitle">RIPRODUZIONE</span>
+            <button class="lyrics-toggle-btn" id="lyricsToggleBtn" onclick="toggleLyricsView()">TESTO</button>
+        </div>
+        
         <div class="fs-content-container">
             <div class="standard-player-view" id="standardPlayerView">
-                <img id="fsCover" class="fs-cover" src="">
+                <img id="fsCover" class="fs-cover" src="" alt="Cover">
                 <div class="fs-info-row">
                     <div class="fs-titles">
-                        <h3 id="fsTitle">-</h3>
-                        <p id="fsArtist" style="cursor:pointer; text-decoration:underline;" onclick="toggleFullscreen(); openArtistPage(currentTrackData.artist)">-</p>
+                        <h3 id="fsTitle">Titolo Brano</h3>
+                        <p id="fsArtist">Nome Artista</p>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 4px;">
-                        <i class="fas fa-folder-plus" style="font-size: 1.1rem; color: var(--text-sub); cursor:pointer; padding: 8px;" onclick="openPlaylistSelectorForCurrent()"></i>
-                        <i class="fas fa-download" id="fsDownloadDirectBtn" style="font-size: 1.1rem; color: var(--text-sub); cursor:pointer; padding: 8px;" onclick="toggleDownloadCurrent()"></i>
-                        <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.3rem; color: var(--text-sub); cursor:pointer; padding: 8px;" onclick="toggleLikeCurrent()"></i>
-                    </div>
+                    <i class="fa-solid fa-heart" id="fsLikeBtn" style="font-size: 1.5rem; cursor:pointer;" onclick="toggleLikeCurrentTrack()"></i>
                 </div>
             </div>
 
             <div class="lyrics-view" id="lyricsView">
-                <div id="lyricsContainer" style="width: 100%; max-width: 360px; margin: auto; padding: 40px 0;"></div>
+                <div class="lyric-line active">Caricamento testo in corso...</div>
             </div>
         </div>
 
@@ -656,235 +263,223 @@
                 <div class="progress-bar-fill" id="progressBarFill"></div>
             </div>
             <div class="progress-times">
-                <span id="currentTime">0:00</span>
-                <span id="totalDuration">0:00</span>
+                <span id="currentTimeLabel">0:00</span>
+                <span id="durationLabel">0:00</span>
             </div>
         </div>
 
         <div class="fs-controls">
-            <i class="fas fa-random" style="color:var(--text-sub); cursor:pointer;"></i>
-            <i class="fas fa-step-backward" style="cursor:pointer;" onclick="prevTrack()"></i>
-            <div class="fs-play-btn" onclick="togglePlay()"><i class="fas fa-play" id="fsPlayIcon"></i></div>
-            <i class="fas fa-step-forward" style="cursor:pointer;" onclick="nextTrack()"></i>
-            <i class="fas fa-redo" style="color:var(--text-sub); cursor:pointer;"></i>
+            <i class="fa-solid fa-shuffle" id="shuffleBtn" onclick="toggleShuffle()" style="font-size:1.2rem; color:var(--text-sub); cursor:pointer;"></i>
+            <i class="fa-solid fa-backward-step" onclick="playPreviousTrack()" style="cursor:pointer;"></i>
+            <div class="fs-play-btn" id="fsPlayBtn" onclick="togglePlayPause()"><i class="fa-solid fa-play"></i></div>
+            <i class="fa-solid fa-forward-step" onclick="playNextTrack()" style="cursor:pointer;"></i>
+            <i class="fa-solid fa-download" id="fsDownloadBtn" onclick="toggleDownloadCurrentTrack()" style="font-size:1.2rem; color:var(--text-sub); cursor:pointer;"></i>
         </div>
     </div>
 
-    <div id="youtube-player"></div>
-
-    <div class="player-bar" id="playerBar" onclick="toggleFullscreen()">
-        <img id="playerImg" src="">
-        <div class="player-meta">
-            <div class="p-title" id="playerTitle">-</div>
-            <div class="p-artist" id="playerArtist" onclick="event.stopPropagation(); openArtistPage(currentTrackData.artist)">-</div>
+    <!-- PROFILE DRAWER -->
+    <div class="profile-drawer" id="profileDrawer">
+        <div class="drawer-header">
+            <div class="drawer-user-info">
+                <div class="drawer-avatar" id="drawerAvatarIcon">U</div>
+                <div class="drawer-user-text">
+                    <h3 id="drawerUserName">Utente</h3>
+                    <p onclick="openAuthModal()">Modifica Profilo</p>
+                </div>
+            </div>
+            <i class="fa-solid fa-xmark" style="font-size: 1.4rem; cursor:pointer;" onclick="toggleProfileDrawer()"></i>
         </div>
-        <div class="player-icons" onclick="event.stopPropagation()">
-            <i class="fas fa-heart" id="miniLikeBtn" onclick="toggleLikeCurrent()"></i>
-            <i class="fas fa-play" id="playPauseIcon" onclick="togglePlay()"></i>
+        <div style="font-size:0.85rem; font-weight:700; color:var(--text-sub); margin-bottom:8px;">AMICI ATTIVI</div>
+        <div class="drawer-friends-scroll" id="drawerFriendsScroll">
+            <div class="friend-bubble"><img src="https://picsum.photos/seed/f1/100" class="friend-avatar"><span>Marco</span></div>
+            <div class="friend-bubble"><img src="https://picsum.photos/seed/f2/100" class="friend-avatar"><span>Sara</span></div>
+        </div>
+        <div class="drawer-menu-item" onclick="openAuthModal()"><div class="drawer-menu-left"><i class="fa-solid fa-user-gear"></i> Account</div><i class="fa-solid fa-chevron-right" style="font-size:0.8rem;"></i></div>
+        <div class="drawer-menu-item" onclick="openShareModal()"><div class="drawer-menu-left"><i class="fa-solid fa-share-nodes"></i> Condividi App</div><i class="fa-solid fa-chevron-right" style="font-size:0.8rem;"></i></div>
+        <div class="drawer-menu-item" onclick="alert('DarkSound Pro v4.2 - Audio Hi-Fi attivo')"><div class="drawer-menu-left"><i class="fa-solid fa-circle-info"></i> Info & Crediti</div><i class="fa-solid fa-chevron-right" style="font-size:0.8rem;"></i></div>
+    </div>
+
+    <!-- AUTH MODAL -->
+    <div class="modal-overlay" id="authModal">
+        <div class="auth-card">
+            <h2>Il tuo Profilo</h2>
+            <p>Personalizza la tua esperienza musicale.</p>
+            <div class="auth-input-group">
+                <label>Nome Utente</label>
+                <input type="text" id="authNameInput" placeholder="Inserisci nome...">
+            </div>
+            <button class="auth-btn" onclick="saveUserProfile()">Salva Profilo</button>
+            <button onclick="closeAuthModal()" style="width:100%; background:none; border:none; color:var(--text-sub); margin-top:14px; font-weight:600; cursor:pointer;">Chiudi</button>
         </div>
     </div>
 
+    <!-- SHARE MODAL -->
+    <div class="modal-overlay" id="shareModal">
+        <div class="auth-card">
+            <h2>Condividi</h2>
+            <p>Fai scoprire DarkSound Pro agli amici.</p>
+            <button class="share-option-btn" onclick="navigator.clipboard.writeText(window.location.href); alert('Link copiato!'); closeShareModal();"><i class="fa-solid fa-link"></i> Copia Link</button>
+            <button class="share-option-btn" onclick="window.open('https://wa.me/?text=Ascolta%20musica%20su%20DarkSound%20Pro!'); closeShareModal();"><i class="fa-brands fa-whatsapp" style="color:#25d366;"></i> WhatsApp</button>
+            <button onclick="closeShareModal()" style="width:100%; background:none; border:none; color:var(--text-sub); margin-top:14px; font-weight:600; cursor:pointer;">Chiudi</button>
+        </div>
+    </div>
+
+    <!-- CONCERT MODAL -->
+    <div class="modal-overlay" id="concertModal">
+        <div class="auth-card">
+            <h2>Prossimi Concerti</h2>
+            <p>Eventi live consigliati per te in base agli ascolti.</p>
+            <div style="background:rgba(255,255,255,0.06); padding:14px; border-radius:12px; margin-bottom:10px;">
+                <strong>The Weeknd - Live Stadium</strong>
+                <p style="font-size:0.8rem; color:var(--text-sub); margin-top:4px;">Milano, San Siro • 15 Luglio</p>
+            </div>
+            <div style="background:rgba(255,255,255,0.06); padding:14px; border-radius:12px; margin-bottom:16px;">
+                <strong>Dua Lipa - Future Tour</strong>
+                <p style="font-size:0.8rem; color:var(--text-sub); margin-top:4px;">Roma, Ippodromo • 22 Agosto</p>
+            </div>
+            <button class="auth-btn" onclick="closeConcertModal()">Chiudi</button>
+        </div>
+    </div>
+
+    <!-- AI STUDIO MODAL -->
+    <div class="modal-overlay" id="aiGeneratorModal">
+        <div class="auth-card">
+            <h2><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent);"></i> AI Studio</h2>
+            <p>Genera istantaneamente una traccia personalizzata con l'intelligenza artificiale.</p>
+            <div class="auth-input-group">
+                <label>Genere o Vibe</label>
+                <input type="text" id="aiPromptInput" placeholder="Es. Synthwave notturna, Lo-Fi rilassante...">
+            </div>
+            <div class="genre-grid">
+                <div class="genre-tag selected" onclick="selectAiGenre('Synthwave', this)">Synthwave</div>
+                <div class="genre-tag" onclick="selectAiGenre('Lo-Fi', this)">Lo-Fi</div>
+                <div class="genre-tag" onclick="selectAiGenre('Cyberpunk', this)">Cyberpunk</div>
+                <div class="genre-tag" onclick="selectAiGenre('Ambient', this)">Ambient</div>
+            </div>
+            <button class="auth-btn" onclick="generateAiTrack()">Genera Brano</button>
+            <button onclick="closeAIGeneratorModal()" style="width:100%; background:none; border:none; color:var(--text-sub); margin-top:14px; font-weight:600; cursor:pointer;">Chiudi</button>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
     <nav>
-        <button class="nav-item active" onclick="switchView('home', this)"><i class="fas fa-home"></i><span>Home</span></button>
-        <button class="nav-item" onclick="switchView('search', this)"><i class="fas fa-search"></i><span>Cerca</span></button>
-        <button class="nav-item" onclick="switchView('library', this)"><i class="fas fa-bookmark"></i><span>Libreria</span></button>
+        <button class="nav-item active" onclick="switchView('home'); setActiveNav(this)"><i class="fa-solid fa-house" style="font-size:1.1rem;"></i>Home</button>
+        <button class="nav-item" onclick="switchView('search'); setActiveNav(this)"><i class="fa-solid fa-magnifying-glass" style="font-size:1.1rem;"></i>Cerca</button>
+        <button class="nav-item" onclick="switchView('library'); setActiveNav(this)"><i class="fa-solid fa-book-open" style="font-size:1.1rem;"></i>Libreria</button>
     </nav>
+
+    <!-- HIDDEN YOUTUBE PLAYER -->
+    <div id="youtube-player"></div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         let player, isPlaying = false, playQueue = [], queueIndex = -1;
         let currentTrackData = { id: '', name: '', artist: '', image: '' };
-        let currentUser = localStorage.getItem('darksound_current_user') || null;
-        let userPreferences = JSON.parse(localStorage.getItem(currentUser ? `prefs_${currentUser}` : 'darksound_prefs') || 'null');
-        let likedSongs = JSON.parse(localStorage.getItem(currentUser ? `liked_${currentUser}` : 'darksound_liked') || '[]');
-        let downloadedTracks = JSON.parse(localStorage.getItem(currentUser ? `downloads_${currentUser}` : 'darksound_downloads') || '[]');
-        let userPlaylists = JSON.parse(localStorage.getItem(currentUser ? `playlists_${currentUser}` : 'darksound_playlists') || '[]');
-        let globalPublicPlaylists = JSON.parse(localStorage.getItem('darksound_global_public_playlists') || '[]');
-        let progressInterval, searchTimer = null, currentLibTab = 'liked', selectedTrackForPlaylist = null;
-        let tempAuthName = '';
-        let isLyricsActive = false;
-        let parsedSyncedLyrics = [];
+        let likedSongs = JSON.parse(localStorage.getItem('darksound_liked') || '[]');
+        let downloadedSongs = JSON.parse(localStorage.getItem('darksound_downloaded') || '[]');
+        let userName = localStorage.getItem('darksound_username') || 'Utente';
+        let isShuffle = false;
+        let progressTimer = null;
 
-        window.onload = function() {
-            updateUserUI();
-            loadHomeTracks();
-            updateCountdown();
-            if(!currentUser) {
-                setTimeout(() => openAuthModal(), 400);
-            } else if(!userPreferences) {
-                setTimeout(() => openOnboardingModal(), 400);
-            }
-        };
+        // Inizializzazione profilo
+        document.getElementById('userNamePill').innerText = userName;
+        document.getElementById('drawerUserName').innerText = userName;
+        document.getElementById('drawerAvatarIcon').innerText = userName.charAt(0).toUpperCase();
+        document.getElementById('authNameInput').value = userName;
 
-        function updateCountdown() {
-            const eventDate = new Date().getTime() + (24 * 60 * 60 * 1000);
-            setInterval(() => {
-                const now = new Date().getTime();
-                const distance = eventDate - now;
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                const countdownEl = document.getElementById("countdown");
-                if(countdownEl) {
-                    countdownEl.innerHTML = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        // Dati di default per la Home
+        const defaultTracks = [
+            { id: '450p7goxZqg', name: 'Blinding Lights', artist: 'The Weeknd', image: 'https://i.ytimg.com/vi/450p7goxZqg/hqdefault.jpg' },
+            { id: 'T4jGoyfO9jw', name: 'Shape of You', artist: 'Ed Sheeran', image: 'https://i.ytimg.com/vi/T4jGoyfO9jw/hqdefault.jpg' },
+            { id: 'fJ9rUzIMcZQ', name: 'Bohemian Rhapsody', artist: 'Queen', image: 'https://i.ytimg.com/vi/fJ9rUzIMcZQ/hqdefault.jpg' },
+            { id: 'YQHsXMglC9A', name: 'Hello', artist: 'Adele', image: 'https://i.ytimg.com/vi/YQHsXMglC9A/hqdefault.jpg' }
+        ];
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '200',
+                width: '200',
+                videoId: defaultTracks[0].id,
+                playerVars: { 'autoplay': 0, 'controls': 0 },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
                 }
-            }, 1000);
+            });
         }
 
-        function toggleProfileDrawer() { document.getElementById('profileDrawer').classList.toggle('active'); }
-        function logoutUser() {
-            localStorage.removeItem('darksound_current_user');
-            currentUser = null;
-            toggleProfileDrawer();
-            updateUserUI();
-            openAuthModal();
-        }
-        function openAuthModal() { document.getElementById('profileDrawer').classList.remove('active'); document.getElementById('auth-modal').classList.add('active'); }
-        function closeAuthModal() { document.getElementById('auth-modal').classList.remove('active'); }
-        function proceedToOnboarding() {
-            const name = document.getElementById('authEmail').value.trim();
-            if(!name) return alert('Inserisci un nome utente.');
-            tempAuthName = name;
-            closeAuthModal();
-            openOnboardingModal();
-        }
-        function openOnboardingModal() { document.getElementById('onboarding-modal').classList.add('active'); }
-        function toggleGenre(el) { el.classList.toggle('selected'); }
-        
-        function completeOnboarding() {
-            currentUser = tempAuthName;
-            localStorage.setItem('darksound_current_user', currentUser);
-            const selectedGenres = Array.from(document.querySelectorAll('#genreGrid .genre-tag.selected')).map(el => el.innerText.replace(/^[^\w\s]+\s*/, ''));
-            const favArtist = document.getElementById('favArtistInput').value.trim();
-            userPreferences = { genres: selectedGenres.length > 0 ? selectedGenres : ['Pop'], artist: favArtist || 'Hit Italia' };
-            localStorage.setItem(`prefs_${currentUser}`, JSON.stringify(userPreferences));
-            likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
-            downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
-            userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
-            document.getElementById('onboarding-modal').classList.remove('active');
-            updateUserUI();
-            loadHomeTracks();
+        function onPlayerReady() {
+            renderTracksList(defaultTracks, 'homeTracksContainer', defaultTracks);
+            // Avvia con il primo brano pronto ma in pausa
+            currentTrackData = defaultTracks[0];
+            refreshPlayerUI(currentTrackData);
         }
 
-        function updateUserUI() {
-            const dispName = currentUser ? currentUser : 'Ospite';
-            document.getElementById('pillUserNameBtn').innerText = dispName;
-            document.getElementById('drawerUserName').innerText = dispName;
-            document.getElementById('drawerAvatarInitial').innerText = dispName.charAt(0).toUpperCase();
-            if(currentUser) document.getElementById('homeWelcomeTitle').innerText = `Bentornato, ${currentUser}`;
-        }
-
-        function saveUserData() {
-            if(currentUser) {
-                localStorage.setItem(`liked_${currentUser}`, JSON.stringify(likedSongs));
-                localStorage.setItem(`downloads_${currentUser}`, JSON.stringify(downloadedTracks));
-                localStorage.setItem(`playlists_${currentUser}`, JSON.stringify(userPlaylists));
-                syncGlobalPublicPlaylists();
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                updatePlayIcons(true);
+                startProgressInterval();
+            } else if (event.data === YT.PlayerState.PAUSED) {
+                isPlaying = false;
+                updatePlayIcons(false);
+                stopProgressInterval();
+            } else if (event.data === YT.PlayerState.ENDED) {
+                playNextTrack();
             }
         }
 
-        function syncGlobalPublicPlaylists() {
-            let others = globalPublicPlaylists.filter(p => p.owner !== currentUser);
-            let minePublic = userPlaylists.filter(p => p.visibility === 'public').map(p => ({...p, owner: currentUser}));
-            globalPublicPlaylists = [...others, ...minePublic];
-            localStorage.setItem('darksound_global_public_playlists', JSON.stringify(globalPublicPlaylists));
-        }
+        function renderTracksList(tracks, containerId, queueList) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            
+            tracks.forEach((track, index) => {
+                const encodedTrack = btoa(unescape(encodeURIComponent(JSON.stringify(track))));
+                const encodedQueue = btoa(unescape(encodeURIComponent(JSON.stringify(queueList))));
+                const isLiked = likedSongs.some(s => s.id === track.id);
 
-        function openAiDjModal() { document.getElementById('ai-dj-modal').classList.add('active'); }
-        async function runAiDjSelection() {
-            document.getElementById('aiDjStatusText').innerText = "Sto selezionando le migliori tracce per te...";
-            let mockTracks = [
-                {id: 'oT3mCybbKas', name: 'Blinding Lights', artist: 'The Weeknd', image: 'https://i.ytimg.com/vi/oT3mCybbKas/hqdefault.jpg'},
-                {id: 'fLexgOxsZu0', name: 'Flowers', artist: 'Miley Cyrus', image: 'https://i.ytimg.com/vi/fLexgOxsZu0/hqdefault.jpg'}
-            ];
-            playSelectedTrack(btoa(unescape(encodeURIComponent(JSON.stringify(mockTracks[0])))), btoa(unescape(encodeURIComponent(JSON.stringify(mockTracks)))), 0);
-            document.getElementById('ai-dj-modal').classList.remove('active');
-        }
-
-        function openAiPlaylistModal() { document.getElementById('ai-playlist-modal').classList.add('active'); }
-        async function generateAiPromptPlaylist() {
-            const prompt = document.getElementById('aiPromptInput').value.trim();
-            if(!prompt) return alert('Inserisci una descrizione.');
-            alert('Playlist IA generata con successo!');
-            document.getElementById('ai-playlist-modal').classList.remove('active');
-        }
-
-        function openBlendModal() { document.getElementById('blend-modal').classList.add('active'); }
-        async function createBlendPlaylist() {
-            const friend = document.getElementById('blendFriendSelect').value;
-            alert(`Playlist Blend creata con ${friend}!`);
-            document.getElementById('blend-modal').classList.remove('active');
-        }
-
-        function openWrappedModal() { document.getElementById('wrapped-modal').classList.add('active'); toggleProfileDrawer(); }
-
-        async function loadHomeTracks() {
-            let homeTracks = [
-                {id: 'oT3mCybbKas', name: 'Blinding Lights', artist: 'The Weeknd', image: 'https://i.ytimg.com/vi/oT3mCybbKas/hqdefault.jpg'},
-                {id: 'fLexgOxsZu0', name: 'Flowers', artist: 'Miley Cyrus', image: 'https://i.ytimg.com/vi/fLexgOxsZu0/hqdefault.jpg'},
-                {id: 'kJQP7kiw5Fk', name: 'Despacito', artist: 'Luis Fonsi', image: 'https://i.ytimg.com/vi/kJQP7kiw5Fk/hqdefault.jpg'}
-            ];
-            renderTracksList(homeTracks, 'homeTracksContainer', homeTracks);
-            renderTracksList(homeTracks, 'radioTracksContainer', homeTracks);
-        }
-
-        function handleSearchInput(val) {
-            clearTimeout(searchTimer);
-            if(val.trim().length < 2) {
-                document.getElementById('searchResultsContainer').innerHTML = '';
-                return;
-            }
-            searchTimer = setTimeout(() => executeSearch(val), 250);
-        }
-
-        async function executeSearch(query) {
-            let tracks = [
-                {id: 'dQw4w9WgXcQ', name: 'Never Gonna Give You Up (' + query + ')', artist: 'Rick Astley', image: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg'}
-            ];
-            let container = document.getElementById('searchResultsContainer');
-            container.innerHTML = `<div class="section-title">Risultati</div>` + tracks.map((t, idx) => renderSingleTrackRow(t, idx, tracks)).join('');
-        }
-
-        function renderSingleTrackRow(t, idx, sectionTracks) {
-            const isLiked = likedSongs.some(s => s.id === t.id);
-            const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
-            const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(sectionTracks))));
-
-            return `
-                <div class="track-row" onclick="playSelectedTrack('${trackJson}', '${queueJson}', ${idx})">
-                    <div class="track-row-left">
-                        <img src="${t.image}">
+                const div = document.createElement('div');
+                div.className = 'track-row';
+                div.innerHTML = `
+                    <div class="track-row-left" onclick="playSelectedTrack('${encodedTrack}', '${encodedQueue}', ${index})">
+                        <img src="${track.image}" alt="">
                         <div class="track-meta">
-                            <h4>${t.name}</h4>
-                            <p>${t.artist}</p>
+                            <h4>${track.name}</h4>
+                            <p><span class="badge-full">Hi-Fi</span> <span onclick="event.stopPropagation(); openArtistPage('${track.artist.replace(/'/g, "\\'")}', '${track.image}')" style="cursor:pointer;">${track.artist}</span></p>
                         </div>
                     </div>
-                    <div class="track-actions" onclick="event.stopPropagation()">
-                        <i class="${isLiked ? 'fas fa-heart' : 'far fa-heart'}" style="${isLiked ? 'color:var(--accent);' : ''}" onclick="toggleLikeTrackObj('${trackJson}')"></i>
+                    <div class="track-actions">
+                        <i class="fa-solid fa-heart" style="color: ${isLiked ? 'var(--accent)' : 'var(--text-sub)'}; cursor:pointer;" onclick="toggleLikeTrackById('${track.id}')"></i>
+                        <i class="fa-solid fa-play" style="font-size:1rem; cursor:pointer;" onclick="playSelectedTrack('${encodedTrack}', '${encodedQueue}', ${index})"></i>
                     </div>
-                </div>
-            `;
-        }
-
-        function renderTracksList(tracks, containerId, sectionTracks) {
-            document.getElementById(containerId).innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, sectionTracks)).join('');
-        }
-
-        async function openArtistPage(artistName) {
-            switchView('artist'); 
-            document.getElementById('artistNameTitle').innerText = artistName;
-            let artistTracks = [
-                {id: 'oT3mCybbKas', name: 'Traccia Popolare 1', artist: artistName, image: 'https://i.ytimg.com/vi/oT3mCybbKas/hqdefault.jpg'},
-                {id: 'fLexgOxsZu0', name: 'Traccia Popolare 2', artist: artistName, image: 'https://i.ytimg.com/vi/fLexgOxsZu0/hqdefault.jpg'}
-            ];
-            renderTracksList(artistTracks, 'artistTracksContainer', artistTracks);
+                `;
+                container.appendChild(div);
+            });
         }
 
         function playSelectedTrack(encodedTrack, encodedQueue, index) {
-            const t = JSON.parse(decodeURIComponent(escape(atob(encodedTrack))));
-            const queue = JSON.parse(decodeURIComponent(escape(atob(encodedQueue))));
-            playQueue = queue; queueIndex = index; currentTrackData = t;
+            try {
+                const t = JSON.parse(decodeURIComponent(escape(atob(encodedTrack))));
+                const queue = JSON.parse(decodeURIComponent(escape(atob(encodedQueue))));
 
+                playQueue = queue;
+                queueIndex = index;
+                currentTrackData = t;
+
+                refreshPlayerUI(t);
+                loadLyricsForCurrentTrack();
+                
+                if (player && player.loadVideoById) {
+                    player.loadVideoById(t.id);
+                    player.playVideo();
+                }
+            } catch (err) {
+                console.error("Errore nella riproduzione:", err);
+            }
+        }
+
+        function refreshPlayerUI(t) {
             document.getElementById('playerBar').style.display = 'flex';
             document.getElementById('playerTitle').innerText = t.name;
             document.getElementById('playerArtist').innerText = t.artist;
@@ -894,268 +489,287 @@
             document.getElementById('fsArtist').innerText = t.artist;
             document.getElementById('fsCover').src = t.image;
             document.getElementById('canvasBgLayer').style.backgroundImage = `url('${t.image}')`;
-            
+
             updateLikeButtonUI();
             updateDownloadButtonUI();
-
-            if(player && typeof player.loadVideoById === 'function') {
-                player.loadVideoById(t.id);
-                isPlaying = true;
-                updatePlayIcons(true);
-            }
         }
 
-        function togglePlay() {
-            if(!player) return;
-            if(isPlaying) { player.pauseVideo(); isPlaying = false; } 
-            else { player.playVideo(); isPlaying = true; }
-            updatePlayIcons(isPlaying);
+        function togglePlayPause() {
+            if (!player) return;
+            if (isPlaying) {
+                player.pauseVideo();
+            } else {
+                player.playVideo();
+            }
         }
 
         function updatePlayIcons(playing) {
-            document.getElementById('playPauseIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
-            document.getElementById('fsPlayIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
+            const iconClass = playing ? 'fa-solid fa-pause' : 'fa-solid fa-play';
+            document.getElementById('miniPlayBtn').className = iconClass;
+            document.getElementById('fsPlayBtn').innerHTML = `<i class="${iconClass}"></i>`;
         }
 
-        function nextTrack() { if(queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1); }
-        function prevTrack() { if(queueIndex > 0) playQueueIndex(queueIndex - 1); }
-
-        function playQueueIndex(index) {
-            queueIndex = index;
-            const t = playQueue[index];
-            const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
-            const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(playQueue))));
-            playSelectedTrack(trackJson, queueJson, index);
-        }
-
-        function switchView(viewName, btnElement) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            const target = document.getElementById('view-' + viewName);
-            if(target) target.classList.add('active');
-            if(btnElement) {
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                btnElement.classList.add('active');
-            }
-            if(viewName === 'library') renderLibraryContent();
-        }
-
-        function toggleFullscreen() { document.getElementById('fullscreen-player').classList.toggle('active'); }
-        
-        function toggleLyricsView() {
-            isLyricsActive = !isLyricsActive;
-            const btn = document.getElementById('lyricsToggleBtn');
-            const stdView = document.getElementById('standardPlayerView');
-            const lyrView = document.getElementById('lyricsView');
-            if(isLyricsActive) {
-                btn.classList.add('active');
-                stdView.classList.add('hidden');
-                lyrView.classList.add('active');
-                document.getElementById('lyricsContainer').innerHTML = `<div class="lyric-line active">Testo sincronizzato non disponibile per questo brano.</div>`;
+        function playNextTrack() {
+            if (playQueue.length === 0) return;
+            if (isShuffle) {
+                queueIndex = Math.floor(Math.random() * playQueue.length);
             } else {
-                btn.classList.remove('active');
-                stdView.classList.remove('hidden');
-                lyrView.classList.remove('active');
+                queueIndex = (queueIndex + 1) % playQueue.length;
+            }
+            const nextT = playQueue[queueIndex];
+            const encodedTrack = btoa(unescape(encodeURIComponent(JSON.stringify(nextT))));
+            const encodedQueue = btoa(unescape(encodeURIComponent(JSON.stringify(playQueue))));
+            playSelectedTrack(encodedTrack, encodedQueue, queueIndex);
+        }
+
+        function playPreviousTrack() {
+            if (playQueue.length === 0) return;
+            queueIndex = (queueIndex - 1 + playQueue.length) % playQueue.length;
+            const prevT = playQueue[queueIndex];
+            const encodedTrack = btoa(unescape(encodeURIComponent(JSON.stringify(prevT))));
+            const encodedQueue = btoa(unescape(encodeURIComponent(JSON.stringify(playQueue))));
+            playSelectedTrack(encodedTrack, encodedQueue, queueIndex);
+        }
+
+        function toggleShuffle() {
+            isShuffle = !isShuffle;
+            const color = isShuffle ? 'var(--accent)' : 'var(--text-sub)';
+            document.getElementById('shuffleBtn').style.color = color;
+        }
+
+        // Gestione Preferiti
+        function toggleLikeCurrentTrack() {
+            if (!currentTrackData.id) return;
+            toggleLikeTrackById(currentTrackData.id);
+        }
+
+        function toggleLikeTrackById(trackId) {
+            // Cerca il brano fra default o coda corrente
+            let trackObj = defaultTracks.find(s => s.id === trackId) || playQueue.find(s => s.id === trackId);
+            if (!trackObj && currentTrackData.id === trackId) trackObj = currentTrackData;
+            if (!trackObj) return;
+
+            const index = likedSongs.findIndex(s => s.id === trackId);
+            if (index > -1) {
+                likedSongs.splice(index, 1);
+            } else {
+                likedSongs.push(trackObj);
+            }
+            localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
+            
+            updateLikeButtonUI();
+            if (document.getElementById('view-home').classList.contains('active')) {
+                renderTracksList(defaultTracks, 'homeTracksContainer', defaultTracks);
+            }
+            if (document.getElementById('view-liked-songs').classList.contains('active')) {
+                renderLikedSongsView();
             }
         }
 
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtube-player', {
-                height: '200',
-                width: '200',
-                playerVars: { 'autoplay': 1, 'controls': 0 },
-                events: {
-                    'onStateChange': (event) => {
-                        if(event.data === YT.PlayerState.PLAYING) {
-                            isPlaying = true;
-                            updatePlayIcons(true);
-                            startProgressTimer();
-                        } else if(event.data === YT.PlayerState.PAUSED) {
-                            isPlaying = false;
-                            updatePlayIcons(false);
-                            stopProgressTimer();
-                        } else if(event.data === YT.PlayerState.ENDED) {
-                            nextTrack();
-                        }
-                    }
-                }
-            });
+        function updateLikeButtonUI() {
+            if (!currentTrackData.id) return;
+            const isLiked = likedSongs.some(s => s.id === currentTrackData.id);
+            const color = isLiked ? 'var(--accent)' : 'var(--text-sub)';
+            document.getElementById('fsLikeBtn').style.color = color;
+            document.getElementById('miniLikeBtn').style.color = color;
         }
 
-        function startProgressTimer() {
-            clearInterval(progressInterval);
-            progressInterval = setInterval(() => {
-                if(player && typeof player.getCurrentTime === 'function' && typeof player.getDuration === 'function') {
-                    const current = player.getCurrentTime();
-                    const duration = player.getDuration() || 1;
+        function renderLikedSongsView() {
+            document.getElementById('likedSongsCount').innerText = `${likedSongs.length} brani salvati`;
+            renderTracksList(likedSongs, 'likedSongsContainer', likedSongs);
+        }
+
+        // Gestione Download Offline
+        function toggleDownloadCurrentTrack() {
+            if (!currentTrackData.id) return;
+            const index = downloadedSongs.findIndex(s => s.id === currentTrackData.id);
+            if (index > -1) {
+                downloadedSongs.splice(index, 1);
+                alert('Brano rimosso dai download offline.');
+            } else {
+                downloadedSongs.push(currentTrackData);
+                alert('Brano scaricato con successo per l\'ascolto offline!');
+            }
+            localStorage.setItem('darksound_downloaded', JSON.stringify(downloadedSongs));
+            updateDownloadButtonUI();
+            renderDownloadedView();
+        }
+
+        function updateDownloadButtonUI() {
+            if (!currentTrackData.id) return;
+            const isDownloaded = downloadedSongs.some(s => s.id === currentTrackData.id);
+            document.getElementById('fsDownloadBtn').style.color = isDownloaded ? 'var(--accent)' : 'var(--text-sub)';
+        }
+
+        function renderDownloadedView() {
+            renderTracksList(downloadedSongs, 'downloadedTracksContainer', downloadedSongs);
+        }
+
+        // Barra di Progressione
+        function startProgressInterval() {
+            stopProgressInterval();
+            progressTimer = setInterval(() => {
+                if (!player || !player.getCurrentTime || !player.getDuration) return;
+                const current = player.getCurrentTime();
+                const duration = player.getDuration();
+                if (duration > 0) {
                     const percent = (current / duration) * 100;
                     document.getElementById('progressBarFill').style.width = percent + '%';
-                    document.getElementById('currentTime').innerText = formatTime(current);
-                    document.getElementById('totalDuration').innerText = formatTime(duration);
+                    document.getElementById('currentTimeLabel').innerText = formatTime(current);
+                    document.getElementById('durationLabel').innerText = formatTime(duration);
                 }
             }, 500);
         }
 
-        function stopProgressTimer() { clearInterval(progressInterval); }
+        function stopProgressInterval() {
+            if (progressTimer) clearInterval(progressTimer);
+        }
 
         function seekTrack(event) {
+            if (!player || !player.getDuration) return;
             const bg = document.getElementById('progressBarBg');
             const rect = bg.getBoundingClientRect();
-            const pos = (event.clientX - rect.left) / rect.width;
-            if(player && typeof player.getDuration === 'function') {
-                const targetTime = pos * player.getDuration();
-                player.seekTo(targetTime, true);
-            }
+            const clickX = event.clientX - rect.left;
+            const width = rect.width;
+            const percent = clickX / width;
+            const newTime = percent * player.getDuration();
+            player.seekTo(newTime, true);
         }
 
         function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
-        function openShareModal() {
-            document.getElementById('shareTrackSubtitle').innerText = `${currentTrackData.name} - ${currentTrackData.artist}`;
-            document.getElementById('share-modal').classList.add('active');
-        }
-        function closeShareModal() { document.getElementById('share-modal').classList.remove('active'); }
-        function copyTrackLink() { alert('Link del brano copiato negli appunti!'); closeShareModal(); }
-        function shareViaWhatsApp() { alert('Apertura di WhatsApp per la condivisione...'); closeShareModal(); }
+        // Navigazione e Views
+        function switchView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            const target = document.getElementById(`view-${viewName}`);
+            if (target) target.classList.add('active');
 
-        function toggleLikeCurrent() {
-            if(!currentTrackData.id) return;
-            const idx = likedSongs.findIndex(s => s.id === currentTrackData.id);
-            if(idx > -1) likedSongs.splice(idx, 1);
-            else likedSongs.push(currentTrackData);
-            saveUserData();
-            updateLikeButtonUI();
+            if (viewName === 'liked-songs') renderLikedSongsView();
+            if (viewName === 'library') renderDownloadedView();
+            window.scrollTo(0, 0);
         }
 
-        function toggleLikeTrackObj(trackJson) {
-            const t = JSON.parse(decodeURIComponent(escape(atob(trackJson))));
-            const idx = likedSongs.findIndex(s => s.id === t.id);
-            if(idx > -1) likedSongs.splice(idx, 1);
-            else likedSongs.push(t);
-            saveUserData();
-            if(document.getElementById('view-home').classList.contains('active')) loadHomeTracks();
-            if(document.getElementById('view-library').classList.contains('active')) renderLibraryContent();
+        function setActiveNav(btn) {
+            document.querySelectorAll('nav .nav-item').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
         }
 
-        function updateLikeButtonUI() {
-            const isLiked = likedSongs.some(s => s.id === currentTrackData.id);
-            const colorStyle = isLiked ? 'color: var(--accent);' : 'color: var(--text-sub);';
-            const iconClass = isLiked ? 'fas fa-heart' : 'far fa-heart';
-            document.getElementById('fsLikeBtn').className = iconClass;
-            document.getElementById('fsLikeBtn').style = colorStyle + ' font-size: 1.3rem; cursor:pointer; padding: 8px;';
-            document.getElementById('miniLikeBtn').className = iconClass;
-            document.getElementById('miniLikeBtn').style = colorStyle;
+        // Pagina Artista
+        async function openArtistPage(artistName, artistImageOverride) {
+            switchView('artist');
+            const heroImgEl = document.getElementById('artistHeroImg');
+            const container = document.getElementById('artistTracksContainer');
+            
+            document.getElementById('artistNameTitle').innerText = artistName;
+            container.innerHTML = '<p style="color:var(--text-sub);">Caricamento brani...</p>';
+            heroImgEl.src = artistImageOverride || 'https://picsum.photos/seed/artist/800/400';
+            
+            // Simula ricerca brani dell'artista sfruttando elementi coerenti o default
+            setTimeout(() => {
+                const artistTracks = defaultTracks.filter(t => t.artist.toLowerCase().includes(artistName.toLowerCase()) || true);
+                renderTracksList(artistTracks.length ? artistTracks : defaultTracks, 'artistTracksContainer', artistTracks.length ? artistTracks : defaultTracks);
+            }, 300);
         }
 
-        function toggleDownloadCurrent() {
-            if(!currentTrackData.id) return;
-            const idx = downloadedTracks.findIndex(s => s.id === currentTrackData.id);
-            if(idx > -1) downloadedTracks.splice(idx, 1);
-            else downloadedTracks.push(currentTrackData);
-            saveUserData();
-            updateDownloadButtonUI();
+        // Ricerca integrata (Simulata / Dinamica)
+        function handleSearchInput(query) {
+            const container = document.getElementById('searchResultsContainer');
+            if (!query.trim()) {
+                container.innerHTML = '';
+                return;
+            }
+            const filtered = defaultTracks.filter(t => t.name.toLowerCase().includes(query.toLowerCase()) || t.artist.toLowerCase().includes(query.toLowerCase()));
+            renderTracksList(filtered, 'searchResultsContainer', filtered);
         }
 
-        function updateDownloadButtonUI() {
-            const isDown = downloadedTracks.some(s => s.id === currentTrackData.id);
-            const btn = document.getElementById('fsDownloadDirectBtn');
-            if(isDown) {
-                btn.style.color = 'var(--accent)';
+        function filterGenre(genre, chipEl) {
+            document.querySelectorAll('.search-box + div .chip').forEach(c => c.classList.remove('active'));
+            chipEl.classList.add('active');
+            if(genre === 'all') {
+                renderTracksList(defaultTracks, 'searchResultsContainer', defaultTracks);
             } else {
-                btn.style.color = 'var(--text-sub)';
+                const filtered = defaultTracks.filter(() => Math.random() > 0.5);
+                renderTracksList(filtered, 'searchResultsContainer', filtered);
             }
         }
 
-        function switchLibraryTab(tab) {
-            currentLibTab = tab;
-            document.querySelectorAll('#view-library .chip').forEach(c => c.classList.remove('active'));
-            if(tab === 'liked') document.getElementById('btnTabLiked').classList.add('active');
-            if(tab === 'downloads') document.getElementById('btnTabDownloads').classList.add('active');
-            if(tab === 'playlists') document.getElementById('btnTabPlaylists').classList.add('active');
-            renderLibraryContent();
+        // Testi Brani dinamici
+        function loadLyricsForCurrentTrack() {
+            const lyricsView = document.getElementById('lyricsView');
+            lyricsView.innerHTML = `
+                <div class="lyric-line active">♪ Testo sincronizzato in arrivo per ${currentTrackData.name} ♪</div>
+                <div class="lyric-line">Goditi la purezza dell'audio Hi-Fi</div>
+                <div class="lyric-line">DarkSound Pro Experience</div>
+            `;
         }
 
-        function renderLibraryContent() {
-            const container = document.getElementById('libContentList');
-            if(currentLibTab === 'liked') {
-                if(likedSongs.length === 0) {
-                    container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano nei preferiti.</p>`;
-                } else {
-                    container.innerHTML = likedSongs.map((t, idx) => renderSingleTrackRow(t, idx, likedSongs)).join('');
-                }
-            } else if(currentLibTab === 'downloads') {
-                if(downloadedTracks.length === 0) {
-                    container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano scaricato.</p>`;
-                } else {
-                    container.innerHTML = downloadedTracks.map((t, idx) => renderSingleTrackRow(t, idx, downloadedTracks)).join('');
-                }
-            } else if(currentLibTab === 'playlists') {
-                if(userPlaylists.length === 0) {
-                    container.innerHTML = `<p style="color:var(--text-sub);">Nessuna playlist creata.</p>`;
-                } else {
-                    container.innerHTML = userPlaylists.map((p, pIdx) => `
-                        <div style="background:rgba(255,255,255,0.05); padding:14px; border-radius:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                            <div>
-                                <h4 style="font-size:1.05rem; font-weight:700; color:white; margin-bottom:4px;">${p.name}</h4>
-                                <p style="font-size:0.85rem; color:var(--text-sub);">${p.tracks.length} brani • ${p.visibility === 'public' ? 'Pubblica' : 'Privata'}</p>
-                            </div>
-                            <button class="btn-action-primary" onclick="playPlaylist(${pIdx})">Ascolta</button>
-                        </div>
-                    `).join('');
-                }
-            }
-        }
-
-        function openPlaylistSelectorForCurrent() {
-            if(!currentTrackData.id) return alert('Nessun brano in riproduzione.');
-            const listEl = document.getElementById('playlistSelectList');
-            if(userPlaylists.length === 0) {
-                listEl.innerHTML = `<p style="color:var(--text-sub); font-size:0.9rem;">Non hai creato playlist. Creane una dalla libreria.</p>`;
+        function toggleLyricsView() {
+            const stdView = document.getElementById('standardPlayerView');
+            const lyricsView = document.getElementById('lyricsView');
+            const btn = document.getElementById('lyricsToggleBtn');
+            
+            if (lyricsView.classList.contains('active')) {
+                lyricsView.classList.remove('active');
+                stdView.classList.remove('hidden');
+                btn.classList.remove('active');
             } else {
-                listEl.innerHTML = userPlaylists.map((p, idx) => `
-                    <button class="share-option-btn" onclick="addCurrentToPlaylist(${idx})"><i class="fas fa-list" style="color:var(--accent);"></i> ${p.name}</button>
-                `).join('');
+                lyricsView.classList.add('active');
+                stdView.classList.add('hidden');
+                btn.classList.add('active');
             }
-            document.getElementById('playlist-select-modal').classList.add('active');
         }
 
-        function closePlaylistModal() { document.getElementById('playlist-select-modal').classList.remove('active'); }
+        // Drawer e Modali
+        function toggleProfileDrawer() {
+            document.getElementById('profileDrawer').classList.toggle('active');
+        }
 
-        function addCurrentToPlaylist(pIndex) {
-            if(!userPlaylists[pIndex].tracks.some(s => s.id === currentTrackData.id)) {
-                userPlaylists[pIndex].tracks.push(currentTrackData);
-                saveUserData();
-                alert(`Brano aggiunto a "${userPlaylists[pIndex].name}"!`);
-            } else {
-                alert('Il brano è già presente in questa playlist.');
+        function openAuthModal() {
+            document.getElementById('authModal').classList.add('active');
+            toggleProfileDrawer();
+        }
+        function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
+
+        function saveUserProfile() {
+            const val = document.getElementById('authNameInput').value.trim();
+            if(val) {
+                userName = val;
+                localStorage.setItem('darksound_username', userName);
+                document.getElementById('userNamePill').innerText = userName;
+                document.getElementById('drawerUserName').innerText = userName;
+                document.getElementById('drawerAvatarIcon').innerText = userName.charAt(0).toUpperCase();
             }
-            closePlaylistModal();
+            closeAuthModal();
         }
 
-        function submitNewPlaylist() {
-            const name = document.getElementById('newPlaylistName').value.trim();
-            const visibility = document.getElementById('newPlaylistVisibility').value;
-            if(!name) return alert('Inserisci un nome per la playlist.');
-            userPlaylists.push({ name: name, visibility: visibility, tracks: [] });
-            saveUserData();
-            closeNewPlaylistModal();
-            document.getElementById('newPlaylistName').value = '';
-            if(currentLibTab === 'playlists') renderLibraryContent();
-            alert('Playlist creata con successo!');
+        function openShareModal() { document.getElementById('shareModal').classList.add('active'); toggleProfileDrawer(); }
+        function closeShareModal() { document.getElementById('shareModal').classList.remove('active'); }
+
+        function openConcertModal() { document.getElementById('concertModal').classList.add('active'); }
+        function closeConcertModal() { document.getElementById('concertModal').classList.remove('active'); }
+
+        function openAIGeneratorModal() { document.getElementById('aiGeneratorModal').classList.add('active'); }
+        function closeAIGeneratorModal() { document.getElementById('aiGeneratorModal').classList.remove('active'); }
+
+        function selectAiGenre(genre, el) {
+            document.querySelectorAll('.genre-tag').forEach(t => t.classList.remove('selected'));
+            el.classList.add('selected');
         }
 
-        function playPlaylist(pIndex) {
-            const pl = userPlaylists[pIndex];
-            if(pl.tracks.length === 0) return alert('Questa playlist è vuota.');
-            playSelectedTrack(
-                btoa(unescape(encodeURIComponent(JSON.stringify(pl.tracks[0])))),
-                btoa(unescape(encodeURIComponent(JSON.stringify(pl.tracks)))),
-                0
-            );
+        function generateAiTrack() {
+            alert('Generazione traccia AI completata con successo! Aggiunta alla Home.');
+            closeAIGeneratorModal();
+            const newAiTrack = { id: 'jfKfPfyJRdk', name: 'AI Generation #1', artist: 'Neural Network', image: 'https://picsum.photos/seed/ai/300/300' };
+            defaultTracks.unshift(newAiTrack);
+            renderTracksList(defaultTracks, 'homeTracksContainer', defaultTracks);
         }
+
+        function openFullscreenPlayer() { document.getElementById('fullscreen-player').classList.add('active'); }
+        function closeFullscreenPlayer() { document.getElementById('fullscreen-player').classList.remove('active'); }
     </script>
 </body>
 </html>
