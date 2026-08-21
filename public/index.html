@@ -97,6 +97,7 @@
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 8px;
+            background: #333;
         }
         .artist-pick-card h4 { font-size: 0.9rem; font-weight: 700; color: white; }
 
@@ -133,7 +134,7 @@
         .home-grid-shortcuts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 25px; }
         .shortcut-card { background: rgba(255,255,255,0.07); border-radius: 4px; display: flex; align-items: center; gap: 10px; overflow: hidden; cursor: pointer; transition: background 0.2s; }
         .shortcut-card:hover { background: rgba(255,255,255,0.15); }
-        .shortcut-card img { width: 48px; height: 48px; object-fit: cover; }
+        .shortcut-card img { width: 48px; height: 48px; object-fit: cover; background: #333; }
         .shortcut-card span { font-size: 0.8rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px; }
 
         .section-row-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 12px; margin-top: 24px; }
@@ -141,17 +142,18 @@
         .horizontal-scroll::-webkit-scrollbar { display: none; }
         
         .horiz-card { min-width: 140px; max-width: 140px; cursor: pointer; }
-        .horiz-card img { width: 140px; height: 140px; border-radius: 6px; object-fit: cover; margin-bottom: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .horiz-card img { width: 140px; height: 140px; border-radius: 6px; object-fit: cover; margin-bottom: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background: #333; }
         .horiz-card h4 { font-size: 0.85rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .horiz-card p { font-size: 0.75rem; color: var(--text-sub); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 2px; }
 
-        /* --- ARTIST PROFILE VIEW (SPOTIFY STYLE) --- */
+        /* --- ARTIST PROFILE VIEW --- */
         .artist-header-bg {
             position: relative;
             width: 100%;
             height: 260px;
             background-size: cover;
             background-position: center;
+            background-color: #333;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
@@ -193,7 +195,7 @@
         .artist-result-card { display: flex; align-items: center; justify-content: space-between; padding: 8px 4px; border-radius: 4px; cursor: pointer; }
         .artist-result-card:hover { background: rgba(255,255,255,0.05); }
         .artist-left { display: flex; align-items: center; gap: 14px; }
-        .artist-left img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        .artist-left img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #333; }
         .artist-info h4 { font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 5px; }
         .artist-info p { font-size: 0.8rem; color: var(--text-sub); }
         .verified-badge { color: #3d91f4; font-size: 0.75rem; }
@@ -201,14 +203,14 @@
         .playlist-result-card { display: flex; align-items: center; justify-content: space-between; padding: 8px 4px; border-radius: 4px; cursor: pointer; }
         .playlist-result-card:hover { background: rgba(255,255,255,0.05); }
         .playlist-left { display: flex; align-items: center; gap: 14px; }
-        .playlist-left img { width: 50px; height: 50px; border-radius: 4px; object-fit: cover; }
+        .playlist-left img { width: 50px; height: 50px; border-radius: 4px; object-fit: cover; background: #333; }
         .playlist-info h4 { font-size: 0.95rem; font-weight: 600; }
         .playlist-info p { font-size: 0.8rem; color: var(--text-sub); }
 
         /* --- LIBRARY VIEWS --- */
         .library-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .lib-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; cursor: pointer; }
-        .lib-item img { width: 56px; height: 56px; border-radius: 4px; object-fit: cover; }
+        .lib-item img { width: 56px; height: 56px; border-radius: 4px; object-fit: cover; background: #333; }
         .lib-item h4 { font-size: 0.95rem; font-weight: 600; }
         .lib-item p { font-size: 0.8rem; color: var(--text-sub); }
 
@@ -225,7 +227,7 @@
             display: none; align-items: center; gap: 12px; z-index: 1900; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.8); cursor: pointer;
         }
-        .player-bar img { width: 42px; height: 42px; border-radius: 4px; object-fit: cover; }
+        .player-bar img { width: 42px; height: 42px; border-radius: 4px; object-fit: cover; background: #333; }
         .player-meta { flex: 1; min-width: 0; }
         .p-title { font-size: 0.85rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .p-artist { font-size: 0.75rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -241,7 +243,7 @@
         #fullscreen-player.active { display: flex; }
         .fs-top { display: flex; justify-content: space-between; align-items: center; color: white; font-size: 1.1rem; }
         .fs-cover-container { width: 100%; display: flex; justify-content: center; margin: 20px 0; }
-        .fs-cover { width: 100%; max-width: 320px; aspect-ratio: 1; border-radius: 8px; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+        .fs-cover { width: 100%; max-width: 320px; aspect-ratio: 1; border-radius: 8px; object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.6); background: #333; }
         .fs-info-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .fs-titles h3 { font-size: 1.3rem; font-weight: 700; color: white; margin-bottom: 4px; }
         .fs-titles p { font-size: 0.95rem; color: var(--text-sub); }
@@ -324,17 +326,17 @@
         <div class="section-row-title">I tuoi mix consigliati</div>
         <div class="horizontal-scroll">
             <div class="horiz-card" onclick="selectSearchTerm('Top Global')">
-                <img src="https://i.scdn.co/image/ab67706f000000037144e0bcfcb67eb0155b1114">
+                <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=80" onerror="this.src='https://picsum.photos/seed/mix1/200/200'">
                 <h4>Mix Globale</h4>
                 <p>I successi mondiali</p>
             </div>
             <div class="horiz-card" onclick="selectSearchTerm('Rap Italiano')">
-                <img src="https://i.scdn.co/image/ab67706f00000003b30fc2ec0b4e07a3c30164c8">
+                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&auto=format&fit=crop&q=80" onerror="this.src='https://picsum.photos/seed/mix2/200/200'">
                 <h4>Mix Rap</h4>
                 <p>Tracce urban forti</p>
             </div>
             <div class="horiz-card" onclick="selectSearchTerm('Pop Hits')">
-                <img src="https://i.scdn.co/image/ab67706f00000003f57bc82c9ab14798e16fd1d7">
+                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&auto=format&fit=crop&q=80" onerror="this.src='https://picsum.photos/seed/mix3/200/200'">
                 <h4>Pop Hits</h4>
                 <p>Brani pop internazionali</p>
             </div>
@@ -344,7 +346,7 @@
         <div class="horizontal-scroll" id="dynamicArtistsScroll"></div>
     </div>
 
-    <!-- ARTIST PROFILE VIEW (SPOTIFY STYLE) -->
+    <!-- ARTIST PROFILE VIEW -->
     <div id="view-artist-profile" class="view">
         <div class="artist-header-bg" id="artistHeaderBg">
             <div class="artist-header-overlay"></div>
@@ -405,7 +407,7 @@
         </div>
         <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
             <div class="lib-item" onclick="openLikedSongs()">
-                <img src="https://i.scdn.co/image/ab67706f000000037144e0bcfcb67eb0155b1114" alt="Brani piaciuti">
+                <img src="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=300&auto=format&fit=crop&q=80" onerror="this.src='https://picsum.photos/seed/liked/200/200'" alt="Brani piaciuti">
                 <div>
                     <h4>Brani piaciuti</h4>
                     <p><i class="fas fa-thumbtack" style="color:var(--accent);"></i> Playlist • <span id="likedCount">0</span> brani</p>
@@ -490,7 +492,7 @@
             <i class="fas fa-microphone" style="cursor:pointer; color:var(--accent);" onclick="toggleLyricsView()" title="Mostra Testo"></i>
         </div>
         <div class="fs-cover-container">
-            <img id="fsCover" class="fs-cover" src="" alt="Album Cover">
+            <img id="fsCover" class="fs-cover" src="" onerror="this.src='https://picsum.photos/seed/defaultfs/300/300'" alt="Album Cover">
         </div>
         <div class="fs-info-row">
             <div class="fs-titles">
@@ -522,7 +524,7 @@
 
     <!-- MINI PLAYER BAR -->
     <div class="player-bar" id="playerBar" onclick="toggleFullscreenPlayer()">
-        <img id="playerImg" src="" alt="Cover">
+        <img id="playerImg" src="" onerror="this.src='https://picsum.photos/seed/defaultmini/200/200'" alt="Cover">
         <div class="player-meta">
             <div class="p-title" id="playerTitle">-</div>
             <div class="p-artist" id="playerArtist">-</div>
@@ -557,30 +559,29 @@
         let likedSongs = JSON.parse(localStorage.getItem('darksound_liked') || '[]');
         let privatePlaylists = JSON.parse(localStorage.getItem('darksound_private') || '[]');
         
-        // Cache locale per ottimizzare la velocità di caricamento degli artisti
         const searchCache = {};
 
         const artistCategories = [
             {
                 category: "🇮🇹 Artisti Italiani",
                 artists: [
-                    { name: "Sfera Ebbasta", image: "https://i.scdn.co/image/ab67616d0000b2734493b8e8f810167cbe9c00b0" },
-                    { name: "Geolier", image: "https://i.scdn.co/image/ab67616d0000b273062fa883049b6b7971752b0d" },
-                    { name: "Ultimo", image: "https://i.scdn.co/image/ab67616d0000b2731e847c2111d4314777579893" },
-                    { name: "thasup", image: "https://i.scdn.co/image/ab67616d0000b273e8a76d54832442468f7f2b1c" },
-                    { name: "Blanco", image: "https://i.scdn.co/image/ab67616d0000b27344fa0511855675f922eb727e" },
-                    { name: "Lazza", image: "https://i.scdn.co/image/ab67616d0000b27343015f8ea8110b998f45a1f6" }
+                    { name: "Sfera Ebbasta", image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&auto=format&fit=crop&q=80" },
+                    { name: "Geolier", image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=80" },
+                    { name: "Ultimo", image: "https://images.unsplash.com/photo-1526478806334-5fd488fcaabc?w=300&auto=format&fit=crop&q=80" },
+                    { name: "thasup", image: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300&auto=format&fit=crop&q=80" },
+                    { name: "Blanco", image: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=300&auto=format&fit=crop&q=80" },
+                    { name: "Lazza", image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&auto=format&fit=crop&q=80" }
                 ]
             },
             {
                 category: "🌍 Artisti Internazionali",
                 artists: [
-                    { name: "The Weeknd", image: "https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36" },
-                    { name: "Taylor Swift", image: "https://i.scdn.co/image/ab67616d0000b273bb54bbe3cc69f64a58b4382c" },
-                    { name: "Drake", image: "https://i.scdn.co/image/ab67616d0000b27395d985a9dfa7a6797a7e8e58" },
-                    { name: "Billie Eilish", image: "https://i.scdn.co/image/ab67616d0000b273516309739e71008d51ee939d" },
-                    { name: "Travis Scott", image: "https://i.scdn.co/image/ab67616d0000b27301d0092c730a91f5cb98bd1b" },
-                    { name: "Dua Lipa", image: "https://i.scdn.co/image/ab67616d0000b273644fcf6a757ccb5e40e6c646" }
+                    { name: "The Weeknd", image: "https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=300&auto=format&fit=crop&q=80" },
+                    { name: "Taylor Swift", image: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=300&auto=format&fit=crop&q=80" },
+                    { name: "Drake", image: "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=300&auto=format&fit=crop&q=80" },
+                    { name: "Billie Eilish", image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300&auto=format&fit=crop&q=80" },
+                    { name: "Travis Scott", image: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=300&auto=format&fit=crop&q=80" },
+                    { name: "Dua Lipa", image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=300&auto=format&fit=crop&q=80" }
                 ]
             }
         ];
@@ -615,7 +616,7 @@
             artistCategories.forEach(cat => {
                 html += `<div class="onboarding-category">${cat.category}</div><div class="onboarding-grid">`;
                 cat.artists.forEach(art => {
-                    html += `<div class="artist-pick-card" id="pick_${idx}" onclick="togglePick('${art.name}', 'pick_${idx}')"><img src="${art.image}"><h4>${art.name}</h4></div>`;
+                    html += `<div class="artist-pick-card" id="pick_${idx}" onclick="togglePick('${art.name}', 'pick_${idx}')"><img src="${art.image}" onerror="this.src='https://picsum.photos/seed/art_${idx}/200/200'"><h4>${art.name}</h4></div>`;
                     idx++;
                 });
                 html += `</div>`;
@@ -663,21 +664,21 @@
                 let found = cat.artists.find(a => a.name.toLowerCase() === name.toLowerCase());
                 if (found) return found.image;
             }
-            return "https://i.scdn.co/image/ab67706f000000037144e0bcfcb67eb0155b1114";
+            return `https://picsum.photos/seed/${encodeURIComponent(name || 'darksound')}/200/200`;
         }
 
         function buildDynamicHome(prefs) {
-            let radioHtml = prefs.map(item => `
+            let radioHtml = prefs.map((item, idx) => `
                 <div class="shortcut-card" onclick="openArtistProfile('${item}')">
-                    <img src="${findArtistImage(item)}" alt="${item}">
+                    <img src="${findArtistImage(item)}" onerror="this.src='https://picsum.photos/seed/radio_${idx}/200/200'" alt="${item}">
                     <span>Radio ${item}</span>
                 </div>
             `).join('');
             document.getElementById('dynamicRadioGrid').innerHTML = radioHtml;
 
-            let scrollHtml = prefs.map(item => `
+            let scrollHtml = prefs.map((item, idx) => `
                 <div class="horiz-card" onclick="openArtistProfile('${item}')">
-                    <img src="${findArtistImage(item)}">
+                    <img src="${findArtistImage(item)}" onerror="this.src='https://picsum.photos/seed/pref_${idx}/200/200'">
                     <h4>${item}</h4>
                     <p>Preferito</p>
                 </div>
@@ -705,7 +706,6 @@
 
             const container = document.getElementById('artistPopularTracksList');
             
-            // Verifica immediata in cache per velocizzare l'apertura
             if (searchCache[artistName]) {
                 playQueue = searchCache[artistName];
                 renderArtistTracks(playQueue, bgImage, container);
@@ -734,7 +734,6 @@
             }
 
             let html = tracks.map((t, idx) => {
-                // Se la traccia ha la copertina originale viene mantenuta, altrimenti ne riceve una unica dedicata
                 const trackImage = (t.image && t.image.trim() !== "") 
                     ? t.image 
                     : `https://picsum.photos/seed/track_${t.id || idx}_${Math.floor(Math.random()*1000)}/200/200`;
@@ -745,7 +744,7 @@
                     <div class="playlist-result-card" onclick="playQueueIndex(${idx})">
                         <div class="playlist-left">
                             <span style="color:var(--text-sub); width:20px; font-weight:600;">${idx+1}</span>
-                            <img src="${trackImage}" loading="lazy">
+                            <img src="${trackImage}" onerror="this.src='https://picsum.photos/seed/fallback_${idx}/200/200'" loading="lazy">
                             <div class="playlist-info">
                                 <h4>${t.name}</h4>
                                 <p>${t.artist || currentArtistContext}</p>
@@ -758,7 +757,7 @@
 
             document.getElementById('artistPlaylistsScroll').innerHTML = `
                 <div class="horiz-card" onclick="openArtistRadio()">
-                    <img src="${bgImage}" loading="lazy">
+                    <img src="${bgImage}" onerror="this.src='https://picsum.photos/seed/fallback_radio/200/200'" loading="lazy">
                     <h4>Radio ${currentArtistContext}</h4>
                     <p>Mix continuo</p>
                 </div>
@@ -833,7 +832,7 @@
                 let html = `
                     <div class="artist-result-card" onclick="openArtistProfile('${first.artist}')">
                         <div class="artist-left">
-                            <img src="${artistImage}">
+                            <img src="${artistImage}" onerror="this.src='https://picsum.photos/seed/searchart/200/200'">
                             <div class="artist-info">
                                 <h4>${first.artist} <i class="fas fa-check-circle verified-badge"></i></h4>
                                 <p>Profilo Artista Ufficiale</p>
@@ -844,7 +843,6 @@
                 `;
 
                 html += tracks.map((t, idx) => {
-                    // Garantisce che ogni traccia nella ricerca abbia un'immagine valida (originale o unica generata)
                     const trackImage = (t.image && t.image.trim() !== "") 
                         ? t.image 
                         : `https://picsum.photos/seed/search_${t.id || idx}_${Math.floor(Math.random()*1000)}/200/200`;
@@ -853,7 +851,7 @@
                     return `
                         <div class="playlist-result-card" onclick="playQueueIndex(${idx})">
                             <div class="playlist-left">
-                                <img src="${trackImage}" loading="lazy">
+                                <img src="${trackImage}" onerror="this.src='https://picsum.photos/seed/search_fallback_${idx}/200/200'" loading="lazy">
                                 <div class="playlist-info">
                                     <h4>${t.name}</h4>
                                     <p>${t.artist}</p>
@@ -941,7 +939,7 @@
             let html = likedSongs.map((t, idx) => `
                 <div class="playlist-result-card" onclick="playQueueIndex(${idx})">
                     <div class="playlist-left">
-                        <img src="${t.image}" loading="lazy">
+                        <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/likedsong_${idx}/200/200'" loading="lazy">
                         <div class="playlist-info"><h4>${t.name}</h4><p>${t.artist}</p></div>
                     </div>
                 </div>
@@ -960,9 +958,9 @@
         }
 
         function renderLibPlaylists() {
-            let html = privatePlaylists.map(p => `
+            let html = privatePlaylists.map((p, idx) => `
                 <div class="lib-item" onclick="openPlaylistDetail('${p.name}')">
-                    <img src="https://i.scdn.co/image/ab67616d0000b2734493b8e8f810167cbe9c00b0" loading="lazy">
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&auto=format&fit=crop&q=80" onerror="this.src='https://picsum.photos/seed/playlist_${idx}/200/200'" loading="lazy">
                     <div><h4>${p.name}</h4><p>Privata • ${p.tracks.length} brani</p></div>
                 </div>
             `).join('');
