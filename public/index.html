@@ -117,7 +117,6 @@
 
         .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; margin-top: 20px; }
 
-        /* Struttura Spotify: Risultato principale e Sezioni Artisti/Brani */
         .top-results-container {
             display: grid;
             grid-template-columns: 1fr;
@@ -181,7 +180,6 @@
         .track-item h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .track-item p { font-size: 0.75rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Player Bar in basso */
         .player-bar {
             position: fixed;
             bottom: 60px;
@@ -203,7 +201,6 @@
         .player-meta .p-artist { font-size: 0.75rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .player-icons { display: flex; align-items: center; gap: 15px; font-size: 1.2rem; }
 
-        /* Schermata Player a Tutto Schermo */
         .fullscreen-player {
             position: fixed;
             top: 0;
@@ -558,7 +555,8 @@
 
         window.addEventListener('DOMContentLoaded', async () => {
             try {
-                const res = await fetch(`/api/search?q=Top+Hits+Italia`);
+                // Modificato per richiedere specificamente singoli brani ufficiali anziché mix
+                const res = await fetch(`/api/search?q=hit+italia+official+audio`);
                 const tracks = await res.json();
                 const container = document.getElementById('homeTrackList');
                 if (tracks && tracks.length > 0) {
@@ -682,7 +680,6 @@
             const safeImage = image || 'https://via.placeholder.com/340';
             currentTrackData = { id, name, artist, image: safeImage };
 
-            // Aggiorna subito l'interfaccia e forza lo stato di riproduzione al primo tocco
             document.getElementById('playerBar').style.display = 'flex';
             document.getElementById('playerTitle').innerText = name;
             document.getElementById('playerArtist').innerText = artist;
@@ -698,7 +695,7 @@
             if (player && typeof player.loadVideoById === 'function') {
                 player.unMute();
                 player.setVolume(100);
-                player.loadVideoById(id);
+                player.loadVideoById({'videoId': id, 'startSeconds': 0});
                 player.playVideo();
                 startProgressTracker();
             } else {
@@ -706,11 +703,11 @@
                     if (player && typeof player.loadVideoById === 'function') {
                         player.unMute();
                         player.setVolume(100);
-                        player.loadVideoById(id);
+                        player.loadVideoById({'videoId': id, 'startSeconds': 0});
                         player.playVideo();
                         startProgressTracker();
                     }
-                }, 400);
+                }, 300);
             }
         }
 
