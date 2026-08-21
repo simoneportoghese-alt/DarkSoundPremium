@@ -1,24 +1,58 @@
-const express = require('express');
-const path = require('path');
-const yts = require('yt-search');
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarkSound - Premium Music</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --bg: #07070a; --neon: #1ed760; --text: #ffffff; }
+        body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans'; margin: 0; padding: 20px; }
+        .search-box { position: relative; margin-bottom: 20px; }
+        input { width: 100%; padding: 15px; border-radius: 50px; background: #181818; border: 1px solid #333; color: white; outline: none; }
+        .track-item { display: flex; align-items: center; gap: 15px; padding: 10px; border-radius: 12px; cursor: pointer; background: #121212; margin-bottom: 8px; }
+        .track-item img { width: 50px; height: 50px; border-radius: 8px; }
+        .mobile-player { position: fixed; bottom: 0; left: 0; width: 100%; background: #181818; padding: 20px; display: none; text-align: center; border-top: 2px solid var(--neon); }
+    </style>
+</head>
+<body>
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+<div class="search-box">
+    <input type="text" id="searchInput" placeholder="Cerca brano o artista..." onkeydown="if(event.key==='Enter') search()">
+</div>
+<div id="trackList"></div>
 
-app.use(express.static(path.join(__dirname, 'public')));
+<div class="mobile-player" id="mobilePlayer">
+    <div id="youtube-player"></div>
+    <div id="status">In riproduzione...</div>
+</div>
 
-app.get('/api/search', async (req, res) => {
-    const query = req.query.q;
-    try {
-        const searchResult = await yts(query);
-        const results = searchResult.videos.slice(0, 15).map(item => ({
-            id: item.videoId,
-            name: item.title,
-            artist_name: item.author.name,
-            image: item.thumbnail
-        }));
-        res.json(results);
-    } catch (e) { res.json([]); }
-});
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+    let player;
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('youtube-player', { height: '0', width: '0', playerVars: { 'autoplay': 1 } });
+    }
 
-app.listen(PORT, () => console.log(`Server avviato su ${PORT}`));
+    async function search() {
+        const q = document.getElementById('searchInput').value;
+        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+        const tracks = await res.json();
+        const list = document.getElementById('trackList');
+        list.innerHTML = '';
+        tracks.forEach(t => {
+            list.innerHTML += `<div class="track-item" onclick="play('${t.id}', '${t.name}')">
+                <img src="${t.image}"> <div><strong>${t.name}</strong><br><small>${t.artist_name}</small></div>
+            </div>`;
+        });
+    }
+
+    function play(id, name) {
+        player.loadVideoById(id);
+        document.getElementById('mobilePlayer').style.display = 'block';
+        document.getElementById('status').innerText = "Ora in onda: " + name;
+    }
+</script>
+</body>
+</html>
