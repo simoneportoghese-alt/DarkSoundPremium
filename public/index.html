@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DarkSound - Spotify Clone</title>
+    <title>DarkSound - Spotify & Lyra Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -180,12 +180,27 @@
         .track-item h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .track-item p { font-size: 0.75rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+        /* --- VISUALIZER AUDIO --- */
+        .visualizer {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 14px;
+            margin-right: 5px;
+        }
+        .bar { width: 3px; background: var(--accent); animation: pulse 0.8s infinite ease-in-out; }
+        .bar:nth-child(1) { animation-delay: 0.1s; }
+        .bar:nth-child(2) { animation-delay: 0.3s; }
+        .bar:nth-child(3) { animation-delay: 0.5s; }
+        @keyframes pulse { 0%, 100% { height: 4px; } 50% { height: 14px; } }
+        .hidden { display: none !important; }
+
         .player-bar {
             position: fixed;
             bottom: 60px;
             left: 8px;
             right: 8px;
-            background: #2a1118;
+            background: #181818;
             border-radius: 8px;
             padding: 10px 12px;
             display: none;
@@ -194,6 +209,7 @@
             z-index: 999;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
         }
         .player-bar img { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; background: #222; }
         .player-meta { flex: 1; min-width: 0; }
@@ -245,8 +261,8 @@
             justify-content: space-between;
             align-items: center;
         }
-        .fs-titles h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
-        .fs-titles p { font-size: 0.95rem; color: var(--text-sub); }
+        .fs-titles h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .fs-titles p { font-size: 0.95rem; color: var(--text-sub); width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .fs-progress {
             width: 100%;
@@ -263,6 +279,7 @@
             border-radius: 3px;
             outline: none;
             cursor: pointer;
+            accent-color: var(--accent);
         }
         .fs-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
@@ -299,7 +316,9 @@
             justify-content: center;
             font-size: 1.5rem;
             cursor: pointer;
+            transition: transform 0.1s;
         }
+        .fs-controls .main-play:active { transform: scale(0.92); }
         .active-btn { color: var(--accent) !important; }
 
         #youtube-player { display: none; }
@@ -369,7 +388,6 @@
             </div>
         </div>
 
-        <!-- Sezioni per genere con soli singoli -->
         <div class="section-title">Consigliati per te (Pop & Hit)</div>
         <div id="homePopList" class="tracks-column"></div>
 
@@ -444,6 +462,10 @@
             <div class="p-title" id="playerTitle">-</div>
             <div class="p-artist" id="playerArtist">-</div>
         </div>
+        <!-- Equalizzatore Visuale Animato -->
+        <div class="visualizer hidden" id="visualizer">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
         <div class="player-icons" onclick="event.stopPropagation()">
             <i class="fas fa-heart" id="miniLikeBtn" style="color: var(--text-sub); font-size: 1rem; cursor:pointer;" onclick="toggleLike()"></i>
             <i class="fas fa-play" id="playPauseIcon" style="cursor:pointer;" onclick="togglePlay()"></i>
@@ -479,7 +501,7 @@
                 <i class="fas fa-random" id="shuffleBtn" style="font-size: 1.1rem; color: var(--text-sub); cursor:pointer;" onclick="toggleShuffle()"></i>
                 <i class="fas fa-step-backward" style="cursor: pointer;" onclick="alert('Traccia precedente non disponibile')"></i>
                 <div class="main-play" onclick="togglePlay()">
-                    <i class="fas fa-play" id="fsPlayPauseIcon"></i>
+                    <i class="fas fa-play" id="fsPlayPauseIcon" style="color: black;"></i>
                 </div>
                 <i class="fas fa-step-forward" style="cursor: pointer;" onclick="alert('Traccia successiva non disponibile')"></i>
                 <i class="fas fa-redo" id="repeatBtn" style="font-size: 1.1rem; color: var(--text-sub); cursor:pointer;" onclick="toggleRepeat()"></i>
@@ -521,6 +543,15 @@
         let isShuffle = false;
         let isRepeat = false;
         let currentTrackData = null;
+        let userInteracted = false;
+
+        // Sblocco globale del gesto utente al primo tocco sullo schermo
+        window.addEventListener('pointerdown', () => {
+            userInteracted = true;
+            if (player && typeof player.unMute === 'function') {
+                player.unMute();
+            }
+        }, { once: true });
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
@@ -540,10 +571,13 @@
         }
 
         function onPlayerStateChange(event) {
+            const viz = document.getElementById('visualizer');
             if (event.data === YT.PlayerState.PLAYING) {
                 updateIcons(true);
-            } else if (event.data === YT.PlayerState.PAUSED) {
+                viz.classList.remove('hidden');
+            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
                 updateIcons(false);
+                viz.classList.add('hidden');
             }
         }
 
@@ -556,7 +590,6 @@
             }
         }
 
-        // Funzione rigorosa per estrarre solo brani singoli ed evitare cloni o playlist
         function filterOnlyTracks(tracks) {
             if (!tracks) return [];
             const excludedWords = ['mix', 'playlist', 'album', 'raccolta', 'full album', 'ora', 'best of', 'greatest hits', 'live', 'extended', 'compilation'];
@@ -619,7 +652,6 @@
             container.innerHTML = `<p style="color:var(--text-sub); text-align:center; padding:20px;">Ricerca dei migliori artisti e singoli per "${q}"...</p>`;
 
             try {
-                // Aggiungiamo termini mirati per spingere l'algoritmo verso i singoli ufficiali del genere/artista cercato
                 const res = await fetch(`/api/search?q=${encodeURIComponent(q + ' brano singolo ufficiale')}`);
                 let tracks = await res.json();
                 tracks = filterOnlyTracks(tracks);
@@ -714,28 +746,26 @@
             isPlaying = true;
             updateIcons(true);
 
-            if (player && typeof player.loadVideoById === 'function') {
-                player.unMute();
-                player.setVolume(100);
-                player.loadVideoById({'videoId': id, 'startSeconds': 0});
-                player.playVideo();
-                setTimeout(() => {
-                    if (player.getPlayerState && player.getPlayerState() !== YT.PlayerState.PLAYING) {
-                        player.playVideo();
-                    }
-                }, 150);
-                startProgressTracker();
-            } else {
-                setTimeout(() => {
-                    if (player && typeof player.loadVideoById === 'function') {
-                        player.unMute();
-                        player.setVolume(100);
-                        player.loadVideoById({'videoId': id, 'startSeconds': 0});
-                        player.playVideo();
-                        startProgressTracker();
-                    }
-                }, 400);
-            }
+            const executePlay = () => {
+                if (player && typeof player.loadVideoById === 'function') {
+                    player.unMute();
+                    player.setVolume(100);
+                    player.loadVideoById({'videoId': id, 'startSeconds': 0});
+                    player.playVideo();
+                    
+                    setTimeout(() => {
+                        if (player && typeof player.playVideo === 'function') {
+                            player.playVideo();
+                        }
+                    }, 250);
+                    
+                    startProgressTracker();
+                } else {
+                    setTimeout(executePlay, 300);
+                }
+            };
+
+            executePlay();
         }
 
         function togglePlay() {
