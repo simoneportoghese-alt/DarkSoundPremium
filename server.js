@@ -8,18 +8,18 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// API di ricerca brani
+// API di ricerca alternativa e sicura per evitare i blocchi bot
 app.get('/api/search', async (req, res) => {
     const query = req.query.q;
     if (!query) return res.json([]);
 
     try {
-        const output = await youtubedl(`ytsearch10:${query} audio`, {
+        const output = await youtubedl(`ytsearch10:${query}`, {
             dumpSingleJson: true,
             noCheckCertificates: true,
             noWarnings: true,
             preferFreeFormats: true,
-            addHeader: ['referer:https://www.youtube.com']
+            extractorArgs: 'youtube:player_client=android' // Simula l'app Android per evitare il blocco bot
         });
 
         let entries = output.entries || [output];
@@ -33,8 +33,9 @@ app.get('/api/search', async (req, res) => {
 
         res.json(results);
     } catch (error) {
-        console.error("Errore di ricerca:", error);
-        res.status(500).json({ error: "Errore durante la ricerca dei brani" });
+      console.error("Errore di ricerca:", error.message);
+      // Fallback: restituisce un array vuoto o un errore gestito
+      res.status(500).json({ error: "Impossibile completare la ricerca in questo momento." });
     }
 });
 
@@ -48,7 +49,8 @@ app.get('/api/stream/:id', async (req, res) => {
             dumpSingleJson: true,
             noCheckCertificates: true,
             noWarnings: true,
-            preferFreeFormats: true
+            preferFreeFormats: true,
+            extractorArgs: 'youtube:player_client=android'
         });
 
         const audioFormat = info.formats.find(f => f.acodec !== 'none' && f.vcodec === 'none') || info.formats[0];
@@ -67,4 +69,3 @@ app.get('/api/stream/:id', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server avviato sulla porta ${PORT}`);
 });
-
