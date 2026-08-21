@@ -3,169 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkSound - Liquid Glass Player</title>
-    <!-- FontAwesome per le icone -->
+    <title>DarkSound - Liquid Glass Experience</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --dark-bg: #050505;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-hover: rgba(255, 255, 255, 0.07);
+            --bg-deep: #030305;
+            --glass-surface: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
-            --accent-green: #1db954;
-            --neon-glow: 0 0 25px rgba(29, 185, 84, 0.25);
-            --text-main: #ffffff;
-            --text-sub: #9e9e9e;
+            --glass-hover: rgba(255, 255, 255, 0.06);
+            --neon-green: #00ff66;
+            --neon-glow: 0 0 30px rgba(0, 255, 102, 0.15);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
-            background: radial-gradient(circle at top right, #141414, var(--dark-bg));
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(0, 255, 102, 0.07) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.05) 0px, transparent 50%);
             color: var(--text-main);
             height: 100vh;
             display: grid;
             grid-template-areas: 
                 "sidebar main"
                 "player player";
-            grid-template-columns: 260px 1fr;
+            grid-template-columns: 280px 1fr;
             grid-template-rows: 1fr 100px;
             overflow: hidden;
+            padding: 16px;
+            gap: 16px;
         }
 
-        /* EFFETTO LIQUID GLASS BASE */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+        /* LIQUID GLASS CONTAINER */
+        .liquid-glass {
+            background: var(--glass-surface);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
         /* SIDEBAR */
         aside {
             grid-area: sidebar;
-            margin: 16px 0 16px 16px;
-            padding: 24px;
+            padding: 32px 24px;
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 40px;
         }
 
         .logo {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 800;
             letter-spacing: -0.5px;
             display: flex;
             align-items: center;
             gap: 12px;
-            color: var(--accent-green);
-            text-shadow: var(--neon-glow);
+            color: var(--text-main);
         }
 
-        .nav-links {
+        .logo i {
+            color: var(--neon-green);
+            filter: drop-shadow(0 0 10px var(--neon-green));
+        }
+
+        .nav-menu {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 8px;
         }
 
-        .nav-links li a {
-            color: var(--text-sub);
+        .nav-item a {
+            color: var(--text-muted);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 0.95rem;
             display: flex;
             align-items: center;
             gap: 16px;
-            transition: all 0.3s ease;
-            padding: 8px 12px;
-            border-radius: 10px;
+            padding: 12px 16px;
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .nav-links li a:hover, .nav-links li a.active {
+        .nav-item a:hover, .nav-item a.active {
             color: var(--text-main);
             background: var(--glass-hover);
+            border: 1px solid var(--glass-border);
         }
 
-        /* MAIN CONTENT */
+        .nav-item a.active i {
+            color: var(--neon-green);
+        }
+
+        /* MAIN CONTENT AREA */
         main {
             grid-area: main;
+            padding: 32px;
             overflow-y: auto;
-            padding: 24px 32px;
-            background: transparent;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 28px;
         }
 
-        .search-box {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
+        .search-bar {
+            position: relative;
+            width: 380px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            background: var(--glass-surface);
+            backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
-            padding: 10px 18px;
+            padding: 14px 20px 14px 48px;
             border-radius: 500px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 320px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
             transition: all 0.3s ease;
         }
 
-        .search-box:focus-within {
-            border-color: var(--accent-green);
+        .search-bar input:focus {
+            border-color: var(--neon-green);
             box-shadow: var(--neon-glow);
         }
 
-        .search-box input {
-            background: transparent;
-            border: none;
-            color: var(--text-main);
-            outline: none;
-            width: 100%;
-            font-size: 0.9rem;
+        .search-bar i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
         }
 
-        h2 {
-            margin-bottom: 20px;
-            font-size: 1.4rem;
-            font-weight: 600;
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
             letter-spacing: -0.5px;
         }
 
-        .grid-container {
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px;
-            padding-bottom: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 24px;
         }
 
         .card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
+            background: var(--glass-surface);
             border: 1px solid var(--glass-border);
             padding: 16px;
-            border-radius: 16px;
-            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-radius: 20px;
             cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
+            position: relative;
+            overflow: hidden;
         }
 
         .card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-8px);
             background: var(--glass-hover);
-            border-color: var(--accent-green);
+            border-color: rgba(0, 255, 102, 0.4);
             box-shadow: var(--neon-glow);
         }
 
@@ -173,301 +193,306 @@
             width: 100%;
             aspect-ratio: 1;
             object-fit: cover;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            border-radius: 14px;
         }
 
-        .card-title {
-            font-weight: 600;
-            font-size: 0.95rem;
+        .card-info h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .card-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .card-artist {
-            color: var(--text-sub);
-            font-size: 0.8rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* PLAYER BAR (LIQUID GLASS) */
+        /* PLAYER BAR */
         footer {
             grid-area: player;
-            margin: 0 16px 16px 16px;
-            padding: 0 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(10, 10, 10, 0.7);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 0 32px;
         }
 
         .now-playing {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
             width: 30%;
         }
 
         .now-playing img {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
             object-fit: cover;
         }
 
-        .track-info .title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            white-space: nowrap;
+        .track-details .title {
+            font-weight: 700;
+            font-size: 0.95rem;
         }
 
-        .track-info .artist {
-            font-size: 0.75rem;
-            color: var(--text-sub);
-            white-space: nowrap;
+        .track-details .artist {
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
 
-        .player-controls {
+        .player-center {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             width: 40%;
         }
 
-        .control-buttons {
+        .controls {
             display: flex;
             align-items: center;
             gap: 24px;
-            font-size: 1.1rem;
-            color: var(--text-sub);
+            color: var(--text-muted);
+            font-size: 1.2rem;
         }
 
-        .control-buttons i {
-            transition: color 0.2s;
-        }
-
-        .control-buttons i:hover {
+        .controls i:hover {
             color: var(--text-main);
             cursor: pointer;
         }
 
-        .control-buttons .fa-play-circle, .control-buttons .fa-pause-circle {
-            font-size: 2.2rem;
-            color: var(--accent-green);
-            text-shadow: var(--neon-glow);
+        .controls .fa-play-circle, .controls .fa-pause-circle {
+            font-size: 2.4rem;
+            color: var(--neon-green);
+            filter: drop-shadow(0 0 10px var(--neon-green));
         }
 
-        .progress-bar-container {
+        .progress-area {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
-            font-size: 0.7rem;
-            color: var(--text-sub);
+            font-size: 0.75rem;
+            color: var(--text-muted);
         }
 
         .progress-bar {
             flex: 1;
-            height: 5px;
+            height: 6px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             outline: none;
             appearance: none;
             cursor: pointer;
-            accent-color: var(--accent-green);
+            accent-color: var(--neon-green);
         }
 
-        .extra-controls {
+        .volume-area {
             width: 30%;
             display: flex;
             justify-content: flex-end;
             align-items: center;
             gap: 12px;
-            color: var(--text-sub);
+            color: var(--text-muted);
         }
 
-        .extra-controls input[type="range"] {
-            width: 90px;
+        .volume-area input {
+            width: 100px;
+            accent-color: var(--neon-green);
         }
     </style>
 </head>
 <body>
 
     <!-- SIDEBAR -->
-    <aside class="glass-panel">
+    <aside class="liquid-glass">
         <div class="logo">
-            <i class="fa-solid fa-wave-square"></i> DarkSound
+            <i class="fa-solid fa-compact-disc fa-spin" style="animation-duration: 8s;"></i> DarkSound
         </div>
-        <ul class="nav-links">
-            <li><a href="#" class="active"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="#" onclick="searchTracks('electronic')"><i class="fas fa-bolt"></i> Elettronica</a></li>
-            <li><a href="#" onclick="searchTracks('chillout')"><i class="fas fa-moon"></i> Chill & Lofi</a></li>
-            <li><a href="#" onclick="searchTracks('rock')"><i class="fas fa-guitar"></i> Rock Sound</a></li>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="#" class="active" onclick="loadCategory('electronic')"><i class="fas fa-bolt"></i> Elettronica</a></li>
+            <li class="nav-item"><a href="#" onclick="loadCategory('chillout')"><i class="fas fa-moon"></i> Chill & Lofi</a></li>
+            <li class="nav-item"><a href="#" onclick="loadCategory('rock')"><i class="fas fa-guitar"></i> Rock & Indie</a></li>
+            <li class="nav-item"><a href="#" onclick="loadCategory('pop')"><i class="fas fa-radio"></i> Pop Vibes</a></li>
         </ul>
     </aside>
 
-    <!-- MAIN -->
-    <main>
+    <!-- MAIN CONTENT -->
+    <main class="liquid-glass" style="border: none; background: transparent; padding: 0;">
         <header>
-            <div class="search-box">
-                <i class="fas fa-search" style="color: var(--text-sub);"></i>
-                <input type="text" id="searchInput" placeholder="Cerca brani o artisti..." onkeypress="handleSearch(event)">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Cerca brani o artisti..." onkeyup="handleSearch(event)">
             </div>
         </header>
 
         <section>
-            <h2 id="sectionTitle">Brani in evidenza</h2>
-            <div class="grid-container" id="trackGrid">
-                <!-- I brani verranno caricati dinamicamente qui -->
+            <h2 class="section-title" id="sectionTitle" style="margin-bottom: 24px;">Tracce in primo piano</h2>
+            <div class="grid" id="trackGrid">
+                <!-- Inserimento dinamico delle card -->
             </div>
         </section>
     </main>
 
-    <!-- PLAYER -->
-    <footer>
+    <!-- PLAYER BAR -->
+    <footer class="liquid-glass">
         <div class="now-playing">
-            <img id="currentImage" src="https://via.placeholder.com/50" alt="Cover">
-            <div class="track-info">
-                <div class="title" id="currentTitle">Nessun brano in riproduzione</div>
-                <div class="artist" id="currentArtist">-</div>
+            <img id="currentImg" src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=150" alt="Cover">
+            <div class="track-details">
+                <div class="title" id="currentTitle">Seleziona un brano</div>
+                <div class="artist" id="currentArtist">DarkSound Player</div>
             </div>
         </div>
 
-        <div class="player-controls">
-            <div class="control-buttons">
-                <i class="fas fa-step-backward" onclick="prevTrack()"></i>
-                <i class="fas fa-play-circle" id="playPauseBtn" onclick="togglePlay()"></i>
-                <i class="fas fa-step-forward" onclick="nextTrack()"></i>
+        <div class="player-center">
+            <div class="controls">
+                <i class="fas fa-backward-step" onclick="prevTrack()"></i>
+                <i class="fas fa-play-circle" id="playBtn" onclick="togglePlay()"></i>
+                <i class="fas fa-forward-step" onclick="nextTrack()"></i>
             </div>
-            <div class="progress-bar-container">
+            <div class="progress-area">
                 <span id="currentTime">0:00</span>
                 <input type="range" class="progress-bar" id="progressBar" value="0" max="100" oninput="seekAudio(this.value)">
                 <span id="duration">0:00</span>
             </div>
         </div>
 
-        <div class="extra-controls">
-            <i class="fas fa-volume-up"></i>
+        <div class="volume-area">
+            <i class="fas fa-volume-high"></i>
             <input type="range" class="progress-bar" min="0" max="1" step="0.01" value="1" oninput="adjustVolume(this.value)">
         </div>
     </footer>
 
-    <!-- LOGICA JAVASCRIPT -->
+    <!-- SCRIPT LOGICA E API -->
     <script>
-        let currentAudio = new Audio();
-        let trackList = [];
+        const audio = new Audio();
+        let currentTracks = [];
         let currentIndex = 0;
-        const CLIENT_ID = '5912443d'; // Client ID pubblico di Jamendo
+        const CLIENT_ID = '5912443d'; // Jamendo Public ID
 
+        // Funzione per formattare il tempo
         function formatTime(seconds) {
-            let minutes = Math.floor(seconds / 60);
-            let remainingSeconds = Math.floor(seconds % 60);
-            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
-        async function searchTracks(query = 'electronic') {
-            document.getElementById('sectionTitle').innerText = `Esplora: ${query.charAt(0).toUpperCase() + query.slice(1)}`;
+        // Caricamento tracce da Jamendo API con fallback di sicurezza
+        async function loadCategory(query) {
+            document.getElementById('sectionTitleinnerText'] = `Esplora: ${query.toUpperCase()}`;
             try {
-                let response = await fetch(`https://api.jamendo.com/v3.0/tracks/?client_id=${CLIENT_ID}&format=jsonjson&limit=18&search=${encodeURIComponent(query)}&audioformat=mp32`);
-                let data = await response.json();
-                trackList = data.results;
-                renderTracks();
-            } catch (error) {
-                console.error("Errore nel recupero dei brani:", error);
+                let res = await fetch(`https://api.jamendo.com/v3.0/tracks/?client_id=${CLIENT_ID}&format=json&limit=16&search=${encodeURIComponent(query)}&audioformat=mp32`);
+                let data = await res.json();
+                if(data.results && data.results.length > 0) {
+                    currentTracks = data.results;
+                    renderGrid();
+                }
+            } catch (err) {
+                console.error("Errore di rete con l'API:", err);
             }
         }
 
-        function handleSearch(event) {
-            if (event.key === 'Enter') {
-                let query = document.getElementById('searchInput').value;
-                if(query) searchTracks(query);
+        // Gestione ricerca tramite tastiera
+        async function handleSearch(e) {
+            if (e.key === 'Enter') {
+                let query = e.target.value;
+                if (!query) return;
+                document.getElementById('sectionTitle').innerText = `Risultati per: "${query}"`;
+                try {
+                    let res = await fetch(`https://api.jamendo.com/v3.0/tracks/?client_id=${CLIENT_ID}&format=json&limit=16&search=${encodeURIComponent(query)}&audioformat=mp32`);
+                    let data = await res.json();
+                    if(data.results) {
+                        currentTracks = data.results;
+                        renderGrid();
+                    }
+                } catch(err) {
+                    console.error("Errore ricerca:", err);
+                }
             }
         }
 
-        function renderTracks() {
-            let grid = document.getElementById('trackGrid');
+        // Disegna le card nella griglia
+        function renderGrid() {
+            const grid = document.getElementById('trackGrid');
             grid.innerHTML = '';
-            
-            trackList.forEach((track, index) => {
-                let card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => playTrack(index);
-                card.innerHTML = `
-                    <img src="${track.image}" alt="${track.name}">
-                    <div class="card-title">${track.name}</div>
-                    <div class="card-artist">${track.artist_name}</div>
+            currentTracks.forEach((track, index) => {
+                grid.innerHTML += `
+                    <div class="card" onclick="playTrack(${index})">
+                        <img src="${track.image}" alt="${track.name}">
+                        <div class="card-info">
+                            <h4>${track.name}</h4>
+                            <p>${track.artist_name}</p>
+                        </div>
+                    </div>
                 `;
-                grid.appendChild(card);
             });
         }
 
+        // Riproduzione brano
         function playTrack(index) {
             currentIndex = index;
-            let track = trackList[currentIndex];
+            const track = currentTracks[currentIndex];
+            audio.src = track.audio;
+            audio.play();
 
-            currentAudio.src = track.audio;
-            currentAudio.play();
-
-            document.getElementById('currentImage').src = track.image;
+            document.getElementById('currentImg').src = track.image;
             document.getElementById('currentTitle').innerText = track.name;
             document.getElementById('currentArtist').innerText = track.artist_name;
-            document.getElementById('playPauseBtn').className = 'fas fa-pause-circle';
+            document.getElementById('playBtn').className = 'fas fa-pause-circle';
         }
 
+        // Play/Pause toggle
         function togglePlay() {
-            if (!currentAudio.src) return;
-            if (currentAudio.paused) {
-                currentAudio.play();
-                document.getElementById('playPauseBtn').className = 'fas fa-pause-circle';
+            if (!audio.src) return;
+            if (audio.paused) {
+                audio.play();
+                document.getElementById('playBtn').className = 'fas fa-pause-circle';
             } else {
-                currentAudio.pause();
-                document.getElementById('playPauseBtn').className = 'fas fa-play-circle';
+                audio.pause();
+                document.getElementById('playBtn').className = 'fas fa-play-circle';
             }
         }
 
         function nextTrack() {
-            if (trackList.length === 0) return;
-            currentIndex = (currentIndex + 1) % trackList.length;
+            if (currentTracks.length === 0) return;
+            currentIndex = (currentIndex + 1) % currentTracks.length;
             playTrack(currentIndex);
         }
 
         function prevTrack() {
-            if (trackList.length === 0) return;
-            currentIndex = (currentIndex - 1 + trackList.length) % trackList.length;
+            if (currentTracks.length === 0) return;
+            currentIndex = (currentIndex - 1 + currentTracks.length) % currentTracks.length;
             playTrack(currentIndex);
         }
 
-        currentAudio.ontimeupdate = () => {
-            if (currentAudio.duration) {
-                let progressPercent = (currentAudio.currentTime / currentAudio.duration) * 100;
-                document.getElementById('progressBar').value = progressPercent;
-                document.getElementById('currentTime').innerText = formatTime(currentAudio.currentTime);
-                document.getElementById('duration').innerText = formatTime(currentAudio.duration);
+        // Aggiornamento barra di progresso
+        audio.ontimeupdate = () => {
+            if (audio.duration) {
+                const progress = (audio.currentTime / audio.duration) * 100;
+                document.getElementById('progressBar').value = progress;
+                document.getElementById('currentTime').innerText = formatTime(audio.currentTime);
+                document.getElementById('duration').innerText = formatTime(audio.duration);
             }
         };
 
-        function seekAudio(value) {
-            if (currentAudio.duration) {
-                let seekTime = (value / 100) * currentAudio.duration;
-                currentAudio.currentTime = seekTime;
+        function seekAudio(val) {
+            if (audio.duration) {
+                audio.currentTime = (val / 100) * audio.duration;
             }
         }
 
-        function adjustVolume(value) {
-            currentAudio.volume = value;
+        function adjustVolume(val) {
+            audio.volume = val;
         }
 
-        // Avvio iniziale
-        searchTracks('electronic');
+        // Avvio automatico iniziale sulla categoria elettronica
+        loadCategory('electronic');
     </script>
 </body>
 </html>
