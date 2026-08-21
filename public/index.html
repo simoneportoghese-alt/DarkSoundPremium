@@ -445,6 +445,13 @@
         <div id="libContentList"><p style="color:var(--text-sub);">Nessun elemento.</p></div>
     </div>
 
+    <!-- Nuova Vista Artista -->
+    <div id="view-artist" class="view">
+        <button class="chip" onclick="switchView('home')"><i class="fas fa-arrow-left"></i> Indietro</button>
+        <h1 class="home-title" id="artistNameTitle" style="margin-top:15px;">Artista</h1>
+        <div id="artistTracksContainer" style="margin-top:24px;"></div>
+    </div>
+
     <div id="fullscreen-player">
         <div class="fs-top">
             <i class="fas fa-chevron-down" onclick="toggleFullscreen()" style="cursor:pointer;"></i>
@@ -662,7 +669,6 @@
             const isLiked = likedSongs.some(s => s.id === t.id);
             const isDownloaded = downloadedTracks.some(s => s.id === t.id);
             
-            // Codifica sicura in Base64 per evitare problemi con virgolette e caratteri speciali nei titoli/artisti
             const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
             const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(sectionTracks || []))));
 
@@ -672,7 +678,7 @@
                         <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${idx}/200'">
                         <div class="track-meta">
                             <h4>${t.name}</h4>
-                            <p><span class="badge-full">AUDIO</span> ${t.artist}</p>
+                            <p><span class="badge-full">AUDIO</span> <span style="cursor:pointer; text-decoration:underline;" onclick="event.stopPropagation(); openArtistPage('${t.artist}')">${t.artist}</span></p>
                         </div>
                     </div>
                     <div class="track-actions" onclick="event.stopPropagation()">
@@ -690,6 +696,20 @@
                 return;
             }
             document.getElementById(containerId).innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, sectionTracks)).join('');
+        }
+
+        async function openArtistPage(artistName) {
+            switchView('artist'); 
+            document.getElementById('artistNameTitle').innerText = artistName;
+            document.getElementById('artistTracksContainer').innerHTML = '<p style="color:var(--text-sub);">Caricamento brani...</p>';
+            
+            try {
+                let res = await fetch(`/api/search?q=${encodeURIComponent(artistName)}`);
+                let tracks = await res.json();
+                renderTracksList(tracks, 'artistTracksContainer', tracks);
+            } catch(e) {
+                document.getElementById('artistTracksContainer').innerHTML = `<p style="color:#ff4d4d;">Errore nel caricamento dei brani.</p>`;
+            }
         }
 
         function playSelectedTrack(encodedTrack, encodedQueue, index) {
@@ -974,7 +994,9 @@
 
         function switchView(viewName, btnElement) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-' + viewName).classList.add('active');
+            const target = document.getElementById('view-' + viewName);
+            if(target) target.classList.add('active');
+            
             if(btnElement) {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 btnElement.classList.add('active');
