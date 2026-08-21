@@ -15,14 +15,12 @@ app.get('/api/search', async (req, res) => {
 
     try {
         const searchResult = await yts(query);
-        // Filtriamo e prendiamo i primi video pertinenti
         const videos = searchResult.videos.slice(0, 25);
 
-        // Pulizia dei titoli per rimuovere parole spazzatura come "(Official Video)", "[Visualizer]", ecc.
         const results = videos.map(item => {
             let cleanTitle = item.title
-                .replace(/\(.*?\)/g, '') // Rimuove parentesi tonde e contenuto
-                .replace(/\[.*?\]/g, '') // Rimuove parentesi quadre e contenuto
+                .replace(/\(.*?\)/g, '')
+                .replace(/\[.*?\]/g, '')
                 .replace(/official video/gi, '')
                 .replace(/lyrics/gi, '')
                 .replace(/video ufficiale/gi, '')
@@ -39,7 +37,6 @@ app.get('/api/search', async (req, res) => {
             };
         });
 
-        // Rimuoviamo eventuali cloni con lo stesso ID o titolo quasi identico
         const uniqueResults = results.filter((v, i, self) => 
             i === self.findIndex(t => t.id === v.id || t.name.toLowerCase() === v.name.toLowerCase())
         );
@@ -61,28 +58,26 @@ app.get('/api/stream/:id', async (req, res) => {
             noCheckCertificates: true,
             noWarnings: true,
             preferFreeFormats: true,
-            format: 'bestaudio/best',
-            extractorArgs: 'youtube:player_client=web,mweb'
+            format: 'bestaudio',
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
         });
 
         let audioUrl = null;
-        if (output.formats) {
-            const audioFormat = output.formats.reverse().find(f => f.acodec !== 'none' && f.vcodec === 'none');
-            if (audioFormat) {
-                audioUrl = audioFormat.url;
-            } else if (output.url) {
-                audioUrl = output.url;
-            }
+        if (output.url) {
+            audioUrl = output.url;
+        } else if (output.formats) {
+            const audioFormat = output.formats.reverse().find(f => f.acodec !== 'none');
+            if (audioFormat) audioUrl = audioFormat.url;
         }
-
+        
         if (audioUrl) {
-            return res.redirect(audioUrl);
+            res.json({ streamUrl: audioUrl });
         } else {
-            res.status(404).json({ error: "Flusso audio non trovato" });
+            res.status(404).json({ error: "Nessun flusso disponibile" });
         }
     } catch (error) {
         console.error("Errore streaming:", error.message);
-        res.status(500).json({ error: "Impossibile riprodurre il brano" });
+        res.status(500).json({ error: "Errore nel recupero stream" });
     }
 });
 
