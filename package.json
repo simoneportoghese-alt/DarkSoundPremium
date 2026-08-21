@@ -1,9 +1,13 @@
 {
-  "name": "darksound-pro",
+  "name": "darksound-mobile",
   "version": "1.0.0",
-  "main": "index.html",
+  "description": "Spotify clone streaming mobile app",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
-    "@distube/ytdl-core": "^4.14.4",
-    "ytsr": "^3.8.4"
+    "express": "^4.19.2",
+    "@abdullah2993/ytdlp-nodejs": "^1.0.8"
   }
 }
