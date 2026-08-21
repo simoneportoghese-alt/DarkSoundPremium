@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DarkSound Pro - Lyrics Edition</title>
+    <title>DarkSound Pro - Fixed Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -213,7 +213,6 @@
         
         .fs-content-container { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; margin: 10px 0; }
         
-        /* Modalità Normale (Cover) */
         .standard-player-view { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; transition: 0.3s; }
         .standard-player-view.hidden { display: none; }
         .fs-cover { width: 100%; max-width: 300px; aspect-ratio: 1; border-radius: 20px; object-fit: cover; margin-bottom: 20px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
@@ -222,7 +221,6 @@
         .fs-titles h3 { font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .fs-titles p { font-size: 1rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Modalità Lyrics (Testi Animati Spotify Style) */
         .lyrics-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; overflow-y: auto; padding: 20px 10px; text-align: center; scroll-behavior: smooth; }
         .lyrics-view.active { display: flex; }
         .lyrics-view::-webkit-scrollbar { display: none; }
@@ -270,7 +268,7 @@
 </head>
 <body>
 
-    <!-- Menu Utente Laterale (Stile Spotify) -->
+    <!-- Menu Utente Laterale -->
     <div id="profileDrawer" class="profile-drawer">
         <div class="drawer-header">
             <div class="drawer-user-info">
@@ -332,7 +330,7 @@
         </div>
     </div>
 
-    <!-- Modale Login -->
+    <!-- Modali -->
     <div id="auth-modal" class="modal-overlay">
         <div class="auth-card">
             <h2>Benvenuto su DarkSound</h2>
@@ -345,7 +343,6 @@
         </div>
     </div>
 
-    <!-- Modale Onboarding -->
     <div id="onboarding-modal" class="modal-overlay">
         <div class="auth-card">
             <h2>I tuoi gusti</h2>
@@ -366,22 +363,16 @@
         </div>
     </div>
 
-    <!-- Modale Condivisione -->
     <div id="share-modal" class="modal-overlay">
         <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:400px;">
             <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px;">Condividi brano</h3>
             <p id="shareTrackSubtitle" style="color:var(--text-sub); font-size:0.9rem; margin-bottom:20px;"></p>
-            <button class="share-option-btn" style="color:#25D366;" onclick="shareViaWhatsApp()">
-                <i class="fab fa-whatsapp"></i> Invia su WhatsApp
-            </button>
-            <button class="share-option-btn" onclick="copyTrackLink()">
-                <i class="fas fa-link" style="color:#007aff;"></i> Copia Link Brano
-            </button>
+            <button class="share-option-btn" style="color:#25D366;" onclick="shareViaWhatsApp()"><i class="fab fa-whatsapp"></i> Invia su WhatsApp</button>
+            <button class="share-option-btn" onclick="copyTrackLink()"><i class="fas fa-link" style="color:#007aff;"></i> Copia Link Brano</button>
             <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:10px;" onclick="closeShareModal()">Chiudi</button>
         </div>
     </div>
 
-    <!-- Modale Playlist -->
     <div id="playlist-select-modal" class="modal-overlay">
         <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:400px;">
             <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Aggiungi a playlist</h3>
@@ -390,7 +381,6 @@
         </div>
     </div>
 
-    <!-- Modale Nuova Playlist -->
     <div id="new-playlist-modal" class="modal-overlay">
         <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:400px;">
             <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Crea Nuova Playlist</h3>
@@ -410,6 +400,7 @@
         </div>
     </div>
 
+    <!-- Home View -->
     <div id="view-home" class="view active">
         <div class="top-status-bar">
             <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.45rem;"></i> DARKSOUND RADIO</div>
@@ -433,6 +424,7 @@
         <div id="homeTracksContainer"><p style="color:var(--text-sub);">Caricamento...</p></div>
     </div>
 
+    <!-- Search View -->
     <div id="view-search" class="view">
         <h1 class="home-title">Cerca</h1>
         <div class="search-box">
@@ -442,6 +434,7 @@
         <div id="searchResultsContainer" style="margin-top:24px;"></div>
     </div>
 
+    <!-- Library View -->
     <div id="view-library" class="view">
         <div class="section-title">
             La tua Libreria
@@ -455,7 +448,7 @@
         <div id="libContentList"><p style="color:var(--text-sub);">Nessun elemento.</p></div>
     </div>
 
-    <!-- Fullscreen Player con Lyrics Integrati -->
+    <!-- Fullscreen Player & Lyrics -->
     <div id="fullscreen-player">
         <div class="fs-top">
             <i class="fas fa-chevron-down" onclick="toggleFullscreen()" style="cursor:pointer;"></i>
@@ -466,7 +459,6 @@
         </div>
 
         <div class="fs-content-container">
-            <!-- Vista Normale Cover -->
             <div class="standard-player-view" id="standardPlayerView">
                 <img id="fsCover" class="fs-cover" src="">
                 <div class="fs-info-row">
@@ -475,18 +467,15 @@
                         <p id="fsArtist">-</p>
                     </div>
                     <div style="display: flex; align-items: center; gap: 4px;">
-                        <i class="fas fa-folder-plus" style="font-size: 1.1rem; color: var(--text-sub); cursor:pointer; padding: 8px;" title="Aggiungi a playlist" onclick="openPlaylistSelectorForCurrent()"></i>
-                        <i class="fas fa-download" id="fsDownloadDirectBtn" style="font-size: 1.1rem; color: var(--text-sub); cursor:pointer; padding: 8px;" title="Salva Offline" onclick="toggleDownloadCurrent()"></i>
+                        <i class="fas fa-folder-plus" style="font-size: 1.1rem; color: var(--text-sub); cursor:pointer; padding: 8px;" onclick="openPlaylistSelectorForCurrent()"></i>
+                        <i class="fas fa-download" id="fsDownloadDirectBtn" style="font-size: 1.1rem; color: var(--text-sub); cursor:pointer; padding: 8px;" onclick="toggleDownloadCurrent()"></i>
                         <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.3rem; color: var(--text-sub); cursor:pointer; padding: 8px;" onclick="toggleLikeCurrent()"></i>
                     </div>
                 </div>
             </div>
 
-            <!-- Vista Testi Animati (Lyrics) -->
             <div class="lyrics-view" id="lyricsView">
-                <div id="lyricsContainer" style="width: 100%; max-width: 360px; margin: auto; padding: 40px 0;">
-                    <!-- Verranno inserite dinamicamente le righe del testo -->
-                </div>
+                <div id="lyricsContainer" style="width: 100%; max-width: 360px; margin: auto; padding: 40px 0;"></div>
             </div>
         </div>
 
@@ -543,7 +532,6 @@
         let tempAuthName = '';
         let isLyricsActive = false;
 
-        // Dataset di esempio con timestamp (secondi) per i testi sincronizzati
         const sampleLyricsDatabase = [
             { time: 0, text: "(Intro musicale)" },
             { time: 5, text: "Cammino per la strada senza meta" },
@@ -570,10 +558,7 @@
             }
         };
 
-        function toggleProfileDrawer() {
-            document.getElementById('profileDrawer').classList.toggle('active');
-        }
-
+        function toggleProfileDrawer() { document.getElementById('profileDrawer').classList.toggle('active'); }
         function logoutUser() {
             localStorage.removeItem('darksound_current_user');
             currentUser = null;
@@ -581,13 +566,8 @@
             updateUserUI();
             openAuthModal();
         }
-
-        function openAuthModal() { 
-            document.getElementById('profileDrawer').classList.remove('active');
-            document.getElementById('auth-modal').classList.add('active'); 
-        }
+        function openAuthModal() { document.getElementById('profileDrawer').classList.remove('active'); document.getElementById('auth-modal').classList.add('active'); }
         function closeAuthModal() { document.getElementById('auth-modal').classList.remove('active'); }
-
         function proceedToOnboarding() {
             const name = document.getElementById('authEmail').value.trim();
             if(!name) return alert('Inserisci un nome utente.');
@@ -595,32 +575,19 @@
             closeAuthModal();
             openOnboardingModal();
         }
-
-        function openOnboardingModal() {
-            document.getElementById('onboarding-modal').classList.add('active');
-        }
-
-        function toggleGenre(el) {
-            el.classList.toggle('selected');
-        }
-
+        function openOnboardingModal() { document.getElementById('onboarding-modal').classList.add('active'); }
+        function toggleGenre(el) { el.classList.toggle('selected'); }
+        
         function completeOnboarding() {
             currentUser = tempAuthName;
             localStorage.setItem('darksound_current_user', currentUser);
-
             const selectedGenres = Array.from(document.querySelectorAll('#genreGrid .genre-tag.selected')).map(el => el.innerText.replace(/^[^\w\s]+\s*/, ''));
             const favArtist = document.getElementById('favArtistInput').value.trim();
-
-            userPreferences = {
-                genres: selectedGenres.length > 0 ? selectedGenres : ['Pop'],
-                artist: favArtist || 'Hit Italia'
-            };
-
+            userPreferences = { genres: selectedGenres.length > 0 ? selectedGenres : ['Pop'], artist: favArtist || 'Hit Italia' };
             localStorage.setItem(`prefs_${currentUser}`, JSON.stringify(userPreferences));
             likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
             downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
             userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
-
             document.getElementById('onboarding-modal').classList.remove('active');
             updateUserUI();
             loadHomeTracks();
@@ -631,9 +598,7 @@
             document.getElementById('pillUserNameBtn').innerText = dispName;
             document.getElementById('drawerUserName').innerText = dispName;
             document.getElementById('drawerAvatarInitial').innerText = dispName.charAt(0).toUpperCase();
-            if(currentUser) {
-                document.getElementById('homeWelcomeTitle').innerText = `Bentornato, ${currentUser}`;
-            }
+            if(currentUser) document.getElementById('homeWelcomeTitle').innerText = `Bentornato, ${currentUser}`;
         }
 
         function saveUserData() {
@@ -657,12 +622,11 @@
                 let radioQuery = userPreferences ? (userPreferences.artist !== 'Hit Italia' ? userPreferences.artist : userPreferences.genres[0]) : 'Hit Italia';
                 let resRadio = await fetch(`/api/search?q=${encodeURIComponent(radioQuery)}`);
                 let radioTracks = await resRadio.json();
-                renderTracksList(radioTracks.slice(0, 5), 'radioTracksContainer');
+                renderTracksList(radioTracks.slice(0, 5), 'radioTracksContainer', radioTracks.slice(0, 5));
 
                 let res = await fetch('/api/search?q=Hit Italia');
                 let tracks = await res.json();
-                playQueue = tracks;
-                renderTracksList(tracks, 'homeTracksContainer');
+                renderTracksList(tracks, 'homeTracksContainer', tracks);
             } catch(e) {
                 document.getElementById('homeTracksContainer').innerHTML = `<p style="color:#ff4d4d;">Errore di caricamento.</p>`;
             }
@@ -707,16 +671,22 @@
                 html += `<div class="section-title" style="margin-top:20px;">Brani Musicali</div>`;
                 container.innerHTML = html;
                 
-                playQueue = tracks;
-                container.innerHTML += tracks.map((t, idx) => renderSingleTrackRow(t, idx)).join('');
+                // Generazione righe passando la lista di ricerca specifica
+                let tempContainer = document.createElement('div');
+                tempContainer.innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, tracks)).join('');
+                container.appendChild(tempContainer);
             } catch(e) {}
         }
 
-        function renderSingleTrackRow(t, idx) {
+        function renderSingleTrackRow(t, idx, sectionTracks) {
             const isLiked = likedSongs.some(s => s.id === t.id);
             const isDownloaded = downloadedTracks.some(s => s.id === t.id);
+            // Serializziamo l'oggetto traccia in modo sicuro per passarlo al click
+            const trackJson = encodeURIComponent(JSON.stringify(t));
+            const queueJson = encodeURIComponent(JSON.stringify(sectionTracks));
+
             return `
-                <div class="track-row" onclick="playQueueIndex(${idx})">
+                <div class="track-row" onclick="playSelectedTrack('${trackJson}', '${queueJson}', ${idx})">
                     <div class="track-row-left">
                         <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${idx}/200'">
                         <div class="track-meta">
@@ -725,20 +695,48 @@
                         </div>
                     </div>
                     <div class="track-actions" onclick="event.stopPropagation()">
-                        <i class="fas fa-folder-plus" title="Aggiungi a playlist" onclick="openPlaylistSelectorForTrack(${idx})"></i>
-                        <i class="fas fa-download ${isDownloaded ? 'saved' : ''}" onclick="toggleDownloadTrack(${idx})"></i>
-                        <i class="${isLiked ? 'fas fa-heart' : 'far fa-heart'}" style="${isLiked ? 'color:var(--accent);' : ''}" onclick="toggleLikeTrack(${idx})"></i>
+                        <i class="fas fa-folder-plus" title="Aggiungi a playlist" onclick="openPlaylistSelectorForTrackObj('${trackJson}')"></i>
+                        <i class="fas fa-download ${isDownloaded ? 'saved' : ''}" onclick="toggleDownloadTrackObj('${trackJson}', this)"></i>
+                        <i class="${isLiked ? 'fas fa-heart' : 'far fa-heart'}" style="${isLiked ? 'color:var(--accent);' : ''}" onclick="toggleLikeTrackObj('${trackJson}', this)"></i>
                     </div>
                 </div>
             `;
         }
 
-        function renderTracksList(tracks, containerId) {
+        function renderTracksList(tracks, containerId, sectionTracks) {
             if(!tracks || tracks.length === 0) {
                 document.getElementById(containerId).innerHTML = `<p style="color:var(--text-sub);">Nessun elemento.</p>`;
                 return;
             }
-            document.getElementById(containerId).innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx)).join('');
+            document.getElementById(containerId).innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, sectionTracks)).join('');
+        }
+
+        // Gestione riproduzione mirata senza conflitti di indice
+        function playSelectedTrack(trackJson, queueJson, index) {
+            const t = JSON.parse(decodeURIComponent(trackJson));
+            playQueue = JSON.parse(decodeURIComponent(queueJson));
+            queueIndex = index;
+            currentTrackData = t;
+
+            document.getElementById('playerBar').style.display = 'flex';
+            document.getElementById('playerTitle').innerText = t.name;
+            document.getElementById('playerArtist').innerText = t.artist;
+            document.getElementById('playerImg').src = t.image;
+
+            document.getElementById('fsTitle').innerText = t.name;
+            document.getElementById('fsArtist').innerText = t.artist;
+            document.getElementById('fsCover').src = t.image;
+
+            loadLyricsForCurrentTrack();
+            updateLikeButtonUI();
+            updateDownloadButtonUI();
+            
+            if(player && player.loadVideoById) {
+                player.loadVideoById(t.id);
+                player.playVideo();
+                isPlaying = true;
+                updatePlayIcons(true);
+            }
         }
 
         function openShareModal() {
@@ -791,8 +789,8 @@
             showPlaylistSelectorModal();
         }
 
-        function openPlaylistSelectorForTrack(idx) {
-            selectedTrackForPlaylist = playQueue[idx];
+        function openPlaylistSelectorForTrackObj(trackJson) {
+            selectedTrackForPlaylist = JSON.parse(decodeURIComponent(trackJson));
             showPlaylistSelectorModal();
         }
 
@@ -842,9 +840,9 @@
         function renderLibraryContent() {
             const container = document.getElementById('libContentList');
             if(currentLibTab === 'liked') {
-                renderTracksList(likedSongs, 'libContentList');
+                renderTracksList(likedSongs, 'libContentList', likedSongs);
             } else if(currentLibTab === 'downloads') {
-                renderTracksList(downloadedTracks, 'libContentList');
+                renderTracksList(downloadedTracks, 'libContentList', downloadedTracks);
             } else if(currentLibTab === 'playlists') {
                 if(userPlaylists.length === 0) {
                     container.innerHTML = `<p style="color:var(--text-sub); margin-top:20px;">Nessuna playlist.</p>`;
@@ -870,7 +868,6 @@
         function openUserPlaylistDetails(playlistId) {
             let pl = userPlaylists.find(p => p.id === playlistId);
             if(!pl) return;
-            playQueue = pl.tracks;
             const container = document.getElementById('libContentList');
             container.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
@@ -878,13 +875,14 @@
                     <h3 style="font-size:1.1rem; font-weight:800;">${pl.name}</h3>
                 </div>
             `;
-            container.innerHTML += pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx)).join('');
+            let tempDiv = document.createElement('div');
+            tempDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
+            container.appendChild(tempDiv);
         }
 
         function openPublicPlaylist(playlistId) {
             let pl = globalPublicPlaylists.find(p => p.id === playlistId);
             if(!pl) return;
-            playQueue = pl.tracks;
             switchView('search', document.querySelectorAll('.nav-item')[1]);
             const container = document.getElementById('searchResultsContainer');
             container.innerHTML = `
@@ -893,7 +891,9 @@
                     <h3 style="font-size:1.1rem; font-weight:800;">${pl.name} (di ${pl.owner})</h3>
                 </div>
             `;
-            container.innerHTML += pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx)).join('');
+            let tempDiv = document.createElement('div');
+            tempDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
+            container.appendChild(tempDiv);
         }
 
         function savePublicPlaylistToLibrary(playlistId) {
@@ -911,14 +911,13 @@
             renderLibraryContent();
         }
 
-        function toggleDownloadTrack(idx) {
-            const t = playQueue[idx];
-            if(!t) return;
+        function toggleDownloadTrackObj(trackJson) {
+            const t = JSON.parse(decodeURIComponent(trackJson));
             const exists = downloadedTracks.findIndex(s => s.id === t.id);
             if(exists > -1) downloadedTracks.splice(exists, 1);
             else downloadedTracks.push(t);
             saveUserData();
-            renderTracksList(playQueue, 'libContentList');
+            if(currentLibTab === 'downloads') renderLibraryContent();
         }
 
         function toggleDownloadCurrent() {
@@ -929,6 +928,35 @@
             saveUserData();
             updateDownloadButtonUI();
         }
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '200', width: '200',
+                playerVars: { 'autoplay': 1, 'controls': 0, 'enablejsapi': 1 },
+                events: {
+                    'onStateChange': (e) => {
+                        if(e.data === YT.PlayerState.PLAYING) { isPlaying = true; updatePlayIcons(true); startProgressTracker(); }
+                        if(e.data === YT.PlayerState.PAUSED) { isPlaying = false; updatePlayIcons(false); clearInterval(progressInterval); }
+                        if(e.data === YT.PlayerState.ENDED) { nextTrack(); }
+                    }
+                }
+            });
+        }
+
+        function togglePlay() {
+            if(!player) return;
+            if(isPlaying) { player.pauseVideo(); isPlaying = false; } 
+            else { player.playVideo(); isPlaying = true; }
+            updatePlayIcons(isPlaying);
+        }
+
+        function updatePlayIcons(playing) {
+            document.getElementById('playPauseIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
+            document.getElementById('fsPlayIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
+        }
+
+        function nextTrack() { if(queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1); }
+        function prevTrack() { if(queueIndex > 0) playQueueIndex(queueIndex - 1); }
 
         function playQueueIndex(index) {
             if(index >= 0 && index < playQueue.length) {
@@ -958,35 +986,6 @@
             }
         }
 
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtube-player', {
-                height: '200', width: '200',
-                playerVars: { 'autoplay': 1, 'controls': 0, 'enablejsapi': 1 },
-                events: {
-                    'onStateChange': (e) => {
-                        if(e.data === YT.PlayerState.PLAYING) { isPlaying = true; updatePlayIcons(true); startProgressTracker(); }
-                        if(e.data === YT.PlayerState.PAUSED) { isPlaying = false; updatePlayIcons(false); clearInterval(progressInterval); }
-                        if(e.data === YT.PlayerState.ENDED) { nextTrack(); }
-                    }
-                }
-            });
-        }
-
-        function togglePlay() {
-            if(!player) return;
-            if(isPlaying) { player.pauseVideo(); isPlaying = false; } 
-            else { player.playVideo(); isPlaying = true; }
-            updatePlayIcons(isPlaying);
-        }
-
-        function updatePlayIcons(playing) {
-            document.getElementById('playPauseIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
-            document.getElementById('fsPlayIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
-        }
-
-        function nextTrack() { if(queueIndex < playQueue.length - 1) playQueueIndex(++queueIndex); }
-        function prevTrack() { if(queueIndex > 0) playQueueIndex(--queueIndex); }
-
         function switchView(viewName, btnElement) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById('view-' + viewName).classList.add('active');
@@ -999,7 +998,6 @@
 
         function toggleFullscreen() { document.getElementById('fullscreen-player').classList.toggle('active'); }
 
-        // Gestione Lyrics Animati
         function toggleLyricsView() {
             isLyricsActive = !isLyricsActive;
             const btn = document.getElementById('lyricsToggleBtn');
@@ -1019,7 +1017,6 @@
 
         function loadLyricsForCurrentTrack() {
             const container = document.getElementById('lyricsContainer');
-            // Genera le righe dei testi con attributo data-time
             container.innerHTML = sampleLyricsDatabase.map((item, idx) => `
                 <div class="lyric-line ${idx === 0 ? 'active' : ''}" data-time="${item.time}" onclick="seekToLyric(${item.time})">
                     ${item.text}
@@ -1028,9 +1025,7 @@
         }
 
         function seekToLyric(timeSec) {
-            if(player && player.seekTo) {
-                player.seekTo(timeSec, true);
-            }
+            if(player && player.seekTo) player.seekTo(timeSec, true);
         }
 
         function updateActiveLyric(currentTime) {
@@ -1040,16 +1035,13 @@
 
             lines.forEach((line, idx) => {
                 let t = parseFloat(line.getAttribute('data-time'));
-                if(currentTime >= t) {
-                    activeIndex = idx;
-                }
+                if(currentTime >= t) activeIndex = idx;
             });
 
             lines.forEach((line, idx) => {
                 if(idx === activeIndex) {
                     if(!line.classList.contains('active')) {
                         line.classList.add('active');
-                        // Scroll automatico centrato come su Spotify
                         line.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                 } else {
@@ -1067,13 +1059,13 @@
             updateLikeButtonUI();
         }
 
-        function toggleLikeTrack(idx) {
-            const t = playQueue[idx];
-            if(!t) return;
+        function toggleLikeTrackObj(trackJson) {
+            const t = JSON.parse(decodeURIComponent(trackJson));
             const exists = likedSongs.findIndex(s => s.id === t.id);
             if(exists > -1) likedSongs.splice(exists, 1);
             else likedSongs.push(t);
             saveUserData();
+            if(currentLibTab === 'liked') renderLibraryContent();
         }
 
         function updateLikeButtonUI() {
