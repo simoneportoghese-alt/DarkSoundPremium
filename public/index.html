@@ -35,13 +35,18 @@
 
         /* --- AUTH VIEW (LOGIN / REGISTER) --- */
         #view-auth {
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100vh;
             padding: 24px;
             background: linear-gradient(180deg, #242424 0%, #000000 100%);
+            z-index: 2000;
         }
         #view-auth.active { display: flex; }
         .auth-container { width: 100%; max-width: 360px; text-align: center; }
@@ -118,7 +123,7 @@
 
         /* --- BOTTOM NAVIGATION --- */
         nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; display: none;
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #000; display: none; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000;
         }
         nav.active { display: flex; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-sub); font-size: 0.7rem; font-weight: 600; cursor: pointer; background: none; border: none; }
@@ -198,25 +203,6 @@
             </div>
             <p style="font-size: 0.85rem; color: var(--text-sub); margin-top: 15px;">7 Mln ascoltatori mensili</p>
         </div>
-
-        <div style="display: flex; gap: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; padding-bottom: 2px;">
-            <span onclick="switchArtistTab('music', this)" style="font-size: 0.95rem; font-weight: 700; color: white; padding-bottom: 8px; border-bottom: 2px solid var(--accent); cursor: pointer;">Musica</span>
-        </div>
-        <div id="artist-tab-music">
-            <div class="section-title">Popolare</div>
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-                <div style="display: flex; align-items: center; justify-content: space-between;" onclick="playTrack('dQw4w9WgXcQ', 'AYAYAY', 'Sfera Ebbasta', 'https://via.placeholder.com/48')">
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <span style="color: var(--text-sub); font-size: 0.9rem; font-weight: 600; width: 10px;">1</span>
-                        <img src="https://via.placeholder.com/48" style="width: 48px; height: 48px; border-radius: 4px; object-fit: cover;">
-                        <div>
-                            <h4 style="font-size: 0.9rem; font-weight: 700;">AYAYAY</h4>
-                            <p style="font-size: 0.75rem; color: var(--text-sub);">17,777,056</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- LIBRARY VIEW -->
@@ -288,13 +274,14 @@
         let isRegistering = false;
         let currentUser = localStorage.getItem('darksound_user');
 
-        // Stato locale per Preferiti e Playlist Collaborative
         let likedSongs = JSON.parse(localStorage.getItem('darksound_liked') || '[]');
         let collaborativePlaylists = JSON.parse(localStorage.getItem('darksound_collab') || '[]');
 
         window.onload = function() {
             if (currentUser) {
                 initAppSession();
+            } else {
+                document.getElementById('view-auth').classList.add('active');
             }
             checkUrlParams();
         };
@@ -319,9 +306,11 @@
         }
 
         function initAppSession() {
+            // Rimuove completamente la schermata di login e attiva la navigazione
             document.getElementById('view-auth').classList.remove('active');
             document.getElementById('bottomNav').classList.add('active');
             switchView('home', document.querySelectorAll('.nav-item')[0]);
+            
             document.getElementById('userAvatar').innerText = currentUser.charAt(0).toUpperCase();
             document.getElementById('libUserAvatar').innerText = currentUser.charAt(0).toUpperCase();
             updateLibraryCounts();
@@ -344,7 +333,9 @@
         }
 
         function switchView(viewName, btnElement) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.view').forEach(v => {
+                if(v.id !== 'view-auth') v.classList.remove('active');
+            });
             document.getElementById('view-' + viewName).classList.add('active');
             if (btnElement) {
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -460,7 +451,7 @@
             }
             localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
             updateLibraryCounts();
-            executeRealSearch(); // Aggiorna UI ricerca
+            executeRealSearch();
         }
 
         function updateLibraryCounts() {
@@ -559,10 +550,6 @@
         function openArtistPage(artistName, artistImage) {
             document.getElementById('artistPageTitle').innerText = artistName;
             switchView('artist');
-        }
-
-        function switchArtistTab(tabName, element) {
-            // Gestione tab artista pulita
         }
 
         function playTrack(id, name, artist, image) {
