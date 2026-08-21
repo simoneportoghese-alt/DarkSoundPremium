@@ -204,9 +204,6 @@
         .playlist-left img { width: 50px; height: 50px; border-radius: 4px; object-fit: cover; }
         .playlist-info h4 { font-size: 0.95rem; font-weight: 600; }
         .playlist-info p { font-size: 0.8rem; color: var(--text-sub); }
-        .playlist-actions-group { display: flex; align-items: center; gap: 15px; }
-        .playlist-action { font-size: 1.2rem; color: var(--text-sub); cursor: pointer; }
-        .playlist-action.liked { color: var(--accent); }
 
         /* --- LIBRARY VIEWS --- */
         .library-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -559,6 +556,9 @@
 
         let likedSongs = JSON.parse(localStorage.getItem('darksound_liked') || '[]');
         let privatePlaylists = JSON.parse(localStorage.getItem('darksound_private') || '[]');
+        
+        // Cache locale per ottimizzare la velocità di caricamento degli artisti
+        const searchCache = {};
 
         const artistCategories = [
             {
@@ -704,37 +704,65 @@
             document.getElementById('artistHeaderBg').style.backgroundImage = `url('${bgImage}')`;
 
             const container = document.getElementById('artistPopularTracksList');
-            container.innerHTML = `<p style="color:var(--text-sub);">Caricamento brani...</p>`;
+            
+            // Verifica immediata in cache per velocizzare l'apertura
+            if (searchCache[artistName]) {
+                playQueue = searchCache[artistName];
+                renderArtistTracks(playQueue, bgImage, container);
+                return;
+            }
+
+            container.innerHTML = `<p style="color:var(--text-sub); padding:10px 0;">Caricamento brani in corso...</p>`;
 
             try {
                 let res = await fetch(`/api/search?q=${encodeURIComponent(artistName)}`);
                 let tracks = await res.json();
+                
+                searchCache[artistName] = tracks;
                 playQueue = tracks;
 
-                let html = tracks.map((t, idx) => `
-                    <div class="playlist-result-card" onclick="playQueueIndex(${idx})">
-                        <div class="playlist-left">
-                            <span style="color:var(--text-sub); width:20px; font-weight:600;">${idx+1}</span>
-                            <img src="${t.image || bgImage}">
-                            <div class="playlist-info">
-                                <h4>${t.name}</h4>
-                                <p>Ascolti popolari</p>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-                container.innerHTML = html;
-
-                document.getElementById('artistPlaylistsScroll').innerHTML = `
-                    <div class="horiz-card" onclick="openArtistRadio()">
-                        <img src="${bgImage}">
-                        <h4>Radio ${artistName}</h4>
-                        <p>Mix continuo</p>
-                    </div>
-                `;
+                renderArtistTracks(tracks, bgImage, container);
             } catch(e) {
                 container.innerHTML = `<p style="color:#ff4d4d;">Impossibile caricare i brani.</p>`;
             }
+        }
+
+        function renderArtistTracks(tracks, bgImage, container) {
+            if(!tracks || tracks.length === 0) {
+                container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano trovato.</p>`;
+                return;
+            }
+
+            let html = tracks.map((t, idx) => {
+                // Se la traccia ha già la copertina originale la mantiene, altrimenti ne assegna una unica differenziata
+                const trackImage = (t.image && t.image.trim() !== "") 
+                    ? t.image 
+                    : `https://picsum.photos/seed/track_${t.id || idx}_${Math.floor(Math.random()*1000)}/200/200`;
+
+                t.image = trackImage;
+
+                return `
+                    <div class="playlist-result-card" onclick="playQueueIndex(${idx})">
+                        <div class="playlist-left">
+                            <span style="color:var(--text-sub); width:20px; font-weight:600;">${idx+1}</span>
+                            <img src="${trackImage}" loading="lazy">
+                            <div class="playlist-info">
+                                <h4>${t.name}</h4>
+                                <p>${t.artist || currentArtistContext}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            container.innerHTML = html;
+
+            document.getElementById('artistPlaylistsScroll').innerHTML = `
+                <div class="horiz-card" onclick="openArtistRadio()">
+                    <img src="${bgImage}" loading="lazy">
+                    <h4>Radio ${currentArtistContext}</h4>
+                    <p>Mix continuo</p>
+                </div>
+            `;
         }
 
         function playArtistShuffled() {
@@ -815,17 +843,24 @@
                     <div class="section-row-title">Brani</div>
                 `;
 
-                html += tracks.map((t, idx) => `
-                    <div class="playlist-result-card" onclick="playQueueIndex(${idx})">
-                        <div class="playlist-left">
-                            <img src="${t.image || artistImage}">
-                            <div class="playlist-info">
-                                <h4>${t.name}</h4>
-                                <p>${t.artist}</p>
+                html += tracks.map((t, idx) => {
+                    const trackImage = (t.image && t.image.trim() !== "") 
+                        ? t.image 
+                        : `https://picsum.photos/seed/search_${t.id || idx}_${Math.floor(Math.random()*1000)}/200/200`;
+                    t.image = trackImage;
+
+                    return `
+                        <div class="playlist-result-card" onclick="playQueueIndex(${idx})">
+                            <div class="playlist-left">
+                                <img src="${trackImage}" loading="lazy">
+                                <div class="playlist-info">
+                                    <h4>${t.name}</h4>
+                                    <p>${t.artist}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
                 container.innerHTML = html;
             } catch(e) {
                 container.innerHTML = `<p style="color:#ff4d4d; text-align:center;">Errore di connessione</p>`;
@@ -905,7 +940,7 @@
             let html = likedSongs.map((t, idx) => `
                 <div class="playlist-result-card" onclick="playQueueIndex(${idx})">
                     <div class="playlist-left">
-                        <img src="${t.image}">
+                        <img src="${t.image}" loading="lazy">
                         <div class="playlist-info"><h4>${t.name}</h4><p>${t.artist}</p></div>
                     </div>
                 </div>
@@ -926,7 +961,7 @@
         function renderLibPlaylists() {
             let html = privatePlaylists.map(p => `
                 <div class="lib-item" onclick="openPlaylistDetail('${p.name}')">
-                    <img src="https://i.scdn.co/image/ab67616d0000b2734493b8e8f810167cbe9c00b0">
+                    <img src="https://i.scdn.co/image/ab67616d0000b2734493b8e8f810167cbe9c00b0" loading="lazy">
                     <div><h4>${p.name}</h4><p>Privata • ${p.tracks.length} brani</p></div>
                 </div>
             `).join('');
