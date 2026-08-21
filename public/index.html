@@ -115,7 +115,7 @@
         .grid-card img { width: 56px; height: 56px; object-fit: cover; }
         .grid-card span { font-size: 0.85rem; font-weight: 700; padding-right: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; margin-top: 20px; }
+        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; margin-top: 24px; }
 
         .top-results-container {
             display: grid;
@@ -368,8 +368,13 @@
                 <span>Rap Italiano</span>
             </div>
         </div>
-        <div class="section-title">Consigliati per te</div>
-        <div id="homeTrackList"></div>
+
+        <!-- Sezioni per genere con soli singoli -->
+        <div class="section-title">Consigliati per te (Pop & Hit)</div>
+        <div id="homePopList" class="tracks-column"></div>
+
+        <div class="section-title">Phonk Brani del momento</div>
+        <div id="homePhonkList" class="tracks-column"></div>
     </div>
 
     <!-- SEARCH VIEW -->
@@ -529,9 +534,6 @@
                     'fs': 0
                 },
                 events: {
-                    'onReady': () => {
-                        console.log("Player YouTube pronto");
-                    },
                     'onStateChange': onPlayerStateChange
                 }
             });
@@ -554,13 +556,31 @@
             }
         }
 
+        // Funzione per ripulire ed estrarre solo brani singoli
+        function filterOnlyTracks(tracks) {
+            if (!tracks) return [];
+            const excludedWords = ['mix', 'playlist', 'album', 'raccolta', 'full album', 'ora', 'best of', 'greatest hits', 'live', 'extended'];
+            return tracks.filter(t => {
+                const title = (t.name || '').toLowerCase();
+                const artist = (t.artist || '').toLowerCase();
+                return !excludedWords.some(word => title.includes(word) || artist.includes(word));
+            });
+        }
+
         window.addEventListener('DOMContentLoaded', async () => {
+            loadGenreSection('pop italiano singolo ufficiale', 'homePopList', 5);
+            loadGenreSection('phonk song official audio', 'homePhonkList', 5);
+        });
+
+        async function loadGenreSection(query, elementId, limit) {
             try {
-                const res = await fetch(`/api/search?q=hit+italia+official+audio`);
-                const tracks = await res.json();
-                const container = document.getElementById('homeTrackList');
-                if (tracks && tracks.length > 0) {
-                    container.innerHTML = tracks.map(t => {
+                const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                let tracks = await res.json();
+                tracks = filterOnlyTracks(tracks);
+
+                const container = document.getElementById(elementId);
+                if (container && tracks.length > 0) {
+                    container.innerHTML = tracks.slice(0, limit).map(t => {
                         const safeImg = t.image || 'https://via.placeholder.com/48';
                         const safeName = (t.name || 'Brano sconosciuto').replace(/'/g, "\\'");
                         const safeArtist = (t.artist || 'Artista sconosciuto').replace(/'/g, "\\'");
@@ -576,14 +596,15 @@
                     }).join('');
                 }
             } catch (e) {
-                console.error("Errore caricamento home:", e);
+                console.error("Errore caricamento sezione genere:", e);
             }
-        });
+        }
 
         async function quickPlay(query) {
             try {
-                const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-                const tracks = await res.json();
+                const res = await fetch(`/api/search?q=${encodeURIComponent(query + ' brano ufficiale')}`);
+                let tracks = await res.json();
+                tracks = filterOnlyTracks(tracks);
                 if (tracks.length > 0) {
                     const t = tracks[0];
                     playTrack(t.id, t.name, t.artist, t.image);
@@ -599,7 +620,8 @@
 
             try {
                 const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-                const tracks = await res.json();
+                let tracks = await res.json();
+                tracks = filterOnlyTracks(tracks);
                 
                 if (tracks.length === 0) {
                     container.innerHTML = `<p style="color:var(--text-sub); text-align:center; padding:20px;">Nessun risultato trovato</p>`;
@@ -610,7 +632,6 @@
                 const otherTracks = tracks.slice(1, 5);
 
                 let html = '';
-
                 const topImg = topResult.image || 'https://via.placeholder.com/92';
                 const topName = (topResult.name || '').replace(/'/g, "\\'");
                 const topArtist = (topResult.artist || '').replace(/'/g, "\\'");
@@ -695,11 +716,13 @@
             if (player && typeof player.loadVideoById === 'function') {
                 player.unMute();
                 player.setVolume(100);
-                // Utilizziamo cueVideoById seguito da playVideo per evitare blocchi del browser o della policy autoplay
                 player.loadVideoById({'videoId': id, 'startSeconds': 0});
+                player.playVideo();
                 setTimeout(() => {
-                    player.playVideo();
-                }, 100);
+                    if (player.getPlayerState && player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                        player.playVideo();
+                    }
+                }, 150);
                 startProgressTracker();
             } else {
                 setTimeout(() => {
