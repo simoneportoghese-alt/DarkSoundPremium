@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DarkSound Pro Full Audio - Extended Edition</title>
+    <title>DarkSound Pro - Spotube PWA Edition</title>
+    <!-- Collegamento per la PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -134,7 +138,6 @@
         .track-meta { flex: 1; min-width: 0; overflow: hidden; position: relative; }
         .track-meta h4 { font-size: 1.05rem; font-weight: 700; color: white; white-space: nowrap; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; }
         
-        /* Animazione marquee se il titolo è lungo */
         .track-meta.scrolling h4 {
             display: inline-block;
             animation: marqueeText 8s linear infinite alternate;
@@ -147,13 +150,14 @@
         .track-meta p { font-size: 0.85rem; color: var(--text-sub); display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .badge-full { background: rgba(30,215,96,0.2); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; flex-shrink: 0; }
         .track-actions { display: flex; align-items: center; gap: 18px; color: var(--text-sub); font-size: 1.2rem; padding: 6px; flex-shrink: 0; }
+        .btn-download-action { cursor: pointer; transition: color 0.2s; }
+        .btn-download-action.saved { color: var(--accent); }
 
-        /* SEARCH VIEW & COLORFUL GRID */
+        /* SEARCH VIEW */
         .search-box { background: #242424; border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.05); }
         .search-box input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 1.05rem; font-weight: 600; }
         .genre-browse-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-        .genre-card { height: 115px; border-radius: 10px; padding: 16px; font-size: 1.25rem; font-weight: 800; color: white; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-start; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.2s; }
-        .genre-card:active { transform: scale(0.97); }
+        .genre-card { height: 115px; border-radius: 10px; padding: 16px; font-size: 1.25rem; font-weight: 800; color: white; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-start; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
 
         /* LIBRARY VIEW */
         .lib-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -213,7 +217,7 @@
     <!-- HOME VIEW -->
     <div id="view-home" class="view active">
         <div class="top-status-bar">
-            <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.5rem;"></i> DARKSOUND PRO FULL AUDIO</div>
+            <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.5rem;"></i> DARKSOUND PRO PWA</div>
             <div class="user-status-right">
                 <span class="status-pill">Online</span>
                 <span class="user-pill">utente</span>
@@ -226,25 +230,6 @@
             <button class="chip active" onclick="filterHomeCategory('all', this)">Tutto</button>
             <button class="chip" onclick="selectSearchGenre('Hit Italia')">Musica</button>
             <button class="chip" onclick="selectSearchGenre('Podcast')">Podcast</button>
-            <button class="chip" onclick="switchView('search', document.querySelectorAll('.nav-item')[1])">+ Importa</button>
-        </div>
-
-        <div class="banner-recap" onclick="triggerRecapModal()">
-            <div class="banner-text">
-                <span>Statistiche Live</span>
-                <h3>Il tuo Recap del Mese</h3>
-                <p>Top brani, artisti e minuti totali ascoltati</p>
-            </div>
-            <i class="fas fa-sparkles" style="font-size: 2rem; color: #ffd700;"></i>
-        </div>
-
-        <div class="banner-blend" onclick="triggerBlendModal()">
-            <div class="banner-text">
-                <span>Collaborativa</span>
-                <h3>DarkSound Blend</h3>
-                <p>Playlist mista generata con codice condiviso</p>
-            </div>
-            <i class="fas fa-handshake" style="font-size: 2rem; color: #fff;"></i>
         </div>
 
         <div class="shortcut-grid">
@@ -264,17 +249,9 @@
                 <img src="https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=200&auto=format&fit=crop&q=80" onerror="this.src='https://picsum.photos/seed/theweeknd/200/200'">
                 <span>The Weeknd</span>
             </div>
-            <div class="shortcut-card" onclick="selectSearchGenre('Geolier')">
-                <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=200&auto=format&fit=crop&q=80" onerror="this.src='https://picsum.photos/seed/geolier/200/200'">
-                <span>Geolier</span>
-            </div>
-            <div class="shortcut-card" onclick="selectSearchGenre('Sfera Ebbasta')">
-                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&auto=format&fit=crop&q=80" onerror="this.src='https://picsum.photos/seed/sfera/200/200'">
-                <span>Sfera Ebbasta</span>
-            </div>
         </div>
 
-        <div class="section-title">Top Hit Nazionali & Globali • Full Audio</div>
+        <div class="section-title">Top Hit Nazionali & Globali</div>
         <div id="homeTracksContainer">
             <p style="color:var(--text-sub); font-size:1rem;">Caricamento brani in corso...</p>
         </div>
@@ -285,7 +262,7 @@
         <h1 class="home-title">Cerca</h1>
         <div class="search-box">
             <i class="fas fa-search" style="color: var(--text-sub); font-size: 1.25rem;"></i>
-            <input type="text" id="spotifySearchInput" placeholder="Cosa vuoi ascoltare? Artista o brano..." oninput="handleSearchInput(this.value)">
+            <input type="text" id="spotifySearchInput" placeholder="Cosa vuoi ascoltare? (es. The Weeknd)" oninput="handleSearchInput(this.value)">
         </div>
 
         <div class="section-title">Sfoglia tutto</div>
@@ -293,11 +270,7 @@
             <div class="genre-card" style="background-color: #dc2626;" onclick="selectSearchGenre('Pop')">Pop</div>
             <div class="genre-card" style="background-color: #1e3a8a;" onclick="selectSearchGenre('Hip-Hop / Trap')">Hip-Hop / Trap</div>
             <div class="genre-card" style="background-color: #7c3aed;" onclick="selectSearchGenre('Rock')">Rock</div>
-            <div class="genre-card" style="background-color: #db2777;" onclick="selectSearchGenre('Latina')">Latina</div>
-            <div class="genre-card" style="background-color: #581c87;" onclick="selectSearchGenre('R&B & Soul')">R&B & Soul</div>
             <div class="genre-card" style="background-color: #16a34a;" onclick="selectSearchGenre('Indie')">Indie</div>
-            <div class="genre-card" style="background-color: #d97706;" onclick="selectSearchGenre('Dance / Elettronica')">Dance / Elettronica</div>
-            <div class="genre-card" style="background-color: #2563eb;" onclick="selectSearchGenre('Chill & Relax')">Chill & Relax</div>
         </div>
 
         <div id="searchResultsContainer" style="margin-top:24px;"></div>
@@ -307,31 +280,9 @@
     <div id="view-library" class="view">
         <div class="lib-header-row">
             <h1 class="home-title" style="margin-bottom:0;">La tua Libreria</h1>
-            <div style="display:flex; gap:10px;">
-                <button class="btn-action-lib" onclick="triggerJoinPlaylist()">+ Unisciti</button>
-                <button class="btn-action-lib" onclick="promptNewPlaylist()" style="padding: 8px 14px;">+</button>
-            </div>
         </div>
-
         <div style="margin-top: 20px;" id="libContentList">
-            <div class="track-row" onclick="openLikedSongs()">
-                <div class="track-row-left">
-                    <div style="width:56px;height:56px;background:linear-gradient(135deg,#3b28b5,#b5289e);border-radius:6px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-heart" style="color:white;font-size:1.25rem;"></i></div>
-                    <div class="track-meta">
-                        <h4>Brani che ti piacciono</h4>
-                        <p id="likedLibCount">0 brani</p>
-                    </div>
-                </div>
-            </div>
-            <div class="track-row" onclick="alert('Nessun brano offline salvato nella cache locale.')">
-                <div class="track-row-left">
-                    <div style="width:56px;height:56px;background:linear-gradient(135deg,#1e3a8a,#0d9488);border-radius:6px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-download" style="color:white;font-size:1.25rem;"></i></div>
-                    <div class="track-meta">
-                        <h4>Brani Scaricati Offline</h4>
-                        <p>0 brani pronti all'ascolto</p>
-                    </div>
-                </div>
-            </div>
+            <p style="color:var(--text-sub);">Nessun brano scaricato offline.</p>
         </div>
     </div>
 
@@ -340,7 +291,7 @@
         <div class="fs-top">
             <i class="fas fa-chevron-down" onclick="toggleFullscreen()" style="cursor:pointer; padding: 10px;"></i>
             <span style="font-size:0.95rem; font-weight:700;">Riproduzione in corso</span>
-            <i class="fas fa-ellipsis-vertical" style="cursor:pointer; padding: 10px;" onclick="alert('Opzioni avanzate traccia')"></i>
+            <i class="fas fa-ellipsis-vertical" style="cursor:pointer; padding: 10px;"></i>
         </div>
         <img id="fsCover" class="fs-cover" src="" onerror="this.src='https://picsum.photos/seed/fsfallback/300/300'">
         <div class="fs-info-row">
@@ -360,11 +311,11 @@
             </div>
         </div>
         <div class="fs-controls">
-            <i class="fas fa-random" style="color:var(--text-sub); padding: 10px;" onclick="alert('Riproduzione casuale attivata')"></i>
+            <i class="fas fa-random" style="color:var(--text-sub); padding: 10px;"></i>
             <i class="fas fa-step-backward" style="cursor:pointer; padding: 10px;" onclick="prevTrack()"></i>
             <div class="fs-play-btn" onclick="togglePlay()"><i class="fas fa-play" id="fsPlayIcon"></i></div>
             <i class="fas fa-step-forward" style="cursor:pointer; padding: 10px;" onclick="nextTrack()"></i>
-            <i class="fas fa-redo" style="color:var(--text-sub); padding: 10px;" onclick="alert('Ripeti traccia attivato')"></i>
+            <i class="fas fa-redo" style="color:var(--text-sub); padding: 10px;"></i>
         </div>
     </div>
 
@@ -388,10 +339,10 @@
     <nav>
         <button class="nav-item active" onclick="switchView('home', this)"><i class="fas fa-home"></i><span>Home</span></button>
         <button class="nav-item" onclick="switchView('search', this)"><i class="fas fa-search"></i><span>Cerca</span></button>
-        <button class="nav-item" onclick="switchView('library', this)"><i class="fas fa-stream"></i><span>Libreria</span></button>
+        <button class="nav-item" onclick="switchView('library', this)"><i class="fas fa-download"></i><span>Scaricati</span></button>
     </nav>
 
-    <!-- YOUTUBE API & JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT LOGIC -->
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         let player;
@@ -400,12 +351,13 @@
         let queueIndex = -1;
         let currentTrackData = { id: '', name: '', artist: '', image: '' };
         let likedSongs = JSON.parse(localStorage.getItem('darksound_liked') || '[]');
+        let downloadedTracks = JSON.parse(localStorage.getItem('darksound_downloads') || '[]');
         let progressInterval;
         let searchTimer = null;
 
         window.onload = function() {
             loadHomeTracks();
-            updateLikedCountDisplay();
+            updateDownloadedListUI();
         };
 
         async function loadHomeTracks() {
@@ -434,7 +386,6 @@
                 return;
             }
 
-            // Normalizzazione intelligente dei termini cercati (es. "tre weekend" -> "The Weeknd")
             let lowerQuery = query.toLowerCase();
             if(lowerQuery.includes('tre weekend') || lowerQuery.includes('tre weeknd') || lowerQuery.includes('the weekend')) {
                 query = 'The Weeknd';
@@ -442,7 +393,6 @@
 
             document.getElementById('searchResultsContainer').innerHTML = `<p style="color:var(--text-sub); font-size:1rem;">Ricerca in corso...</p>`;
             
-            // Attende 500ms (mezzo secondo) prima di lanciare la ricerca per evitare sfarfallii
             searchTimer = setTimeout(() => {
                 executeSearch(query);
             }, 500);
@@ -466,8 +416,9 @@
                 return;
             }
             let html = tracks.map((t, idx) => {
-                const safeImg = (t.image && t.image.trim() !== '') ? t.image : `https://picsum.photos/seed/track_${idx}_${Math.floor(Math.random()*1000)}/200/200`;
+                const safeImg = (t.image && t.image.trim() !== '') ? t.image : `https://picsum.photos/seed/track_${idx}/200/200`;
                 const isLiked = likedSongs.some(s => s.id === t.id);
+                const isDownloaded = downloadedTracks.some(s => s.id === t.id);
                 const isLongText = t.name && t.name.length > 25;
                 return `
                     <div class="track-row" onclick="playQueueIndex(${idx})">
@@ -479,12 +430,72 @@
                             </div>
                         </div>
                         <div class="track-actions" onclick="event.stopPropagation()">
+                            <i class="fas fa-download btn-download-action ${isDownloaded ? 'saved' : ''}" onclick="toggleDownloadTrack(${idx})"></i>
                             <i class="${isLiked ? 'fas fa-heart' : 'far fa-heart'}" style="${isLiked ? 'color:var(--accent);' : ''}" onclick="toggleLikeTrack(${idx})"></i>
                         </div>
                     </div>
                 `;
             }).join('');
             document.getElementById(containerId).innerHTML = html;
+        }
+
+        function toggleDownloadTrack(idx) {
+            const t = playQueue[idx];
+            if(!t) return;
+            const exists = downloadedTracks.findIndex(s => s.id === t.id);
+            if(exists > -1) {
+                downloadedTracks.splice(exists, 1);
+            } else {
+                downloadedTracks.push(t);
+            }
+            localStorage.setItem('darksound_downloads', JSON.stringify(downloadedTracks));
+            updateDownloadedListUI();
+            // Ricarica la vista attuale per aggiornare le icone
+            if(document.getElementById('view-search').classList.contains('active')) {
+                renderTracksList(playQueue, 'searchResultsContainer');
+            } else if(document.getElementById('view-home').classList.contains('active')) {
+                renderTracksList(playQueue, 'homeTracksContainer');
+            } else {
+                renderTracksList(downloadedTracks, 'libContentList');
+            }
+        }
+
+        function updateDownloadedListUI() {
+            const container = document.getElementById('libContentList');
+            if(downloadedTracks.length === 0) {
+                container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano scaricato offline.</p>`;
+                return;
+            }
+            // Renderizza i brani scaricati nella libreria
+            let html = downloadedTracks.map((t, idx) => {
+                const safeImg = (t.image && t.image.trim() !== '') ? t.image : `https://picsum.photos/seed/dl_${idx}/200/200`;
+                return `
+                    <div class="track-row" onclick="playDownloadedIndex(${idx})">
+                        <div class="track-row-left">
+                            <img src="${safeImg}" loading="lazy">
+                            <div class="track-meta">
+                                <h4>${t.name}</h4>
+                                <p><span class="badge-full">OFFLINE</span> ${t.artist}</p>
+                            </div>
+                        </div>
+                        <div class="track-actions" onclick="event.stopPropagation()">
+                            <i class="fas fa-download btn-download-action saved" onclick="removeDownload(${idx})"></i>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            container.innerHTML = html;
+        }
+
+        function playDownloadedIndex(idx) {
+            playQueue = downloadedTracks;
+            playQueueIndex(idx);
+        }
+
+        function removeDownload(idx) {
+            downloadedTracks.splice(idx, 1);
+            localStorage.setItem('darksound_downloads', JSON.stringify(downloadedTracks));
+            updateDownloadedListUI();
         }
 
         function playQueueIndex(index) {
@@ -504,6 +515,7 @@
                 document.getElementById('fsCover').src = safeImg;
 
                 updateLikeButtonUI();
+                setupMediaSession(t);
 
                 if(player && typeof player.loadVideoById === 'function') {
                     player.loadVideoById(t.id);
@@ -514,25 +526,30 @@
             }
         }
 
+        function setupMediaSession(t) {
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: t.name,
+                    artist: t.artist,
+                    album: 'DarkSound Pro',
+                    artwork: [{ src: t.image, sizes: '512x512', type: 'image/png' }]
+                });
+                navigator.mediaSession.setActionHandler('play', () => togglePlay());
+                navigator.mediaSession.setActionHandler('pause', () => togglePlay());
+                navigator.mediaSession.setActionHandler('previoustrack', () => prevTrack());
+                navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
+            }
+        }
+
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
                 height: '200', width: '200',
                 playerVars: { 'autoplay': 1, 'controls': 0, 'enablejsapi': 1, 'playsinline': 1 },
                 events: {
                     'onStateChange': (e) => {
-                        if(e.data === YT.PlayerState.PLAYING) { 
-                            isPlaying = true; 
-                            updatePlayIcons(true); 
-                            startProgressTracker(); 
-                        }
-                        if(e.data === YT.PlayerState.PAUSED) { 
-                            isPlaying = false; 
-                            updatePlayIcons(false); 
-                            clearInterval(progressInterval); 
-                        }
-                        if(e.data === YT.PlayerState.ENDED) { 
-                            nextTrack(); 
-                        }
+                        if(e.data === YT.PlayerState.PLAYING) { isPlaying = true; updatePlayIcons(true); startProgressTracker(); }
+                        if(e.data === YT.PlayerState.PAUSED) { isPlaying = false; updatePlayIcons(false); clearInterval(progressInterval); }
+                        if(e.data === YT.PlayerState.ENDED) { nextTrack(); }
                     }
                 }
             });
@@ -540,13 +557,8 @@
 
         function togglePlay() {
             if(!player) return;
-            if(isPlaying) { 
-                player.pauseVideo(); 
-                isPlaying = false; 
-            } else { 
-                player.playVideo(); 
-                isPlaying = true; 
-            }
+            if(isPlaying) { player.pauseVideo(); isPlaying = false; } 
+            else { player.playVideo(); isPlaying = true; }
             updatePlayIcons(isPlaying);
         }
 
@@ -555,19 +567,8 @@
             document.getElementById('fsPlayIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
         }
 
-        function nextTrack() {
-            if(queueIndex < playQueue.length - 1) { 
-                queueIndex++; 
-                playQueueIndex(queueIndex); 
-            }
-        }
-
-        function prevTrack() {
-            if(queueIndex > 0) { 
-                queueIndex--; 
-                playQueueIndex(queueIndex); 
-            }
-        }
+        function nextTrack() { if(queueIndex < playQueue.length - 1) { queueIndex++; playQueueIndex(queueIndex); } }
+        function prevTrack() { if(queueIndex > 0) { queueIndex--; playQueueIndex(queueIndex); } }
 
         function switchView(viewName, btnElement) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -576,22 +577,19 @@
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 btnElement.classList.add('active');
             }
+            if(viewName === 'library') {
+                updateDownloadedListUI();
+            }
         }
 
-        function toggleFullscreen() {
-            document.getElementById('fullscreen-player').classList.toggle('active');
-        }
+        function toggleFullscreen() { document.getElementById('fullscreen-player').classList.toggle('active'); }
 
         function toggleLikeCurrent() {
             if(!currentTrackData.id) return;
             const exists = likedSongs.findIndex(s => s.id === currentTrackData.id);
-            if(exists > -1) { 
-                likedSongs.splice(exists, 1); 
-            } else { 
-                likedSongs.push(currentTrackData); 
-            }
+            if(exists > -1) { likedSongs.splice(exists, 1); } 
+            else { likedSongs.push(currentTrackData); }
             localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
-            updateLikedCountDisplay();
             updateLikeButtonUI();
         }
 
@@ -599,61 +597,15 @@
             const t = playQueue[idx];
             if(!t) return;
             const exists = likedSongs.findIndex(s => s.id === t.id);
-            if(exists > -1) { 
-                likedSongs.splice(exists, 1); 
-            } else { 
-                likedSongs.push(t); 
-            }
+            if(exists > -1) { likedSongs.splice(exists, 1); } 
+            else { likedSongs.push(t); }
             localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
-            updateLikedCountDisplay();
-            renderTracksList(playQueue, playQueue === likedSongs ? 'libContentList' : (document.getElementById('view-search').classList.contains('active') ? 'searchResultsContainer' : 'homeTracksContainer'));
         }
 
         function updateLikeButtonUI() {
             const isLiked = likedSongs.some(s => s.id === currentTrackData.id);
             const fsBtn = document.getElementById('fsLikeBtn');
-            if(isLiked) {
-                fsBtn.className = 'fas fa-heart';
-                fsBtn.style.color = 'var(--accent)';
-            } else {
-                fsBtn.className = 'fas fa-heart';
-                fsBtn.style.color = 'var(--text-sub)';
-            }
-        }
-
-        function updateLikedCountDisplay() {
-            document.getElementById('likedLibCount').innerText = `${likedSongs.length} brani`;
-        }
-
-        function openLikedSongs() {
-            playQueue = likedSongs;
-            switchView('library');
-            renderTracksList(likedSongs, 'libContentList');
-        }
-
-        function promptNewPlaylist() {
-            let name = prompt("Inserisci il nome per la nuova playlist:");
-            if(name && name.trim() !== '') { 
-                alert(`Playlist "${name}" creata con successo! Aggiungi brani cercandoli.`); 
-            }
-        }
-
-        function triggerRecapModal() {
-            alert("Il tuo Recap del Mese:\n• 1.420 minuti di ascolto\n• Artista più ascoltato: Lazza\n• Brano top: Ultima Hit");
-        }
-
-        function triggerBlendModal() {
-            let code = prompt("Inserisci il codice invito per unirti a DarkSound Blend:");
-            if(code) {
-                alert(`Connessione alla stanza Blend "${code}" avvenuta con successo! Sincronizzazione playlist in corso...`);
-            }
-        }
-
-        function triggerJoinPlaylist() {
-            let link = prompt("Inserisci il link o codice della playlist collaborativa:");
-            if(link) {
-                alert("Playlist aggiunta alla tua libreria condivisa!");
-            }
+            fsBtn.style.color = isLiked ? 'var(--accent)' : 'var(--text-sub)';
         }
 
         function filterHomeCategory(cat, el) {
@@ -681,9 +633,7 @@
             const bg = document.getElementById('progressBarBg');
             const rect = bg.getBoundingClientRect();
             const pos = (event.clientX - rect.left) / rect.width;
-            if(player && player.getDuration) { 
-                player.seekTo(player.getDuration() * pos, true); 
-            }
+            if(player && player.getDuration) { player.seekTo(player.getDuration() * pos, true); }
         }
 
         function formatTime(secs) {
