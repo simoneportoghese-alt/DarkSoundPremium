@@ -156,17 +156,12 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(255, 77, 77, 0.15);
-      border: 1px solid rgba(255, 77, 77, 0.4);
+      background: rgba(29, 185, 84, 0.15);
+      border: 1px solid rgba(29, 185, 84, 0.4);
       padding: 4px 10px;
       border-radius: 20px;
       font-size: 11px;
       font-weight: 800;
-      color: #ff4d4d;
-    }
-    .offline-indicator.online {
-      background: rgba(29, 185, 84, 0.15);
-      border-color: rgba(29, 185, 84, 0.4);
       color: var(--spotify-green);
     }
 
@@ -223,40 +218,6 @@
     .wrapped-card-banner { background: var(--wrapped-gradient); }
     .blend-hero-banner { background: var(--spotify-blend-gradient); }
 
-    .quick-access-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-    @media (min-width: 600px) {
-      .quick-access-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    .quick-card {
-      background: rgba(255, 255, 255, 0.07);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    .quick-card:hover { background: rgba(255, 255, 255, 0.14); }
-    .quick-card img, .quick-card .quick-icon {
-      width: 48px;
-      height: 48px;
-      object-fit: cover;
-      flex-shrink: 0;
-    }
-    .quick-card-title {
-      font-size: 12px;
-      font-weight: 700;
-      padding: 0 10px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
     .section-title {
       font-size: 18px;
       font-weight: 800;
@@ -308,17 +269,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       margin-top: 2px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .badge-downloaded {
-      background: rgba(0, 191, 255, 0.2);
-      color: #00bfff;
-      font-size: 9px;
-      font-weight: 900;
-      padding: 1px 4px;
-      border-radius: 3px;
     }
 
     .track-actions-group {
@@ -337,8 +287,6 @@
       justify-content: center;
     }
     .track-actions-btn:hover { color: #ffffff; }
-    .track-actions-btn.liked { color: var(--spotify-green); }
-    .track-actions-btn.downloaded { color: #00bfff; }
 
     .search-input-box {
       background: #ffffff;
@@ -545,7 +493,6 @@
         <div class="side-nav-item" onclick="navigate('search')">Cerca</div>
         <div class="side-nav-item" onclick="navigate('library')">La tua libreria</div>
         <div class="side-nav-item" onclick="openImportModal()">+ Importa Playlist</div>
-        <div class="side-nav-item" onclick="openOfflineDownloadsView()">💾 Brani Scaricati</div>
         <div class="side-nav-item" onclick="openWrappedModal()">✨ Recap del Mese</div>
       </div>
     </aside>
@@ -557,7 +504,7 @@
           <h1 class="greeting-text" id="spotify-greeting">Buonasera</h1>
         </div>
         <div class="top-actions-row">
-          <span id="network-status-badge" class="offline-indicator online">Online</span>
+          <span class="offline-indicator">Online</span>
         </div>
       </header>
 
@@ -566,7 +513,6 @@
         <section id="tab-home">
           <div class="filter-pills-row">
             <button class="pill-btn active" onclick="navigate('home')">Tutto</button>
-            <button class="pill-btn" onclick="openOfflineDownloadsView()">Offline Scaricati</button>
             <button class="pill-btn" onclick="openImportModal()">+ Importa</button>
           </div>
 
@@ -598,7 +544,7 @@
         <section id="tab-search" style="display: none;">
           <h2 class="section-title">Cerca</h2>
           <div class="search-input-box">
-            <input type="text" id="spotify-search-input" placeholder="Cosa vuoi ascoltare? Artista o brano..." oninput="handleSearchDebounced(this.value)" />
+            <input type="text" id="spotify-search-input" placeholder="Cosa vuoi ascoltare? Scrivi e premi invio..." onkeydown="if(event.key==='Enter') executeLiveSearch(this.value)" />
           </div>
           <div id="search-results-container"></div>
         </section>
@@ -615,15 +561,6 @@
               <div class="track-text-group">
                 <div class="track-row-title">Brani che ti piacciono</div>
                 <div class="track-row-sub" id="lib-fav-counter">0 brani</div>
-              </div>
-            </div>
-          </div>
-          <div class="track-row-item" onclick="openOfflineDownloadsView()">
-            <div class="track-left-meta">
-              <div style="width: 48px; height: 48px; border-radius: 4px; background: linear-gradient(135deg, #00bfff, #0d73ec); display: flex; align-items: center; justify-content: center; font-size: 20px;">💾</div>
-              <div class="track-text-group">
-                <div class="track-row-title">Brani Scaricati Offline</div>
-                <div class="track-row-sub" id="lib-offline-counter">0 brani</div>
               </div>
             </div>
           </div>
@@ -672,7 +609,6 @@
               <p id="full-artist" style="font-size: 14px; color: var(--spotify-subtext);">Nome Artista</p>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <button id="full-download-btn" onclick="downloadCurrentTrackOffline()" class="track-actions-btn" title="Scarica">💾</button>
               <button id="full-like-btn" onclick="toggleLikeCurrent()" class="track-actions-btn">❤️</button>
             </div>
           </div>
@@ -687,7 +623,7 @@
             </div>
           </div>
 
-          <div style="display: flex; justify-content: space-around; align-items: center;">
+          <div style="display: flex; justify-around; align-items: center;">
             <button onclick="prevTrack()" class="track-actions-btn" style="color: #fff; font-size: 24px;">⏮</button>
             <button id="full-play-btn" onclick="togglePlay()" class="full-play-circle" style="font-size: 24px;">▶</button>
             <button onclick="nextTrack()" class="track-actions-btn" style="color: #fff; font-size: 24px;">⏭</button>
@@ -724,71 +660,6 @@
   </div>
 
   <script>
-    // --- 1. INDEXEDDB PERSISTENZA PER AUDIO OFFLINE ---
-    const DB_NAME = 'DarkSoundAudioDB';
-    const DB_VERSION = 1;
-    let dbInstance = null;
-
-    function openDatabase() {
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-        request.onupgradeneeded = (e) => {
-          const db = e.target.result;
-          if (!db.objectStoreNames.contains('offline_tracks')) {
-            db.createObjectStore('offline_tracks', { keyPath: 'id' });
-          }
-        };
-        request.onsuccess = () => { dbInstance = request.result; resolve(dbInstance); };
-        request.onerror = () => reject(request.error);
-      });
-    }
-
-    async function saveTrackBlobOffline(track, blob) {
-      await openDatabase();
-      return new Promise((resolve, reject) => {
-        const tx = dbInstance.transaction('offline_tracks', 'readwrite');
-        const store = tx.objectStore('offline_tracks');
-        store.put({ ...track, blob, downloadedAt: Date.now() });
-        tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
-      });
-    }
-
-    async function getTrackBlobOffline(id) {
-      await openDatabase();
-      return new Promise((resolve) => {
-        const tx = dbInstance.transaction('offline_tracks', 'readonly');
-        const store = tx.objectStore('offline_tracks');
-        const req = store.get(id);
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => resolve(null);
-      });
-    }
-
-    async function getAllDownloadedTracks() {
-      await openDatabase();
-      return new Promise((resolve) => {
-        const tx = dbInstance.transaction('offline_tracks', 'readonly');
-        const store = tx.objectStore('offline_tracks');
-        const req = store.getAll();
-        req.onsuccess = () => resolve(req.result || []);
-        req.onerror = () => resolve([]);
-      });
-    }
-
-    // --- 2. GESTIONE STATO & CORS PROXY ---
-    const CORS_PROXIES = [
-      (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-      (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-      (url) => `https://thingproxy.freeboard.io/fetch/${url}`
-    ];
-
-    const PIPED_INSTANCES = [
-      'https://pipedapi.kavin.rocks',
-      'https://api.piped.video',
-      'https://piped-api.lunar.icu'
-    ];
-
     let currentTrack = null;
     let playlist = [];
     let isPlaying = false;
@@ -798,70 +669,50 @@
 
     const audio = document.getElementById('main-audio');
 
-    // Brani dimostrativi iniziali (con audio preview ad alta affidabilità)
+    // Brani dimostrativi iniziali
     const DEMO_TRACKS = [
-      { id: '1', title: '100 Messaggi', artist: 'Lazza', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/bf/16/d2/bf16d26c-d2ff-7195-207d-53ecb15f9b45/196871587848.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview122/v4/66/9d/b1/669db145-eebe-4c4f-cbbd-f06a4613bbad/mzaf_11306353982424911046.plus.aac.p.m4a' },
-      { id: '2', title: 'Blinding Lights', artist: 'The Weeknd', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/e5/bd/bc/e5bdbc6c-4860-264a-28ea-8b43178c1875/20UMGIM08611.rgb.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/1b/49/71/1b4971c0-038c-9c7f-94ad-736021666ff7/mzaf_10793616239169604179.plus.aac.p.m4a' },
-      { id: '3', title: "I P' ME, TU P' TE", artist: 'Geolier', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/58/05/9a/58059a44-dfba-4856-788b-1ea917b1897c/196871891969.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/bf/3b/b7/bf3bb792-72cb-1d54-8c88-c70ffbd2ba09/mzaf_1241168128038596042.plus.aac.p.m4a' },
-      { id: '4', title: 'Calcolatrici', artist: 'Sfera Ebbasta ft. Geolier, Baby Gang', cover: 'https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/21/53/78/2153787a-6242-b9cf-2bfe-98547cefbaf2/23UM1IM19208.rgb.jpg/600x600bb.jpg', url: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/bb/e9/8f/bbe98f26-0e1a-c567-96a9-8395ea2cfec0/mzaf_10214691456241312384.plus.aac.p.m4a' }
+      { id: '1', title: '100 Messaggi', artist: 'Lazza' },
+      { id: '2', title: 'Blinding Lights', artist: 'The Weeknd' },
+      { id: '3', title: "I P' ME, TU P' TE", artist: 'Geolier' },
+      { id: '4', title: 'Calcolatrici', artist: 'Sfera Ebbasta ft. Geolier' }
     ];
 
-    // --- 3. FETCH STREAM AUDIO TRAMITE CORS PROXY & FALLBACK ---
-    async function fetchAudioStreamWithProxy(query) {
-      for (const instance of PIPED_INSTANCES) {
-        for (const proxyFn of CORS_PROXIES) {
-          try {
-            const searchUrl = proxyFn(`${instance}/search?q=${encodeURIComponent(query)}&filter=music_songs`);
-            const res = await fetch(searchUrl, { signal: AbortSignal.timeout(4000) });
-            if (!res.ok) continue;
-            const data = await res.json();
-            const song = data.items && data.items[0];
-            if (song && song.url) {
-              const videoId = song.url.replace('/watch?v=', '');
-              const streamRes = await fetch(proxyFn(`${instance}/streams/${videoId}`));
-              const streamData = await streamRes.json();
-              if (streamData.audioStreams && streamData.audioStreams.length > 0) {
-                return streamData.audioStreams[0].url;
-              }
-            }
-          } catch (e) {}
+    // --- COLLEGAMENTO DIRETTO AL BACKEND VERCEL ---
+    async function playTrack(trackOrQuery) {
+      const query = typeof trackOrQuery === 'string' ? trackOrQuery : `${trackOrQuery.title} ${trackOrQuery.artist}`;
+      
+      showToast("Caricamento brano...");
+      
+      // Sblocco audio per Safari iOS
+      audio.play().catch(() => {});
+
+      try {
+        const res = await fetch(`/api/stream?q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+
+        if (data.error) {
+          showToast("Errore: " + data.error);
+          return;
         }
-      }
-      return null;
-    }
 
-    // --- 4. RIPRODUZIONE E GESTIONE AUDIO ---
-    async function playTrack(track) {
-      currentTrack = track;
-      updatePlayerUI(track);
+        currentTrack = {
+          id: data.title,
+          title: data.title,
+          artist: data.artist,
+          cover: data.artwork,
+          url: data.audioUrl
+        };
 
-      // User gesture immediata per sblocco audio
-      try { audio.play().catch(() => {}); } catch(e) {}
+        updatePlayerUI(currentTrack);
 
-      // Verifica se presente in cache offline
-      const offlineItem = await getTrackBlobOffline(track.id);
-      if (offlineItem && offlineItem.blob) {
-        audio.src = URL.createObjectURL(offlineItem.blob);
-        audio.play().then(() => setPlayState(true)).catch(console.error);
-        showToast("Riproduzione da memoria Offline 💾");
-        return;
-      }
+        audio.src = data.audioUrl;
+        audio.load();
+        await audio.play();
+        setPlayState(true);
 
-      // Se URL diretto disponibile
-      if (track.url) {
-        audio.src = track.url;
-        audio.play().then(() => setPlayState(true)).catch(console.error);
-        return;
-      }
-
-      // Recupero dello stream con proxy
-      showToast("Estrazione audio in corso...");
-      const streamUrl = await fetchAudioStreamWithProxy(`${track.artist} ${track.title}`);
-      if (streamUrl) {
-        audio.src = streamUrl;
-        audio.play().then(() => setPlayState(true)).catch(console.error);
-      } else {
-        showToast("Impossibile caricare l'audio del brano");
+      } catch (err) {
+        console.error(err);
+        showToast("Errore di connessione con il server");
       }
     }
 
@@ -886,50 +737,15 @@
     }
 
     function prevTrack() {
-      const idx = playlist.findIndex(t => t.id === currentTrack?.id);
+      const idx = playlist.findIndex(t => t.title === currentTrack?.title);
       if (idx > 0) playTrack(playlist[idx - 1]);
     }
 
     function nextTrack() {
-      const idx = playlist.findIndex(t => t.id === currentTrack?.id);
+      const idx = playlist.findIndex(t => t.title === currentTrack?.title);
       if (idx >= 0 && idx < playlist.length - 1) playTrack(playlist[idx + 1]);
     }
 
-    // --- 5. DOWNLOAD OFFLINE CON FETCH BLOB E INDEXEDDB ---
-    async function downloadCurrentTrackOffline() {
-      if (!currentTrack) return;
-      showToast("Download in corso...");
-      const btn = document.getElementById('full-download-btn');
-      
-      try {
-        let streamUrl = currentTrack.url;
-        if (!streamUrl) {
-          streamUrl = await fetchAudioStreamWithProxy(`${currentTrack.artist} ${currentTrack.title}`);
-        }
-        if (!streamUrl) throw new Error("Stream non trovato");
-
-        // Download con fallback proxy
-        let blob = null;
-        try {
-          const res = await fetch(streamUrl);
-          blob = await res.blob();
-        } catch (e) {
-          const proxiedUrl = CORS_PROXIES[0](streamUrl);
-          const res = await fetch(proxiedUrl);
-          blob = await res.blob();
-        }
-
-        await saveTrackBlobOffline(currentTrack, blob);
-        showToast("Brano salvato per l'ascolto offline! 💾");
-        if (btn) btn.classList.add('downloaded');
-        updateLibraryCounters();
-      } catch (err) {
-        console.error(err);
-        showToast("Errore durante il download del brano.");
-      }
-    }
-
-    // --- 6. AGGIORNAMENTO UI E MEDIASESSION ---
     function updatePlayerUI(track) {
       document.getElementById('mini-title').textContent = track.title;
       document.getElementById('mini-artist').textContent = track.artist;
@@ -939,7 +755,7 @@
       document.getElementById('full-cover').src = track.cover;
       document.getElementById('ambient-background').style.backgroundImage = `url('${track.cover}')`;
       
-      const isFav = favorites.some(f => f.id === track.id);
+      const isFav = favorites.some(f => f.title === track.title);
       document.getElementById('mini-like-btn').style.color = isFav ? '#1DB954' : '#b3b3b3';
       document.getElementById('full-like-btn').style.color = isFav ? '#1DB954' : '#b3b3b3';
     }
@@ -958,7 +774,6 @@
       }
     }
 
-    // --- 7. EVENTI AUDIO & SCRUBBING ---
     audio.ontimeupdate = () => {
       if (audio.duration) {
         const pct = (audio.currentTime / audio.duration) * 100;
@@ -967,7 +782,6 @@
         document.getElementById('full-curr-time').textContent = formatTime(audio.currentTime);
         document.getElementById('full-dur-time').textContent = formatTime(audio.duration);
         
-        // Accumula statistiche
         playStats.seconds += 1;
         if (currentTrack) {
           playStats.artists[currentTrack.artist] = (playStats.artists[currentTrack.artist] || 0) + 1;
@@ -989,10 +803,9 @@
       return `${m}:${sec < 10 ? '0' : ''}${sec}`;
     }
 
-    // --- 8. PREFERITI & PLAYLIST DA TESTO ---
     function toggleLikeCurrent() {
       if (!currentTrack) return;
-      const idx = favorites.findIndex(f => f.id === currentTrack.id);
+      const idx = favorites.findIndex(f => f.title === currentTrack.title);
       if (idx >= 0) {
         favorites.splice(idx, 1);
         showToast("Rimosso dai Preferiti");
@@ -1011,14 +824,6 @@
       navigate('home');
     }
 
-    async function openOfflineDownloadsView() {
-      const offline = await getAllDownloadedTracks();
-      playlist = offline;
-      renderTrackList(offline, 'home-song-list');
-      navigate('home');
-      showToast(`${offline.length} brani offline pronti all'ascolto`);
-    }
-
     function executePlaylistImport() {
       const title = document.getElementById('import-playlist-title').value.trim() || 'Playlist Importata';
       const text = document.getElementById('import-playlist-text').value.trim();
@@ -1030,20 +835,18 @@
         return {
           id: 'imp_' + Date.now() + '_' + i,
           artist: parts.length > 1 ? parts[0].trim() : 'DarkSound',
-          title: parts.length > 1 ? parts.slice(1).join('-').trim() : parts[0].trim(),
-          cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&h=300&fit=crop'
+          title: parts.length > 1 ? parts.slice(1).join('-').trim() : parts[0].trim()
         };
       });
 
       customPlaylists.push({ id: 'pl_' + Date.now(), name: title, tracks: newTracks });
       localStorage.setItem('ds_playlists', JSON.stringify(customPlaylists));
       closeImportModal();
-      showToast(`Playlist "${title}" creata con ${newTracks.length} brani! 🚀`);
+      showToast(`Playlist "${title}" creata! 🚀`);
       renderPlaylists();
       navigate('library');
     }
 
-    // --- 9. RECAP MENSILE (WRAPPED) ---
     function openWrappedModal() {
       const totalMinutes = Math.floor((playStats.seconds || 0) / 60);
       document.getElementById('wrapped-total-minutes').textContent = `${totalMinutes} Minuti Ascoltati`;
@@ -1061,7 +864,6 @@
     }
     function closeWrappedModal() { document.getElementById('wrapped-modal').classList.remove('open'); }
 
-    // --- 10. NAVIGAZIONE E RENDERING LISTE ---
     function navigate(tab) {
       ['home', 'search', 'library'].forEach(t => {
         document.getElementById(`tab-${t}`).style.display = (t === tab) ? 'block' : 'none';
@@ -1078,20 +880,23 @@
         return;
       }
 
-      container.innerHTML = tracks.map(t => `
-        <div class="track-row-item ${currentTrack?.id === t.id ? 'playing' : ''}" onclick='playTrack(${JSON.stringify(t).replace(/'/g, "&apos;")})'>
-          <div class="track-left-meta">
-            <img class="track-row-thumb" src="${t.cover}" />
-            <div class="track-text-group">
-              <div class="track-row-title">${t.title}</div>
-              <div class="track-row-sub">${t.artist}</div>
+      container.innerHTML = tracks.map(t => {
+        const queryStr = `${t.title} ${t.artist}`.replace(/'/g, "\\'");
+        return `
+          <div class="track-row-item ${currentTrack?.title === t.title ? 'playing' : ''}" onclick="playTrack('${queryStr}')">
+            <div class="track-left-meta">
+              <div style="width:48px;height:48px;border-radius:4px;background:#282828;display:flex;align-items:center;justify-content:center;font-size:20px;">🎵</div>
+              <div class="track-text-group">
+                <div class="track-row-title">${t.title}</div>
+                <div class="track-row-sub">${t.artist}</div>
+              </div>
+            </div>
+            <div class="track-actions-group">
+              <button class="track-actions-btn" onclick="event.stopPropagation(); playTrack('${queryStr}')">▶</button>
             </div>
           </div>
-          <div class="track-actions-group">
-            <button class="track-actions-btn" onclick="event.stopPropagation(); playTrack(${JSON.stringify(t).replace(/'/g, "&apos;")})">▶</button>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function renderPlaylists() {
@@ -1099,7 +904,7 @@
       container.innerHTML = customPlaylists.map(pl => `
         <div class="track-row-item" onclick='loadPlaylist(${JSON.stringify(pl.tracks).replace(/'/g, "&apos;")})'>
           <div class="track-left-meta">
-            <div style="width:48px;height:48px;border-radius:4px;background:#282828;display:flex;align-items:center;justify-content:center;font-size:20px;">🎵</div>
+            <div style="width:48px;height:48px;border-radius:4px;background:#282828;display:flex;align-items:center;justify-content:center;font-size:20px;">🎶</div>
             <div class="track-text-group">
               <div class="track-row-title">${pl.name}</div>
               <div class="track-row-sub">${pl.tracks.length} brani</div>
@@ -1118,18 +923,26 @@
 
     function updateLibraryCounters() {
       document.getElementById('lib-fav-counter').textContent = `${favorites.length} brani`;
-      getAllDownloadedTracks().then(dl => {
-        document.getElementById('lib-offline-counter').textContent = `${dl.length} brani pronti all'ascolto`;
-      });
     }
 
-    function handleSearchDebounced(val) {
+    async function executeLiveSearch(val) {
       if (!val.trim()) return;
-      const res = DEMO_TRACKS.filter(t => 
-        t.title.toLowerCase().includes(val.toLowerCase()) || 
-        t.artist.toLowerCase().includes(val.toLowerCase())
-      );
-      renderTrackList(res, 'search-results-container');
+      const container = document.getElementById('search-results-container');
+      container.innerHTML = '<div style="text-align:center; padding:20px; color:#b3b3b3;">Ricerca in corso...</div>';
+
+      try {
+        const res = await fetch(`/api/stream?q=${encodeURIComponent(val)}`);
+        const data = await res.json();
+
+        if (data.error) {
+          container.innerHTML = `<div style="text-align:center; padding:20px; color:#ff4d4d;">${data.error}</div>`;
+          return;
+        }
+
+        renderTrackList([{ title: data.title, artist: data.artist }], 'search-results-container');
+      } catch (err) {
+        container.innerHTML = '<div style="text-align:center; padding:20px; color:#ff4d4d;">Errore di rete durante la ricerca</div>';
+      }
     }
 
     function openFullscreenPlayer() { document.getElementById('fullscreen-player').classList.add('open'); }
@@ -1143,50 +956,7 @@
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 2500);
     }
-    async function playMusic(queryText) {
-  const query = queryText || document.getElementById('searchInput').value.trim();
-  if (!query) return;
 
-  const statusText = document.getElementById('statusText');
-  const audio = document.getElementById('mainAudio');
-  
-  statusText.innerText = "Caricamento da SoundCloud...";
-
-  // Sblocco audio per gesture iOS
-  audio.play().catch(() => {});
-
-  try {
-    // Chiamata all'API Vercel
-    const res = await fetch(`/api/stream?q=${encodeURIComponent(query)}`);
-    const data = await res.json();
-
-    if (data.error) {
-      statusText.innerText = "Errore: " + data.error;
-      return;
-    }
-
-    // Aggiorna la grafica dell'app con i dati reali!
-    document.getElementById('displayTitle').innerText = data.title;
-    document.getElementById('displayArtist').innerText = data.artist;
-    
-    // Sostituisce l'icona col punto interrogativo con la vera copertina HD
-    const coverImage = document.getElementById('coverImage');
-    if (coverImage) coverImage.src = data.artwork;
-
-    // Avvia la riproduzione dell'audio
-    audio.src = data.audioUrl;
-    await audio.play();
-    
-    statusText.innerText = "In riproduzione";
-
-  } catch (err) {
-    console.error(err);
-    statusText.innerText = "Impossibile riprodurre il brano.";
-  }
-}
-
-
-    // --- INIZIALIZZAZIONE ---
     window.onload = () => {
       playlist = DEMO_TRACKS;
       renderTrackList(DEMO_TRACKS, 'home-song-list');
