@@ -8,32 +8,45 @@ export default async function handler(req, res) {
 
   const { q } = req.query;
   if (!q) {
-    return res.status(400).json({ error: 'Manca la canzone (q)' });
+    return res.status(400).json({ error: 'Manca la ricerca' });
   }
 
-  try {
-    const searchUrl = `https://pipedapi.kavin.rocks/search?q=${encodeURIComponent(q)}&filter=music_songs`;
-    const searchRes = await fetch(searchUrl);
-    const searchData = await searchRes.json();
+  // Lista di istanze pubbliche di backup per garantire massima stabilità
+  const instances = [
+    'https://inv.iosbb.org',
+    'https://invidious.nerdvpn.de',
+    'https://invidious.drgns.space'
+  ];
 
-    if (!searchData.items || searchData.items.length === 0) {
-      return res.status(404).json({ error: 'Nessun brano trovato' });
+  for (const baseUrl of instances) {
+    try {
+      // 1. Cerca il brano
+      const searchRes = await fetch(`${baseUrl}/api/v1/search?q=${encodeURIComponent(q)}&type=video`);
+      const searchData = await searchRes.json();
+
+      if (!searchData || searchData.length === 0) continue;
+
+      const videoId = searchData[0].videoId;
+
+      // 2. Prendi i dettagli e lo stream audio
+      const videoRes = await fetch(`${baseUrl}/api/v1/videos/${videoId}`);
+      const videoData = await videoRes.json();
+
+      if (videoData && videoData.adaptiveFormats) {
+        // Cerca la traccia audio con la qualità migliore
+        const audioFormat = videoData.adaptiveFormats
+          .filter(f => f.type && f.type.includes('audio'))
+          .sort((a, b) => (b.bitrate || 0) - (a.bitrate || 0))[0];
+
+        if (audioFormat && audioFormat.url) {
+          // Reindirizza direttamente all'audio funzionante
+          return res.redirect(302, audioFormat.url);
+        }
+      }
+    } catch (e) {
+      console.log(`Fallback istanza ${baseUrl} fallito, provo la successiva...`);
     }
-
-    const videoId = searchData.items[0].url.split('v=')[1];
-    const streamUrl = `https://pipedapi.kavin.rocks/streams/${videoId}`;
-    const streamRes = await fetch(streamUrl);
-    const streamData = await streamRes.json();
-
-    const audioStream = streamData.audioStreams.find(s => s.mimeType.includes('audio/mp4')) || streamData.audioStreams[0];
-
-    if (!audioStream) {
-      return res.status(404).json({ error: 'Stream non disponibile' });
-    }
-
-    return res.redirect(302, audioStream.url);
-
-  } catch (error) {
-    return res.status(500).json({ error: 'Errore server' });
   }
+
+  return res.status(500).json({ error: 'Impossibile recuperare lo stream al momento.' });
 }
