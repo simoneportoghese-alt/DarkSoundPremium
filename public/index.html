@@ -1036,7 +1036,6 @@
             if(idx > -1) likedSongs.splice(idx, 1);
             else likedSongs.push(t);
             saveUserData();
-            // Aggiorna viste se necessario
             if(document.getElementById('view-home').classList.contains('active')) loadHomeTracks();
             if(document.getElementById('view-library').classList.contains('active')) renderLibraryContent();
         }
