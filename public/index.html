@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DarkSound Pro - Spotube PWA Edition</title>
+    <title>DarkSound Pro - Liquid Glass Edition</title>
     <!-- Collegamento per la PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
@@ -13,11 +13,12 @@
     <style>
         :root {
             --bg-base: #000000;
-            --bg-card: #181818;
             --text-main: #ffffff;
-            --text-sub: #b3b3b3;
-            --accent: #1ed760;
-            --transition-speed: 0.3s;
+            --text-sub: #98989f;
+            --accent: #30d158; /* Apple System Green */
+            --glass-bg: rgba(28, 28, 30, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         * {
@@ -34,14 +35,28 @@
             padding-bottom: 180px;
             min-height: 100vh;
             font-size: 16px;
+            overflow-x: hidden;
+            /* Sfondo dinamico sfumato per far risaltare il vetro liquido */
+            background-image: radial-gradient(circle at 10% 20%, rgba(48, 48, 80, 0.25) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(80, 30, 60, 0.2) 0%, transparent 40%);
+            background-attachment: fixed;
         }
 
-        .view { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        .view { display: none; padding: 20px; animation: iosFadeIn 0.45s var(--transition-smooth) forwards; }
         .view.active { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes iosFadeIn {
+            from { opacity: 0; transform: scale(0.97) translateY(10px); filter: blur(4px); }
+            to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+
+        /* LIQUID GLASS GENERAL STYLES */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         /* TOP STATUS BAR */
@@ -52,8 +67,8 @@
             margin-bottom: 18px;
         }
         .badge-pro {
-            background: rgba(30, 215, 96, 0.15);
-            border: 1px solid rgba(30, 215, 96, 0.4);
+            background: rgba(48, 209, 88, 0.15);
+            border: 1px solid rgba(48, 209, 88, 0.3);
             color: var(--accent);
             padding: 6px 12px;
             border-radius: 20px;
@@ -62,78 +77,71 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            backdrop-filter: blur(10px);
         }
-        .user-status-right {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
+        .user-status-right { display: flex; gap: 8px; align-items: center; }
         .status-pill {
-            background: #1a3a24;
-            color: #2ebd59;
+            background: rgba(46, 189, 89, 0.2);
+            color: #30d158;
             font-size: 0.85rem;
             font-weight: 700;
             padding: 6px 14px;
             border-radius: 20px;
+            backdrop-filter: blur(10px);
         }
         .user-pill {
-            background: #282828;
+            background: rgba(255, 255, 255, 0.1);
             color: white;
             font-size: 0.85rem;
             font-weight: 700;
             padding: 6px 14px;
             border-radius: 20px;
+            backdrop-filter: blur(10px);
         }
 
         /* HEADER & CHIPS */
         .home-title { font-size: 2rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
         .home-chips { display: flex; gap: 10px; margin-bottom: 22px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
         .home-chips::-webkit-scrollbar { display: none; }
-        .chip { background: #262626; border: none; color: white; padding: 10px 18px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background var(--transition-speed); }
-        .chip.active { background: white; color: black; }
-
-        /* SPECIAL BANNERS */
-        .banner-recap {
-            background: linear-gradient(135deg, #3b28b5 0%, #b5289e 50%, #e06d28 100%);
-            border-radius: 14px;
-            padding: 22px;
-            margin-bottom: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(181, 40, 158, 0.2);
+        
+        .chip {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: white; padding: 10px 18px; border-radius: 20px; 
+            font-size: 0.95rem; font-weight: 600; cursor: pointer; white-space: nowrap; 
+            transition: all 0.3s var(--transition-smooth);
         }
-        .banner-blend {
-            background: linear-gradient(135deg, #1e3a8a 0%, #0d9488 50%, #15803d 100%);
-            border-radius: 14px;
-            padding: 22px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(13, 148, 136, 0.2);
-        }
-        .banner-text span { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.9; display: block; margin-bottom: 6px; }
-        .banner-text h3 { font-size: 1.35rem; font-weight: 800; margin-bottom: 4px; }
-        .banner-text p { font-size: 0.9rem; opacity: 0.85; }
+        .chip:active { transform: scale(0.94); }
+        .chip.active { background: white; color: black; border-color: white; box-shadow: 0 4px 15px rgba(255,255,255,0.3); }
 
         /* SHORTCUT GRID */
         .shortcut-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 30px; }
-        .shortcut-card { background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; gap: 12px; overflow: hidden; cursor: pointer; transition: background 0.2s; border: 1px solid rgba(255,255,255,0.03); }
-        .shortcut-card:hover { background: #282828; }
+        .shortcut-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 14px;
+            display: flex; align-items: center; gap: 12px; overflow: hidden; 
+            cursor: pointer; transition: transform 0.25s var(--transition-smooth), background 0.25s; 
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .shortcut-card:active { transform: scale(0.96); background: rgba(255, 255, 255, 0.12); }
         .shortcut-card img { width: 56px; height: 56px; object-fit: cover; }
         .shortcut-card span { font-size: 0.95rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 10px; }
 
         /* SECTION TITLES */
         .section-title { font-size: 1.35rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.3px; }
 
-        /* TRACK LISTS & SCROLLING MARQUEE FIX */
-        .track-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.02); }
-        .track-row:hover { background: rgba(255,255,255,0.02); }
+        /* TRACK LISTS */
+        .track-row { 
+            display: flex; align-items: center; justify-content: space-between; 
+            padding: 10px 12px; cursor: pointer; border-radius: 12px;
+            margin-bottom: 4px; transition: background 0.2s ease, transform 0.2s ease; 
+        }
+        .track-row:active { background: rgba(255,255,255,0.08); transform: scale(0.98); }
         .track-row-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; overflow: hidden; }
-        .track-row-left img { width: 56px; height: 56px; border-radius: 6px; object-fit: cover; background: #333; flex-shrink: 0; }
+        .track-row-left img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: #333; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         
         .track-meta { flex: 1; min-width: 0; overflow: hidden; position: relative; }
         .track-meta h4 { font-size: 1.05rem; font-weight: 700; color: white; white-space: nowrap; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; }
@@ -148,66 +156,100 @@
         }
 
         .track-meta p { font-size: 0.85rem; color: var(--text-sub); display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .badge-full { background: rgba(30,215,96,0.2); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; flex-shrink: 0; }
+        .badge-full { background: rgba(48,209,88,0.2); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; flex-shrink: 0; }
         .track-actions { display: flex; align-items: center; gap: 18px; color: var(--text-sub); font-size: 1.2rem; padding: 6px; flex-shrink: 0; }
         .btn-download-action { cursor: pointer; transition: color 0.2s; }
         .btn-download-action.saved { color: var(--accent); }
 
         /* SEARCH VIEW */
-        .search-box { background: #242424; border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.05); }
+        .search-box { 
+            background: rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; margin-bottom: 24px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
         .search-box input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 1.05rem; font-weight: 600; }
         .genre-browse-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-        .genre-card { height: 115px; border-radius: 10px; padding: 16px; font-size: 1.25rem; font-weight: 800; color: white; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-start; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .genre-card { height: 115px; border-radius: 14px; padding: 16px; font-size: 1.25rem; font-weight: 800; color: white; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-start; box-shadow: 0 8px 25px rgba(0,0,0,0.4); transition: transform 0.3s var(--transition-smooth); }
+        .genre-card:active { transform: scale(0.95); }
 
         /* LIBRARY VIEW */
-        .lib-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .btn-action-lib { background: #262626; color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+        .lib-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 
-        /* MINI PLAYER */
+        /* MINI PLAYER (Liquid Glass Floating Capsule) */
         .player-bar {
-            position: fixed; bottom: 70px; left: 10px; right: 10px; 
-            background: #282828; border-radius: 10px; padding: 12px 16px; 
+            position: fixed; bottom: 76px; left: 12px; right: 12px; 
+            background: rgba(30, 30, 34, 0.75);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-radius: 16px; padding: 10px 14px; 
             display: none; align-items: center; gap: 14px; z-index: 1900; 
-            box-shadow: 0 12px 35px rgba(0,0,0,0.8); cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.08);
-            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.15); 
+            cursor: pointer;
+            transition: transform 0.3s var(--transition-smooth);
         }
-        .player-bar img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; background: #333; flex-shrink: 0; }
+        .player-bar:active { transform: scale(0.98); }
+        .player-bar img { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; background: #333; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
         .player-meta { flex: 1; min-width: 0; overflow: hidden; }
-        .p-title { font-size: 1rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
-        .p-artist { font-size: 0.85rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .player-icons { display: flex; align-items: center; gap: 20px; font-size: 1.35rem; color: #fff; padding: 4px; flex-shrink: 0; }
+        .p-title { font-size: 0.95rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+        .p-artist { font-size: 0.82rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .player-icons { display: flex; align-items: center; gap: 18px; font-size: 1.3rem; color: #fff; padding: 4px; flex-shrink: 0; }
 
         /* FULLSCREEN PLAYER */
         #fullscreen-player {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: linear-gradient(180deg, #3d2438 0%, #121212 100%);
+            background: linear-gradient(180deg, rgba(40,25,38,0.95) 0%, rgba(10,10,12,0.98) 100%);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
             z-index: 2500; display: none; flex-direction: column; padding: 40px 24px;
             justify-content: space-between;
+            animation: iosSlideUp 0.45s var(--transition-smooth) forwards;
+        }
+        @keyframes iosSlideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         #fullscreen-player.active { display: flex; }
         .fs-top { display: flex; justify-content: space-between; align-items: center; color: white; font-size: 1.35rem; }
-        .fs-cover { width: 100%; max-width: 360px; aspect-ratio: 1; border-radius: 12px; object-fit: cover; box-shadow: 0 15px 40px rgba(0,0,0,0.7); margin: 20px auto; background: #333; }
+        .fs-cover { width: 100%; max-width: 340px; aspect-ratio: 1; border-radius: 20px; object-fit: cover; box-shadow: 0 25px 60px rgba(0,0,0,0.8); margin: 20px auto; background: #333; transition: transform 0.3s ease; }
         .fs-info-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .fs-titles { flex: 1; min-width: 0; overflow: hidden; padding-right: 10px; }
-        .fs-titles h3 { font-size: 1.65rem; font-weight: 700; color: white; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .fs-titles p { font-size: 1.1rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .fs-titles h3 { font-size: 1.6rem; font-weight: 700; color: white; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .fs-titles p { font-size: 1.05rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .progress-container { width: 100%; margin-bottom: 28px; }
-        .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; position: relative; cursor: pointer; }
-        .progress-bar-fill { width: 0%; height: 100%; background: white; border-radius: 3px; }
+        .progress-container { width: 100%; margin-bottom: 24px; }
+        .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px; position: relative; cursor: pointer; }
+        .progress-bar-fill { width: 0%; height: 100%; background: white; border-radius: 3px; position: relative; }
+        .progress-bar-fill::after { content: ''; position: absolute; right: -4px; top: -3px; width: 12px; height: 12px; background: white; border-radius: 50%; box-shadow: 0 0 10px rgba(255,255,255,0.8); }
         .progress-times { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-sub); margin-top: 8px; }
 
-        .fs-controls { display: flex; justify-content: space-between; align-items: center; font-size: 1.7rem; color: white; margin-bottom: 28px; }
-        .fs-play-btn { width: 76px; height: 76px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.1rem; cursor: pointer; box-shadow: 0 6px 20px rgba(255,255,255,0.2); }
+        .fs-controls { display: flex; justify-content: space-between; align-items: center; font-size: 1.6rem; color: white; margin-bottom: 20px; }
+        .fs-play-btn { width: 72px; height: 72px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; box-shadow: 0 10px 25px rgba(255,255,255,0.3); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .fs-play-btn:active { transform: scale(0.9); }
 
-        /* BOTTOM NAV */
+        /* BOTTOM NAV (Liquid Glass Floating Dock) */
         nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.06); z-index: 2000;
+            position: fixed; bottom: 12px; left: 16px; right: 16px; height: 64px; 
+            background: rgba(20, 20, 24, 0.7);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            display: flex; justify-content: space-around; align-items: center; 
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.12); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7); 
+            z-index: 2000;
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-sub); font-size: 0.8rem; font-weight: 600; cursor: pointer; background: none; border: none; padding: 6px 16px; }
-        .nav-item i { font-size: 1.4rem; }
-        .nav-item.active { color: var(--text-main); }
+        .nav-item { 
+            display: flex; flex-direction: column; align-items: center; gap: 3px; 
+            color: var(--text-sub); font-size: 0.75rem; font-weight: 600; 
+            cursor: pointer; background: none; border: none; padding: 6px 16px; 
+            transition: color 0.2s, transform 0.2s; 
+        }
+        .nav-item:active { transform: scale(0.9); }
+        .nav-item i { font-size: 1.3rem; }
+        .nav-item.active { color: var(--text-main); text-shadow: 0 0 12px rgba(255,255,255,0.5); }
         
         #youtube-player { position: fixed; bottom: 0; left: 0; width: 200px; height: 200px; opacity: 0.01; pointer-events: none; z-index: -1000; }
     </style>
@@ -217,7 +259,7 @@
     <!-- HOME VIEW -->
     <div id="view-home" class="view active">
         <div class="top-status-bar">
-            <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.5rem;"></i> DARKSOUND PRO PWA</div>
+            <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.45rem;"></i> DARKSOUND GLASS</div>
             <div class="user-status-right">
                 <span class="status-pill">Online</span>
                 <span class="user-pill">utente</span>
@@ -234,11 +276,11 @@
 
         <div class="shortcut-grid">
             <div class="shortcut-card" onclick="openLikedSongs()">
-                <div style="width:56px;height:56px;background:linear-gradient(135deg,#3b28b5,#b5289e);display:flex;align-items:center;justify-content:center;"><i class="fas fa-heart" style="color:white;font-size:1.25rem;"></i></div>
+                <div style="width:56px;height:56px;background:linear-gradient(135deg,#5e35b1,#d81b60);display:flex;align-items:center;justify-content:center;"><i class="fas fa-heart" style="color:white;font-size:1.2rem;"></i></div>
                 <span>Brani preferiti</span>
             </div>
-            <div class="shortcut-card" onclick="switchView('library', document.querySelectorAll('.nav-item')[2])">
-                <div style="width:56px;height:56px;background:linear-gradient(135deg,#1e3a8a,#0d9488);display:flex;align-items:center;justify-content:center;"><i class="fas fa-download" style="color:white;font-size:1.25rem;"></i></div>
+            <div class="shortcut-card" onclick="openDownloadedSongs()">
+                <div style="width:56px;height:56px;background:linear-gradient(135deg,#0288d1,#00897b);display:flex;align-items:center;justify-content:center;"><i class="fas fa-download" style="color:white;font-size:1.2rem;"></i></div>
                 <span>Scaricati</span>
             </div>
             <div class="shortcut-card" onclick="selectSearchGenre('Lazza')">
@@ -261,16 +303,16 @@
     <div id="view-search" class="view">
         <h1 class="home-title">Cerca</h1>
         <div class="search-box">
-            <i class="fas fa-search" style="color: var(--text-sub); font-size: 1.25rem;"></i>
+            <i class="fas fa-search" style="color: var(--text-sub); font-size: 1.2rem;"></i>
             <input type="text" id="spotifySearchInput" placeholder="Cosa vuoi ascoltare? (es. The Weeknd)" oninput="handleSearchInput(this.value)">
         </div>
 
         <div class="section-title">Sfoglia tutto</div>
         <div class="genre-browse-grid">
-            <div class="genre-card" style="background-color: #dc2626;" onclick="selectSearchGenre('Pop')">Pop</div>
-            <div class="genre-card" style="background-color: #1e3a8a;" onclick="selectSearchGenre('Hip-Hop / Trap')">Hip-Hop / Trap</div>
-            <div class="genre-card" style="background-color: #7c3aed;" onclick="selectSearchGenre('Rock')">Rock</div>
-            <div class="genre-card" style="background-color: #16a34a;" onclick="selectSearchGenre('Indie')">Indie</div>
+            <div class="genre-card" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);" onclick="selectSearchGenre('Pop')">Pop</div>
+            <div class="genre-card" style="background: linear-gradient(135deg, #2193b0, #6dd5ed);" onclick="selectSearchGenre('Hip-Hop / Trap')">Hip-Hop / Trap</div>
+            <div class="genre-card" style="background: linear-gradient(135deg, #833ab4, #fd1d1d);" onclick="selectSearchGenre('Rock')">Rock</div>
+            <div class="genre-card" style="background: linear-gradient(135deg, #11998e, #38ef7d);" onclick="selectSearchGenre('Indie')">Indie</div>
         </div>
 
         <div id="searchResultsContainer" style="margin-top:24px;"></div>
@@ -281,8 +323,12 @@
         <div class="lib-header-row">
             <h1 class="home-title" style="margin-bottom:0;">La tua Libreria</h1>
         </div>
-        <div style="margin-top: 20px;" id="libContentList">
-            <p style="color:var(--text-sub);">Nessun brano scaricato offline.</p>
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <button class="chip active" id="btnTabLiked" onclick="switchLibraryTab('liked')">Preferiti (<span id="countLiked">0</span>)</button>
+            <button class="chip" id="btnTabDownloads" onclick="switchLibraryTab('downloads')">Scaricati (<span id="countDownloads">0</span>)</button>
+        </div>
+        <div id="libContentList">
+            <p style="color:var(--text-sub);">Nessun elemento in questa sezione.</p>
         </div>
     </div>
 
@@ -290,7 +336,7 @@
     <div id="fullscreen-player">
         <div class="fs-top">
             <i class="fas fa-chevron-down" onclick="toggleFullscreen()" style="cursor:pointer; padding: 10px;"></i>
-            <span style="font-size:0.95rem; font-weight:700;">Riproduzione in corso</span>
+            <span style="font-size:0.95rem; font-weight:700; letter-spacing:0.5px;">IN RIPRODUZIONE</span>
             <i class="fas fa-ellipsis-vertical" style="cursor:pointer; padding: 10px;"></i>
         </div>
         <img id="fsCover" class="fs-cover" src="" onerror="this.src='https://picsum.photos/seed/fsfallback/300/300'">
@@ -299,7 +345,7 @@
                 <h3 id="fsTitle">-</h3>
                 <p id="fsArtist">-</p>
             </div>
-            <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.75rem; color: var(--text-sub); cursor:pointer; padding: 10px; flex-shrink: 0;" onclick="toggleLikeCurrent()"></i>
+            <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.7rem; color: var(--text-sub); cursor:pointer; padding: 10px; flex-shrink: 0;" onclick="toggleLikeCurrent()"></i>
         </div>
         <div class="progress-container">
             <div class="progress-bar-bg" id="progressBarBg" onclick="seekTrack(event)">
@@ -335,11 +381,11 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION -->
+    <!-- BOTTOM NAVIGATION (Dock) -->
     <nav>
         <button class="nav-item active" onclick="switchView('home', this)"><i class="fas fa-home"></i><span>Home</span></button>
         <button class="nav-item" onclick="switchView('search', this)"><i class="fas fa-search"></i><span>Cerca</span></button>
-        <button class="nav-item" onclick="switchView('library', this)"><i class="fas fa-download"></i><span>Scaricati</span></button>
+        <button class="nav-item" onclick="switchView('library', this)"><i class="fas fa-download"></i><span>Libreria</span></button>
     </nav>
 
     <!-- JAVASCRIPT LOGIC -->
@@ -354,16 +400,32 @@
         let downloadedTracks = JSON.parse(localStorage.getItem('darksound_downloads') || '[]');
         let progressInterval;
         let searchTimer = null;
+        let currentLibTab = 'liked';
 
         window.onload = function() {
             loadHomeTracks();
-            updateDownloadedListUI();
         };
+
+        function cleanTracks(tracks) {
+            if (!tracks) return [];
+            const excludeKeywords = ['playlist', 'mix', 'mashup', 'compil', 'album completo', 'full album', 'ora x ora', 'live at', 'concerto'];
+            
+            return tracks.filter(t => {
+                const textToCheck = (t.name + ' ' + t.artist).toLowerCase();
+                for (let word of excludeKeywords) {
+                    if (textToCheck.includes(word)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+        }
 
         async function loadHomeTracks() {
             try {
                 let res = await fetch('/api/search?q=Hit Italia');
-                let tracks = await res.json();
+                let rawTracks = await res.json();
+                let tracks = cleanTracks(rawTracks);
                 playQueue = tracks;
                 renderTracksList(tracks, 'homeTracksContainer');
             } catch(e) {
@@ -395,14 +457,15 @@
             
             searchTimer = setTimeout(() => {
                 executeSearch(query);
-            }, 500);
+            }, 250);
         }
 
         async function executeSearch(query) {
             const container = document.getElementById('searchResultsContainer');
             try {
                 let res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-                let tracks = await res.json();
+                let rawTracks = await res.json();
+                let tracks = cleanTracks(rawTracks);
                 playQueue = tracks;
                 renderTracksList(tracks, 'searchResultsContainer');
             } catch(e) {
@@ -426,7 +489,7 @@
                             <img src="${safeImg}" onerror="this.src='https://picsum.photos/seed/fallback_${idx}/200/200'" loading="lazy">
                             <div class="track-meta ${isLongText ? 'scrolling' : ''}">
                                 <h4>${t.name}</h4>
-                                <p><span class="badge-full">FULL AUDIO</span> ${t.artist}</p>
+                                <p><span class="badge-full">AUDIO</span> ${t.artist}</p>
                             </div>
                         </div>
                         <div class="track-actions" onclick="event.stopPropagation()">
@@ -449,37 +512,62 @@
                 downloadedTracks.push(t);
             }
             localStorage.setItem('darksound_downloads', JSON.stringify(downloadedTracks));
-            updateDownloadedListUI();
-            // Ricarica la vista attuale per aggiornare le icone
+            
             if(document.getElementById('view-search').classList.contains('active')) {
                 renderTracksList(playQueue, 'searchResultsContainer');
             } else if(document.getElementById('view-home').classList.contains('active')) {
                 renderTracksList(playQueue, 'homeTracksContainer');
             } else {
-                renderTracksList(downloadedTracks, 'libContentList');
+                renderLibraryContent();
             }
         }
 
-        function updateDownloadedListUI() {
+        function openLikedSongs() {
+            switchView('library', document.querySelectorAll('.nav-item')[2]);
+            switchLibraryTab('liked');
+        }
+
+        function openDownloadedSongs() {
+            switchView('library', document.querySelectorAll('.nav-item')[2]);
+            switchLibraryTab('downloads');
+        }
+
+        function switchLibraryTab(tab) {
+            currentLibTab = tab;
+            document.getElementById('btnTabLiked').className = tab === 'liked' ? 'chip active' : 'chip';
+            document.getElementById('btnTabDownloads').className = tab === 'downloads' ? 'chip active' : 'chip';
+            renderLibraryContent();
+        }
+
+        function renderLibraryContent() {
             const container = document.getElementById('libContentList');
-            if(downloadedTracks.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano scaricato offline.</p>`;
+            const items = currentLibTab === 'liked' ? likedSongs : downloadedTracks;
+            
+            document.getElementById('countLiked').innerText = likedSongs.length;
+            document.getElementById('countDownloads').innerText = downloadedTracks.length;
+
+            if(!items || items.length === 0) {
+                container.innerHTML = `<p style="color:var(--text-sub); margin-top:20px;">Nessun elemento in questa sezione.</p>`;
                 return;
             }
-            // Renderizza i brani scaricati nella libreria
-            let html = downloadedTracks.map((t, idx) => {
-                const safeImg = (t.image && t.image.trim() !== '') ? t.image : `https://picsum.photos/seed/dl_${idx}/200/200`;
+
+            let html = items.map((t, idx) => {
+                const safeImg = (t.image && t.image.trim() !== '') ? t.image : `https://picsum.photos/seed/lib_${idx}/200/200`;
+                const isLiked = likedSongs.some(s => s.id === t.id);
+                const isDownloaded = downloadedTracks.some(s => s.id === t.id);
+
                 return `
-                    <div class="track-row" onclick="playDownloadedIndex(${idx})">
+                    <div class="track-row" onclick="playLibraryItem(${idx})">
                         <div class="track-row-left">
-                            <img src="${safeImg}" loading="lazy">
+                            <img src="${safeImg}" onerror="this.src='https://picsum.photos/seed/fallback_lib_${idx}/200/200'" loading="lazy">
                             <div class="track-meta">
                                 <h4>${t.name}</h4>
-                                <p><span class="badge-full">OFFLINE</span> ${t.artist}</p>
+                                <p><span class="badge-full">${currentLibTab === 'liked' ? 'PREFERITO' : 'OFFLINE'}</span> ${t.artist}</p>
                             </div>
                         </div>
                         <div class="track-actions" onclick="event.stopPropagation()">
-                            <i class="fas fa-download btn-download-action saved" onclick="removeDownload(${idx})"></i>
+                            <i class="fas fa-download btn-download-action ${isDownloaded ? 'saved' : ''}" onclick="toggleDownloadFromLib('${t.id}')"></i>
+                            <i class="${isLiked ? 'fas fa-heart' : 'far fa-heart'}" style="${isLiked ? 'color:var(--accent);' : ''}" onclick="toggleLikeFromLib('${t.id}')"></i>
                         </div>
                     </div>
                 `;
@@ -487,15 +575,36 @@
             container.innerHTML = html;
         }
 
-        function playDownloadedIndex(idx) {
-            playQueue = downloadedTracks;
+        function playLibraryItem(idx) {
+            playQueue = currentLibTab === 'liked' ? likedSongs : downloadedTracks;
             playQueueIndex(idx);
         }
 
-        function removeDownload(idx) {
-            downloadedTracks.splice(idx, 1);
+        function toggleLikeFromLib(trackId) {
+            const idx = likedSongs.findIndex(s => s.id === trackId);
+            if(idx > -1) {
+                likedSongs.splice(idx, 1);
+            }
+            localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
+            renderLibraryContent();
+            updateLikeButtonUI();
+        }
+
+        function toggleDownloadFromLib(trackId) {
+            let t = downloadedTracks.find(s => s.id === trackId);
+            if(!t) {
+                t = likedSongs.find(s => s.id === trackId);
+            }
+            if(!t) return;
+
+            const exists = downloadedTracks.findIndex(s => s.id === trackId);
+            if(exists > -1) {
+                downloadedTracks.splice(exists, 1);
+            } else {
+                downloadedTracks.push(t);
+            }
             localStorage.setItem('darksound_downloads', JSON.stringify(downloadedTracks));
-            updateDownloadedListUI();
+            renderLibraryContent();
         }
 
         function playQueueIndex(index) {
@@ -531,7 +640,7 @@
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: t.name,
                     artist: t.artist,
-                    album: 'DarkSound Pro',
+                    album: 'DarkSound Glass',
                     artwork: [{ src: t.image, sizes: '512x512', type: 'image/png' }]
                 });
                 navigator.mediaSession.setActionHandler('play', () => togglePlay());
@@ -578,7 +687,7 @@
                 btnElement.classList.add('active');
             }
             if(viewName === 'library') {
-                updateDownloadedListUI();
+                renderLibraryContent();
             }
         }
 
