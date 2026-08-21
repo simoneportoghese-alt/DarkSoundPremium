@@ -15,17 +15,36 @@ app.get('/api/search', async (req, res) => {
 
     try {
         const searchResult = await yts(query);
-        const videos = searchResult.videos.slice(0, 20);
+        // Filtriamo e prendiamo i primi video pertinenti
+        const videos = searchResult.videos.slice(0, 25);
 
-        const results = videos.map(item => ({
-            id: item.videoId,
-            name: item.title,
-            artist_name: item.author.name,
-            image: item.thumbnail,
-            duration: item.duration.seconds
-        }));
+        // Pulizia dei titoli per rimuovere parole spazzatura come "(Official Video)", "[Visualizer]", ecc.
+        const results = videos.map(item => {
+            let cleanTitle = item.title
+                .replace(/\(.*?\)/g, '') // Rimuove parentesi tonde e contenuto
+                .replace(/\[.*?\]/g, '') // Rimuove parentesi quadre e contenuto
+                .replace(/official video/gi, '')
+                .replace(/lyrics/gi, '')
+                .replace(/video ufficiale/gi, '')
+                .trim();
 
-        res.json(results);
+            let artist = item.author.name.replace(/ - Topic/g, '').trim();
+
+            return {
+                id: item.videoId,
+                name: cleanTitle || item.title,
+                artist_name: artist,
+                image: item.thumbnail,
+                duration: item.duration.seconds
+            };
+        });
+
+        // Rimuoviamo eventuali cloni con lo stesso ID o titolo quasi identico
+        const uniqueResults = results.filter((v, i, self) => 
+            i === self.findIndex(t => t.id === v.id || t.name.toLowerCase() === v.name.toLowerCase())
+        );
+
+        res.json(uniqueResults.slice(0, 15));
     } catch (error) {
         console.error("Errore ricerca:", error);
         res.json([]);
@@ -43,7 +62,7 @@ app.get('/api/stream/:id', async (req, res) => {
             noWarnings: true,
             preferFreeFormats: true,
             format: 'bestaudio/best',
-            extractorArgs: 'youtube:player_client=web'
+            extractorArgs: 'youtube:player_client=web,mweb'
         });
 
         let audioUrl = null;
