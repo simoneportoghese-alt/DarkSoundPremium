@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DarkSound - Libreria Completa</title>
+    <title>DarkSound - Spotify Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -14,10 +14,23 @@
             --text-sub: #b3b3b3;
             --accent: #1ed760;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-base); color: var(--text-main); padding-bottom: 140px; min-height: 100vh; }
 
-        /* LOGIN */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            padding-bottom: 140px;
+            min-height: 100vh;
+        }
+
+        /* --- LOGIN --- */
         #view-login {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #121212 0%, #000000 100%);
@@ -31,6 +44,7 @@
 
         .view { display: none; padding: 20px; }
         .view.active { display: block; }
+
         .top-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
         .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #555; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: white; cursor: pointer; }
         .header-title { font-size: 1.5rem; font-weight: 800; }
@@ -39,12 +53,14 @@
         .search-box input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 1rem; }
 
         .grid-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }
-        .grid-card { background: rgba(255,255,255,0.07); border-radius: 6px; display: flex; align-items: center; gap: 10px; overflow: hidden; cursor: pointer; }
-        .grid-card img { width: 56px; height: 56px; object-fit: cover; }
+        .grid-card { background: rgba(255,255,255,0.07); border-radius: 6px; display: flex; align-items: center; gap: 10px; overflow: hidden; cursor: pointer; transition: background 0.2s; }
+        .grid-card:active { background: rgba(255,255,255,0.15); }
+        .grid-card img { width: 56px; height: 56px; object-fit: cover; background: #222; }
         .grid-card span { font-size: 0.85rem; font-weight: 700; padding-right: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; margin-top: 24px; display: flex; justify-content: space-between; align-items: center; }
         .tracks-column { display: flex; flex-direction: column; gap: 4px; }
+
         .track-item { display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 4px; cursor: pointer; justify-content: space-between; }
         .track-item:hover { background: rgba(255,255,255,0.1); }
         .track-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
@@ -52,8 +68,7 @@
         .track-item-info { flex: 1; min-width: 0; }
         .track-item h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .track-item p { font-size: 0.75rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .track-actions { display: flex; gap: 12px; align-items: center; color: var(--text-sub); font-size: 1rem; }
-        .track-actions i:hover { color: var(--text-main); }
+        .track-actions { display: flex; gap: 14px; align-items: center; color: var(--text-sub); font-size: 1rem; }
 
         .visualizer { display: flex; align-items: flex-end; gap: 2px; height: 14px; margin-right: 5px; }
         .bar { width: 3px; background: var(--accent); animation: pulse 0.8s infinite ease-in-out; }
@@ -61,12 +76,12 @@
         @keyframes pulse { 0%, 100% { height: 4px; } 50% { height: 14px; } }
         .hidden { display: none !important; }
 
-        /* PLAYER BAR */
+        /* MINI PLAYER BAR */
         .player-bar {
             position: fixed; bottom: 60px; left: 8px; right: 8px; background: #181818; border-radius: 8px; padding: 10px 12px;
             display: none; align-items: center; gap: 12px; z-index: 999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); cursor: pointer; border: 1px solid rgba(255,255,255,0.05);
         }
-        .player-bar img { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; }
+        .player-bar img { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; background: #222; }
         .player-meta { flex: 1; min-width: 0; }
         .player-meta .p-title { font-size: 0.85rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .player-meta .p-artist { font-size: 0.75rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -74,28 +89,32 @@
 
         /* FULLSCREEN PLAYER */
         .fullscreen-player {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, #282828 0%, #121212 50%, #000000 100%);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, #53385a 0%, #121212 50%, #000000 100%);
             z-index: 2000; display: none; flex-direction: column; padding: 30px 20px 40px 20px; justify-content: space-between;
         }
-        .fs-header { display: flex; justify-content: space-between; align-items: center; color: white; }
+        .fs-header { display: flex; justify-content: space-between; align-items: center; color: white; font-size: 1.2rem; }
+        .fs-header span { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        
         .fs-content { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
-        .fs-cover { width: 100%; max-width: 340px; aspect-ratio: 1/1; border-radius: 8px; object-fit: cover; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
-        .fs-info-row { width: 100%; max-width: 340px; display: flex; justify-content: space-between; align-items: center; }
-        .fs-titles h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .fs-titles p { font-size: 0.95rem; color: var(--text-sub); width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .fs-slider { width: 100%; -webkit-appearance: none; background: rgba(255,255,255,30%); height: 5px; border-radius: 3px; outline: none; accent-color: var(--accent); }
-        .fs-controls { width: 100%; max-width: 340px; display: flex; justify-content: space-between; align-items: center; color: white; }
-        .main-play { width: 64px; height: 64px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .fs-cover { width: 100%; max-width: 320px; aspect-ratio: 1/1; border-radius: 8px; object-fit: cover; background: #222; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
+        .fs-info-row { width: 100%; max-width: 320px; display: flex; justify-content: space-between; align-items: center; }
+        .fs-titles h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .fs-titles p { font-size: 0.95rem; color: var(--text-sub); width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .fs-progress { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 6px; }
+        .fs-slider { width: 100%; -webkit-appearance: none; background: rgba(255,255,255,30%); height: 5px; border-radius: 3px; outline: none; cursor: pointer; accent-color: var(--accent); }
+        .fs-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: white; cursor: pointer; }
+        .fs-times { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-sub); }
 
-        /* MODALE SELEZIONE PLAYLIST */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8);
-            z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px;
-        }
+        .fs-controls { width: 100%; max-width: 320px; display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; color: white; margin-top: 5px; }
+        .fs-controls .main-play { width: 64px; height: 64px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; }
+        .active-btn { color: var(--accent) !important; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal-card { background: #222; width: 100%; max-width: 300px; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .modal-card h3 { font-size: 1.1rem; margin-bottom: 5px; }
-        .playlist-option { padding: 10px; background: #333; border-radius: 6px; cursor: pointer; font-size: 0.9rem; text-align: center; }
-        .playlist-option:hover { background: #444; }
+        .modal-card h3 { font-size: 1.1rem; margin-bottom: 5px; color: white; }
+        .playlist-option { padding: 10px; background: #333; border-radius: 6px; cursor: pointer; font-size: 0.9rem; text-align: center; color: white; }
 
         #youtube-player { display: none; }
 
@@ -113,16 +132,16 @@
     <!-- LOGIN -->
     <div id="view-login">
         <h1>DarkSound</h1>
-        <p>Salva brani, preferiti e playlist sul tuo dispositivo</p>
+        <p>I tuoi brani, preferiti e playlist salvati</p>
         <div class="login-card">
             <input type="text" id="loginNameInput" class="login-input" placeholder="Il tuo nome" value="Utente">
             <button class="google-btn" onclick="saveUserLogin()">
-                <i class="fab fa-google" style="color: #ea4335;"></i> Entra
+                <i class="fab fa-google" style="color: #ea4335;"></i> Accedi
             </button>
         </div>
     </div>
 
-    <!-- HOME -->
+    <!-- HOME VIEW -->
     <div id="view-home" class="view active">
         <div class="top-header">
             <div class="user-avatar" id="userAvatarContainer" onclick="logout()" title="Esci">U</div>
@@ -130,11 +149,11 @@
         </div>
         <div class="grid-cards">
             <div class="grid-card" onclick="quickPlay('Geolier')">
-                <img src="https://i.ytimg.com/vi/324_93wW3lY/hqdefault.jpg" alt="">
+                <img src="https://i.ytimg.com/vi/324_93wW3lY/hqdefault.jpg" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150'">
                 <span>Geolier Mix</span>
             </div>
             <div class="grid-card" onclick="quickPlay('Ultimo')">
-                <img src="https://i.ytimg.com/vi/w1m1rK50C0Y/hqdefault.jpg" alt="">
+                <img src="https://i.ytimg.com/vi/w1m1rK50C0Y/hqdefault.jpg" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=150'">
                 <span>Ultimo Hit</span>
             </div>
         </div>
@@ -142,17 +161,17 @@
         <div id="homePopList" class="tracks-column"></div>
     </div>
 
-    <!-- SEARCH -->
+    <!-- SEARCH VIEW -->
     <div id="view-search" class="view">
         <div class="top-header"><div class="header-title">Cerca</div></div>
         <div class="search-box">
             <i class="fas fa-search" style="color: var(--text-sub);"></i>
-            <input type="text" id="searchInput" placeholder="Cerca un brano o artista..." onkeydown="if(event.key==='Enter') searchTracks()">
+            <input type="text" id="searchInput" placeholder="Cosa vuoi ascoltare?" onkeydown="if(event.key==='Enter') searchTracks()">
         </div>
         <div id="searchResults"></div>
     </div>
 
-    <!-- LIBRARY -->
+    <!-- LIBRARY VIEW -->
     <div id="view-library" class="view">
         <div class="top-header">
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -169,7 +188,7 @@
         <div id="playlistsContainer" class="tracks-column"></div>
     </div>
 
-    <!-- MODALE AGGIUNGI A PLAYLIST -->
+    <!-- MODALE PLAYLIST -->
     <div class="modal-overlay" id="playlistModal" onclick="closePlaylistModal(event)">
         <div class="modal-card" onclick="event.stopPropagation()">
             <h3>Aggiungi a playlist</h3>
@@ -181,9 +200,9 @@
     <!-- YOUTUBE ENGINE -->
     <div id="youtube-player"></div>
 
-    <!-- MINI PLAYER -->
+    <!-- MINI PLAYER BAR -->
     <div class="player-bar" id="playerBar" onclick="openFullscreenPlayer()">
-        <img id="playerImg" src="" alt="">
+        <img id="playerImg" src="" alt="" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150'">
         <div class="player-meta">
             <div class="p-title" id="playerTitle">-</div>
             <div class="p-artist" id="playerArtist">-</div>
@@ -201,34 +220,48 @@
     <div class="fullscreen-player" id="fullscreenPlayer">
         <div class="fs-header">
             <i class="fas fa-chevron-down" onclick="closeFullscreenPlayer()" style="cursor: pointer;"></i>
-            <span>Player</span>
-            <div></div>
+            <span>DarkSound Player</span>
+            <i class="fas fa-ellipsis-h" style="cursor: pointer;" onclick="alert('Opzioni')"></i>
         </div>
         <div class="fs-content">
-            <img class="fs-cover" id="fsCover" src="" alt="">
+            <img class="fs-cover" id="fsCover" src="" alt="" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300'">
             <div class="fs-info-row">
                 <div class="fs-titles">
                     <h2 id="fsTitle">-</h2>
                     <p id="fsArtist">-</p>
                 </div>
                 <div style="display: flex; gap: 15px; align-items: center;">
-                    <i class="fas fa-plus-circle" style="font-size: 1.4rem; color: var(--text-sub); cursor:pointer;" onclick="openAddToPlaylistModal(currentTrackData)" title="Aggiungi a playlist"></i>
+                    <i class="fas fa-plus-circle" style="font-size: 1.4rem; color: var(--text-sub); cursor:pointer;" onclick="openModalForTrack(currentTrackData)" title="Aggiungi a playlist"></i>
                     <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.5rem; color: var(--text-sub); cursor:pointer;" onclick="toggleLikeCurrentTrack()"></i>
                 </div>
             </div>
-            <div style="width: 100%; max-width: 340px;">
+            
+            <div class="fs-progress">
                 <input type="range" id="fsSeekBar" class="fs-slider" value="0" min="0" max="100" step="0.1" oninput="seekAudio(this.value)">
+                <div class="fs-times">
+                    <span id="currentTime">0:00</span>
+                    <span id="totalTime">0:00</span>
+                </div>
             </div>
+
             <div class="fs-controls">
+                <i class="fas fa-random" id="shuffleBtn" style="cursor:pointer;" onclick="toggleShuffle()"></i>
+                <i class="fas fa-step-backward" style="cursor: pointer;" onclick="alert('Traccia precedente')"></i>
                 <div class="main-play" onclick="togglePlay()">
                     <i class="fas fa-play" id="fsPlayPauseIcon" style="color: black;"></i>
                 </div>
+                <i class="fas fa-step-forward" style="cursor: pointer;" onclick="alert('Traccia successiva')"></i>
+                <i class="fas fa-redo" id="repeatBtn" style="cursor:pointer;" onclick="toggleRepeat()"></i>
             </div>
         </div>
-        <div></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; color: var(--text-sub); font-size: 1.1rem;">
+            <i class="fas fa-laptop" style="cursor:pointer;" onclick="alert('Web Browser')"></i>
+            <i class="fas fa-share-alt" style="cursor:pointer;" onclick="alert('Link copiato!')"></i>
+            <i class="fas fa-bars" style="cursor:pointer;" onclick="alert('Coda di riproduzione')"></i>
+        </div>
     </div>
 
-    <!-- NAV -->
+    <!-- BOTTOM NAVIGATION -->
     <nav>
         <button class="nav-item active" onclick="switchView('home', this)"><i class="fas fa-home"></i><span>Home</span></button>
         <button class="nav-item" onclick="switchView('search', this)"><i class="fas fa-search"></i><span>Cerca</span></button>
@@ -238,6 +271,8 @@
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         let player, isPlaying = false, progressInterval, currentTrackData = null, trackToAddToPlaylist = null;
+        let isShuffle = false, isRepeat = false;
+        const defaultCover = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150';
 
         let appData = JSON.parse(localStorage.getItem('darksound_data')) || {
             username: '',
@@ -340,13 +375,13 @@
         }
 
         function createTrackHTML(t, extraActionHTML = '') {
-            const safeImg = t.image || 'https://via.placeholder.com/48';
+            const safeImg = t.image || defaultCover;
             const tObj = JSON.stringify({id: t.id, name: t.name, artist: t.artist, image: safeImg}).replace(/"/g, '&quot;');
             
             return `
                 <div class="track-item">
                     <div class="track-left" onclick="playTrack(${tObj})">
-                        <img src="${safeImg}" onerror="this.src='https://via.placeholder.com/48'">
+                        <img src="${safeImg}" onerror="this.src='${defaultCover}'">
                         <div class="track-item-info">
                             <h4>${t.name}</h4>
                             <p>${t.artist}</p>
@@ -362,14 +397,15 @@
 
         function playTrack(t) {
             currentTrackData = t;
+            const finalImg = t.image || defaultCover;
             document.getElementById('playerBar').style.display = 'flex';
             document.getElementById('playerTitle').innerText = t.name;
             document.getElementById('playerArtist').innerText = t.artist;
-            document.getElementById('playerImg').src = t.image;
+            document.getElementById('playerImg').src = finalImg;
 
             document.getElementById('fsTitle').innerText = t.name;
             document.getElementById('fsArtist').innerText = t.artist;
-            document.getElementById('fsCover').src = t.image;
+            document.getElementById('fsCover').src = finalImg;
 
             updateLikeButtonsUI();
 
@@ -421,23 +457,21 @@
         }
 
         function renderLibrary() {
-            // Render preferiti
             const likedContainer = document.getElementById('likedTracksContainer');
             if (appData.likedTracks.length === 0) {
-                likedContainer.innerHTML = `<p style="color: var(--text-sub); font-size: 0.85rem;">Nessun brano aggiunto ai preferiti.</p>`;
+                likedContainer.innerHTML = `<p style="color: var(--text-sub); font-size: 0.85rem;">Nessun brano nei preferiti.</p>`;
             } else {
                 likedContainer.innerHTML = appData.likedTracks.map(t => createTrackHTML(t, `<i class="fas fa-trash" style="color:#ff4d4d;" onclick="removeLikedTrack('${t.id}')" title="Rimuovi"></i>`)).join('');
             }
 
-            // Render playlist
             const playlistContainer = document.getElementById('playlistsContainer');
             if (appData.playlists.length === 0) {
                 playlistContainer.innerHTML = `<p style="color: var(--text-sub); font-size: 0.85rem;">Nessuna playlist creata.</p>`;
             } else {
                 playlistContainer.innerHTML = appData.playlists.map((p, pIndex) => `
-                    <div style="background:#111; padding:10px; border-radius:6px; margin-bottom:10px;">
+                    <div style="background:#121212; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.05);">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <h4 style="font-size:0.95rem; font-weight:700;"><i class="fas fa-music"></i> ${p.name} (${p.tracks.length})</h4>
+                            <h4 style="font-size:0.95rem; font-weight:700;"><i class="fas fa-music" style="color:var(--accent);"></i> ${p.name} (${p.tracks.length})</h4>
                             <i class="fas fa-trash" style="color:#ff4d4d; cursor:pointer;" onclick="deletePlaylist(${pIndex})" title="Elimina playlist"></i>
                         </div>
                         <div class="tracks-column">
@@ -475,7 +509,7 @@
             trackToAddToPlaylist = t;
             const container = document.getElementById('modalPlaylistsList');
             if (appData.playlists.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-sub); font-size:0.85rem; text-align:center;">Nessuna playlist creata. Creane una dalla libreria!</p>`;
+                container.innerHTML = `<p style="color:var(--text-sub); font-size:0.85rem; text-align:center;">Nessuna playlist. Creane una dalla libreria!</p>`;
             } else {
                 container.innerHTML = appData.playlists.map((p, idx) => `
                     <div class="playlist-option" onclick="addTrackToPlaylist(${idx})">${p.name}</div>
@@ -486,7 +520,6 @@
 
         function addTrackToPlaylist(pIndex) {
             if (!trackToAddToPlaylist) return;
-            // Controlla se il brano è già nella playlist
             const exists = appData.playlists[pIndex].tracks.some(item => item.id === trackToAddToPlaylist.id);
             if (!exists) {
                 appData.playlists[pIndex].tracks.push(trackToAddToPlaylist);
@@ -505,6 +538,16 @@
             }
         }
 
+        function toggleShuffle() {
+            isShuffle = !isShuffle;
+            document.getElementById('shuffleBtn').classList.toggle('active-btn', isShuffle);
+        }
+
+        function toggleRepeat() {
+            isRepeat = !isRepeat;
+            document.getElementById('repeatBtn').classList.toggle('active-btn', isRepeat);
+        }
+
         function openFullscreenPlayer() { document.getElementById('fullscreenPlayer').style.display = 'flex'; }
         function closeFullscreenPlayer() { document.getElementById('fullscreenPlayer').style.display = 'none'; }
 
@@ -517,12 +560,20 @@
                     const seekBar = document.getElementById('fsSeekBar');
                     seekBar.max = duration;
                     seekBar.value = current;
+                    document.getElementById('currentTime').innerText = formatTime(current);
+                    document.getElementById('totalTime').innerText = formatTime(duration);
                 }
             }, 500);
         }
 
         function seekAudio(value) {
             if (player && player.seekTo) player.seekTo(parseFloat(value), true);
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
     </script>
 </body>
