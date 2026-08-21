@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DarkSound Pro - Cloud Edition</title>
+    <title>DarkSound Pro - Offline & Cloud Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -43,14 +43,6 @@
         @keyframes iosFadeIn {
             from { opacity: 0; transform: scale(0.97) translateY(10px); filter: blur(4px); }
             to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
-        }
-
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .top-status-bar {
@@ -235,9 +227,9 @@
 
     <div id="view-home" class="view active">
         <div class="top-status-bar">
-            <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.45rem;"></i> DARKSOUND CLOUD</div>
+            <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.45rem;"></i> DARKSOUND OFFLINE</div>
             <div class="user-status-right">
-                <span class="status-pill" id="syncStatusBadge">Cloud Salvato</span>
+                <span class="status-pill" id="syncStatusBadge">Sincronizzato</span>
                 <span class="user-pill" id="userProfilePill" onclick="openAuthModal()">Accedi</span>
             </div>
         </div>
@@ -296,8 +288,8 @@
                 <p id="fsArtist">-</p>
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
-                <!-- Link sicuro aggiornato per il download senza errori SSL -->
-                <a id="fsDownloadDirectBtn" href="https://ezmp3.net/" target="_blank" style="color: var(--text-sub); font-size: 1.4rem; padding: 10px;" title="Scarica Audio"><i class="fas fa-download"></i></a>
+                <!-- Pulsante per scaricare direttamente nella memoria offline dell'app -->
+                <i class="fas fa-download" id="fsDownloadDirectBtn" style="font-size: 1.4rem; color: var(--text-sub); cursor:pointer; padding: 10px;" title="Salva Offline" onclick="toggleDownloadCurrent()"></i>
                 <i class="fas fa-heart" id="fsLikeBtn" style="font-size: 1.6rem; color: var(--text-sub); cursor:pointer; padding: 10px;" onclick="toggleLikeCurrent()"></i>
             </div>
         </div>
@@ -457,7 +449,17 @@
             if(exists > -1) downloadedTracks.splice(exists, 1);
             else downloadedTracks.push(t);
             saveUserData();
-            renderLibraryContent();
+            renderTracksList(playQueue, currentLibTab === 'liked' ? 'libContentList' : 'homeTracksContainer');
+            if(document.getElementById('view-library').classList.contains('active')) renderLibraryContent();
+        }
+
+        function toggleDownloadCurrent() {
+            if(!currentTrackData.id) return;
+            const exists = downloadedTracks.findIndex(s => s.id === currentTrackData.id);
+            if(exists > -1) downloadedTracks.splice(exists, 1);
+            else downloadedTracks.push(currentTrackData);
+            saveUserData();
+            updateDownloadButtonUI();
         }
 
         function openLikedSongs() { switchView('library', document.querySelectorAll('.nav-item')[2]); switchLibraryTab('liked'); }
@@ -515,6 +517,7 @@
                 document.getElementById('fsCover').src = t.image;
 
                 updateLikeButtonUI();
+                updateDownloadButtonUI();
                 if(player && player.loadVideoById) {
                     player.loadVideoById(t.id);
                     player.playVideo();
@@ -586,6 +589,11 @@
         function updateLikeButtonUI() {
             const isLiked = likedSongs.some(s => s.id === currentTrackData.id);
             document.getElementById('fsLikeBtn').style.color = isLiked ? 'var(--accent)' : 'var(--text-sub)';
+        }
+
+        function updateDownloadButtonUI() {
+            const isDownloaded = downloadedTracks.some(s => s.id === currentTrackData.id);
+            document.getElementById('fsDownloadDirectBtn').style.color = isDownloaded ? 'var(--accent)' : 'var(--text-sub)';
         }
 
         function startProgressTracker() {
