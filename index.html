@@ -1143,6 +1143,48 @@
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 2500);
     }
+    async function playMusic(queryText) {
+  const query = queryText || document.getElementById('searchInput').value.trim();
+  if (!query) return;
+
+  const statusText = document.getElementById('statusText');
+  const audio = document.getElementById('mainAudio');
+  
+  statusText.innerText = "Caricamento da SoundCloud...";
+
+  // Sblocco audio per gesture iOS
+  audio.play().catch(() => {});
+
+  try {
+    // Chiamata all'API Vercel
+    const res = await fetch(`/api/stream?q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    if (data.error) {
+      statusText.innerText = "Errore: " + data.error;
+      return;
+    }
+
+    // Aggiorna la grafica dell'app con i dati reali!
+    document.getElementById('displayTitle').innerText = data.title;
+    document.getElementById('displayArtist').innerText = data.artist;
+    
+    // Sostituisce l'icona col punto interrogativo con la vera copertina HD
+    const coverImage = document.getElementById('coverImage');
+    if (coverImage) coverImage.src = data.artwork;
+
+    // Avvia la riproduzione dell'audio
+    audio.src = data.audioUrl;
+    await audio.play();
+    
+    statusText.innerText = "In riproduzione";
+
+  } catch (err) {
+    console.error(err);
+    statusText.innerText = "Impossibile riprodurre il brano.";
+  }
+}
+
 
     // --- INIZIALIZZAZIONE ---
     window.onload = () => {
