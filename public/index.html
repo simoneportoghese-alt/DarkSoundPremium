@@ -536,6 +536,12 @@
                 <p>Unisci gusti</p>
             </div>
         </div>
+
+        <!-- NUOVA MODIFICA: Conto alla rovescia evento inserito sotto i widget -->
+        <div style="background: linear-gradient(135deg, #30d158 0%, #1a8a3a 100%); border-radius: 18px; padding: 20px; margin-bottom: 24px; text-align: center; color: white;">
+            <h4 style="font-size: 0.9rem; font-weight: 700; opacity: 0.9; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Prossimo DarkSound Event</h4>
+            <div id="countdown" style="font-size: 1.8rem; font-weight: 800; font-family: monospace;">00:00:00</div>
+        </div>
         
         <div id="personalizedRadioSection">
             <div class="section-title">La tua Radio Personale <span style="font-size:0.75rem; color:var(--accent); background:rgba(48,209,88,0.15); padding:3px 8px; border-radius:6px;">Basata sui tuoi gusti</span></div>
@@ -733,12 +739,33 @@
         window.onload = function() {
             updateUserUI();
             loadHomeTracks();
+            updateCountdown(); // <-- Avvio script conto alla rovescia aggiunto
             if(!currentUser) {
                 setTimeout(() => openAuthModal(), 400);
             } else if(!userPreferences) {
                 setTimeout(() => openOnboardingModal(), 400);
             }
         };
+
+        // Funzione aggiunta per gestire il Countdown dell'evento
+        function updateCountdown() {
+            const eventDate = new Date().getTime() + (24 * 60 * 60 * 1000); // 24 ore da ora (modificabile)
+            
+            setInterval(() => {
+                const now = new Date().getTime();
+                const distance = eventDate - now;
+                
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                const countdownEl = document.getElementById("countdown");
+                if(countdownEl) {
+                    countdownEl.innerHTML = 
+                        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
 
         function toggleProfileDrawer() { document.getElementById('profileDrawer').classList.toggle('active'); }
         function logoutUser() {
@@ -837,7 +864,7 @@
         }
 
         function openBlendModal() { document.getElementById('blend-modal').classList.add('active'); }
-        async function createBlendModal() {
+        async function createBlendPlaylist() {
             const friend = document.getElementById('blendFriendSelect').value;
             try {
                 let res = await fetch(`/api/search?q=${encodeURIComponent(friend)}`);
