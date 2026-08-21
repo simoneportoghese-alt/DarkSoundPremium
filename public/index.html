@@ -271,6 +271,10 @@
             </div>
         </div>
         <h1 class="home-title" id="homeWelcomeTitle">Esplora</h1>
+        
+        <!-- SEZIONE RADIO PERSONALIZZATE UTENTE -->
+        <div id="userRadioSection"></div>
+
         <div class="section-title" style="margin-top:24px;">Top Hit Nazionali</div>
         <div id="homeTracksContainer"><p style="color:var(--text-sub);">Caricamento...</p></div>
     </div>
@@ -374,9 +378,7 @@
         let globalPublicPlaylists = JSON.parse(localStorage.getItem('darksound_global_public_playlists') || '[]');
         let followedArtists = JSON.parse(localStorage.getItem('followedArtists') || '[]');
 
-        // Variabile di cache globale per memorizzare i risultati di ricerca correnti
         let lastSearchResults = [];
-
         let progressInterval, searchTimer = null, currentLibTab = 'liked', selectedTrackForPlaylist = null;
         let tempAuthName = '';
         let isLyricsActive = false;
@@ -385,6 +387,7 @@
         window.onload = function() {
             updateUserUI();
             loadHomeTracks();
+            renderUserRadioSection();
             if(!currentUser) setTimeout(() => openAuthModal(), 400);
             else if(!userPreferences) setTimeout(() => openOnboardingModal(), 400);
         };
@@ -422,6 +425,7 @@
             document.getElementById('onboarding-modal').classList.remove('active');
             updateUserUI();
             loadHomeTracks();
+            renderUserRadioSection();
         }
 
         function updateUserUI() {
@@ -448,9 +452,51 @@
             localStorage.setItem('darksound_global_public_playlists', JSON.stringify(globalPublicPlaylists));
         }
 
+        // RENDER DELLE RADIO PERSONALIZZATE NELLA HOME
+        async function renderUserRadioSection() {
+            const container = document.getElementById('userRadioSection');
+            if(!userPreferences || !userPreferences.genres) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = `<div class="section-title" style="margin-top:10px;">Le tue Radio Personalizzate</div>`;
+            html += `<div style="display:flex; gap:12px; overflow-x:auto; padding-bottom:10px; margin-bottom:15px;">`;
+
+            // Radio basate sui generi salvati e artista preferito
+            let radiosToRender = [...userPreferences.genres];
+            if(userPreferences.artist) radiosToRender.unshift(userPreferences.artist);
+
+            for(let radioKey of radiosToRender) {
+                html += `
+                    <div onclick="loadCustomRadio('${radioKey.replace(/'/g, "\\'")}')" style="min-width: 140px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 16px; cursor: pointer; text-align: center; flex-shrink: 0; transition: 0.2s;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent), #007aff); border-radius: 50%; margin: 0 auto 10px auto; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-radio" style="color: black; font-size: 1.2rem;"></i>
+                        </div>
+                        <h4 style="font-size: 0.95rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: white;">${radioKey}</h4>
+                        <p style="font-size: 0.75rem; color: var(--text-sub); margin-top: 2px;">Radio Mix</p>
+                    </div>
+                `;
+            }
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        async function loadCustomRadio(query) {
+            try {
+                let res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                let tracks = await res.json();
+                renderTracksList(tracks, 'homeTracksContainer', tracks);
+                document.querySelector('.home-title').innerText = `Radio: ${query}`;
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
         async function loadHomeTracks() {
             try {
-                let res = await fetch('/api/search?q=Hit Italia');
+                let queryToFetch = userPreferences && userPreferences.artist ? userPreferences.artist : 'Hit Italia';
+                let res = await fetch(`/api/search?q=${encodeURIComponent(queryToFetch)}`);
                 let homeTracks = await res.json();
                 renderTracksList(homeTracks, 'homeTracksContainer', homeTracks);
             } catch(e) {
@@ -471,7 +517,7 @@
             try {
                 let res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
                 let tracks = await res.json();
-                lastSearchResults = tracks; // Salviamo i risultati in memoria per accesso istantaneo
+                lastSearchResults = tracks; 
                 
                 let matchedPlaylists = globalPublicPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
                 let container = document.getElementById('searchResultsContainer');
@@ -534,9 +580,7 @@
             } catch(e) { console.error(e); }
         }
 
-        // --- APERTURA ISTANNEA DELLA PAGINA ARTISTA (SENZA FETCH DI ATTESA) ---
         function openArtistPage(artistName) {
-            // Filtra direttamente dai brani già scaricati in memoria, rendendo l'apertura istantanea
             let artistTracks = lastSearchResults.filter(t => t.artist.toLowerCase().includes(artistName.toLowerCase()));
             if(artistTracks.length === 0) artistTracks = lastSearchResults;
 
