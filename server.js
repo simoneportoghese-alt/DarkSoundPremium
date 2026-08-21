@@ -9,14 +9,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/search', async (req, res) => {
     const query = req.query.q;
+    if (!query) return res.json([]);
     try {
         const searchResult = await yts(query);
-        const results = searchResult.videos.slice(0, 15).map(item => ({
-            id: item.videoId,
-            name: item.title,
-            artist_name: item.author.name,
-            image: item.thumbnail
-        }));
+        const results = searchResult.videos.slice(0, 20).map(item => {
+            let cleanTitle = item.title
+                .replace(/\(.*?\)/g, '')
+                .replace(/\[.*?\]/g, '')
+                .replace(/official video/gi, '')
+                .replace(/lyrics/gi, '')
+                .replace(/video ufficiale/gi, '')
+                .trim();
+            return {
+                id: item.videoId,
+                name: cleanTitle,
+                artist: item.author.name.replace(/ - Topic/g, '').trim(),
+                image: item.thumbnail
+            };
+        });
         res.json(results);
     } catch (e) { res.json([]); }
 });
