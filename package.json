@@ -8,6 +8,6 @@
   },
   "dependencies": {
     "express": "^4.19.2",
-    "@abdullah2993/ytdlp-nodejs": "^1.0.8"
+    "yt-dlp-exec": "^2.5.8"
   }
 }
