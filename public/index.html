@@ -156,14 +156,7 @@
         .nav-item.active { color: var(--text-main); }
         
         #youtube-player {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 200px;
-            height: 200px;
-            opacity: 0.01;
-            pointer-events: none;
-            z-index: -1000;
+            position: fixed; bottom: 0; left: 0; width: 200px; height: 200px; opacity: 0.01; pointer-events: none; z-index: -1000;
         }
     </style>
 </head>
@@ -290,16 +283,24 @@
                 </div>
             </div>
         </div>
-        <div class="section-row-title">Playlist Collaborative Salvate</div>
+
+        <div class="section-row-title">Le tue Playlist Private</div>
+        <div id="libPrivateList" style="display:flex; flex-direction:column; gap:10px;"></div>
+
+        <div class="section-row-title" style="margin-top:20px;">Playlist Collaborative Salvate</div>
         <div id="libCollabList" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
 
     <!-- CREATE VIEW -->
     <div id="view-create" class="view">
-        <div style="font-size: 1.5rem; font-weight: 800; margin-bottom: 20px;">Crea Playlist Collaborativa</div>
+        <div style="font-size: 1.5rem; font-weight: 800; margin-bottom: 20px;">Crea Playlist</div>
         <div style="display: flex; flex-direction: column; gap: 16px;">
             <input type="text" id="newPlaylistName" class="auth-input" placeholder="Nome della playlist">
-            <button class="auth-btn" onclick="createCollabPlaylist()">Crea e genera link</button>
+            <select id="newPlaylistType" class="auth-input" style="background:#2a2a2a; color:white;">
+                <option value="private">Playlist Privata (Personale)</option>
+                <option value="collab">Playlist Collaborativa (Condivisa)</option>
+            </select>
+            <button class="auth-btn" onclick="createPlaylistDispatcher()">Crea Playlist</button>
         </div>
         <div id="collabLinkContainer" style="margin-top: 20px; word-break: break-all; font-size:0.85rem; color:var(--accent);"></div>
     </div>
@@ -340,9 +341,9 @@
         </div>
         <div class="fs-controls">
             <i class="fas fa-random" style="color:var(--text-sub);"></i>
-            <i class="fas fa-step-backward" style="cursor:pointer;" onclick="alert('Primo brano')"></i>
+            <i class="fas fa-step-backward" style="cursor:pointer;" onclick="prevTrack()"></i>
             <div class="fs-play-btn" onclick="togglePlay()"><i class="fas fa-play" id="fsPlayIcon"></i></div>
-            <i class="fas fa-step-forward" style="cursor:pointer;" onclick="alert('Fine playlist')"></i>
+            <i class="fas fa-step-forward" style="cursor:pointer;" onclick="nextTrack()"></i>
             <i class="fas fa-redo" style="color:var(--text-sub);"></i>
         </div>
     </div>
@@ -381,7 +382,11 @@
         let currentTrackData = { id: '', name: '', artist: '', image: '' };
         let progressInterval;
 
+        let playQueue = [];
+        let queueIndex = -1;
+
         let likedSongs = JSON.parse(localStorage.getItem('darksound_liked') || '[]');
+        let privatePlaylists = JSON.parse(localStorage.getItem('darksound_private') || '[]');
         let collaborativePlaylists = JSON.parse(localStorage.getItem('darksound_collab') || '[]');
 
         window.onload = function() {
@@ -420,7 +425,7 @@
             document.getElementById('userAvatar').innerText = currentUser.charAt(0).toUpperCase();
             document.getElementById('libUserAvatar').innerText = currentUser.charAt(0).toUpperCase();
             updateLibraryCounts();
-            renderLibCollab();
+            renderLibPlaylists();
         }
 
         function checkUrlParams() {
@@ -459,9 +464,12 @@
                             updateIcons(true);
                             startProgressInterval();
                         }
-                        if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) {
+                        if (e.data === YT.PlayerState.PAUSED) {
                             updateIcons(false);
                             clearInterval(progressInterval);
+                        }
+                        if (e.data === YT.PlayerState.ENDED) {
+                            nextTrack();
                         }
                     }
                 }
@@ -514,6 +522,9 @@
                     return;
                 }
 
+                playQueue = tracks;
+                queueIndex = 0;
+
                 let html = '';
                 const first = tracks[0];
                 const artistImage = (first.image && first.image.startsWith('http')) ? first.image : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop';
@@ -531,7 +542,7 @@
                     <div class="section-row-title">Brani e Risultati simili</div>
                 `;
 
-                html += tracks.map(t => {
+                html += tracks.map((t, idx) => {
                     const safeImg = (t.image && t.image.startsWith('http')) ? t.image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop';
                     const safeName = (t.name || 'Brano').replace(/'/g, "\\'").replace(/"/g, '&quot;');
                     const safeArtist = (t.artist || 'Artista').replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -539,7 +550,7 @@
 
                     return `
                         <div class="playlist-result-card">
-                            <div class="playlist-left" onclick="playTrack('${t.id}', '${safeName}', '${safeArtist}', '${safeImg}')">
+                            <div class="playlist-left" onclick="playQueueIndex(${idx})">
                                 <img src="${safeImg}" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop'">
                                 <div class="playlist-info">
                                     <h4>${t.name}</h4>
@@ -548,7 +559,7 @@
                             </div>
                             <div class="playlist-actions-group">
                                 <i class="fas fa-heart playlist-action ${isLiked ? 'liked' : ''}" onclick="toggleLike('${t.id}', '${safeName}', '${safeArtist}', '${safeImg}')"></i>
-                                <i class="fas fa-plus playlist-action" onclick="promptAddToCollab('${t.id}', '${safeName}', '${safeArtist}', '${safeImg}')" title="Aggiungi a playlist collaborativa"></i>
+                                <i class="fas fa-plus playlist-action" onclick="promptAddToPlaylist('${t.id}', '${safeName}', '${safeArtist}', '${safeImg}')" title="Aggiungi a playlist"></i>
                             </div>
                         </div>
                     `;
@@ -561,9 +572,95 @@
             }
         }
 
+        function playQueueIndex(index) {
+            if(index >= 0 && index < playQueue.length) {
+                queueIndex = index;
+                const t = playQueue[queueIndex];
+                playTrackInternal(t.id, t.name, t.artist, t.image);
+            }
+        }
+
+        async function nextTrack() {
+            if (queueIndex > -1 && queueIndex < playQueue.length - 1) {
+                queueIndex++;
+                playQueueIndex(queueIndex);
+            } else {
+                if (currentTrackData.artist) {
+                    try {
+                        let res = await fetch(`/api/search?q=${encodeURIComponent(currentTrackData.artist)}`);
+                        let tracks = await res.json();
+                        if (tracks.length > 0) {
+                            playQueue = tracks;
+                            queueIndex = 0;
+                            playQueueIndex(queueIndex);
+                            return;
+                        }
+                    } catch(e) {}
+                }
+                alert('Fine della coda di riproduzione.');
+            }
+        }
+
+        function prevTrack() {
+            if (queueIndex > 0) {
+                queueIndex--;
+                playQueueIndex(queueIndex);
+            } else {
+                alert('Questo è il primo brano della coda.');
+            }
+        }
+
+        function playTrack(id, name, artist, image) {
+            playQueue = [{ id, name, artist, image }];
+            queueIndex = 0;
+            playTrackInternal(id, name, artist, image);
+
+            fetch(`/api/search?q=${encodeURIComponent(artist)}`)
+                .then(res => res.json())
+                .then(tracks => {
+                    if(tracks && tracks.length > 0) {
+                        playQueue = tracks;
+                        queueIndex = playQueue.findIndex(t => t.id === id);
+                        if(queueIndex === -1) queueIndex = 0;
+                    }
+                }).catch(() => {});
+        }
+
+        function playTrackInternal(id, name, artist, image) {
+            const validImage = (image && image.startsWith('http')) ? image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&auto=format&fit=crop';
+            currentTrackData = { id, name, artist, image: validImage };
+            
+            document.getElementById('playerBar').style.display = 'flex';
+            document.getElementById('playerTitle').innerText = name;
+            document.getElementById('playerArtist').innerText = artist;
+            document.getElementById('playerImg').src = validImage;
+
+            document.getElementById('fsTitle').innerText = name;
+            document.getElementById('fsArtist').innerText = artist;
+            document.getElementById('fsCover').src = validImage;
+
+            updateLikeUIStates();
+
+            if (player && typeof player.loadVideoById === 'function') {
+                player.loadVideoById(id);
+                player.playVideo();
+                isPlaying = true;
+                updateIcons(true);
+            } else {
+                setTimeout(() => {
+                    if (player && typeof player.loadVideoById === 'function') {
+                        player.loadVideoById(id);
+                        player.playVideo();
+                        isPlaying = true;
+                        updateIcons(true);
+                    }
+                }, 500);
+            }
+        }
+
         function toggleLike(id, name, artist, image) {
             const index = likedSongs.findIndex(s => s.id === id);
-            const validImage = (image && image.startsWith('http')) ? image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop';
+            const validImage = (image && image.startsWith('http')) ? image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&auto=format&fit=crop';
             if (index > -1) {
                 likedSongs.splice(index, 1);
             } else {
@@ -572,6 +669,11 @@
             localStorage.setItem('darksound_liked', JSON.stringify(likedSongs));
             updateLibraryCounts();
             updateLikeUIStates();
+            
+            // Se siamo nella vista playlist dei preferiti, aggiorna la lista
+            if(document.getElementById('detailPlaylistTitle').innerText === "Brani piaciuti") {
+                openLikedSongs();
+            }
         }
 
         function toggleLikeCurrent() {
@@ -603,16 +705,22 @@
             document.getElementById('detailPlaylistTitle').innerText = "Brani piaciuti";
             document.getElementById('detailPlaylistInfo').innerText = `Playlist • ${likedSongs.length} brani`;
             
-            let html = likedSongs.map(t => {
+            playQueue = likedSongs;
+            let html = likedSongs.map((t, idx) => {
                 const trackImg = (t.image && t.image.startsWith('http')) ? t.image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop';
+                const safeName = (t.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const safeArtist = (t.artist || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 return `
-                    <div class="playlist-result-card" onclick="playTrack('${t.id}', '${t.name.replace(/'/g, "\\'")}', '${t.artist.replace(/'/g, "\\'")}', '${trackImg}')">
-                        <div class="playlist-left">
+                    <div class="playlist-result-card">
+                        <div class="playlist-left" onclick="queueIndex = ${idx}; playQueueIndex(queueIndex);">
                             <img src="${trackImg}" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop'">
                             <div class="playlist-info">
                                 <h4>${t.name}</h4>
                                 <p>Brano • ${t.artist}</p>
                             </div>
+                        </div>
+                        <div class="playlist-actions-group">
+                            <i class="fas fa-heart playlist-action liked" onclick="toggleLike('${t.id}', '${safeName}', '${safeArtist}', '${trackImg}')"></i>
                         </div>
                     </div>
                 `;
@@ -622,27 +730,50 @@
             switchView('playlist-detail');
         }
 
-        function createCollabPlaylist() {
+        function createPlaylistDispatcher() {
             const name = document.getElementById('newPlaylistName').value.trim();
+            const type = document.getElementById('newPlaylistType').value;
             if(!name) {
                 alert('Inserisci un nome per la playlist');
                 return;
             }
-            const newId = 'collab_' + Math.random().toString(36).substr(2, 9);
-            const newPlaylist = { id: newId, name: name, creator: currentUser, tracks: [] };
-            collaborativePlaylists.push(newPlaylist);
-            localStorage.setItem('darksound_collab', JSON.stringify(collaborativePlaylists));
 
-            const shareUrl = window.location.origin + window.location.pathname + '?playlist=' + newId;
-            document.getElementById('collabLinkContainer').innerHTML = `Link collaborativo:<br><a href="${shareUrl}" target="_blank" style="color:white; font-weight:bold;">${shareUrl}</a>`;
-            renderLibCollab();
+            if(type === 'private') {
+                const newId = 'priv_' + Math.random().toString(36).substr(2, 9);
+                privatePlaylists.push({ id: newId, name: name, tracks: [] });
+                localStorage.setItem('darksound_private', JSON.stringify(privatePlaylists));
+                document.getElementById('collabLinkContainer').innerHTML = `<span style="color:var(--accent);">Playlist privata creata con successo!</span>`;
+            } else {
+                const newId = 'collab_' + Math.random().toString(36).substr(2, 9);
+                collaborativePlaylists.push({ id: newId, name: name, creator: currentUser, tracks: [] });
+                localStorage.setItem('darksound_collab', JSON.stringify(collaborativePlaylists));
+                const shareUrl = window.location.origin + window.location.pathname + '?playlist=' + newId;
+                document.getElementById('collabLinkContainer').innerHTML = `Link collaborativo:<br><a href="${shareUrl}" target="_blank" style="color:white; font-weight:bold;">${shareUrl}</a>`;
+            }
+            renderLibPlaylists();
         }
 
-        function renderLibCollab() {
-            let html = collaborativePlaylists.map(p => {
+        function renderLibPlaylists() {
+            // Rendering Playlist Private
+            let privHtml = privatePlaylists.map(p => {
                 let coverImg = (p.tracks.length > 0 && p.tracks[0].image && p.tracks[0].image.startsWith('http')) ? p.tracks[0].image : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop';
                 return `
-                    <div class="lib-item" onclick="openPlaylistDetailById('${p.id}')">
+                    <div class="lib-item" onclick="openPlaylistDetailById('${p.id}', 'private')">
+                        <img src="${coverImg}" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop'">
+                        <div>
+                            <h4>${p.name}</h4>
+                            <p>Privata • ${p.tracks.length} brani</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('libPrivateList').innerHTML = privHtml || '<p style="color:var(--text-sub); font-size:0.85rem;">Nessuna playlist privata creata.</p>';
+
+            // Rendering Playlist Collaborative
+            let collabHtml = collaborativePlaylists.map(p => {
+                let coverImg = (p.tracks.length > 0 && p.tracks[0].image && p.tracks[0].image.startsWith('http')) ? p.tracks[0].image : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop';
+                return `
+                    <div class="lib-item" onclick="openPlaylistDetailById('${p.id}', 'collab')">
                         <img src="${coverImg}" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop'">
                         <div>
                             <h4>${p.name}</h4>
@@ -651,39 +782,65 @@
                     </div>
                 `;
             }).join('');
-            document.getElementById('libCollabList').innerHTML = html || '<p style="color:var(--text-sub); font-size:0.85rem;">Nessuna playlist collaborativa creata.</p>';
+            document.getElementById('libCollabList').innerHTML = collabHtml || '<p style="color:var(--text-sub); font-size:0.85rem;">Nessuna playlist collaborativa salvata.</p>';
         }
 
-        function promptAddToCollab(id, name, artist, image) {
-            if (collaborativePlaylists.length === 0) {
-                alert('Crea prima una playlist collaborativa nella sezione Crea!');
+        function promptAddToPlaylist(id, name, artist, image) {
+            let allPlaylists = [
+                ...privatePlaylists.map(p => ({ ...p, type: 'private' })),
+                ...collaborativePlaylists.map(p => ({ ...p, type: 'collab' }))
+            ];
+
+            if (allPlaylists.length === 0) {
+                alert('Crea prima una playlist nella sezione Crea!');
                 return;
             }
-            let listNames = collaborativePlaylists.map((p, index) => `${index + 1}. ${p.name}`).join('\n');
+
+            let listNames = allPlaylists.map((p, index) => `${index + 1}. ${p.name} (${p.type === 'private' ? 'Privata' : 'Collaborativa'})`).join('\n');
             let choice = prompt(`Aggiungi a quale playlist:\n${listNames}`);
             let idx = parseInt(choice) - 1;
-            if (!isNaN(idx) && collaborativePlaylists[idx]) {
+            
+            if (!isNaN(idx) && allPlaylists[idx]) {
+                const target = allPlaylists[idx];
                 const validImage = (image && image.startsWith('http')) ? image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop';
-                collaborativePlaylists[idx].tracks.push({ id, name, artist, image: validImage });
-                localStorage.setItem('darksound_collab', JSON.stringify(collaborativePlaylists));
-                renderLibCollab();
-                alert('Brano aggiunto con successo alla playlist collaborativa!');
+                
+                if(target.type === 'private') {
+                    const pObj = privatePlaylists.find(p => p.id === target.id);
+                    if(pObj) {
+                        pObj.tracks.push({ id, name, artist, image: validImage });
+                        localStorage.setItem('darksound_private', JSON.stringify(privatePlaylists));
+                    }
+                } else {
+                    const cObj = collaborativePlaylists.find(p => p.id === target.id);
+                    if(cObj) {
+                        cObj.tracks.push({ id, name, artist, image: validImage });
+                        localStorage.setItem('darksound_collab', JSON.stringify(collaborativePlaylists));
+                    }
+                }
+                renderLibPlaylists();
+                alert('Brano aggiunto con successo alla playlist!');
             }
         }
 
-        function openPlaylistDetailById(id) {
-            const found = collaborativePlaylists.find(p => p.id === id);
-            if(found) openPlaylistDetail(found);
+        function openPlaylistDetailById(id, type) {
+            let found = null;
+            if(type === 'private') {
+                found = privatePlaylists.find(p => p.id === id);
+            } else {
+                found = collaborativePlaylists.find(p => p.id === id);
+            }
+            if(found) openPlaylistDetail(found, type);
         }
 
-        function openPlaylistDetail(playlist) {
+        function openPlaylistDetail(playlist, type = 'collab') {
             document.getElementById('detailPlaylistTitle').innerText = playlist.name;
-            document.getElementById('detailPlaylistInfo').innerText = `Playlist Collaborativa • Creatore: ${playlist.creator} • ${playlist.tracks.length} brani`;
+            document.getElementById('detailPlaylistInfo').innerText = `${type === 'private' ? 'Playlist Privata' : 'Playlist Collaborativa'} • ${playlist.tracks.length} brani`;
 
-            let html = playlist.tracks.map(t => {
+            playQueue = playlist.tracks;
+            let html = playlist.tracks.map((t, idx) => {
                 let trackImg = (t.image && t.image.startsWith('http')) ? t.image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop';
                 return `
-                    <div class="playlist-result-card" onclick="playTrack('${t.id}', '${t.name.replace(/'/g, "\\'")}', '${t.artist.replace(/'/g, "\\'")}', '${trackImg}')">
+                    <div class="playlist-result-card" onclick="queueIndex = ${idx}; playQueueIndex(queueIndex);">
                         <div class="playlist-left">
                             <img src="${trackImg}" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=100&auto=format&fit=crop'">
                             <div class="playlist-info">
@@ -697,38 +854,6 @@
 
             document.getElementById('detailPlaylistTracks').innerHTML = html || '<p style="color:var(--text-sub);">La playlist è vuota.</p>';
             switchView('playlist-detail');
-        }
-
-        function playTrack(id, name, artist, image) {
-            const validImage = (image && image.startsWith('http')) ? image : 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&auto=format&fit=crop';
-            currentTrackData = { id, name, artist, image: validImage };
-            
-            document.getElementById('playerBar').style.display = 'flex';
-            document.getElementById('playerTitle').innerText = name;
-            document.getElementById('playerArtist').innerText = artist;
-            document.getElementById('playerImg').src = validImage;
-
-            document.getElementById('fsTitle').innerText = name;
-            document.getElementById('fsArtist').innerText = artist;
-            document.getElementById('fsCover').src = validImage;
-
-            updateLikeUIStates();
-
-            if (player && typeof player.loadVideoById === 'function') {
-                player.loadVideoById(id);
-                player.playVideo();
-                isPlaying = true;
-                updateIcons(true);
-            } else {
-                setTimeout(() => {
-                    if (player && typeof player.loadVideoById === 'function') {
-                        player.loadVideoById(id);
-                        player.playVideo();
-                        isPlaying = true;
-                        updateIcons(true);
-                    }
-                }, 500);
-            }
         }
 
         function togglePlay() {
