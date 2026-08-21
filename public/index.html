@@ -34,7 +34,6 @@
             background-attachment: fixed;
         }
 
-        /* Spaziatura inferiore ulteriormente ampliata per superare del tutto la navbar e il player */
         .view { 
             display: none; 
             padding: 20px; 
@@ -90,7 +89,6 @@
             gap: 8px;
         }
 
-        /* Pannello Profilo Utente (Spotify Drawer) */
         .profile-drawer {
             position: fixed; top: 0; right: -100%; width: 100%; max-width: 380px; height: 100vh;
             background: rgba(18, 18, 22, 0.95); backdrop-filter: blur(35px);
@@ -119,7 +117,6 @@
         .friend-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
         .friend-bubble span { font-size: 0.72rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
-        /* Modali */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(30px);
@@ -207,7 +204,6 @@
         .p-artist { font-size: 0.82rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .player-icons { display: flex; align-items: center; gap: 18px; font-size: 1.3rem; color: #fff; }
 
-        /* Fullscreen Player & Lyrics Styles */
         #fullscreen-player {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: linear-gradient(180deg, rgba(30,30,40,0.98) 0%, rgba(10,10,12,0.99) 100%);
@@ -435,7 +431,7 @@
         <h1 class="home-title">Cerca</h1>
         <div class="search-box">
             <i class="fas fa-search" style="color: var(--text-sub);"></i>
-            <input type="text" id="spotifySearchInput" placeholder="Cerca brani o playlist pubbliche..." oninput="handleSearchInput(this.value)">
+            <input type="text" id="spotifySearchInput" placeholder="Cerca brani, artisti o playlist pubbliche..." oninput="handleSearchInput(this.value)">
         </div>
         <div id="searchResultsContainer" style="margin-top:24px;"></div>
     </div>
@@ -534,6 +530,10 @@
         let downloadedTracks = JSON.parse(localStorage.getItem(currentUser ? `downloads_${currentUser}` : 'darksound_downloads') || '[]');
         let userPlaylists = JSON.parse(localStorage.getItem(currentUser ? `playlists_${currentUser}` : 'darksound_playlists') || '[]');
         let globalPublicPlaylists = JSON.parse(localStorage.getItem('darksound_global_public_playlists') || '[]');
+        
+        // Nuova variabile per gli artisti seguiti con persistenza
+        let followedArtists = JSON.parse(localStorage.getItem('followedArtists') || '[]');
+
         let progressInterval, searchTimer = null, currentLibTab = 'liked', selectedTrackForPlaylist = null;
         let tempAuthName = '';
         let isLyricsActive = false;
@@ -632,6 +632,7 @@
             searchTimer = setTimeout(() => executeSearch(val), 250);
         }
 
+        // --- RICERCA AVANZATA AGGIORNATA (Stile Spotify, Risultato migliore & Ordinamento intelligente) ---
         async function executeSearch(query) {
             try {
                 let res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
@@ -659,13 +660,124 @@
                     `).join('');
                 }
 
-                html += `<div class="section-title" style="margin-top:20px;">Brani Musicali</div>`;
-                container.innerHTML = html;
+                let queryLower = query.toLowerCase();
+                let exactArtistTracks = tracks.filter(t => t.artist.toLowerCase().includes(queryLower) && !t.name.toLowerCase().includes('remix'));
+                let remixTracks = tracks.filter(t => t.name.toLowerCase().includes('remix') || (!t.artist.toLowerCase().includes(queryLower) && t.name.toLowerCase().includes(queryLower)));
+                let otherTracks = tracks.filter(t => !exactArtistTracks.includes(t) && !remixTracks.includes(t));
+
+                if(exactArtistTracks.length > 0) {
+                    let mainArtistName = exactArtistTracks[0].artist;
+                    let mainArtistImage = exactArtistTracks[0].image;
+                    
+                    // Box "Risultato migliore" cliccabile per aprire la pagina dedicata dell'artista
+                    html += `<div class="section-title" style="margin-top:10px; margin-bottom:15px;">Risultato migliore</div>`;
+                    html += `
+                        <div onclick="openArtistPage('${mainArtistName.replace(/'/g, "\\'")}')" style="background: #181818; padding: 20px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <img src="${mainArtistImage}" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover;">
+                                <div>
+                                    <h2 style="color: white; font-size: 22px; font-weight: 700; margin: 0 0 5px 0;">${mainArtistName}</h2>
+                                    <span style="background: rgba(0,0,0,0.4); color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">Artista</span>
+                                </div>
+                            </div>
+                            <div style="background: #1db954; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);" onclick="event.stopPropagation(); playSelectedTrack(encodeURIComponent(JSON.stringify(exactArtistTracks[0])), encodeURIComponent(JSON.stringify(exactArtistTracks)), 0)">
+                                <i class="fas fa-play" style="color: black; font-size: 18px; margin-left: 2px;"></i>
+                            </div>
+                        </div>
+                    `;
+
+                    html += `<div class="section-title" style="margin-bottom:10px;">Brani</div>`;
+                    container.innerHTML = html;
+                    
+                    let tempContainer = document.createElement('div');
+                    let sortedTracks = [...exactArtistTracks, ...otherTracks, ...remixTracks];
+                    tempContainer.innerHTML = sortedTracks.map((t, idx) => renderSingleTrackRow(t, idx, sortedTracks)).join('');
+                    container.appendChild(tempContainer);
+                } else {
+                    html += `<div class="section-title" style="margin-top:20px;">Brani Musicali</div>`;
+                    container.innerHTML = html;
+                    
+                    let tempContainer = document.createElement('div');
+                    tempContainer.innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, tracks)).join('');
+                    container.appendChild(tempContainer);
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        // --- SCHERMATA DEDICATA DELL'ARTISTA CON COPERTINA E TASTO SEGUI ---
+        async function openArtistPage(artistName) {
+            try {
+                let res = await fetch(`/api/search?q=${encodeURIComponent(artistName)}`);
+                let tracks = await res.json();
+                let artistTracks = tracks.filter(t => t.artist.toLowerCase().includes(artistName.toLowerCase()));
+                if(artistTracks.length === 0) artistTracks = tracks;
+
+                let artistImage = artistTracks[0]?.image || 'https://via.placeholder.com/300';
+                let isFollowed = followedArtists.includes(artistName);
+
+                let container = document.getElementById('searchResultsContainer');
                 
-                let tempContainer = document.createElement('div');
-                tempContainer.innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, tracks)).join('');
-                container.appendChild(tempContainer);
-            } catch(e) {}
+                container.innerHTML = `
+                    <div style="position: relative; width: calc(100% + 40px); height: 300px; background: url('${artistImage}') center/cover no-repeat; margin: -20px -20px 0 -20px;">
+                        <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.2), #000000);"></div>
+                        <div style="position: absolute; top: 20px; left: 20px; cursor: pointer; color: white; font-size: 18px; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;" onclick="goBackToSearch()">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div style="position: absolute; bottom: 20px; left: 20px;">
+                            <h1 style="color: white; font-size: 38px; font-weight: 800; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">${artistName}</h1>
+                        </div>
+                    </div>
+
+                    <div style="padding-top: 20px; min-height: 50vh;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <button id="followBtn" onclick="toggleFollowArtist('${artistName.replace(/'/g, "\\'")}')" style="background: ${isFollowed ? 'transparent' : 'white'}; color: ${isFollowed ? 'white' : 'black'}; border: ${isFollowed ? '1px solid rgba(255,255,255,0.3)' : 'none'}; padding: 8px 24px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 14px;">
+                                    ${isFollowed ? 'Seguito' : 'Segui'}
+                                </button>
+                                <button style="background: none; border: none; color: var(--text-sub); font-size: 22px; cursor: pointer;"><i class="fas fa-ellipsis-vertical"></i></button>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <button style="background: none; border: none; color: var(--text-sub); font-size: 22px; cursor: pointer;"><i class="fas fa-random"></i></button>
+                                <div style="background: var(--accent); width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.4);" onclick="playSelectedTrack(encodeURIComponent(JSON.stringify(artistTracks[0])), encodeURIComponent(JSON.stringify(artistTracks)), 0)">
+                                    <i class="fas fa-play" style="color: black; font-size: 20px; margin-left: 2px;"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 style="color: white; font-size: 20px; font-weight: 700; margin-bottom: 15px;">Popolare</h3>
+                        <div id="artistTracksContainer">
+                            ${artistTracks.map((t, idx) => renderSingleTrackRow(t, idx, artistTracks)).join('')}
+                        </div>
+                    </div>
+                `;
+            } catch(e) { console.error(e); }
+        }
+
+        // --- GESTIONE PERSISTENTE DEL PULSANTE SEGUI/SEGUITO ---
+        function toggleFollowArtist(artistName) {
+            let index = followedArtists.indexOf(artistName);
+            let btn = document.getElementById('followBtn');
+            
+            if(index > -1) {
+                followedArtists.splice(index, 1);
+                btn.style.background = 'white';
+                btn.style.color = 'black';
+                btn.style.border = 'none';
+                btn.innerText = 'Segui';
+            } else {
+                followedArtists.push(artistName);
+                btn.style.background = 'transparent';
+                btn.style.color = 'white';
+                btn.style.border = '1px solid rgba(255,255,255,0.3)';
+                btn.innerText = 'Seguito';
+            }
+            localStorage.setItem('followedArtists', JSON.stringify(followedArtists));
+        }
+
+        function goBackToSearch() {
+            let query = document.getElementById('spotifySearchInput').value;
+            if(query) executeSearch(query);
+            else document.getElementById('searchResultsContainer').innerHTML = '';
         }
 
         function renderSingleTrackRow(t, idx, sectionTracks) {
