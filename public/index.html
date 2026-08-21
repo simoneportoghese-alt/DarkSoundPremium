@@ -625,8 +625,8 @@
                 renderTracksList(radioTracks.slice(0, 5), 'radioTracksContainer', radioTracks.slice(0, 5));
 
                 let res = await fetch('/api/search?q=Hit Italia');
-                let tracks = await res.json();
-                renderTracksList(tracks, 'homeTracksContainer', tracks);
+                let homeTracks = await res.json();
+                renderTracksList(homeTracks, 'homeTracksContainer', homeTracks);
             } catch(e) {
                 document.getElementById('homeTracksContainer').innerHTML = `<p style="color:#ff4d4d;">Errore di caricamento.</p>`;
             }
@@ -671,7 +671,6 @@
                 html += `<div class="section-title" style="margin-top:20px;">Brani Musicali</div>`;
                 container.innerHTML = html;
                 
-                // Generazione righe passando la lista di ricerca specifica
                 let tempContainer = document.createElement('div');
                 tempContainer.innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, tracks)).join('');
                 container.appendChild(tempContainer);
@@ -681,7 +680,6 @@
         function renderSingleTrackRow(t, idx, sectionTracks) {
             const isLiked = likedSongs.some(s => s.id === t.id);
             const isDownloaded = downloadedTracks.some(s => s.id === t.id);
-            // Serializziamo l'oggetto traccia in modo sicuro per passarlo al click
             const trackJson = encodeURIComponent(JSON.stringify(t));
             const queueJson = encodeURIComponent(JSON.stringify(sectionTracks));
 
@@ -711,7 +709,6 @@
             document.getElementById(containerId).innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, sectionTracks)).join('');
         }
 
-        // Gestione riproduzione mirata senza conflitti di indice
         function playSelectedTrack(trackJson, queueJson, index) {
             const t = JSON.parse(decodeURIComponent(trackJson));
             playQueue = JSON.parse(decodeURIComponent(queueJson));
