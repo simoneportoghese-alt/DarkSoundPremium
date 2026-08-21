@@ -2,57 +2,69 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkSound - Premium Music</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DarkSound</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #07070a; --neon: #1ed760; --text: #ffffff; }
-        body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans'; margin: 0; padding: 20px; }
-        .search-box { position: relative; margin-bottom: 20px; }
-        input { width: 100%; padding: 15px; border-radius: 50px; background: #181818; border: 1px solid #333; color: white; outline: none; }
-        .track-item { display: flex; align-items: center; gap: 15px; padding: 10px; border-radius: 12px; cursor: pointer; background: #121212; margin-bottom: 8px; }
-        .track-item img { width: 50px; height: 50px; border-radius: 8px; }
-        .mobile-player { position: fixed; bottom: 0; left: 0; width: 100%; background: #181818; padding: 20px; display: none; text-align: center; border-top: 2px solid var(--neon); }
+        :root { --bg: #000000; --card: #121212; --text: #ffffff; --muted: #b3b3b3; --neon: #1ed760; }
+        body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding-bottom: 100px; }
+        header { padding: 20px; position: sticky; top: 0; background: var(--bg); z-index: 10; }
+        .search-box { background: #2a2a2a; padding: 12px 20px; border-radius: 50px; display: flex; align-items: center; gap: 10px; }
+        input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 1rem; }
+        .track-list { padding: 0 20px; }
+        .track-item { display: flex; align-items: center; gap: 15px; padding: 10px 0; border-radius: 8px; cursor: pointer; }
+        .track-item:active { background: #1a1a1a; }
+        .track-item img { width: 50px; height: 50px; border-radius: 4px; object-fit: cover; }
+        .track-item div h4 { margin: 0; font-size: 0.95rem; }
+        .track-item div p { margin: 0; font-size: 0.8rem; color: var(--muted); }
+        .player { position: fixed; bottom: 0; left: 0; width: 100%; background: #181818; border-top: 1px solid #282828; padding: 15px 20px; display: none; align-items: center; gap: 15px; z-index: 100; }
+        #youtube-player { display: none; }
     </style>
 </head>
 <body>
-
-<div class="search-box">
-    <input type="text" id="searchInput" placeholder="Cerca brano o artista..." onkeydown="if(event.key==='Enter') search()">
-</div>
-<div id="trackList"></div>
-
-<div class="mobile-player" id="mobilePlayer">
+    <header>
+        <div class="search-box">
+            <i class="fas fa-search" style="color: var(--muted);"></i>
+            <input type="text" id="searchInput" placeholder="Cerca un brano o artista..." onkeydown="if(event.key==='Enter') search()">
+        </div>
+    </header>
+    <main class="track-list" id="trackList"></main>
     <div id="youtube-player"></div>
-    <div id="status">In riproduzione...</div>
-</div>
-
-<script src="https://www.youtube.com/iframe_api"></script>
-<script>
-    let player;
-    function onYouTubeIframeAPIReady() {
-        player = new YT.Player('youtube-player', { height: '0', width: '0', playerVars: { 'autoplay': 1 } });
-    }
-
-    async function search() {
-        const q = document.getElementById('searchInput').value;
-        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-        const tracks = await res.json();
-        const list = document.getElementById('trackList');
-        list.innerHTML = '';
-        tracks.forEach(t => {
-            list.innerHTML += `<div class="track-item" onclick="play('${t.id}', '${t.name}')">
-                <img src="${t.image}"> <div><strong>${t.name}</strong><br><small>${t.artist_name}</small></div>
-            </div>`;
-        });
-    }
-
-    function play(id, name) {
-        player.loadVideoById(id);
-        document.getElementById('mobilePlayer').style.display = 'block';
-        document.getElementById('status').innerText = "Ora in onda: " + name;
-    }
-</script>
+    <div class="player" id="playerBar">
+        <div id="nowPlaying" style="font-size: 0.85rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
+        <div style="margin-left: auto; display: flex; gap: 15px; font-size: 1.5rem; align-items: center;">
+            <i class="fas fa-play" onclick="player.playVideo()" style="cursor: pointer;"></i>
+            <i class="fas fa-pause" onclick="player.pauseVideo()" style="cursor: pointer;"></i>
+        </div>
+    </div>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        let player;
+        function onYouTubeIframeAPIReady() { 
+            player = new YT.Player('youtube-player', { 
+                height: '0', 
+                width: '0', 
+                events: { 'onReady': () => {} } 
+            }); 
+        }
+        async function search() {
+            const q = document.getElementById('searchInput').value;
+            const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+            const tracks = await res.json();
+            const list = document.getElementById('trackList');
+            list.innerHTML = tracks.map((t) => `
+                <div class="track-item" onclick="play('${t.id}', '${t.name.replace(/'/g, "\\'")}')">
+                    <img src="${t.image}">
+                    <div><h4>${t.name}</h4><p>${t.artist}</p></div>
+                </div>
+            `).join('');
+        }
+        function play(id, name) {
+            player.loadVideoById(id);
+            document.getElementById('playerBar').style.display = 'flex';
+            document.getElementById('nowPlaying').innerText = name;
+        }
+    </script>
 </body>
 </html>
