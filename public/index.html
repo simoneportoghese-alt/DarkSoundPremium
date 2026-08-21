@@ -34,11 +34,11 @@
             background-attachment: fixed;
         }
 
-        /* Spaziatura generica e specifica per evitare sovrapposizioni con la navbar */
+        /* Spaziatura inferiore ulteriormente ampliata per superare del tutto la navbar e il player */
         .view { 
             display: none; 
             padding: 20px; 
-            padding-bottom: 220px; /* Spazio sicuro per evitare il blocco dei tocchi in fondo */
+            padding-bottom: 280px; 
             animation: iosFadeIn 0.45s var(--transition-smooth) forwards; 
         }
         .view.active { display: block; }
@@ -158,10 +158,10 @@
         .track-row { 
             display: flex; align-items: center; justify-content: space-between; 
             padding: 10px 12px; cursor: pointer; border-radius: 12px; margin-bottom: 4px; 
-            position: relative; z-index: 5;
+            position: relative; z-index: 10;
         }
         .track-row:active { background: rgba(255,255,255,0.08); }
-        .track-row-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; overflow: hidden; }
+        .track-row-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; overflow: hidden; pointer-events: none; }
         .track-row-left img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: #333; flex-shrink: 0; }
         .track-meta { flex: 1; min-width: 0; overflow: hidden; }
         .track-meta h4 { font-size: 1.05rem; font-weight: 700; color: white; white-space: nowrap; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; }
@@ -169,7 +169,7 @@
         .badge-full { background: rgba(48,209,88,0.2); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
         .badge-public { background: rgba(0, 122, 255, 0.2); color: #007aff; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
         .badge-private { background: rgba(255, 149, 0, 0.2); color: #ff9500; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
-        .track-actions { display: flex; align-items: center; gap: 14px; color: var(--text-sub); font-size: 1.2rem; padding: 6px; flex-shrink: 0; position: relative; z-index: 6; }
+        .track-actions { display: flex; align-items: center; gap: 14px; color: var(--text-sub); font-size: 1.2rem; padding: 6px; flex-shrink: 0; position: relative; z-index: 11; }
 
         .search-box { 
             background: rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 14px 18px; 
@@ -198,7 +198,7 @@
         .player-bar {
             position: fixed; bottom: 76px; left: 12px; right: 12px; 
             background: rgba(30, 30, 34, 0.85); backdrop-filter: blur(30px);
-            border-radius: 16px; padding: 10px 14px; display: none; align-items: center; gap: 14px; z-index: 1900; 
+            border-radius: 16px; padding: 10px 14px; display: none; align-items: center; gap: 14px; z-index: 100; 
             box-shadow: 0 20px 40px rgba(0,0,0,0.6); cursor: pointer;
         }
         .player-bar img { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; }
@@ -261,7 +261,7 @@
             position: fixed; bottom: 12px; left: 16px; right: 16px; height: 64px; 
             background: rgba(20, 20, 24, 0.8); backdrop-filter: blur(30px);
             display: flex; justify-content: space-around; align-items: center; border-radius: 22px;
-            border: 1px solid rgba(255, 255, 255, 0.12); z-index: 2000;
+            border: 1px solid rgba(255, 255, 255, 0.12); z-index: 90;
         }
         .nav-item { 
             display: flex; flex-direction: column; align-items: center; gap: 3px; 
