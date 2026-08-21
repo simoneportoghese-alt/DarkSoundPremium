@@ -137,9 +137,9 @@
       display: flex; 
       align-items: center; 
       gap: 10px; 
-      background: rgba(255, 255, 255, 0.06); 
+      background: rgba(255, 255, 255, 0.08); 
       border: 1px solid var(--glass-border);
-      padding: 6px 14px; 
+      padding: 8px 16px; 
       border-radius: 30px; 
       font-size: 12px; 
       font-weight: 700; 
@@ -149,12 +149,15 @@
       box-shadow: inset 0 1px 1px rgba(255,255,255,0.2);
     }
 
-    .user-badge:active { transform: scale(0.95); background: rgba(255,255,255,0.12); }
+    .user-badge:active { transform: scale(0.95); background: rgba(255,255,255,0.15); }
 
     .user-avatar { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
 
     main { flex: 1; overflow-y: auto; padding: 10px 24px 150px; }
     main::-webkit-scrollbar { display: none; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
     .section-header { 
       font-size: 14px; 
@@ -182,13 +185,6 @@
       overflow: hidden;
     }
 
-    .import-box::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    }
-
     .input-group { display: flex; gap: 10px; margin-top: 10px; }
 
     .input-group input { 
@@ -206,7 +202,6 @@
     .input-group input:focus {
       border-color: rgba(255, 255, 255, 0.3);
       background: rgba(0, 0, 0, 0.5);
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
     }
 
     .btn-action { 
@@ -237,14 +232,12 @@
       backdrop-filter: blur(10px);
       transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); 
       cursor: pointer; 
-      position: relative;
     }
 
     .track-card:hover, .track-card:active { 
       background: rgba(255, 255, 255, 0.1); 
       border-color: var(--glass-highlight);
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
     }
 
     .track-info-group { display: flex; align-items: center; gap: 14px; min-width: 0; flex: 1; }
@@ -286,7 +279,6 @@
       padding: 2px 6px; 
       border-radius: 6px; 
       text-transform: uppercase; 
-      letter-spacing: 0.5px;
     }
 
     .source-spotify { background: rgba(29, 185, 84, 0.2); color: #1DB954; border: 1px solid rgba(29, 185, 84, 0.3); }
@@ -305,10 +297,8 @@
       cursor: pointer; 
       backdrop-filter: blur(20px);
       box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
-      transition: all 0.3s;
     }
 
-    .wrapped-banner:active { transform: scale(0.98); }
     .wrapped-banner h3 { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; }
     .wrapped-banner p { font-size: 12px; opacity: 0.8; margin-top: 4px; }
 
@@ -349,8 +339,6 @@
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    #mini-player:active { transform: scale(0.98); }
-
     .play-btn-circle {
       width: 38px; 
       height: 38px; 
@@ -364,7 +352,6 @@
       font-size: 12px; 
       cursor: pointer;
       box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
-      transition: all 0.2s;
     }
 
     /* FULLSCREEN PLAYER OVERLAY */
@@ -401,16 +388,16 @@
       border: 1px solid var(--glass-border);
     }
 
-    /* GLASS BOTTOM NAVIGATION */
+    /* SPOTIFY STYLE GLASS NAVIGATION BAR */
     nav { 
       position: absolute; 
       bottom: 0; 
       left: 0; 
       right: 0; 
-      height: 64px; 
-      background: rgba(15, 15, 25, 0.6); 
-      backdrop-filter: blur(25px); 
-      -webkit-backdrop-filter: blur(25px);
+      height: 68px; 
+      background: rgba(15, 15, 25, 0.75); 
+      backdrop-filter: blur(30px); 
+      -webkit-backdrop-filter: blur(30px);
       display: flex; 
       justify-content: space-around; 
       align-items: center; 
@@ -430,9 +417,11 @@
       font-weight: 700; 
       cursor: pointer; 
       transition: color 0.3s;
+      flex: 1;
     }
 
     .nav-item.active { color: #fff; }
+    .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
 
     /* TOAST NOTIFICATION */
     #toast { 
@@ -465,10 +454,7 @@
       font-size: 14px; 
       padding: 8px; 
       cursor: pointer; 
-      transition: color 0.2s;
     }
-
-    .btn-delete:hover { color: #ff4444; }
   </style>
 </head>
 <body>
@@ -486,39 +472,59 @@
     <header>
       <h1 class="greeting">DarkSound</h1>
       <div class="user-badge" id="auth-btn" onclick="handleAuth()">
-        <img id="user-img" src="https://via.placeholder.com/24" class="user-avatar" style="display:none;" />
+        <img id="user-img" src="" class="user-avatar" style="display:none;" />
         <span id="user-name">Accedi</span>
       </div>
     </header>
 
     <main>
-      <!-- WRAPPED BANNER -->
-      <div class="wrapped-banner" onclick="openWrapped()">
-        <h3>✨ DarkSound Wrapped</h3>
-        <p>I brani più ascoltati nella tua rete cloud</p>
+      <!-- TAB HOME -->
+      <div id="tab-home" class="tab-content active">
+        <div class="wrapped-banner" onclick="openWrapped()">
+          <h3>✨ DarkSound Wrapped</h3>
+          <p>I brani più ascoltati nella tua rete cloud</p>
+        </div>
+
+        <div id="collab-badge" class="collab-status" style="display: none;">
+          <span>👥 Playlist Collaborativa Attiva</span>
+          <button onclick="leaveCollab()" style="background:none; border:none; color:#00f2fe; font-size:11px; text-decoration:underline; cursor:pointer;">Esci</button>
+        </div>
+
+        <div class="section-header">
+          <span>Ultimi Ascolti</span>
+        </div>
+        <div id="home-playlist-container"></div>
       </div>
 
-      <!-- BANNER COLLABORATIVO -->
-      <div id="collab-badge" class="collab-status" style="display: none;">
-        <span>👥 Playlist Collaborativa Attiva</span>
-        <button onclick="leaveCollab()" style="background:none; border:none; color:#00f2fe; font-size:11px; text-decoration:underline; cursor:pointer;">Esci</button>
-      </div>
-
-      <!-- INPUT BRANI -->
-      <div class="import-box">
-        <h3 style="font-size: 13px; font-weight: 700; opacity: 0.9;">🔗 Aggiungi Musica</h3>
-        <div class="input-group">
-          <input type="text" id="import-url" placeholder="Incolla link o cerca brano..." />
-          <button class="btn-action" onclick="handleImport()">Importa</button>
+      <!-- TAB CERCA / IMPORTA -->
+      <div id="tab-search" class="tab-content">
+        <div class="import-box">
+          <h3 style="font-size: 14px; font-weight: 700;">🔍 Cerca o Incolla Link</h3>
+          <p style="font-size: 11px; color: var(--text-sub); margin-top: 2px;">Supporta Spotify, YouTube, SoundCloud o ricerca libera</p>
+          <div class="input-group">
+            <input type="text" id="import-url" placeholder="Titolo, artista o link..." />
+            <button class="btn-action" onclick="handleImport()">Cerca</button>
+          </div>
         </div>
       </div>
 
-      <!-- LISTA BRANI -->
-      <div class="section-header">
-        <span>Libreria Condivisa</span>
-        <span id="track-count" style="font-size: 11px; opacity: 0.6;">0 brani</span>
+      <!-- TAB LIBRERIA -->
+      <div id="tab-library" class="tab-content">
+        <div class="section-header">
+          <span>La tua Libreria Cloud</span>
+          <span id="track-count" style="font-size: 11px; opacity: 0.6;">0 brani</span>
+        </div>
+        <div id="playlist-container"></div>
       </div>
-      <div id="playlist-container"></div>
+
+      <!-- TAB CREA / CONDIVIDI -->
+      <div id="tab-create" class="tab-content">
+        <div class="import-box" style="text-align: center; padding: 28px 18px;">
+          <h3 style="font-size: 18px; font-weight: 800;">✨ Genera Playlist Live</h3>
+          <p style="font-size: 12px; color: var(--text-sub); margin: 8px 0 20px;">Condividi il tuo link con i tuoi amici per ascoltare la musica insieme in tempo reale!</p>
+          <button class="btn-action" style="padding: 12px 24px; font-size: 13px;" onclick="shareCollaborativePlaylist()">Copia Link Collaborativo</button>
+        </div>
+      </div>
     </main>
 
     <!-- MINI PLAYER FLOATING GLASS -->
@@ -533,15 +539,23 @@
       <button onclick="event.stopPropagation(); togglePlay();" id="mini-play-btn" class="play-btn-circle">▶</button>
     </div>
 
-    <!-- GLASS NAVIGATION BAR -->
+    <!-- SPOTIFY STYLE NAVIGATION BAR -->
     <nav>
-      <button class="nav-item active">
-        <span style="font-size: 16px;">🎵</span>
+      <button class="nav-item active" onclick="switchTab('home', this)">
+        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('search', this)">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <span>Cerca</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('library', this)">
+        <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
         <span>Libreria</span>
       </button>
-      <button class="nav-item" onclick="shareCollaborativePlaylist()">
-        <span style="font-size: 16px;">✨</span>
-        <span>Condividi Live</span>
+      <button class="nav-item" onclick="switchTab('create', this)">
+        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        <span>Crea</span>
       </button>
     </nav>
   </div>
@@ -563,7 +577,7 @@
       <p id="full-artist" style="font-size: 14px; color: var(--text-sub); margin-top: 4px;">Nome Artista</p>
       
       <div style="display: flex; justify-content: center; margin-top: 40px;">
-        <button id="full-play-btn" onclick="togglePlay()" style="width:76px; height:76px; border-radius:50%; background:#ffffff; color:#000; border:none; font-size:26px; box-shadow: 0 10px 30px rgba(255,255,255,0.3); cursor:pointer; transition:transform 0.2s;" onmousedown="this.style.transform='scale(0.92)'" onmouseup="this.style.transform='scale(1)'">▶</button>
+        <button id="full-play-btn" onclick="togglePlay()" style="width:76px; height:76px; border-radius:50%; background:#ffffff; color:#000; border:none; font-size:26px; box-shadow: 0 10px 30px rgba(255,255,255,0.3); cursor:pointer;">▶</button>
       </div>
     </div>
   </div>
@@ -574,7 +588,7 @@
   <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -596,13 +610,22 @@
     window.currentPlaylistId = null;
     let unsubscribePlaylist = null;
 
-    window.handleAuth = () => {
+    // Login compatibile con mobile
+    window.handleAuth = async () => {
       if (!window.currentUser) {
-        signInWithPopup(auth, provider).then(result => showToast(`Ciao, ${result.user.displayName}!`));
+        try {
+          await signInWithPopup(auth, provider);
+        } catch (e) {
+          await signInWithRedirect(auth, provider);
+        }
       } else {
         signOut(auth).then(() => showToast("Disconnesso"));
       }
     };
+
+    getRedirectResult(auth).then((result) => {
+      if (result) showToast(`Ciao, ${result.user.displayName}!`);
+    }).catch(() => {});
 
     onAuthStateChanged(auth, async (user) => {
       window.currentUser = user;
@@ -677,22 +700,21 @@
       window.history.pushState({}, document.title, window.location.pathname);
       if (window.currentUser) listenToPlaylist(window.currentUser.uid);
     };
-
-    window.trackPlayStat = async (track) => {
-      if (!window.currentUser) return;
-      const monthKey = new Date().toISOString().slice(0, 7);
-      const userRef = doc(db, "users", window.currentUser.uid);
-      const trackKey = `${track.title} - ${track.artist}`.replace(/[\/\.#$\[\]]/g, "_");
-      await updateDoc(userRef, { [`history.${monthKey}.${trackKey}`]: (window.monthlyStats?.[trackKey] || 0) + 1 }).catch(() => {});
-    };
   </script>
 
-  <!-- Player Logica UI -->
+  <!-- Player e Gestione Tab UI -->
   <script>
     let player = null;
     let currentTrack = null;
     let isPlaying = false;
     window.playlist = [];
+
+    function switchTab(tabName, btn) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      btn.classList.add('active');
+    }
 
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('yt-player', {
@@ -710,7 +732,7 @@
     async function handleImport() {
       const input = document.getElementById('import-url').value.trim();
       if (!input) return;
-      showToast("Caricamento...");
+      showToast("Ricerca in corso...");
 
       if (input.includes("spotify.com")) await parseSpotifyUrl(input);
       else if (input.includes("soundcloud.com")) await parseSoundCloudUrl(input);
@@ -758,13 +780,15 @@
     function addTrackToPlaylist(track) {
       if (window.saveTrackToCloud) window.saveTrackToCloud(track);
       if (!currentTrack) playTrack(track);
+      showToast("Aggiunto alla libreria!");
     }
 
     window.renderPlaylist = function() {
       const container = document.getElementById('playlist-container');
+      const homeContainer = document.getElementById('home-playlist-container');
       document.getElementById('track-count').textContent = `${window.playlist.length} brani`;
 
-      container.innerHTML = window.playlist.map((t, index) => `
+      const html = window.playlist.map((t, index) => `
         <div class="track-card" onclick="playTrackByIndex(${index})">
           <div class="track-info-group">
             <img src="${t.cover}" class="track-cover-img" />
@@ -776,11 +800,14 @@
               </div>
             </div>
           </div>
-          <div style="display:flex; align-items:center; gap:6px;">
+          <div style="display:flex; align-items:center;">
             <button class="btn-delete" onclick="event.stopPropagation(); window.deleteTrackFromCloud(window.playlist[${index}])">✕</button>
           </div>
         </div>
       `).join('');
+
+      container.innerHTML = html;
+      homeContainer.innerHTML = html;
     };
 
     function playTrackByIndex(index) { playTrack(window.playlist[index]); }
@@ -796,7 +823,6 @@
       document.getElementById('ambient-bg').style.backgroundImage = `url('${track.cover}')`;
 
       player.loadPlaylist({ listType: 'search', query: track.query });
-      if (window.trackPlayStat) window.trackPlayStat(track);
     }
 
     function togglePlay() {
@@ -812,7 +838,7 @@
     }
 
     function openWrapped() {
-      alert("✨ DarkSound Wrapped Mensile:\n\nTutti gli ascolti tuoi e dei tuoi amici sono salvati nel Cloud. Trovi il riepilogo nel tuo profilo!");
+      alert("✨ DarkSound Wrapped Mensile:\n\nTutti gli ascolti salvati nel Cloud.");
     }
 
     function openFullscreen() { document.getElementById('fullscreen-player').classList.add('open'); }
