@@ -272,6 +272,15 @@
         }
         .nav-item.active { color: var(--text-main); }
         #youtube-player { position: fixed; bottom: 0; left: 0; width: 200px; height: 200px; opacity: 0.01; pointer-events: none; z-index: -1000; }
+
+        /* Ottimizzazioni per la velocità di caricamento dell'artista (Stile Lyra) */
+        #artistHeroImg {
+            transition: opacity 0.3s ease-in-out;
+            background-color: #1a1a1a;
+        }
+        #artistTracksContainer {
+            min-height: 200px;
+        }
     </style>
 </head>
 <body>
@@ -730,27 +739,31 @@
             document.getElementById(containerId).innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, sectionTracks)).join('');
         }
 
+        // Funzione openArtistPage ottimizzata per la velocità (stile Lyra)
         async function openArtistPage(artistName, artistImageOverride) {
             switchView('artist'); 
-            document.getElementById('artistNameTitle').innerText = artistName;
-            document.getElementById('artistTracksContainer').innerHTML = '<p style="color:var(--text-sub);">Caricamento brani...</p>';
-            
-            // Imposta l'immagine dell'eroe (usa l'immagine del brano corrente come fallback ideale per lo sfondo in stile Spotify)
             const heroImgEl = document.getElementById('artistHeroImg');
-            heroImgEl.src = artistImageOverride || 'https://picsum.photos/seed/artist/600';
+            const container = document.getElementById('artistTracksContainer');
+            
+            document.getElementById('artistNameTitle').innerText = artistName;
+            container.innerHTML = '<p style="color:var(--text-sub);">Caricamento in corso...</p>';
+            
+            heroImgEl.style.opacity = '0.5';
+            heroImgEl.src = artistImageOverride || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
             try {
-                let res = await fetch(`/api/search?q=${encodeURIComponent(artistName)}`);
-                let tracks = await res.json();
+                let response = await fetch(`/api/search?q=${encodeURIComponent(artistName)}`);
+                let tracks = await response.json();
                 
-                // Se abbiamo trovato tracce e non avevamo un'immagine passata, usiamo la prima traccia come sfondo
-                if(tracks.length > 0 && !artistImageOverride) {
+                if (tracks.length > 0) {
                     heroImgEl.src = tracks[0].image;
+                    renderTracksList(tracks, 'artistTracksContainer', tracks);
+                } else {
+                    container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano trovato per questo artista.</p>`;
                 }
-
-                renderTracksList(tracks, 'artistTracksContainer', tracks);
+                heroImgEl.style.opacity = '1';
             } catch(e) {
-                document.getElementById('artistTracksContainer').innerHTML = `<p style="color:#ff4d4d;">Errore nel caricamento dei brani.</p>`;
+                container.innerHTML = `<p style="color:#ff4d4d;">Errore di caricamento.</p>`;
             }
         }
 
@@ -795,7 +808,7 @@
         function closeShareModal() { document.getElementById('share-modal').classList.remove('active'); }
 
         function copyTrackLink() {
-            const shareText = `Ascolta "${currentTrackData.name}" di ${currentTrackData.artist} sur DarkSound Pro! https://www.youtube.com/watch?v=${currentTrackData.id}`;
+            const shareText = `Ascolta "${currentTrackData.name}" di ${currentTrackData.artist} su DarkSound Pro! https://www.youtube.com/watch?v=${currentTrackData.id}`;
             navigator.clipboard.writeText(shareText).then(() => {
                 alert('Link copiato negli appunti!');
                 closeShareModal();
