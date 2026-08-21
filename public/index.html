@@ -140,7 +140,7 @@
         
         .progress-container { width: 100%; margin-bottom: 20px; }
         .progress-bar-bg { width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; position: relative; cursor: pointer; }
-        .progress-bar-fill { width: 0%; height: 100%; background: white; border-radius: 2px; position: relative; }
+        .progress-bar-fill { width: 0%; height: 100%; background: white; border-radius: 2px; position: relative; transition: width 0.1s linear; }
         .progress-times { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-sub); margin-top: 6px; }
 
         .fs-controls { display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; color: white; margin-bottom: 30px; }
@@ -461,10 +461,12 @@
                 events: { 
                     'onStateChange': (e) => {
                         if (e.data === YT.PlayerState.PLAYING) {
+                            isPlaying = true;
                             updateIcons(true);
                             startProgressInterval();
                         }
                         if (e.data === YT.PlayerState.PAUSED) {
+                            isPlaying = false;
                             updateIcons(false);
                             clearInterval(progressInterval);
                         }
@@ -670,7 +672,6 @@
             updateLibraryCounts();
             updateLikeUIStates();
             
-            // Se siamo nella vista playlist dei preferiti, aggiorna la lista
             if(document.getElementById('detailPlaylistTitle').innerText === "Brani piaciuti") {
                 openLikedSongs();
             }
@@ -754,7 +755,6 @@
         }
 
         function renderLibPlaylists() {
-            // Rendering Playlist Private
             let privHtml = privatePlaylists.map(p => {
                 let coverImg = (p.tracks.length > 0 && p.tracks[0].image && p.tracks[0].image.startsWith('http')) ? p.tracks[0].image : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop';
                 return `
@@ -769,7 +769,6 @@
             }).join('');
             document.getElementById('libPrivateList').innerHTML = privHtml || '<p style="color:var(--text-sub); font-size:0.85rem;">Nessuna playlist privata creata.</p>';
 
-            // Rendering Playlist Collaborative
             let collabHtml = collaborativePlaylists.map(p => {
                 let coverImg = (p.tracks.length > 0 && p.tracks[0].image && p.tracks[0].image.startsWith('http')) ? p.tracks[0].image : 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100&auto=format&fit=crop';
                 return `
@@ -869,8 +868,11 @@
         }
 
         function updateIcons(playing) {
-            document.getElementById('playPauseIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
-            document.getElementById('fsPlayIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
+            const playPauseIcon = document.getElementById('playPauseIcon');
+            const fsPlayIcon = document.getElementById('fsPlayIcon');
+            
+            if(playPauseIcon) playPauseIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
+            if(fsPlayIcon) fsPlayIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
         }
 
         function toggleFullscreenPlayer() {
