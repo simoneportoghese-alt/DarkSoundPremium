@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const yts = require('yt-search');
 const youtubedl = require('youtube-dl-exec');
 
 const app = express();
@@ -8,49 +9,45 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Ricerca istantanea con yt-search
 app.get('/api/search', async (req, res) => {
     const query = req.query.q;
     if (!query) return res.json([]);
 
     try {
-        const output = await youtubedl(`ytsearch15:${query}`, {
-            dumpSingleJson: true,
-            noCheckCertificates: true,
-            noWarnings: true,
-            preferFreeFormats: true,
-            extractorArgs: 'youtube:player_client=web,mweb'
-        });
+        const searchResult = await yts(query);
+        const videos = searchResult.videos.slice(0, 15);
 
-        let entries = output.entries || [output];
-        const results = entries.map(item => ({
-            id: item.id,
-            name: item.title || "Brano sconosciuto",
-            artist_name: item.uploader || "Artista",
-            image: item.thumbnail || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300",
-            duration: item.duration || 0
+        const results = videos.map(item => ({
+            id: item.videoId,
+            name: item.title,
+            artist_name: item.author.name,
+            image: item.thumbnail,
+            duration: item.duration.seconds
         }));
 
         res.json(results);
     } catch (error) {
-        console.error("Errore ricerca:", error.message);
+        console.error("Errore ricerca:", error);
         res.json([]);
     }
 });
 
+// Streaming del brano completo
 app.get('/api/stream/:id', async (req, res) => {
     const videoId = req.params.id;
     const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
     try {
-        const info = await youtubedl(videoUrl, {
+        const output = await youtubedl(videoUrl, {
             dumpSingleJson: true,
             noCheckCertificates: true,
             noWarnings: true,
             preferFreeFormats: true,
-            extractorArgs: 'youtube:player_client=web,mweb'
+            extractorArgs: 'youtube:player_client=web'
         });
 
-        const audioFormat = info.formats.find(f => f.acodec !== 'none' && f.vcodec === 'none') || info.formats[0];
+        const audioFormat = output.formats.find(f => f.acodec !== 'none' && f.vcodec === 'none') || output.formats[0];
         
         if (audioFormat && audioFormat.url) {
             return res.redirect(audioFormat.url);
@@ -64,5 +61,5 @@ app.get('/api/stream/:id', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server Railway avviato sulla porta ${PORT}`);
+    console.log(`Server avviato sulla porta ${PORT}`);
 });
