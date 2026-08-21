@@ -52,8 +52,45 @@
         .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #555; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: white; cursor: pointer; overflow: hidden; }
         .header-title { font-size: 1.5rem; font-weight: 800; }
 
-        .search-box { background: var(--bg-card); padding: 12px 16px; border-radius: 500px; display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        /* SEARCH VIEW STYLES */
+        .search-top-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .search-box { background: var(--bg-card); padding: 12px 16px; border-radius: 500px; display: flex; align-items: center; gap: 12px; flex: 1; border: 1px solid rgba(255,255,255,0.05); }
         .search-box input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 1rem; }
+        
+        .search-result-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 4px; cursor: pointer; }
+        .search-result-row:hover { background: rgba(255,255,255,0.1); }
+        .search-badge-artist { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: #222; }
+        .search-badge-playlist { width: 48px; height: 48px; border-radius: 4px; object-fit: cover; background: #222; }
+        .badge-type { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; margin-right: 6px; }
+
+        /* ARTIST PROFILE VIEW */
+        #view-artist { padding: 0 0 40px 0; }
+        .artist-hero { position: relative; width: 100%; height: 320px; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; }
+        .artist-hero::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%); z-index: 1; }
+        .artist-hero-content { position: relative; z-index: 2; }
+        .artist-back-btn { position: absolute; top: 15px; left: 15px; z-index: 10; width: 36px; height: 36px; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; }
+        .artist-name { font-size: 2.3rem; font-weight: 800; line-height: 1.1; margin-bottom: 6px; }
+        .artist-verified { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: white; font-weight: 600; margin-bottom: 4px; }
+        .artist-listeners { font-size: 0.8rem; color: var(--text-sub); }
+        
+        .artist-actions-bar { padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .artist-actions-left { display: flex; align-items: center; gap: 15px; }
+        .btn-follow { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 16px; border-radius: 500px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+        .btn-play-green { width: 48px; height: 48px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: black; font-size: 1.2rem; cursor: pointer; }
+
+        .artist-tabs { display: flex; gap: 20px; padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
+        .artist-tab { font-size: 0.95rem; font-weight: 700; color: var(--text-sub); padding-bottom: 8px; cursor: pointer; position: relative; }
+        .artist-tab.active { color: white; }
+        .artist-tab.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--accent); border-radius: 2px; }
+
+        .artist-section-padding { padding: 0 20px; }
+        .horizontal-scroll { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .horizontal-scroll::-webkit-scrollbar { display: none; }
+        .h-card { min-width: 130px; max-width: 130px; cursor: pointer; }
+        .h-card img { width: 130px; height: 130px; border-radius: 6px; object-fit: cover; margin-bottom: 6px; background: #222; }
+        .h-card-circle img { border-radius: 50%; }
+        .h-card h5 { font-size: 0.85rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .h-card p { font-size: 0.75rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .grid-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }
         .grid-card { background: rgba(255,255,255,0.07); border-radius: 6px; display: flex; align-items: center; gap: 10px; overflow: hidden; cursor: pointer; transition: background 0.2s; }
@@ -61,8 +98,8 @@
         .grid-card img { width: 56px; height: 56px; object-fit: cover; background: #222; }
         .grid-card span { font-size: 0.85rem; font-weight: 700; padding-right: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; margin-top: 24px; display: flex; justify-content: space-between; align-items: center; }
-        .tracks-column { display: flex; flex-direction: column; gap: 4px; }
+        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; margin-top: 24px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .tracks-column { display: flex; flex-direction: column; gap: 4px; padding: 0 20px; }
 
         .track-item { display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 4px; cursor: pointer; justify-content: space-between; }
         .track-item:hover { background: rgba(255,255,255,0.1); }
@@ -78,6 +115,24 @@
         .bar:nth-child(1) { animation-delay: 0.1s; } .bar:nth-child(2) { animation-delay: 0.3s; } .bar:nth-child(3) { animation-delay: 0.5s; }
         @keyframes pulse { 0%, 100% { height: 4px; } 50% { height: 14px; } }
         .hidden { display: none !important; }
+
+        /* CREA MENU BOTTOM SHEET (SPOTIFY STYLE) */
+        .create-sheet-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 4000; display: none; align-items: flex-end;
+        }
+        .create-sheet {
+            background: #181818; width: 100%; border-top-left-radius: 20px; border-top-right-radius: 20px;
+            padding: 24px 20px 40px 20px; display: flex; flex-direction: column; gap: 16px;
+            animation: slideUp 0.3s ease-out; position: relative; border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .create-option-item { display: flex; align-items: center; gap: 16px; cursor: pointer; padding: 6px 0; }
+        .create-option-icon { width: 44px; height: 44px; border-radius: 50%; background: #282828; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: white; flex-shrink: 0; }
+        .create-option-texts h4 { font-size: 1rem; font-weight: 700; margin-bottom: 2px; color: white; }
+        .create-option-texts p { font-size: 0.8rem; color: var(--text-sub); }
+        .beta-pill { background: #1ed760; color: black; font-size: 0.65rem; font-weight: 800; padding: 1px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle; }
+        .close-create-btn { position: absolute; top: 20px; right: 20px; width: 32px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; font-size: 0.9rem; }
 
         /* MINI PLAYER BAR */
         .player-bar {
@@ -121,11 +176,12 @@
 
         #youtube-player { display: none; }
 
+        /* NAVIGATION BAR (4 ITEMS WITH CREA) */
         nav {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: rgba(18,18,18,0.95);
             display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000;
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-sub); font-size: 0.7rem; font-weight: 600; cursor: pointer; background: none; border: none; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-sub); font-size: 0.7rem; font-weight: 600; cursor: pointer; background: none; border: none; flex: 1; }
         .nav-item i { font-size: 1.2rem; }
         .nav-item.active { color: var(--text-main); }
     </style>
@@ -137,7 +193,7 @@
         <h1 id="authTitle">DarkSound</h1>
         <p id="authSubtitle">Accedi per ascoltare la tua musica</p>
         <div class="login-card">
-            <input type="email" id="loginEmail" class="login-input" placeholder="La tua email">
+            <input type="email" id="loginEmail" class="login-input" placeholder="La tua email" autocomplete="off" autocapitalize="off">
             <input type="password" id="loginPassword" class="login-input" placeholder="Password">
             <button class="login-btn" id="authSubmitBtn" onclick="handleAuthSubmit()">Accedi</button>
             <div class="auth-switch" id="authSwitchText" onclick="toggleAuthMode()">
@@ -153,27 +209,104 @@
             <div class="header-title">In evidenza</div>
         </div>
         <div class="grid-cards">
-            <div class="grid-card" onclick="quickPlay('Geolier')">
+            <div class="grid-card" onclick="openArtistProfile('Geolier')">
                 <img src="https://i.ytimg.com/vi/324_93wW3lY/hqdefault.jpg" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150'">
-                <span>Geolier Mix</span>
+                <span>Geolier</span>
             </div>
-            <div class="grid-card" onclick="quickPlay('Ultimo')">
+            <div class="grid-card" onclick="openArtistProfile('Ultimo')">
                 <img src="https://i.ytimg.com/vi/w1m1rK50C0Y/hqdefault.jpg" onerror="this.src='https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=150'">
-                <span>Ultimo Hit</span>
+                <span>Ultimo</span>
             </div>
         </div>
-        <div class="section-title">Brani Consigliati</div>
-        <div id="homePopList" class="tracks-column"></div>
+        <div class="section-title" style="padding:0;">Brani Consigliati</div>
+        <div id="homePopList" class="tracks-column" style="padding:0;"></div>
     </div>
 
     <!-- SEARCH VIEW -->
     <div id="view-search" class="view">
-        <div class="top-header"><div class="header-title">Cerca</div></div>
-        <div class="search-box">
-            <i class="fas fa-search" style="color: var(--text-sub);"></i>
-            <input type="text" id="searchInput" placeholder="Cosa vuoi ascoltare?" onkeydown="if(event.key==='Enter') searchTracks()">
+        <div class="search-top-bar">
+            <div class="search-box">
+                <i class="fas fa-search" style="color: var(--text-sub);"></i>
+                <input type="search" id="searchInput" placeholder="Cerca brani, artisti o playlist" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="searchTracks()">
+            </div>
+            <span id="searchCancelBtn" onclick="clearSearch()" style="font-size: 0.95rem; font-weight: 600; color: var(--text-main); cursor: pointer; white-space: nowrap;">Annulla</span>
         </div>
         <div id="searchResults"></div>
+    </div>
+
+    <!-- ARTIST PROFILE VIEW -->
+    <div id="view-artist" class="view">
+        <div class="artist-back-btn" onclick="switchView('search')"><i class="fas fa-chevron-left"></i></div>
+        <div class="artist-hero" id="artistHeroBg">
+            <div class="artist-hero-content">
+                <div class="artist-verified"><i class="fas fa-check-circle" style="color: #3b82f6;"></i> Verificato da Spotify</div>
+                <h1 class="artist-name" id="artistHeroName">Nome Artista</h1>
+                <div class="artist-listeners" id="artistHeroListeners">7 Mln ascoltatori mensili</div>
+            </div>
+        </div>
+        <div class="artist-actions-bar">
+            <div class="artist-actions-left">
+                <button class="btn-follow" id="artistFollowBtn" onclick="toggleFollowArtist()">Segui</button>
+                <i class="fas fa-ellipsis-h" style="font-size: 1.3rem; color: var(--text-sub); cursor:pointer;"></i>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <i class="fas fa-random" style="font-size: 1.1rem; color: var(--text-sub); cursor:pointer;"></i>
+                <div class="btn-play-green" onclick="playFirstArtistSong()"><i class="fas fa-play" style="color: black; margin-left: 2px;"></i></div>
+            </div>
+        </div>
+
+        <div class="artist-tabs">
+            <div class="artist-tab active">Musica</div>
+            <div class="artist-tab" onclick="alert('Sezione Video in arrivo')">Video</div>
+            <div class="artist-tab" onclick="alert('Sezione Merchandise in arrivo')">Merchandise</div>
+        </div>
+
+        <div class="section-title">Popolare</div>
+        <div id="artistPopularList" class="tracks-column"></div>
+
+        <div class="section-title">Discografia</div>
+        <div class="artist-section-padding">
+            <div class="horizontal-scroll" id="artistDiscographyList"></div>
+        </div>
+
+        <div class="section-title">Playlist dell'artista</div>
+        <div class="artist-section-padding">
+            <div class="horizontal-scroll" id="artistPlaylistsList">
+                <div class="h-card" onclick="quickPlay('This Is')">
+                    <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=150">
+                    <h5>This Is Artista</h5>
+                    <p>Playlist ufficiale</p>
+                </div>
+                <div class="h-card" onclick="quickPlay('Radio')">
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=150">
+                    <h5>Radio Artista</h5>
+                    <p>Spotify</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">Informazioni</div>
+        <div class="artist-section-padding">
+            <div style="background: var(--bg-card); border-radius: 8px; overflow: hidden; position: relative; height: 180px; display: flex; flex-direction: column; justify-content: flex-end; padding: 15px;" id="artistInfoCard">
+                <p style="font-size: 0.85rem; color: white; line-height: 1.3; z-index: 2;">Artista di spicco della scena musicale contemporanea, con milioni di ascolti in tutto il mondo.</p>
+            </div>
+        </div>
+
+        <div class="section-title">I fan apprezzano anche</div>
+        <div class="artist-section-padding">
+            <div class="horizontal-scroll">
+                <div class="h-card h-card-circle" onclick="openArtistProfile('Capo Plaza')">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150">
+                    <h5>Capo Plaza</h5>
+                    <p>Artista</p>
+                </div>
+                <div class="h-card h-card-circle" onclick="openArtistProfile('Shiva')">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150">
+                    <h5>Shiva</h5>
+                    <p>Artista</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- LIBRARY VIEW -->
@@ -183,17 +316,64 @@
                 <div class="user-avatar" id="libAvatarContainer">U</div>
                 <div class="header-title">La tua libreria</div>
             </div>
-            <i class="fas fa-plus" style="font-size: 1.2rem; cursor:pointer;" onclick="createPlaylist()" title="Crea Playlist"></i>
+            <i class="fas fa-plus" style="font-size: 1.2rem; cursor:pointer;" onclick="openCreateMenu()" title="Crea"></i>
         </div>
         
-        <div class="section-title">Brani Preferiti ❤️</div>
-        <div id="likedTracksContainer" class="tracks-column"></div>
+        <div class="section-title" style="padding:0;">Brani Preferiti ❤️</div>
+        <div id="likedTracksContainer" class="tracks-column" style="padding:0;"></div>
 
-        <div class="section-title">Le tue Playlist 📁</div>
-        <div id="playlistsContainer" class="tracks-column"></div>
+        <div class="section-title" style="padding:0;">Le tue Playlist 📁</div>
+        <div id="playlistsContainer" class="tracks-column" style="padding:0;"></div>
     </div>
 
-    <!-- MODALE PLAYLIST -->
+    <!-- CREA MENU BOTTOM SHEET (SPOTIFY STYLE) -->
+    <div class="create-sheet-overlay" id="createSheetOverlay" onclick="closeCreateMenu(event)">
+        <div class="create-sheet" onclick="event.stopPropagation()">
+            <div class="close-create-btn" onclick="document.getElementById('createSheetOverlay').style.display='none'"><i class="fas fa-times"></i></div>
+            
+            <div class="create-option-item" onclick="actionCreatePlaylist()">
+                <div class="create-option-icon"><i class="fas fa-music"></i></div>
+                <div class="create-option-texts">
+                    <h4>Playlist</h4>
+                    <p>Crea una playlist con brani o episodi</p>
+                </div>
+            </div>
+
+            <div class="create-option-item" onclick="actionCreateCollab()">
+                <div class="create-option-icon"><i class="fas fa-users"></i></div>
+                <div class="create-option-texts">
+                    <h4>Playlist collaborativa</h4>
+                    <p>Crea una playlist insieme agli amici</p>
+                </div>
+            </div>
+
+            <div class="create-option-item" onclick="actionCreateMixed()">
+                <div class="create-option-icon"><i class="fas fa-sliders-h"></i></div>
+                <div class="create-option-texts">
+                    <h4>Playlist mixata <span class="beta-pill">Beta</span></h4>
+                    <p>Mixa i brani con transizioni fluide</p>
+                </div>
+            </div>
+
+            <div class="create-option-item" onclick="actionCreateBlend()">
+                <div class="create-option-icon"><i class="fas fa-compact-disc"></i></div>
+                <div class="create-option-texts">
+                    <h4>Blend</h4>
+                    <p>Fondi i gusti dei tuoi amici in una playlist</p>
+                </div>
+            </div>
+
+            <div class="create-option-item" onclick="actionCreateJam()">
+                <div class="create-option-icon"><i class="fas fa-broadcast-tower"></i></div>
+                <div class="create-option-texts">
+                    <h4>Jam</h4>
+                    <p>Ascolta in compagnia, dove vuoi</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE AGGIUNGI A PLAYLIST -->
     <div class="modal-overlay" id="playlistModal" onclick="closePlaylistModal(event)">
         <div class="modal-card" onclick="event.stopPropagation()">
             <h3>Aggiungi a playlist</h3>
@@ -266,19 +446,21 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION -->
+    <!-- BOTTOM NAVIGATION (4 ITEMS: HOME, CERCA, LIBRERIA, CREA) -->
     <nav>
         <button class="nav-item active" onclick="switchView('home', this)"><i class="fas fa-home"></i><span>Home</span></button>
         <button class="nav-item" onclick="switchView('search', this)"><i class="fas fa-search"></i><span>Cerca</span></button>
         <button class="nav-item" onclick="switchView('library', this)"><i class="fas fa-stream"></i><span>Libreria</span></button>
+        <button class="nav-item" onclick="openCreateMenu()"><i class="fas fa-plus-circle"></i><span>Crea</span></button>
     </nav>
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         let player, isPlaying = false, progressInterval, currentTrackData = null, trackToAddToPlaylist = null;
         let isPlayerReady = false, pendingTrack = null;
-        let isShuffle = false, isRepeat = false;
-        let isRegisterMode = false;
+        let isShuffle = false, isRepeat = false, isFollowingArtist = false;
+        let searchTimeout;
+        let currentArtistTracks = [];
         const defaultCover = 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150';
 
         let appData = JSON.parse(localStorage.getItem('darksound_session')) || {
@@ -297,6 +479,7 @@
             }
         };
 
+        let isRegisterMode = false;
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
             document.getElementById('authTitle').innerText = isRegisterMode ? 'Registrati' : 'DarkSound';
@@ -320,15 +503,11 @@
 
             if (isRegisterMode) {
                 if (appData.usersDb[email]) {
-                    alert("Esiste già un account con questa email. Effettua l'accesso.");
+                    alert("Esiste già un account con questa email.");
                     return;
                 }
-                appData.usersDb[email] = {
-                    password: password,
-                    likedTracks: [],
-                    playlists: []
-                };
-                alert("Registrazione completata con successo! Ora puoi accedere.");
+                appData.usersDb[email] = { password: password, likedTracks: [], playlists: [] };
+                alert("Registrazione completata! Ora puoi accedere.");
                 toggleAuthMode();
             } else {
                 const userRecord = appData.usersDb[email];
@@ -428,16 +607,216 @@
             } catch (e) {}
         }
 
-        async function searchTracks() {
-            const q = document.getElementById('searchInput').value.trim();
-            if (!q) return;
-            const container = document.getElementById('searchResults');
-            container.innerHTML = `<p style="color:var(--text-sub); text-align:center; padding:20px;">Ricerca...</p>`;
+        // Funzioni per il menu "Crea" (screenshot)
+        function openCreateMenu() {
+            document.getElementById('createSheetOverlay').style.display = 'flex';
+        }
+
+        function closeCreateMenu(e) {
+            if (e.target.id === 'createSheetOverlay') {
+                document.getElementById('createSheetOverlay').style.display = 'none';
+            }
+        }
+
+        function actionCreatePlaylist() {
+            document.getElementById('createSheetOverlay').style.display = 'none';
+            const name = prompt("Nome della nuova playlist:");
+            if (name) {
+                appData.playlists.push({ name: name, tracks: [] });
+                saveSession();
+                renderLibrary();
+                switchView('library');
+            }
+        }
+
+        function actionCreateCollab() {
+            document.getElementById('createSheetOverlay').style.display = 'none';
+            const name = prompt("Nome della playlist collaborativa:");
+            if (name) {
+                appData.playlists.push({ name: name + " (Collaborativa 👥)", tracks: [] });
+                saveSession();
+                renderLibrary();
+                switchView('library');
+                alert("Link di invito collaborativo generato con successo!");
+            }
+        }
+
+        function actionCreateMixed() {
+            document.getElementById('createSheetOverlay').style.display = 'none';
+            const name = prompt("Nome della playlist mixata (Beta):");
+            if (name) {
+                appData.playlists.push({ name: name + " (Mixata 🎛️)", tracks: [] });
+                saveSession();
+                renderLibrary();
+                switchView('library');
+                alert("Transizioni fluide attivate per questa playlist mixata!");
+            }
+        }
+
+        function actionCreateBlend() {
+            document.getElementById('createSheetOverlay').style.display = 'none';
+            const friend = prompt("Inserisci il nome o l'email dell'amico per il Blend:");
+            if (friend) {
+                appData.playlists.push({ name: `Blend con ${friend} 💿`, tracks: [] });
+                saveSession();
+                renderLibrary();
+                switchView('library');
+                alert("Playlist Blend creata fondendo i vostri gusti musicali!");
+            }
+        }
+
+        function actionCreateJam() {
+            document.getElementById('createSheetOverlay').style.display = 'none';
+            alert("Sessione Jam avviata! Condividi il link QR con i tuoi amici per ascoltare musica insieme in tempo reale.");
+        }
+
+        async function openArtistProfile(artistName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-artist').classList.add('active');
+
+            document.getElementById('artistHeroName').innerText = artistName;
+            document.getElementById('artistHeroListeners').innerText = `${Math.floor(Math.random() * 8) + 2} Mln ascoltatori mensili`;
+            
+            const popContainer = document.getElementById('artistPopularList');
+            const discContainer = document.getElementById('artistDiscographyList');
+            popContainer.innerHTML = `<p style="color:var(--text-sub); padding:15px 20px;">Caricamento brani...</p>`;
+
             try {
-                const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+                const res = await fetch(`/api/search?q=${encodeURIComponent(artistName)}`);
                 let tracks = await res.json();
-                container.innerHTML = `<div class="tracks-column">` + tracks.map(t => createTrackHTML(t)).join('') + `</div>`;
-            } catch (e) {}
+                currentArtistTracks = tracks;
+
+                if (tracks.length > 0) {
+                    const heroImg = tracks[0].image || defaultCover;
+                    document.getElementById('artistHeroBg').style.backgroundImage = `url('${heroImg}')`;
+                    document.getElementById('artistInfoCard').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.9)), url('${heroImg}')`;
+
+                    popContainer.innerHTML = tracks.slice(0, 5).map((t, idx) => `
+                        <div class="track-item" onclick='playTrack(${JSON.stringify(t).replace(/"/g, "&quot;")})'>
+                            <div class="track-left">
+                                <span style="font-size:0.9rem; font-weight:700; color:var(--text-sub); width:20px; text-align:center;">${idx + 1}</span>
+                                <img src="${t.image || defaultCover}">
+                                <div class="track-item-info">
+                                    <h4>${t.name}</h4>
+                                    <p><span class="badge-type">E</span> ${Math.floor(Math.random() * 20000000) + 1000000}</p>
+                                </div>
+                            </div>
+                            <div class="track-actions" onclick="event.stopPropagation()">
+                                <i class="fas fa-ellipsis-v" onclick='openModalForTrack(${JSON.stringify(t).replace(/"/g, "&quot;")})'></i>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    discContainer.innerHTML = tracks.slice(0, 4).map(t => `
+                        <div class="h-card" onclick='playTrack(${JSON.stringify(t).replace(/"/g, "&quot;")})'>
+                            <img src="${t.image || defaultCover}">
+                            <h5>${t.name}</h5>
+                            <p>Album • 2026</p>
+                        </div>
+                    `).join('');
+                } else {
+                    popContainer.innerHTML = `<p style="color:var(--text-sub); padding:15px 20px;">Nessun brano trovato per questo artista.</p>`;
+                }
+            } catch (e) {
+                popContainer.innerHTML = `<p style="color:var(--text-sub); padding:15px 20px;">Errore di caricamento.</p>`;
+            }
+        }
+
+        function toggleFollowArtist() {
+            isFollowingArtist = !isFollowingArtist;
+            const btn = document.getElementById('artistFollowBtn');
+            btn.innerText = isFollowingArtist ? 'Seguito' : 'Segui';
+            btn.style.background = isFollowingArtist ? 'white' : 'transparent';
+            btn.style.color = isFollowingArtist ? 'black' : 'white';
+        }
+
+        function playFirstArtistSong() {
+            if (currentArtistTracks.length > 0) {
+                playTrack(currentArtistTracks[0]);
+            }
+        }
+
+        function searchTracks() {
+            clearTimeout(searchTimeout);
+            const q = document.getElementById('searchInput').value.trim();
+            const container = document.getElementById('searchResults');
+            
+            if (!q) {
+                container.innerHTML = '';
+                return;
+            }
+
+            searchTimeout = setTimeout(async () => {
+                container.innerHTML = `<p style="color:var(--text-sub); text-align:center; padding:20px;">Ricerca in corso...</p>`;
+                try {
+                    const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+                    let tracks = await res.json();
+                    
+                    if (tracks.length === 0) {
+                        container.innerHTML = `<p style="color:var(--text-sub); text-align:center; padding:20px;">Nessun risultato trovato</p>`;
+                        return;
+                    }
+
+                    let htmlContent = `<div class="tracks-column" style="padding:0;">`;
+                    
+                    htmlContent += `
+                        <div class="search-result-row" onclick="openArtistProfile('${q}')">
+                            <div class="track-left">
+                                <img src="${tracks[0].image || defaultCover}" class="search-badge-artist">
+                                <div class="track-item-info">
+                                    <h4>${q.toUpperCase()} <i class="fas fa-check-circle" style="color: #3b82f6; font-size: 0.8rem;"></i></h4>
+                                    <p>Artista</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    htmlContent += `
+                        <div class="search-result-row" onclick="quickPlay('${q}')">
+                            <div class="track-left">
+                                <img src="${tracks[1] ? tracks[1].image : defaultCover}" class="search-badge-playlist">
+                                <div class="track-item-info">
+                                    <h4>Radio di ${q}</h4>
+                                    <p>Playlist • Spotify • Basata sui tuoi ascolti</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-plus-circle" style="color: var(--text-sub); font-size: 1.2rem;"></i>
+                        </div>
+                    `;
+
+                    htmlContent += tracks.map(t => {
+                        const safeImg = t.image || defaultCover;
+                        const tObj = JSON.stringify({id: t.id, name: t.name, artist: t.artist, image: safeImg}).replace(/"/g, '&quot;');
+                        const isLiked = appData.likedTracks.some(item => item.id === t.id);
+                        
+                        return `
+                            <div class="search-result-row">
+                                <div class="track-left" onclick="playTrack(${tObj})">
+                                    <img src="${safeImg}" style="width: 48px; height: 48px; border-radius: 4px; object-fit: cover;">
+                                    <div class="track-item-info">
+                                        <h4>${t.name}</h4>
+                                        <p><span class="badge-type">E</span> Brano • ${t.artist}</p>
+                                    </div>
+                                </div>
+                                <div class="track-actions">
+                                    <i class="fas fa-ellipsis-v" style="font-size: 1rem; color: var(--text-sub); cursor:pointer;" onclick='openModalForTrack(${tObj})'></i>
+                                    <i class="fas ${isLiked ? 'fa-check-circle' : 'fa-plus-circle'}" style="color: ${isLiked ? 'var(--accent)' : 'var(--text-sub)'}; font-size: 1.2rem; cursor:pointer;" onclick='toggleLikeTrackFromSearch(${tObj}, this)'></i>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    htmlContent += `</div>`;
+                    container.innerHTML = htmlContent;
+                } catch (e) {
+                    container.innerHTML = `<p style="color:var(--text-sub); text-align:center; padding:20px;">Errore durante la ricerca.</p>`;
+                }
+            }, 300);
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '';
         }
 
         function createTrackHTML(t, extraActionHTML = '') {
@@ -517,19 +896,26 @@
             renderLibrary();
         }
 
+        function toggleLikeTrackFromSearch(t, element) {
+            const index = appData.likedTracks.findIndex(item => item.id === t.id);
+            if (index > -1) {
+                appData.likedTracks.splice(index, 1);
+                element.className = "fas fa-plus-circle";
+                element.style.color = "var(--text-sub)";
+            } else {
+                appData.likedTracks.push(t);
+                element.className = "fas fa-check-circle";
+                element.style.color = "var(--accent)";
+            }
+            saveSession();
+            renderLibrary();
+        }
+
         function removeLikedTrack(id) {
             appData.likedTracks = appData.likedTracks.filter(item => item.id !== id);
             saveSession();
             renderLibrary();
             updateLikeButtonsUI();
-        }
-
-        function updateLikeButtonsUI() {
-            if (!currentTrackData) return;
-            const isLiked = appData.likedTracks.some(item => item.id === currentTrackData.id);
-            const color = isLiked ? 'var(--accent)' : 'var(--text-sub)';
-            document.getElementById('miniLikeBtn').style.color = color;
-            document.getElementById('fsLikeBtn').style.color = color;
         }
 
         function renderLibrary() {
@@ -550,20 +936,11 @@
                             <h4 style="font-size:0.95rem; font-weight:700;"><i class="fas fa-music" style="color:var(--accent);"></i> ${p.name} (${p.tracks.length})</h4>
                             <i class="fas fa-trash" style="color:#ff4d4d; cursor:pointer;" onclick="deletePlaylist(${pIndex})" title="Elimina playlist"></i>
                         </div>
-                        <div class="tracks-column">
+                        <div class="tracks-column" style="padding:0;">
                             ${p.tracks.length === 0 ? '<p style="color:var(--text-sub); font-size:0.75rem;">Playlist vuota</p>' : p.tracks.map((t, tIndex) => createTrackHTML(t, `<i class="fas fa-times" style="color:#ff4d4d;" onclick="removeTrackFromPlaylist(${pIndex}, ${tIndex})" title="Rimuovi"></i>`)).join('')}
                         </div>
                     </div>
                 `).join('');
-            }
-        }
-
-        function createPlaylist() {
-            const name = prompt("Nome della nuova playlist:");
-            if (name) {
-                appData.playlists.push({ name: name, tracks: [] });
-                saveSession();
-                renderLibrary();
             }
         }
 
@@ -585,7 +962,7 @@
             trackToAddToPlaylist = t;
             const container = document.getElementById('modalPlaylistsList');
             if (appData.playlists.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-sub); font-size:0.85rem; text-align:center;">Nessuna playlist. Creane una dalla libreria!</p>`;
+                container.innerHTML = `<p style="color:var(--text-sub); font-size:0.85rem; text-align:center;">Nessuna playlist. Creane una dal menu Crea!</p>`;
             } else {
                 container.innerHTML = appData.playlists.map((p, idx) => `
                     <div class="playlist-option" onclick="addTrackToPlaylist(${idx})">${p.name}</div>
