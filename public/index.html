@@ -27,6 +27,7 @@
             --accent-pink: #ff375f;
             --accent-orange: #ff9f0a;
             --gradient-accent: linear-gradient(135deg, #30d158, #0a84ff);
+            --gradient-purple: linear-gradient(135deg, #bf5af2, #ff375f);
             --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.4);
             --shadow-glow: 0 0 40px rgba(48, 209, 88, 0.3);
             --radius-sm: 12px;
@@ -84,11 +85,29 @@
             margin-bottom: 20px;
             animation: pulse 1.5s ease-in-out infinite;
             text-shadow: 0 0 30px var(--accent-glow);
+            position: relative;
         }
         .splash-logo i {
             font-size: 4rem;
             display: block;
             text-align: center;
+            animation: logoBounce 2s ease-in-out infinite;
+        }
+        .splash-logo .logo-text {
+            display: block;
+            text-align: center;
+            animation: logoGlow 2s ease-in-out infinite;
+            letter-spacing: -1px;
+        }
+        @keyframes logoBounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            25% { transform: translateY(-10px) scale(1.05); }
+            50% { transform: translateY(0) scale(1); }
+            75% { transform: translateY(-5px) scale(1.02); }
+        }
+        @keyframes logoGlow {
+            0%, 100% { text-shadow: 0 0 20px rgba(48, 209, 88, 0.5), 0 0 40px rgba(48, 209, 88, 0.3); }
+            50% { text-shadow: 0 0 40px rgba(48, 209, 88, 0.8), 0 0 80px rgba(48, 209, 88, 0.5), 0 0 120px rgba(48, 209, 88, 0.3); }
         }
         .splash-by {
             font-size: 1rem;
@@ -657,6 +676,76 @@
         #artistTracksContainer {
             min-height: 200px;
         }
+
+        .selected-artist-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--gradient-accent);
+            color: black;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            animation: fadeInUp 0.3s ease;
+        }
+        .selected-artist-chip i {
+            font-size: 0.7rem;
+        }
+        .follow-artist-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        .follow-artist-card:hover {
+            background: var(--bg-glass);
+            border-color: var(--border-glass);
+        }
+        .follow-artist-card.selected {
+            background: rgba(48, 209, 88, 0.15);
+            border-color: rgba(48, 209, 88, 0.4);
+        }
+        .follow-artist-card img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+        .follow-artist-info {
+            flex: 1;
+        }
+        .follow-artist-info h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: white;
+        }
+        .follow-artist-info p {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+        }
+        .follow-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: transparent;
+            transition: all 0.3s ease;
+        }
+        .follow-artist-card.selected .follow-check {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -664,7 +753,7 @@
     <div id="splash-screen">
         <div class="splash-logo">
             <i class="fas fa-headphones"></i>
-            DarkSound Pro
+            <span class="logo-text">DarkSound Pro</span>
         </div>
         <div class="splash-by">by DarkSW</div>
         <div class="splash-loading">
@@ -692,6 +781,10 @@
         <div class="drawer-menu-item" onclick="openProfileView()">
             <div class="drawer-menu-left"><i class="fas fa-user-edit"></i> Modifica Profilo</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
+        </div>
+        <div class="drawer-menu-item" onclick="openFollowedArtistsModal()">
+            <div class="drawer-menu-left"><i class="fas fa-users"></i> Artisti che Segui</div>
+            <span style="font-size:0.7rem; color:var(--accent);" id="followedArtistsCount">0</span>
         </div>
         <div class="drawer-menu-item">
             <div class="drawer-menu-left"><i class="fab fa-spotify" style="color:var(--accent);"></i> Piano DarkSound</div>
@@ -814,6 +907,60 @@
         </div>
     </div>
 
+    <div id="subgenres-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Sottogeneri Preferiti</h2>
+            <p>Seleziona i sottogeneri che ti piacciono di più</p>
+            <div id="subgenresGrid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px;">
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🔊 Phonk</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">💪 Hard Techno</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">⚡ Hardstyle</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🎵 Hardcore</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🌊 Wave Phonk</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🏠 Tech House</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🎹 Melodic Techno</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🥁 Drum & Bass</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🎸 Metalcore</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🖤 Dark Trap</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🌀 Psytrance</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🎧 Future Bass</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🌙 Lo-fi</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🎤 Emo Rap</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">💀 Death Metal</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🔊 Riddim Dubstep</div>
+            </div>
+            <button class="auth-btn" onclick="completeSubgenreSelection()">Continua</button>
+        </div>
+    </div>
+
+    <div id="follow-artists-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Segui i tuoi Artisti</h2>
+            <p>Seleziona gli artisti che vuoi seguire per personalizzare la tua esperienza</p>
+            <div class="search-box" style="margin-bottom: 12px;">
+                <i class="fas fa-search" style="color: var(--text-sub);"></i>
+                <input type="text" id="artistSearchInput" placeholder="Cerca artista..." oninput="searchArtistsToFollow(this.value)">
+            </div>
+            <div id="artistsToFollowList" style="max-height: 300px; overflow-y: auto; margin-bottom: 16px;">
+                <p style="color:var(--text-sub);">Cerca un artista per seguirlo...</p>
+            </div>
+            <div id="selectedArtistsList" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;"></div>
+            <button class="auth-btn" onclick="completeArtistSelection()">Continua</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="skipArtistSelection()">Salta</button>
+        </div>
+    </div>
+
+    <div id="followed-artists-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Artisti che Segui</h2>
+            <p>I tuoi artisti preferiti</p>
+            <div id="followedArtistsList" style="max-height: 400px; overflow-y: auto;">
+                <p style="color:var(--text-sub);">Non segui ancora nessun artista.</p>
+            </div>
+            <button class="auth-btn secondary" style="margin-top:10px;" onclick="document.getElementById('followed-artists-modal').classList.remove('active')">Chiudi</button>
+        </div>
+    </div>
+
     <div id="profile-edit-modal" class="modal-overlay">
         <div class="auth-card">
             <h2>Modifica Profilo</h2>
@@ -899,7 +1046,7 @@
 
     <div id="view-home" class="view active">
         <div class="top-status-bar">
-            <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.45rem;"></i> LOSSLESS 24-BIT</div>
+            <div class="badge-pro"><i class="fas fa-headphones" style="font-size:0.55rem;"></i> DarkSoundPro</div>
             <div class="user-status-right">
                 <span class="status-pill" id="syncStatusBadge">Online</span>
                 <div class="user-pill" id="userProfilePill" onclick="toggleProfileDrawer()">
@@ -1164,6 +1311,10 @@
         let isShuffleActive = false;
         let isRepeatActive = false;
         let autoPlaylists = JSON.parse(localStorage.getItem(currentUser ? `auto_playlists_${currentUser}` : 'darksound_auto_playlists') || '[]');
+        let followedArtists = JSON.parse(localStorage.getItem(currentUser ? `followed_artists_${currentUser}` : 'darksound_followed_artists') || '[]');
+        let selectedArtistsTemp = [];
+        let selectedSubgenres = JSON.parse(localStorage.getItem(currentUser ? `subgenres_${currentUser}` : 'darksound_subgenres') || '[]');
+        let selectedSubgenresTemp = [];
 
         const API_BASE = window.location.origin;
 
@@ -1286,10 +1437,137 @@
             userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
             autoPlaylists = JSON.parse(localStorage.getItem(`auto_playlists_${currentUser}`) || '[]');
             friendsList = JSON.parse(localStorage.getItem(`friends_${currentUser}`) || '[]');
+            followedArtists = JSON.parse(localStorage.getItem(`followed_artists_${currentUser}`) || '[]');
+            selectedSubgenres = JSON.parse(localStorage.getItem(`subgenres_${currentUser}`) || '[]');
             document.getElementById('onboarding-modal').classList.remove('active');
+            document.getElementById('subgenres-modal').classList.add('active');
+        }
+
+        function toggleSubgenre(el) {
+            el.classList.toggle('selected');
+            const genreName = el.innerText.replace(/^[^\w\s]+\s*/, '');
+            if (selectedSubgenresTemp.includes(genreName)) {
+                selectedSubgenresTemp = selectedSubgenresTemp.filter(g => g !== genreName);
+            } else {
+                selectedSubgenresTemp.push(genreName);
+            }
+        }
+
+        function completeSubgenreSelection() {
+            selectedSubgenres = [...selectedSubgenresTemp];
+            if (currentUser) {
+                localStorage.setItem(`subgenres_${currentUser}`, JSON.stringify(selectedSubgenres));
+            }
+            document.getElementById('subgenres-modal').classList.remove('active');
+            document.getElementById('follow-artists-modal').classList.add('active');
+            searchArtistsToFollow('');
+        }
+
+        async function searchArtistsToFollow(query) {
+            const container = document.getElementById('artistsToFollowList');
+            if (!query || query.trim().length < 1) {
+                container.innerHTML = '<p style="color:var(--text-sub);">Cerca un artista per seguirlo...</p>';
+                return;
+            }
+            container.innerHTML = '<p style="color:var(--text-sub);"><span class="loading-spinner"></span> Ricerca...</p>';
+            try {
+                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
+                const tracks = await res.json();
+                const artists = [...new Set(tracks.map(t => t.artist))].slice(0, 10);
+                if (artists.length === 0) {
+                    container.innerHTML = '<p style="color:var(--text-sub);">Nessun artista trovato.</p>';
+                    return;
+                }
+                container.innerHTML = artists.map(artist => {
+                    const isSelected = selectedArtistsTemp.includes(artist);
+                    const artistImage = tracks.find(t => t.artist === artist)?.image || `https://picsum.photos/seed/${encodeURIComponent(artist)}/100`;
+                    return `
+                        <div class="follow-artist-card ${isSelected ? 'selected' : ''}" onclick="toggleArtistSelection('${artist.replace(/'/g, "\\'")}', '${artistImage}')">
+                            <img src="${artistImage}" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(artist)}/100'">
+                            <div class="follow-artist-info">
+                                <h4>${artist}</h4>
+                                <p>Artista</p>
+                            </div>
+                            <div class="follow-check"><i class="fas fa-check"></i></div>
+                        </div>
+                    `;
+                }).join('');
+            } catch(e) {
+                container.innerHTML = '<p style="color:var(--text-sub);">Errore di ricerca.</p>';
+            }
+        }
+
+        function toggleArtistSelection(artistName, artistImage) {
+            if (selectedArtistsTemp.includes(artistName)) {
+                selectedArtistsTemp = selectedArtistsTemp.filter(a => a !== artistName);
+            } else {
+                selectedArtistsTemp.push(artistName);
+            }
+            updateSelectedArtistsDisplay();
+            const cards = document.querySelectorAll('.follow-artist-card');
+            cards.forEach(card => {
+                const name = card.querySelector('h4').innerText;
+                if (name === artistName) {
+                    card.classList.toggle('selected');
+                }
+            });
+        }
+
+        function updateSelectedArtistsDisplay() {
+            const container = document.getElementById('selectedArtistsList');
+            container.innerHTML = selectedArtistsTemp.map(artist => `
+                <span class="selected-artist-chip" onclick="removeArtistSelection('${artist.replace(/'/g, "\\'")}')">
+                    ${artist} <i class="fas fa-times"></i>
+                </span>
+            `).join('');
+        }
+
+        function removeArtistSelection(artistName) {
+            selectedArtistsTemp = selectedArtistsTemp.filter(a => a !== artistName);
+            updateSelectedArtistsDisplay();
+            const cards = document.querySelectorAll('.follow-artist-card');
+            cards.forEach(card => {
+                const name = card.querySelector('h4').innerText;
+                if (name === artistName) {
+                    card.classList.remove('selected');
+                }
+            });
+        }
+
+        function completeArtistSelection() {
+            followedArtists = [...selectedArtistsTemp];
+            if (currentUser) {
+                localStorage.setItem(`followed_artists_${currentUser}`, JSON.stringify(followedArtists));
+            }
+            document.getElementById('follow-artists-modal').classList.remove('active');
             updateUserUI();
             loadHomeTracks();
-            loadFriendsList();
+        }
+
+        function skipArtistSelection() {
+            document.getElementById('follow-artists-modal').classList.remove('active');
+            updateUserUI();
+            loadHomeTracks();
+        }
+
+        function openFollowedArtistsModal() {
+            toggleProfileDrawer();
+            const container = document.getElementById('followedArtistsList');
+            if (followedArtists.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-sub);">Non segui ancora nessun artista.</p>';
+            } else {
+                container.innerHTML = followedArtists.map(artist => `
+                    <div class="follow-artist-card" onclick="openArtistPage('${artist.replace(/'/g, "\\'")}')">
+                        <img src="https://picsum.photos/seed/${encodeURIComponent(artist)}/100">
+                        <div class="follow-artist-info">
+                            <h4>${artist}</h4>
+                            <p>Artista seguito</p>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color:var(--text-sub);"></i>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('followed-artists-modal').classList.add('active');
         }
 
         function updateUserUI() {
@@ -1303,6 +1581,8 @@
             document.getElementById('profileBioLarge').innerText = userProfile?.bio || 'Nessuna bio ancora.';
             document.getElementById('profileGenreLarge').innerText = userProfile?.genre || 'Pop';
             if(currentUser) document.getElementById('homeWelcomeTitle').innerText = `Bentornato, ${currentUser}`;
+            const followedCount = document.getElementById('followedArtistsCount');
+            if (followedCount) followedCount.innerText = followedArtists.length;
         }
 
         function saveUserData() {
@@ -1312,6 +1592,8 @@
                 localStorage.setItem(`playlists_${currentUser}`, JSON.stringify(userPlaylists));
                 localStorage.setItem(`auto_playlists_${currentUser}`, JSON.stringify(autoPlaylists));
                 localStorage.setItem(`friends_${currentUser}`, JSON.stringify(friendsList));
+                localStorage.setItem(`followed_artists_${currentUser}`, JSON.stringify(followedArtists));
+                localStorage.setItem(`subgenres_${currentUser}`, JSON.stringify(selectedSubgenres));
                 if (userProfile) localStorage.setItem(`profile_${currentUser}`, JSON.stringify(userProfile));
                 syncGlobalPublicPlaylists();
             }
@@ -1351,14 +1633,11 @@
         async function executeSearch(query) {
             const container = document.getElementById('searchResultsContainer');
             container.innerHTML = '<p style="color:var(--text-sub);"><span class="loading-spinner"></span> Ricerca in corso...</p>';
-            
             try {
                 const artistRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
                 const artistTracks = await artistRes.json();
-                
                 let html = '';
                 const artists = [...new Set(artistTracks.map(t => t.artist))].slice(0, 8);
-                
                 const allArtists = new Set(artists);
                 artists.forEach(artist => {
                     const correlations = ARTIST_CORRELATIONS[artist.toLowerCase()];
@@ -1366,14 +1645,11 @@
                         correlations.forEach(c => allArtists.add(c));
                     }
                 });
-                
                 const filteredArtists = [...allArtists].filter(a => 
                     a.toLowerCase().includes(query.toLowerCase()) || 
                     query.toLowerCase().includes(a.toLowerCase().split(' ')[0])
                 ).slice(0, 8);
-                
                 const displayArtists = filteredArtists.length > 0 ? filteredArtists : artists;
-                
                 if (displayArtists.length > 0) {
                     html += `<div class="section-title">Artisti</div>`;
                     html += displayArtists.map(artist => {
@@ -1390,12 +1666,10 @@
                         `;
                     }).join('');
                 }
-
                 if (artistTracks.length > 0) {
                     html += `<div class="section-title" style="margin-top:20px;">Brani principali</div>`;
                     html += artistTracks.slice(0, 5).map((t, idx) => renderSingleTrackRow(t, idx, artistTracks)).join('');
                 }
-
                 const similarArtists = [];
                 artistTracks.forEach(t => {
                     const correlations = ARTIST_CORRELATIONS[t.artist?.toLowerCase()];
@@ -1405,7 +1679,6 @@
                         });
                     }
                 });
-
                 if (similarArtists.length > 0) {
                     html += `<div class="section-title" style="margin-top:20px;">Brani Simili</div>`;
                     for (const artist of similarArtists.slice(0, 3)) {
@@ -1418,139 +1691,14 @@
                         } catch(e) {}
                     }
                 }
-
-                if (autoPlaylists.length > 0) {
-                    const matchedAuto = autoPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
-                    if (matchedAuto.length > 0) {
-                        html += `<div class="section-title" style="margin-top:20px;">Playlist Automatiche</div>`;
-                        html += matchedAuto.map(pl => `
-                            <div class="auto-playlist-card" onclick="openAutoPlaylist('${pl.id}')">
-                                <i class="fas fa-list-music"></i>
-                                <div class="auto-playlist-card-info">
-                                    <h3>${pl.name}</h3>
-                                    <p>${pl.tracks.length} brani • Generata automaticamente</p>
-                                </div>
-                                <i class="fas fa-play-circle" style="font-size:1.5rem; color:white;"></i>
-                            </div>
-                        `).join('');
-                    }
-                }
-
-                const matchedPlaylists = globalPublicPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
-                if (matchedPlaylists.length > 0) {
-                    html += `<div class="section-title" style="margin-top:20px;">Playlist Pubbliche</div>`;
-                    html += matchedPlaylists.map(pl => `
-                        <div class="track-row" onclick="openPublicPlaylist('${pl.id}')">
-                            <div class="track-row-left">
-                                <div style="width:52px;height:52px;background:linear-gradient(135deg,#007aff,#5856d6);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:white;"></i></div>
-                                <div class="track-meta">
-                                    <h4>${pl.name}</h4>
-                                    <p><span class="badge-public">PUBBLICA</span> Di ${pl.owner} • ${pl.tracks.length} brani</p>
-                                </div>
-                            </div>
-                            <div class="track-actions" onclick="event.stopPropagation()">
-                                <button class="btn-action-primary" onclick="savePublicPlaylistToLibrary('${pl.id}')">Salva</button>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-
-                if (artistTracks.length > 0) {
-                    html += `
-                        <div class="section-title" style="margin-top:20px;">Genera Playlist Automatica</div>
-                        <div class="auto-playlist-card" onclick="generateAutoPlaylist('${query.replace(/'/g, "\\'")}')">
-                            <i class="fas fa-wand-magic-sparkles"></i>
-                            <div class="auto-playlist-card-info">
-                                <h3>Genera playlist da "${query}"</h3>
-                                <p>Crea una playlist con brani simili a "${query}"</p>
-                            </div>
-                            <i class="fas fa-plus-circle" style="font-size:1.5rem; color:white;"></i>
-                        </div>
-                    `;
-                }
-
                 if (html === '') {
                     html = '<p style="color:var(--text-sub);">Nessun risultato trovato. Prova con un altro termine.</p>';
                 }
-
                 container.innerHTML = html;
             } catch(e) {
                 console.error('Errore ricerca:', e);
                 container.innerHTML = '<p style="color:#ff4d4d;">Errore di ricerca. Verifica che il server sia in esecuzione.</p>';
             }
-        }
-
-        async function generateAutoPlaylist(query) {
-            if (!currentUser) return openAuthModal();
-            try {
-                let mainRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
-                let mainTracks = await mainRes.json();
-                if (mainTracks.length === 0) {
-                    alert('Nessun brano trovato per generare la playlist.');
-                    return;
-                }
-                let allTracks = [...mainTracks.slice(0, 5)];
-                const artistNames = [...new Set(mainTracks.map(t => t.artist))].slice(0, 3);
-                for (const artist of artistNames) {
-                    const correlations = ARTIST_CORRELATIONS[artist.toLowerCase()];
-                    if (correlations) {
-                        for (const relatedArtist of correlations.slice(0, 2)) {
-                            try {
-                                const relatedRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(relatedArtist)}`);
-                                const relatedTracks = await relatedRes.json();
-                                allTracks.push(...relatedTracks.slice(0, 2));
-                            } catch(e) {}
-                        }
-                    }
-                }
-                const seen = new Set();
-                allTracks = allTracks.filter(t => {
-                    const key = t.id;
-                    if (seen.has(key)) return false;
-                    seen.add(key);
-                    return true;
-                });
-                if (allTracks.length > 0) {
-                    const newAutoPlaylist = {
-                        id: 'auto_' + Date.now(),
-                        name: `Mix: ${query}`,
-                        visibility: 'private',
-                        owner: currentUser,
-                        tracks: allTracks.slice(0, 15),
-                        autoGenerated: true,
-                        createdAt: new Date().toISOString()
-                    };
-                    autoPlaylists.push(newAutoPlaylist);
-                    saveUserData();
-                    alert(`Playlist automatica "${newAutoPlaylist.name}" creata con ${newAutoPlaylist.tracks.length} brani!`);
-                }
-            } catch(e) {
-                console.error('Errore generazione playlist automatica:', e);
-                alert('Errore nella generazione della playlist automatica.');
-            }
-        }
-
-        function openAutoPlaylist(playlistId) {
-            const pl = autoPlaylists.find(p => p.id === playlistId);
-            if (!pl) return;
-            switchView('library', document.querySelectorAll('.nav-item')[2]);
-            currentLibTab = 'playlists';
-            document.getElementById('btnTabLiked').className = 'chip';
-            document.getElementById('btnTabDownloads').className = 'chip';
-            document.getElementById('btnTabPlaylists').className = 'chip active';
-            const container = document.getElementById('libContentList');
-            container.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding:0 15px;">
-                    <button class="chip" onclick="renderLibraryContent()"><i class="fas fa-arrow-left"></i> Indietro</button>
-                    <div>
-                        <h3 style="font-size:1.1rem; font-weight:800;">${pl.name}</h3>
-                        <p style="font-size:0.75rem; color:var(--text-sub);">Generata automaticamente</p>
-                    </div>
-                </div>
-            `;
-            let tempDiv = document.createElement('div');
-            tempDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
-            container.appendChild(tempDiv);
         }
 
         function renderSingleTrackRow(t, idx, sectionTracks) {
@@ -1736,7 +1884,15 @@
         }
 
         function nextTrack() { 
-            if(queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1); 
+            if(isShuffleActive && playQueue.length > 0) {
+                let randomIdx = Math.floor(Math.random() * playQueue.length);
+                if(randomIdx === queueIndex && playQueue.length > 1) {
+                    randomIdx = (randomIdx + 1) % playQueue.length;
+                }
+                playQueueIndex(randomIdx);
+            } else {
+                if(queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1); 
+            }
         }
         
         function prevTrack() { 
@@ -2153,6 +2309,8 @@
                 const oldFriends = localStorage.getItem(`friends_${currentUser}`);
                 const oldPrefs = localStorage.getItem(`prefs_${currentUser}`);
                 const oldProfile = localStorage.getItem(`profile_${currentUser}`);
+                const oldFollowedArtists = localStorage.getItem(`followed_artists_${currentUser}`);
+                const oldSubgenres = localStorage.getItem(`subgenres_${currentUser}`);
                 if (oldLiked) localStorage.setItem(`liked_${newName}`, oldLiked);
                 if (oldDownloads) localStorage.setItem(`downloads_${newName}`, oldDownloads);
                 if (oldPlaylists) localStorage.setItem(`playlists_${newName}`, oldPlaylists);
@@ -2164,6 +2322,8 @@
                     parsedProfile.name = newName;
                     localStorage.setItem(`profile_${newName}`, JSON.stringify(parsedProfile));
                 }
+                if (oldFollowedArtists) localStorage.setItem(`followed_artists_${newName}`, oldFollowedArtists);
+                if (oldSubgenres) localStorage.setItem(`subgenres_${newName}`, oldSubgenres);
                 localStorage.removeItem(`liked_${currentUser}`);
                 localStorage.removeItem(`downloads_${currentUser}`);
                 localStorage.removeItem(`playlists_${currentUser}`);
@@ -2171,6 +2331,8 @@
                 localStorage.removeItem(`friends_${currentUser}`);
                 localStorage.removeItem(`prefs_${currentUser}`);
                 localStorage.removeItem(`profile_${currentUser}`);
+                localStorage.removeItem(`followed_artists_${currentUser}`);
+                localStorage.removeItem(`subgenres_${currentUser}`);
                 currentUser = newName;
                 localStorage.setItem('darksound_current_user', currentUser);
                 if (!allUsers.includes(newName)) {
