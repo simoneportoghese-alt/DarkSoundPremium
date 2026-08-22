@@ -1,69 +1,57 @@
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
+const ytdl = require('ytdl-core');
+const ytsr = require('ytsr');
 const cors = require('cors');
-
+const path = require('path');
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-const publicPath = path.join(__dirname, 'public');
-app.use(express.static(publicPath));
-app.use(express.static(__dirname));
+const searchCache = new Map();
 
-// Rotte PWA
-app.get('/sw.js', (req, res) => {
-    res.sendFile(path.join(publicPath, 'sw.js'));
-});
-
-app.get('/manifest.json', (req, res) => {
-    res.sendFile(path.join(publicPath, 'manifest.json'));
-});
-
-// Endpoint di ricerca backend nativo (stabile e veloce)
-app.get(['/api/search', '/api/v1/search'], (req, res) => {
-    const query = (req.query.q || req.query.query || '').trim();
+app.get('/api/search', async (req, res) => {
+    const query = req.query.q;
+    if (!query) return res.json([]);
     
-    if (!query) {
-        return res.json({ success: true, results: [] });
-    }
-
-    // Risultati generati dinamicamente per la query del client
-    const results = [
-        {
-            id: 'dQw4w9WgXcQ',
-            title: `${query} (Official Track)`,
-            artist: 'DarkSound Audio',
-            image: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg'
-        },
-        {
-            id: 'L_LUpnjgPso',
-            title: `${query} (Remix Version)`,
-            artist: 'DarkSound Studio',
-            image: 'https://img.youtube.com/vi/L_LUpnjgPso/hqdefault.jpg'
-        },
-        {
-            id: 'fJ9rUzIMcZQ',
-            title: `${query} (Live Mix)`,
-            artist: 'DarkSound Live',
-            image: 'https://img.youtube.com/vi/fJ9rUzIMcZQ/hqdefault.jpg'
+    const cacheKey = query.toLowerCase();
+    if (searchCache.has(cacheKey)) {
+        const cached = searchCache.get(cacheKey);
+        if (Date.now() - cached.timestamp < 3600000) {
+            return res.json(cached.results);
         }
-    ];
-
-    res.json({ success: true, results });
-});
-
-app.get('*', (req, res) => {
-    const indexPath = path.join(publicPath, 'index.html');
-    if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-    } else {
-        res.status(404).send('Index file not found');
+    }
+    
+    try {
+        const searchResults = await ytsr(query, { limit: 20 });
+        const tracks = searchResults.items
+            .filter(item => item.type === 'video')
+            .map(item => ({
+                id: item.id,
+                name: item.title,
+                artist: item.author?.name || 'Sconosciuto',
+                image: item.bestThumbnail?.url || `https://picsum.photos/seed/${item.id}/200`,
+                duration: item.duration || '3:30'
+            }));
+        
+        searchCache.set(cacheKey, {
+            timestamp: Date.now(),
+            results: tracks
+        });
+        
+        res.json(tracks);
+    } catch (error) {
+        console.error('Errore ricerca:', error);
+        res.json([]);
     }
 });
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`DarkSound Pro attivo sulla porta ${PORT}`);
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(PORT, () => {
+    console.log(`Server DarkSound in esecuzione su http://localhost:${PORT}`);
 });
