@@ -258,6 +258,7 @@
         .badge-full { background: rgba(48,209,88,0.2); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
         .badge-public { background: rgba(0, 122, 255, 0.2); color: #007aff; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
         .badge-private { background: rgba(255, 149, 0, 0.2); color: #ff9500; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
+        .badge-similar { background: rgba(121, 40, 202, 0.2); color: #7928ca; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
         .track-actions { display: flex; align-items: center; gap: 14px; color: var(--text-sub); font-size: 1.2rem; padding: 6px; flex-shrink: 0; position: relative; z-index: 11; }
 
         .search-box { 
@@ -282,6 +283,52 @@
         }
         .chip:hover { background: rgba(255,255,255,0.15); }
         .chip.active { background: white; color: black; border-color: white; }
+
+        .artist-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .artist-card:hover { background: rgba(255,255,255,0.12); }
+        .artist-card:active { transform: scale(0.97); }
+        .artist-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+        .artist-card-info { flex: 1; }
+        .artist-card-info h3 { font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 4px; }
+        .artist-card-info p { font-size: 0.85rem; color: var(--text-sub); }
+
+        .auto-playlist-card {
+            background: linear-gradient(135deg, #7928ca 0%, #ff007f 100%);
+            border-radius: 16px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .auto-playlist-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(121,40,202,0.3); }
+        .auto-playlist-card:active { transform: scale(0.97); }
+        .auto-playlist-card i {
+            font-size: 2rem;
+            color: white;
+        }
+        .auto-playlist-card-info { flex: 1; }
+        .auto-playlist-card-info h3 { font-size: 1rem; font-weight: 700; color: white; margin-bottom: 4px; }
+        .auto-playlist-card-info p { font-size: 0.8rem; color: rgba(255,255,255,0.8); }
 
         .share-option-btn {
             display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px; background: rgba(255,255,255,0.06);
@@ -399,7 +446,6 @@
             min-height: 200px;
         }
 
-        /* Quick loading indicator */
         .loading-spinner {
             display: inline-block;
             width: 20px;
@@ -660,7 +706,7 @@
         <h1 class="home-title">Cerca</h1>
         <div class="search-box">
             <i class="fas fa-search" style="color: var(--text-sub);"></i>
-            <input type="text" id="spotifySearchInput" placeholder="Cerca brani o playlist pubbliche..." oninput="handleSearchInput(this.value)">
+            <input type="text" id="spotifySearchInput" placeholder="Cerca artisti, brani o playlist..." oninput="handleSearchInput(this.value)">
         </div>
         <div id="searchResultsContainer" style="margin-top:24px;"></div>
     </div>
@@ -699,6 +745,9 @@
         <div style="padding: 20px;">
             <div class="section-title" style="margin-top:10px;">Popolare</div>
             <div id="artistTracksContainer"><p style="color:var(--text-sub);">Caricamento brani...</p></div>
+            
+            <div class="section-title" style="margin-top:22px;">Brani Simili</div>
+            <div id="similarTracksContainer"><p style="color:var(--text-sub);">Caricamento brani simili...</p></div>
         </div>
     </div>
 
@@ -825,7 +874,6 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        // Variabili globali
         let player = null;
         let isPlaying = false;
         let playQueue = [];
@@ -847,10 +895,22 @@
         let playerReady = false;
         let isShuffleActive = false;
         let isRepeatActive = false;
+        let autoPlaylists = JSON.parse(localStorage.getItem(currentUser ? `auto_playlists_${currentUser}` : 'darksound_auto_playlists') || '[]');
 
         const API_BASE = window.location.origin;
 
-        // Splash screen
+        const ARTIST_CORRELATIONS = {
+            'sfera ebbasta': ['Lazza', 'Capo Plaza', 'Ghali', 'Tedua', 'Rondodasosa'],
+            'lazza': ['Sfera Ebbasta', 'Capo Plaza', 'Tedua', 'Shiva', 'Emis Killa'],
+            'ghali': ['Sfera Ebbasta', 'Ernia', 'Tedua', 'Marracash', 'Salmo'],
+            'travis scott': ['Drake', 'Future', 'Playboi Carti', 'Don Toliver', 'Metro Boomin'],
+            'drake': ['Travis Scott', 'Future', '21 Savage', 'J. Cole', 'Kendrick Lamar'],
+            'annalisa': ['Elodie', 'Emma', 'Elettra Lamborghini', 'Baby K', 'Alessandra Amoroso'],
+            'club dogo': ['Guè', 'Jake La Furia', 'Marracash', 'Salmo', 'Fabri Fibra'],
+            'twenty one pilots': ['Imagine Dragons', 'Panic! At The Disco', 'Fall Out Boy', 'The Neighbourhood'],
+            'marracash': ['Guè', 'Fabri Fibra', 'Salmo', 'Club Dogo', 'Ernia']
+        };
+
         function hideSplashScreen() {
             const splash = document.getElementById('splash-screen');
             if (splash) {
@@ -866,7 +926,6 @@
             loadHomeTracks();
             updateCountdown();
             
-            // Hide splash after loading
             setTimeout(hideSplashScreen, 2500);
             
             if(!currentUser) {
@@ -931,6 +990,7 @@
             likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
             downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
             userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
+            autoPlaylists = JSON.parse(localStorage.getItem(`auto_playlists_${currentUser}`) || '[]');
             document.getElementById('onboarding-modal').classList.remove('active');
             updateUserUI();
             loadHomeTracks();
@@ -949,6 +1009,7 @@
                 localStorage.setItem(`liked_${currentUser}`, JSON.stringify(likedSongs));
                 localStorage.setItem(`downloads_${currentUser}`, JSON.stringify(downloadedTracks));
                 localStorage.setItem(`playlists_${currentUser}`, JSON.stringify(userPlaylists));
+                localStorage.setItem(`auto_playlists_${currentUser}`, JSON.stringify(autoPlaylists));
                 syncGlobalPublicPlaylists();
             }
         }
@@ -1058,20 +1119,90 @@
                 document.getElementById('searchResultsContainer').innerHTML = '';
                 return;
             }
-            searchTimer = setTimeout(() => executeSearch(val), 250);
+            searchTimer = setTimeout(() => executeSearch(val), 300);
         }
 
         async function executeSearch(query) {
+            const container = document.getElementById('searchResultsContainer');
+            container.innerHTML = '<p style="color:var(--text-sub);"><span class="loading-spinner"></span> Ricerca in corso...</p>';
+            
             try {
                 let res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
                 let tracks = await res.json();
                 let matchedPlaylists = globalPublicPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+                let matchedAutoPlaylists = autoPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
 
-                let container = document.getElementById('searchResultsContainer');
                 let html = '';
 
-                if(matchedPlaylists.length > 0) {
-                    html += `<div class="section-title">Playlist Pubbliche Trovate</div>`;
+                // Artisti trovati
+                const artists = [...new Set(tracks.map(t => t.artist))].slice(0, 5);
+                if (artists.length > 0) {
+                    html += `<div class="section-title">Artisti</div>`;
+                    html += artists.map(artist => {
+                        const artistImage = tracks.find(t => t.artist === artist)?.image || `https://picsum.photos/seed/${encodeURIComponent(artist)}/200`;
+                        return `
+                            <div class="artist-card" onclick="openArtistPage('${artist.replace(/'/g, "\\'")}', '${artistImage}')">
+                                <img src="${artistImage}" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(artist)}/200'">
+                                <div class="artist-card-info">
+                                    <h3>${artist}</h3>
+                                    <p>Artista</p>
+                                </div>
+                                <i class="fas fa-chevron-right" style="color:var(--text-sub);"></i>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                // Brani principali dell'artista
+                if (tracks.length > 0) {
+                    html += `<div class="section-title" style="margin-top:20px;">Brani principali</div>`;
+                    html += tracks.slice(0, 5).map((t, idx) => renderSingleTrackRow(t, idx, tracks)).join('');
+                }
+
+                // Brani simili
+                const similarArtists = [];
+                tracks.forEach(t => {
+                    const correlations = ARTIST_CORRELATIONS[t.artist?.toLowerCase()];
+                    if (correlations) {
+                        correlations.forEach(c => {
+                            if (!similarArtists.includes(c)) similarArtists.push(c);
+                        });
+                    }
+                });
+
+                if (similarArtists.length > 0) {
+                    html += `<div class="section-title" style="margin-top:20px;">Brani Simili</div>`;
+                    for (const artist of similarArtists.slice(0, 3)) {
+                        try {
+                            const similarRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artist)}`);
+                            const similarTracks = await similarRes.json();
+                            if (similarTracks.length > 0) {
+                                html += similarTracks.slice(0, 3).map((t, idx) => {
+                                    return renderSingleTrackRow(t, idx, similarTracks);
+                                }).join('');
+                            }
+                        } catch(e) {}
+                    }
+                }
+
+                // Playlist automatiche
+                if (matchedAutoPlaylists.length > 0) {
+                    html += `<div class="section-title" style="margin-top:20px;">Playlist Automatiche</div>`;
+                    html += matchedAutoPlaylists.map(pl => `
+                        <div class="auto-playlist-card" onclick="openAutoPlaylist('${pl.id}')">
+                            <i class="fas fa-list-music"></i>
+                            <div class="auto-playlist-card-info">
+                                <h3>${pl.name}</h3>
+                                <p>${pl.tracks.length} brani • Generata automaticamente</p>
+                            </div>
+                            <i class="fas fa-play-circle" style="font-size:1.5rem; color:white;"></i>
+                        </div>
+                    `).join('');
+                }
+
+                // Playlist pubbliche
+                if (matchedPlaylists.length > 0) {
+                    html += `<div class="section-title" style="margin-top:20px;">Playlist Pubbliche</div>`;
                     html += matchedPlaylists.map(pl => `
                         <div class="track-row" onclick="openPublicPlaylist('${pl.id}')">
                             <div class="track-row-left">
@@ -1088,15 +1219,112 @@
                     `).join('');
                 }
 
-                html += `<div class="section-title" style="margin-top:20px;">Brani Musicali</div>`;
+                // Genera playlist automatica
+                if (tracks.length > 0) {
+                    html += `
+                        <div class="section-title" style="margin-top:20px;">Genera Playlist Automatica</div>
+                        <div class="auto-playlist-card" onclick="generateAutoPlaylist('${query.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            <div class="auto-playlist-card-info">
+                                <h3>Genera playlist da "${query}"</h3>
+                                <p>Crea una playlist con brani simili a "${query}"</p>
+                            </div>
+                            <i class="fas fa-plus-circle" style="font-size:1.5rem; color:white;"></i>
+                        </div>
+                    `;
+                }
+
+                if (html === '') {
+                    html = '<p style="color:var(--text-sub);">Nessun risultato trovato.</p>';
+                }
+
                 container.innerHTML = html;
-                
-                let tempContainer = document.createElement('div');
-                tempContainer.innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, tracks)).join('');
-                container.appendChild(tempContainer);
             } catch(e) {
                 console.error('Errore ricerca:', e);
+                container.innerHTML = '<p style="color:#ff4d4d;">Errore di ricerca. Verifica che il server sia in esecuzione.</p>';
             }
+        }
+
+        async function generateAutoPlaylist(query) {
+            if (!currentUser) return openAuthModal();
+            
+            try {
+                let mainRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
+                let mainTracks = await mainRes.json();
+                
+                if (mainTracks.length === 0) {
+                    alert('Nessun brano trovato per generare la playlist.');
+                    return;
+                }
+
+                let allTracks = [...mainTracks.slice(0, 5)];
+                const artistNames = [...new Set(mainTracks.map(t => t.artist))].slice(0, 3);
+                
+                for (const artist of artistNames) {
+                    const correlations = ARTIST_CORRELATIONS[artist.toLowerCase()];
+                    if (correlations) {
+                        for (const relatedArtist of correlations.slice(0, 2)) {
+                            try {
+                                const relatedRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(relatedArtist)}`);
+                                const relatedTracks = await relatedRes.json();
+                                allTracks.push(...relatedTracks.slice(0, 2));
+                            } catch(e) {}
+                        }
+                    }
+                }
+
+                // Rimuovi duplicati
+                const seen = new Set();
+                allTracks = allTracks.filter(t => {
+                    const key = t.id;
+                    if (seen.has(key)) return false;
+                    seen.add(key);
+                    return true;
+                });
+
+                if (allTracks.length > 0) {
+                    const newAutoPlaylist = {
+                        id: 'auto_' + Date.now(),
+                        name: `Mix: ${query}`,
+                        visibility: 'private',
+                        owner: currentUser,
+                        tracks: allTracks.slice(0, 15),
+                        autoGenerated: true,
+                        createdAt: new Date().toISOString()
+                    };
+                    autoPlaylists.push(newAutoPlaylist);
+                    saveUserData();
+                    alert(`Playlist automatica "${newAutoPlaylist.name}" creata con ${newAutoPlaylist.tracks.length} brani!`);
+                }
+            } catch(e) {
+                console.error('Errore generazione playlist automatica:', e);
+                alert('Errore nella generazione della playlist automatica.');
+            }
+        }
+
+        function openAutoPlaylist(playlistId) {
+            const pl = autoPlaylists.find(p => p.id === playlistId);
+            if (!pl) return;
+            
+            switchView('library', document.querySelectorAll('.nav-item')[2]);
+            currentLibTab = 'playlists';
+            document.getElementById('btnTabLiked').className = 'chip';
+            document.getElementById('btnTabDownloads').className = 'chip';
+            document.getElementById('btnTabPlaylists').className = 'chip active';
+            
+            const container = document.getElementById('libContentList');
+            container.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding:0 15px;">
+                    <button class="chip" onclick="renderLibraryContent()"><i class="fas fa-arrow-left"></i> Indietro</button>
+                    <div>
+                        <h3 style="font-size:1.1rem; font-weight:800;">${pl.name}</h3>
+                        <p style="font-size:0.75rem; color:var(--text-sub);">Generata automaticamente</p>
+                    </div>
+                </div>
+            `;
+            let tempDiv = document.createElement('div');
+            tempDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
+            container.appendChild(tempDiv);
         }
 
         function renderSingleTrackRow(t, idx, sectionTracks) {
@@ -1142,9 +1370,11 @@
             switchView('artist'); 
             const heroImgEl = document.getElementById('artistHeroImg');
             const container = document.getElementById('artistTracksContainer');
+            const similarContainer = document.getElementById('similarTracksContainer');
             
             document.getElementById('artistNameTitle').innerText = artistName;
             container.innerHTML = '<p style="color:var(--text-sub);"><span class="loading-spinner"></span> Caricamento in corso...</p>';
+            if (similarContainer) similarContainer.innerHTML = '<p style="color:var(--text-sub);"><span class="loading-spinner"></span> Caricamento brani simili...</p>';
             
             heroImgEl.style.opacity = '0.5';
             heroImgEl.src = artistImageOverride || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
@@ -1160,6 +1390,28 @@
                     container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano popolare trovato per ${artistName}.</p>`;
                 }
                 heroImgEl.style.opacity = '1';
+
+                // Carica brani simili
+                if (similarContainer) {
+                    const correlations = ARTIST_CORRELATIONS[artistName.toLowerCase()];
+                    if (correlations && correlations.length > 0) {
+                        let similarTracks = [];
+                        for (const relatedArtist of correlations.slice(0, 3)) {
+                            try {
+                                const similarRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(relatedArtist)}`);
+                                const relatedTracks = await similarRes.json();
+                                similarTracks.push(...relatedTracks.slice(0, 3));
+                            } catch(e) {}
+                        }
+                        if (similarTracks.length > 0) {
+                            renderTracksList(similarTracks, 'similarTracksContainer', similarTracks);
+                        } else {
+                            similarContainer.innerHTML = '<p style="color:var(--text-sub);">Nessun brano simile trovato.</p>';
+                        }
+                    } else {
+                        similarContainer.innerHTML = '<p style="color:var(--text-sub);">Nessun brano simile trovato per questo artista.</p>';
+                    }
+                }
             } catch(e) {
                 container.innerHTML = `<p style="color:#ff4d4d;">Errore: Impossibile recuperare i brani. Riprova più tardi.</p>`;
                 heroImgEl.style.opacity = '1';
@@ -1277,14 +1529,15 @@
         function showPlaylistSelectorModal() {
             if(!currentUser) return openAuthModal();
             const listEl = document.getElementById('playlistSelectList');
-            if(userPlaylists.length === 0) {
+            let allPlaylists = [...userPlaylists, ...autoPlaylists];
+            if(allPlaylists.length === 0) {
                 listEl.innerHTML = `<p style="color:var(--text-sub);">Nessuna playlist creata.</p>`;
             } else {
-                listEl.innerHTML = userPlaylists.map(pl => `
+                listEl.innerHTML = allPlaylists.map(pl => `
                     <div class="track-row" style="background:rgba(255,255,255,0.05); margin-bottom:6px;" onclick="addTrackToPlaylist('${pl.id}')">
                         <div class="track-meta">
                             <h4>${pl.name}</h4>
-                            <p>${pl.visibility === 'public' ? 'Pubblica' : 'Privata'} • ${pl.tracks.length} brani</p>
+                            <p>${pl.visibility === 'public' ? 'Pubblica' : 'Privata'} • ${pl.tracks.length} brani ${pl.autoGenerated ? '• Auto' : ''}</p>
                         </div>
                         <i class="fas fa-plus" style="color:var(--accent);"></i>
                     </div>
@@ -1296,7 +1549,7 @@
         function closePlaylistModal() { document.getElementById('playlist-select-modal').classList.remove('active'); }
 
         function addTrackToPlaylist(playlistId) {
-            let pl = userPlaylists.find(p => p.id === playlistId);
+            let pl = userPlaylists.find(p => p.id === playlistId) || autoPlaylists.find(p => p.id === playlistId);
             if(pl && selectedTrackForPlaylist) {
                 if(!pl.tracks.some(t => t.id === selectedTrackForPlaylist.id)) {
                     pl.tracks.push(selectedTrackForPlaylist);
@@ -1352,25 +1605,35 @@
             if(currentLibTab === 'downloads') {
                 renderTracksList(downloadedTracks, 'libContentList', downloadedTracks);
             } else if(currentLibTab === 'playlists') {
-                if(userPlaylists.length === 0) {
+                let allPlaylists = [...userPlaylists, ...autoPlaylists];
+                if(allPlaylists.length === 0) {
                     container.innerHTML = `<p style="color:var(--text-sub); margin-top:20px;">Nessuna playlist.</p>`;
                     return;
                 }
-                container.innerHTML = userPlaylists.map(pl => `
-                    <div class="track-row" onclick="openUserPlaylistDetails('${pl.id}')">
+                container.innerHTML = allPlaylists.map(pl => `
+                    <div class="track-row" onclick="${pl.autoGenerated ? `openAutoPlaylist('${pl.id}')` : `openUserPlaylistDetails('${pl.id}')`}">
                         <div class="track-row-left">
-                            <div style="width:52px;height:52px;background:linear-gradient(135deg,#30d158,#007aff);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:black;"></i></div>
+                            <div style="width:52px;height:52px;background:${pl.autoGenerated ? 'linear-gradient(135deg,#7928ca,#ff007f)' : 'linear-gradient(135deg,#30d158,#007aff)'};border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                                <i class="fas ${pl.autoGenerated ? 'fa-wand-magic-sparkles' : 'fa-list'}" style="color:white;"></i>
+                            </div>
                             <div class="track-meta">
                                 <h4>${pl.name}</h4>
-                                <p><span class="${pl.visibility === 'public' ? 'badge-public' : 'badge-private'}">${pl.visibility === 'public' ? 'PUBBLICA' : 'PRIVATA'}</span> ${pl.tracks.length} brani</p>
+                                <p><span class="${pl.visibility === 'public' ? 'badge-public' : 'badge-private'}">${pl.visibility === 'public' ? 'PUBBLICA' : 'PRIVATA'}</span> ${pl.tracks.length} brani ${pl.autoGenerated ? '• <span class="badge-similar">AUTO</span>' : ''}</p>
                             </div>
                         </div>
                         <div class="track-actions" onclick="event.stopPropagation()">
-                            <i class="fas fa-trash" style="color:#ff4d4d; font-size:1rem;" onclick="deleteUserPlaylist('${pl.id}')"></i>
+                            <i class="fas fa-trash" style="color:#ff4d4d; font-size:1rem;" onclick="deletePlaylist('${pl.id}')"></i>
                         </div>
                     </div>
                 `).join('');
             }
+        }
+
+        function deletePlaylist(playlistId) {
+            userPlaylists = userPlaylists.filter(p => p.id !== playlistId);
+            autoPlaylists = autoPlaylists.filter(p => p.id !== playlistId);
+            saveUserData();
+            renderLibraryContent();
         }
 
         function openUserPlaylistDetails(playlistId) {
@@ -1395,7 +1658,7 @@
             const container = document.getElementById('searchResultsContainer');
             container.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                    <button class="chip" onclick="document.getElementById('searchResultsContainer').innerHTML=''"><i class="fas fa-arrow-left"></i> Indietro</button>
+                    <button class="chip" onclick="executeSearch(document.getElementById('spotifySearchInput').value)"><i class="fas fa-arrow-left"></i> Indietro</button>
                     <h3 style="font-size:1.1rem; font-weight:800;">${pl.name} (di ${pl.owner})</h3>
                 </div>
             `;
