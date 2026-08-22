@@ -7,11 +7,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- === AGGIUNTA PER AUDIO IN BACKGROUND iOS === -->
+    <!-- === CONFIGURAZIONE iOS PER AUDIO BACKGROUND === -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DarkSound Pro">
-    <!-- ============================================= -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a0a0f">
+    <!-- ============================================== -->
     
     <style>
         :root {
@@ -850,6 +852,7 @@
 </head>
 <body>
 
+    <!-- ============ SPLASH SCREEN ============ -->
     <div id="splash-screen">
         <div class="splash-logo">
             <i class="fas fa-headphones"></i>
@@ -862,6 +865,7 @@
         <p style="color: var(--text-sub); margin-top: 15px; font-size: 0.85rem;">Caricamento in corso...</p>
     </div>
 
+    <!-- ============ PROFILE DRAWER ============ -->
     <div id="profileDrawer" class="profile-drawer">
         <div class="drawer-header">
             <div class="drawer-user-info">
@@ -914,6 +918,7 @@
         </div>
     </div>
 
+    <!-- ============ MODALS ============ -->
     <div id="ai-dj-modal" class="modal-overlay">
         <div class="auth-card" style="text-align: center;">
             <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 1.8rem; color: white;">
@@ -1144,6 +1149,7 @@
         </div>
     </div>
 
+    <!-- ============ VIEWS ============ -->
     <div id="view-home" class="view active">
         <div class="top-status-bar">
             <div class="badge-pro"><i class="fas fa-headphones" style="font-size:0.55rem;"></i> DarkSoundPro</div>
@@ -1331,6 +1337,7 @@
         </div>
     </div>
 
+    <!-- ============ FULLSCREEN PLAYER ============ -->
     <div id="fullscreen-player">
         <div class="canvas-bg-layer" id="canvasBgLayer" style="background-image: url('');"></div>
         
@@ -1405,6 +1412,7 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
+        // ============ VARIABILI GLOBALI ============
         let player = null;
         let isPlaying = false;
         let playQueue = [];
@@ -1436,40 +1444,51 @@
         let selectedSubgenresTemp = [];
         let currentArtistPage = '';
 
-        const API_BASE = window.location.origin;
+        // ============ SOLUZIONE AUDIO BACKGROUND iOS ============
+        let audioContext = null;
+        let backgroundAudioElement = null;
+        let isBackgroundAudioActive = false;
 
-        const ARTIST_CORRELATIONS = {
-            'sfera ebbasta': ['Lazza', 'Capo Plaza', 'Ghali', 'Tedua', 'Rondodasosa'],
-            'lazza': ['Sfera Ebbasta', 'Capo Plaza', 'Tedua', 'Shiva', 'Emis Killa'],
-            'ghali': ['Sfera Ebbasta', 'Ernia', 'Tedua', 'Marracash', 'Salmo'],
-            'travis scott': ['Drake', 'Future', 'Playboi Carti', 'Don Toliver', 'Metro Boomin'],
-            'drake': ['Travis Scott', 'Future', '21 Savage', 'J. Cole', 'Kendrick Lamar'],
-            'annalisa': ['Elodie', 'Emma', 'Elettra Lamborghini', 'Baby K', 'Alessandra Amoroso'],
-            'club dogo': ['Guè', 'Jake La Furia', 'Marracash', 'Salmo', 'Fabri Fibra'],
-            'twenty one pilots': ['Imagine Dragons', 'Panic! At The Disco', 'Fall Out Boy', 'The Neighbourhood'],
-            'marracash': ['Guè', 'Fabri Fibra', 'Salmo', 'Club Dogo', 'Ernia'],
-            'guè': ['Marracash', 'Club Dogo', 'Fabri Fibra', 'Salmo', 'Jake La Furia'],
-            'elodie': ['Annalisa', 'Emma', 'Alessandra Amoroso', 'Baby K', 'Elettra Lamborghini'],
-            'emma': ['Annalisa', 'Elodie', 'Alessandra Amoroso', 'Baby K', 'Elettra Lamborghini'],
-            'shiva': ['Lazza', 'Sfera Ebbasta', 'Capo Plaza', 'Rondodasosa', 'Tedua'],
-            'capo plaza': ['Sfera Ebbasta', 'Lazza', 'Shiva', 'Rondodasosa', 'Tedua'],
-            'tedua': ['Sfera Ebbasta', 'Lazza', 'Capo Plaza', 'Shiva', 'Rondodasosa'],
-            'rondodasosa': ['Sfera Ebbasta', 'Lazza', 'Capo Plaza', 'Shiva', 'Tedua'],
-            'fabri fibra': ['Marracash', 'Guè', 'Club Dogo', 'Salmo', 'Jake La Furia'],
-            'salmo': ['Marracash', 'Guè', 'Club Dogo', 'Fabri Fibra', 'Jake La Furia'],
-            'imagine dragons': ['Twenty One Pilots', 'Panic! At The Disco', 'Fall Out Boy', 'The Neighbourhood'],
-            'future': ['Drake', 'Travis Scott', '21 Savage', 'J. Cole', 'Kendrick Lamar'],
-            '21 savage': ['Drake', 'Travis Scott', 'Future', 'J. Cole', 'Kendrick Lamar'],
-            'j. cole': ['Drake', 'Travis Scott', 'Future', '21 Savage', 'Kendrick Lamar'],
-            'kendrick lamar': ['Drake', 'Travis Scott', 'Future', '21 Savage', 'J. Cole'],
-            'ogryzek': ['Mxzi', 'Kaito Shoma', 'Dxrk ダーク', 'MoonDeity', 'INTERWORLD'],
-            'mxzi': ['Ogryzek', 'Kaito Shoma', 'Dxrk ダーク', 'MoonDeity', 'INTERWORLD'],
-            'kaito shoma': ['Ogryzek', 'Mxzi', 'Dxrk ダーク', 'MoonDeity', 'INTERWORLD'],
-            'dxrk': ['Ogryzek', 'Mxzi', 'Kaito Shoma', 'MoonDeity', 'INTERWORLD'],
-            'moondeity': ['Ogryzek', 'Mxzi', 'Kaito Shoma', 'Dxrk ダーク', 'INTERWORLD'],
-            'interworld': ['Ogryzek', 'Mxzi', 'Kaito Shoma', 'Dxrk ダーク', 'MoonDeity']
-        };
+        function initializeBackgroundAudio() {
+            try {
+                // Crea un AudioContext per mantenere attivo l'audio
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                
+                // Crea un elemento audio nascosto per il background
+                if (!backgroundAudioElement) {
+                    backgroundAudioElement = new Audio();
+                    backgroundAudioElement.loop = true;
+                    backgroundAudioElement.volume = 0.001; // Quasi silenzioso
+                    backgroundAudioElement.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==';
+                }
+                
+                // Attiva l'audio context
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+                
+                // Riproduci l'audio silenzioso per mantenere attiva la sessione
+                backgroundAudioElement.play().catch(() => {});
+                
+                isBackgroundAudioActive = true;
+                console.log('Background audio inizializzato');
+            } catch(e) {
+                console.log('Errore inizializzazione background audio:', e);
+            }
+        }
 
+        function keepAudioAlive() {
+            if (isBackgroundAudioActive && backgroundAudioElement) {
+                backgroundAudioElement.play().catch(() => {});
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+            }
+        }
+
+        // ============ FUNZIONI PRINCIPALI ============
         function hideSplashScreen() {
             const splash = document.getElementById('splash-screen');
             if (splash) {
@@ -1485,6 +1504,15 @@
             loadFriendsList();
             loadAllUsers();
             setTimeout(hideSplashScreen, 2500);
+            
+            // Inizializza background audio al primo tap
+            document.addEventListener('touchstart', function() {
+                initializeBackgroundAudio();
+            }, { once: true });
+            
+            // Mantieni attivo l'audio
+            setInterval(keepAudioAlive, 10000);
+            
             if(!currentUser) {
                 setTimeout(() => openAuthModal(), 2600);
             } else if(!userPreferences) {
@@ -1780,7 +1808,6 @@
                 const artistTracks = await artistRes.json();
                 let html = '';
                 
-                // Cerca playlist pubbliche
                 const publicPlaylists = globalPublicPlaylists.filter(pl => 
                     pl.name.toLowerCase().includes(query.toLowerCase()) ||
                     pl.owner.toLowerCase().includes(query.toLowerCase())
@@ -1800,7 +1827,6 @@
                     `).join('');
                 }
                 
-                // Cerca artisti (prima gli artisti)
                 const artists = [...new Set(artistTracks.map(t => t.artist))].slice(0, 8);
                 const allArtists = new Set(artists);
                 artists.forEach(artist => {
@@ -1832,13 +1858,11 @@
                     }).join('');
                 }
                 
-                // Poi le canzoni
                 if (artistTracks.length > 0) {
                     html += `<div class="section-title" style="margin-top:20px;">Brani principali</div>`;
                     html += artistTracks.slice(0, 8).map((t, idx) => renderSingleTrackRow(t, idx, artistTracks)).join('');
                 }
                 
-                // Brani simili
                 const similarArtists = [];
                 artistTracks.forEach(t => {
                     const correlations = ARTIST_CORRELATIONS[t.artist?.toLowerCase()];
@@ -1989,6 +2013,10 @@
                 playQueue = queue;
                 queueIndex = index;
                 currentTrackData = t;
+                
+                // Inizializza background audio
+                initializeBackgroundAudio();
+                
                 document.getElementById('playerBar').style.display = 'flex';
                 document.getElementById('playerTitle').innerText = t.name;
                 document.getElementById('playerArtist').innerText = t.artist;
@@ -2039,6 +2067,7 @@
                             isPlaying = true; 
                             updatePlayIcons(true); 
                             startProgressTracker(); 
+                            keepAudioAlive();
                         }
                         if(e.data === YT.PlayerState.PAUSED) { 
                             isPlaying = false; 
@@ -2071,6 +2100,7 @@
             } else { 
                 player.playVideo(); 
                 isPlaying = true; 
+                keepAudioAlive();
             }
             updatePlayIcons(isPlaying);
         }
