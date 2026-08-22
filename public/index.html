@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DarkSound Pro - Ultimate Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,7 +16,6 @@
     <!-- ============================================== -->
     
     <style>
-        /* TUTTO IL TUO CSS RIMANE IDENTICO */
         :root {
             --bg-base: #0a0a0f;
             --bg-glass: rgba(255, 255, 255, 0.06);
@@ -853,7 +852,6 @@
 </head>
 <body>
 
-    <!-- SPLASH SCREEN -->
     <div id="splash-screen">
         <div class="splash-logo">
             <i class="fas fa-headphones"></i>
@@ -866,7 +864,6 @@
         <p style="color: var(--text-sub); margin-top: 15px; font-size: 0.85rem;">Caricamento in corso...</p>
     </div>
 
-    <!-- PROFILE DRAWER -->
     <div id="profileDrawer" class="profile-drawer">
         <div class="drawer-header">
             <div class="drawer-user-info">
@@ -919,7 +916,6 @@
         </div>
     </div>
 
-    <!-- MODALS -->
     <div id="ai-dj-modal" class="modal-overlay">
         <div class="auth-card" style="text-align: center;">
             <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 1.8rem; color: white;">
@@ -1150,7 +1146,6 @@
         </div>
     </div>
 
-    <!-- VIEWS -->
     <div id="view-home" class="view active">
         <div class="top-status-bar">
             <div class="badge-pro"><i class="fas fa-headphones" style="font-size:0.55rem;"></i> DarkSoundPro</div>
@@ -1338,7 +1333,6 @@
         </div>
     </div>
 
-    <!-- FULLSCREEN PLAYER -->
     <div id="fullscreen-player">
         <div class="canvas-bg-layer" id="canvasBgLayer" style="background-image: url('');"></div>
         
@@ -1478,7 +1472,50 @@
             'interworld': ['Ogryzek', 'Mxzi', 'Kaito Shoma', 'Dxrk ダーク', 'MoonDeity']
         };
 
-        // ============ FUNZIONI PRINCIPALI ============
+        // === AUDIO BACKGROUND iOS ===
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.setActionHandler('play', function() {
+                if (player && player.playVideo) player.playVideo();
+            });
+            
+            navigator.mediaSession.setActionHandler('pause', function() {
+                if (player && player.pauseVideo) player.pauseVideo();
+            });
+            
+            navigator.mediaSession.setActionHandler('previoustrack', function() {
+                prevTrack();
+            });
+            
+            navigator.mediaSession.setActionHandler('nexttrack', function() {
+                nextTrack();
+            });
+        }
+
+        function updateMediaSessionMetadata() {
+            if ('mediaSession' in navigator && currentTrackData.id) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: currentTrackData.name || 'DarkSound Pro',
+                    artist: currentTrackData.artist || '',
+                    album: 'DarkSound Pro',
+                    artwork: [
+                        { src: currentTrackData.image, sizes: '96x96', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '128x128', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '192x192', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '256x256', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '384x384', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '512x512', type: 'image/jpeg' }
+                    ]
+                });
+            }
+        }
+
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && isPlaying && player && player.playVideo) {
+                player.playVideo();
+            }
+        });
+        // ============================
+
         function hideSplashScreen() {
             const splash = document.getElementById('splash-screen');
             if (splash) {
@@ -2005,6 +2042,7 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
+                updateMediaSessionMetadata();
                 if (player && player.loadVideoById && playerReady) {
                     player.loadVideoById(t.id);
                     setTimeout(() => { 
@@ -2119,6 +2157,7 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
+                updateMediaSessionMetadata();
                 if (player && player.loadVideoById && playerReady) {
                     player.loadVideoById(t.id);
                     setTimeout(() => { 
