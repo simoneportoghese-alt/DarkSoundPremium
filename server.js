@@ -1,165 +1,164 @@
 const express = require('express');
 const path = require('path');
 const yts = require('yt-search');
-const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Middleware base
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
-// Cache per le ricerche
+// Cache semplice in memoria
 const searchCache = new Map();
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minuti
 
-// API per la ricerca di video YouTube
+// API per la ricerca
 app.get('/api/search', async (req, res) => {
-    const query = req.query.q;
-    if (!query) return res.json([]);
-    
-    // Controlla cache
-    const cacheKey = query.toLowerCase();
-    if (searchCache.has(cacheKey)) {
-        const cached = searchCache.get(cacheKey);
-        if (Date.now() - cached.timestamp < 3600000) {
-            console.log(`Cache hit per: "${query}"`);
-            return res.json(cached.results);
-        } else {
-            searchCache.delete(cacheKey);
-        }
-    }
-    
     try {
-        console.log(`Ricerca YouTube per: "${query}"`);
-        const searchResult = await yts(query);
+        const query = req.query.q;
         
-        const results = searchResult.videos.slice(0, 20).map((item, index) => {
-            // Pulisce il titolo
-            let cleanTitle = item.title
-                .replace(/\(.*?\)/g, '')
-                .replace(/\[.*?\]/g, '')
-                .replace(/official video/gi, '')
-                .replace(/lyrics/gi, '')
-                .replace(/video ufficiale/gi, '')
-                .replace(/audio/gi, '')
-                .replace(/hd/gi, '')
-                .replace(/hq/gi, '')
-                .trim();
+        if (!query) {
+            return res.json([]);
+        }
+        
+        // Controlla cache
+        const cacheKey = query.toLowerCase().trim();
+        if (searchCache.has(cacheKey)) {
+            const cached = searchCache.get(cacheKey);
+            if (Date.now() - cached.timestamp < CACHE_DURATION) {
+                return res.json(cached.results);
+            }
+        }
+        
+        console.log(`Ricerca: "${query}"`);
+        
+        // Esegue la ricerca con timeout
+        const searchResult = await Promise.race([
+            yts(query),
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Timeout ricerca')), 10000)
+            )
+        ]);
+        
+        // Limita a 20 risultati
+        const videos = searchResult.videos.slice(0, 20);
+        
+        const results = videos.map((item, index) => {
+            // Pulisce il titolo in modo sicuro
+            let cleanTitle = item.title || 'Senza titolo';
+            try {
+                cleanTitle = cleanTitle
+                    .replace(/\(.*?\)/g, '')
+                    .replace(/\[.*?\]/g, '')
+                    .replace(/official video/gi, '')
+                    .replace(/lyrics/gi, '')
+                    .replace(/video ufficiale/gi, '')
+                    .trim();
+            } catch (e) {
+                // Usa il titolo originale se c'è un errore
+                cleanTitle = item.title || 'Senza titolo';
+            }
             
-            // Pulisce il nome dell'artista
-            let cleanArtist = item.author.name
-                .replace(/ - Topic/g, '')
-                .replace(/VEVO/gi, '')
-                .trim();
+            // Pulisce il nome dell'artista in modo sicuro
+            let cleanArtist = 'Sconosciuto';
+            try {
+                if (item.author && item.author.name) {
+                    cleanArtist = item.author.name
+                        .replace(/ - Topic/g, '')
+                        .trim();
+                }
+            } catch (e) {
+                // Mantiene 'Sconosciuto' se c'è un errore
+            }
             
             return {
-                id: item.videoId,
-                name: cleanTitle || item.title,
-                artist: cleanArtist || 'Sconosciuto',
-                image: item.thumbnail || `https://picsum.photos/seed/${item.videoId}/200`,
-                duration: item.duration?.timestamp || item.duration?.toString() || '3:30',
-                audioUrl: `/api/stream/${item.videoId}`,
-                url: item.url,
+                id: item.videoId || `video-${index}`,
+                name: cleanTitle,
+                artist: cleanArtist,
+                image: item.thumbnail || `https://picsum.photos/seed/${item.videoId || index}/200`,
+                duration: item.duration ? item.duration.toString() : '3:30',
                 index: index + 1
             };
         });
         
         // Salva in cache
-        searchCache.set(cacheKey, {
-            timestamp: Date.now(),
-            results: results
-        });
+        if (results.length > 0) {
+            searchCache.set(cacheKey, {
+                timestamp: Date.now(),
+                results: results
+            });
+            
+            // Limita la dimensione della cache
+            if (searchCache.size > 100) {
+                const firstKey = searchCache.keys().next().value;
+                searchCache.delete(firstKey);
+            }
+        }
         
-        console.log(`Trovati ${results.length} risultati`);
+        console.log(`Trovati ${results.length} risultati per "${query}"`);
         res.json(results);
         
     } catch (error) {
-        console.error('Errore ricerca:', error.message);
+        console.error('Errore ricerca:', error.message || 'Errore sconosciuto');
+        // Restituisce sempre un array vuoto in caso di errore
         res.json([]);
     }
 });
 
-// Endpoint per informazioni sul video (senza streaming diretto)
-app.get('/api/video/:videoId', async (req, res) => {
-    try {
-        const videoId = req.params.videoId;
-        const videoInfo = await yts({ videoId });
-        
-        if (videoInfo) {
-            res.json({
-                id: videoInfo.videoId,
-                title: videoInfo.title,
-                artist: videoInfo.author.name,
-                thumbnail: videoInfo.thumbnail,
-                url: videoInfo.url,
-                duration: videoInfo.duration?.toString()
-            });
-        } else {
-            res.status(404).json({ error: 'Video non trovato' });
-        }
-    } catch (error) {
-        console.error('Errore info video:', error.message);
-        res.status(500).json({ error: 'Errore recupero informazioni' });
-    }
-});
-
-// Endpoint per lo streaming audio (opzionale - il client può usare l'URL diretto)
-app.get('/api/stream/:videoId', async (req, res) => {
-    try {
-        const videoId = req.params.videoId;
-        
-        // Reindirizza alla pagina YouTube del video
-        // Il client può gestire l'audio direttamente da YouTube
-        res.redirect(`https://www.youtube.com/watch?v=${videoId}`);
-        
-    } catch (error) {
-        console.error('Errore streaming:', error.message);
-        res.status(500).json({ error: 'Errore streaming' });
-    }
-});
-
-// Endpoint per pulire la cache
-app.post('/api/clear-cache', (req, res) => {
-    const cacheSize = searchCache.size;
-    searchCache.clear();
-    console.log(`Cache pulita: ${cacheSize} elementi rimossi`);
-    res.json({ success: true, message: `Cache pulita: ${cacheSize} elementi rimossi` });
-});
-
-// Health check per Railway
-app.get('/api/health', (req, res) => {
+// Health check
+app.get('/health', (req, res) => {
     res.json({ 
-        status: 'ok', 
-        timestamp: Date.now(),
-        cacheSize: searchCache.size,
-        uptime: process.uptime()
+        status: 'ok',
+        memory: process.memoryUsage().heapUsed / 1024 / 1024,
+        cacheSize: searchCache.size
     });
 });
 
-// Gestione errori
+// Endpoint root
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Gestione errori globale
 app.use((err, req, res, next) => {
-    console.error('Errore server:', err.message);
-    res.status(500).json({ error: 'Errore interno del server' });
+    console.error('Errore:', err.message);
+    res.status(500).json({ error: 'Errore interno' });
 });
 
 // Avvia il server
-app.listen(PORT, () => {
-    console.log(`🎵 Server DarkSound attivo su http://localhost:${PORT}`);
-    console.log(`📡 API disponibili:`);
-    console.log(`   - GET /api/search?q={query} - Ricerca video`);
-    console.log(`   - GET /api/video/{videoId} - Info video`);
-    console.log(`   - POST /api/clear-cache - Pulisci cache`);
-    console.log(`   - GET /api/health - Stato server`);
+const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Server attivo su porta ${PORT}`);
 });
 
-// Gestione errori non catturati per evitare crash
-process.on('unhandledRejection', (error) => {
-    console.error('Errore non gestito (Promise):', error.message);
+// Gestione errori per evitare crash
+server.on('error', (error) => {
+    console.error('Errore server:', error.message);
+});
+
+// Timeout per le richieste
+server.timeout = 15000; // 15 secondi
+server.keepAliveTimeout = 5000;
+server.headersTimeout = 6000;
+
+// Non far crashare il processo per errori
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection:', reason?.message || 'Errore sconosciuto');
 });
 
 process.on('uncaughtException', (error) => {
-    console.error('Eccezione non catturata:', error.message);
-    // Non terminare il processo per errori minori
+    console.error('Uncaught Exception:', error.message);
+    // Non terminare il processo
 });
+
+// Log memory usage ogni 5 minuti
+setInterval(() => {
+    const used = process.memoryUsage();
+    console.log(`📊 Memory: ${Math.round(used.heapUsed / 1024 / 1024)}MB / ${Math.round(used.heapTotal / 1024 / 1024)}MB`);
+    
+    // Pulisci cache se la memoria è alta
+    if (used.heapUsed / 1024 / 1024 > 200) { // > 200MB
+        console.log('🧹 Pulizia cache per memoria alta');
+        searchCache.clear();
+    }
+}, 300000);
