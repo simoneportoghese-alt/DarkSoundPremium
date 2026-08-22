@@ -9,6 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="DarkSound Pro">
+    <link rel="manifest" href="/manifest.json">
     <style>
         :root {
             --bg-base: #000000;
@@ -376,7 +377,7 @@
         .player-meta { flex: 1; min-width: 0; }
         .p-title { font-size: 0.95rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .p-artist { font-size: 0.82rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .player-icons { display: flex; align-items: center; gap: 18px; font-size: 1.3rem; color: #fff; }
+        .player-icons { display: flex; align-items: center; gap: 14px; font-size: 1.2rem; color: #fff; }
 
         #fullscreen-player {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
@@ -462,6 +463,7 @@
         .nav-item:hover { color: white; }
         .nav-item.active { color: var(--text-main); }
         #youtube-player { position: fixed; bottom: 0; right: 0; width: 200px; height: 150px; opacity: 0.01; pointer-events: none; z-index: -1000; }
+        #audio-player { display: none; }
 
         #artistHeroImg {
             transition: opacity 0.3s ease-in-out;
@@ -991,6 +993,7 @@
     </div>
 
     <div id="youtube-player"></div>
+    <audio id="audio-player" playsinline webkit-playsinline preload="auto"></audio>
 
     <div class="player-bar" id="playerBar" onclick="toggleFullscreen()">
         <img id="playerImg" src="">
@@ -999,8 +1002,10 @@
             <div class="p-artist" id="playerArtist" onclick="event.stopPropagation(); openArtistPage(currentTrackData.artist)">-</div>
         </div>
         <div class="player-icons" onclick="event.stopPropagation()">
-            <i class="fas fa-heart" id="miniLikeBtn" onclick="toggleLikeCurrent()"></i>
+            <i class="fas fa-step-backward" onclick="prevTrack()" style="font-size:1rem;"></i>
+            <i class="fas fa-heart" id="miniLikeBtn" onclick="toggleLikeCurrent()" style="font-size:1rem;"></i>
             <i class="fas fa-play" id="playPauseIcon" onclick="togglePlay()"></i>
+            <i class="fas fa-step-forward" onclick="nextTrack()" style="font-size:1rem;"></i>
         </div>
     </div>
 
@@ -1014,6 +1019,7 @@
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         let player = null;
+        let audioPlayer = null;
         let isPlaying = false;
         let playQueue = [];
         let queueIndex = -1;
@@ -1078,6 +1084,42 @@
         }
 
         window.onload = function() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('Service Worker registrato:', registration))
+                    .catch(err => console.error('Errore Service Worker:', err));
+            }
+            
+            audioPlayer = document.getElementById('audio-player');
+            
+            audioPlayer.addEventListener('play', () => {
+                isPlaying = true;
+                updatePlayIcons(true);
+                startProgressTracker();
+                updateMediaSession();
+            });
+            audioPlayer.addEventListener('pause', () => {
+                isPlaying = false;
+                updatePlayIcons(false);
+                clearInterval(progressInterval);
+            });
+            audioPlayer.addEventListener('ended', () => {
+                if(isRepeatActive) {
+                    audioPlayer.currentTime = 0;
+                    audioPlayer.play();
+                } else {
+                    nextTrack();
+                }
+            });
+            audioPlayer.addEventListener('timeupdate', () => {
+                if (audioPlayer.duration) {
+                    document.getElementById('progressBarFill').style.width = ((audioPlayer.currentTime/audioPlayer.duration)*100) + '%';
+                    document.getElementById('currentTime').innerText = formatTime(audioPlayer.currentTime);
+                    document.getElementById('totalDuration').innerText = formatTime(audioPlayer.duration);
+                    updateActiveLyric(audioPlayer.currentTime);
+                }
+            });
+            
             updateUserUI();
             loadHomeTracks();
             updateCountdown();
@@ -1092,6 +1134,42 @@
                 setTimeout(() => openOnboardingModal(), 2600);
             }
         };
+
+        function updateMediaSession() {
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: currentTrackData.name,
+                    artist: currentTrackData.artist,
+                    album: 'DarkSound Pro',
+                    artwork: [
+                        { src: currentTrackData.image, sizes: '96x96', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '128x128', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '192x192', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '256x256', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '384x384', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '512x512', type: 'image/jpeg' }
+                    ]
+                });
+
+                navigator.mediaSession.setActionHandler('play', () => {
+                    if (audioPlayer) audioPlayer.play();
+                });
+                navigator.mediaSession.setActionHandler('pause', () => {
+                    if (audioPlayer) audioPlayer.pause();
+                });
+                navigator.mediaSession.setActionHandler('previoustrack', () => {
+                    prevTrack();
+                });
+                navigator.mediaSession.setActionHandler('nexttrack', () => {
+                    nextTrack();
+                });
+                navigator.mediaSession.setActionHandler('seekto', (details) => {
+                    if (details.seekTime !== undefined && audioPlayer) {
+                        audioPlayer.currentTime = details.seekTime;
+                    }
+                });
+            }
+        }
 
         function loadAllUsers() {
             const stored = localStorage.getItem('darksound_all_users');
@@ -1865,371 +1943,33 @@
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
                 
-                if (player && player.loadVideoById && playerReady) {
-                    player.loadVideoById(t.id);
-                    setTimeout(() => {
-                        player.playVideo();
+                if (audioPlayer && t.audioUrl) {
+                    audioPlayer.src = t.audioUrl;
+                    audioPlayer.play().then(() => {
                         isPlaying = true;
                         updatePlayIcons(true);
-                    }, 300);
+                        updateMediaSession();
+                    }).catch(err => {
+                        console.error('Errore audio:', err);
+                        playWithYouTube(t);
+                    });
                 } else {
-                    const youtubeContainer = document.getElementById('youtube-player');
-                    youtubeContainer.innerHTML = `
-                        <iframe 
-                            width="100%" 
-                            height="100%" 
-                            src="https://www.youtube.com/embed/${t.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>
-                    `;
-                    isPlaying = true;
-                    updatePlayIcons(true);
+                    playWithYouTube(t);
                 }
             } catch(err) {
                 console.error("Errore nella riproduzione del brano:", err);
             }
         }
 
-        function openShareModal() {
-            if(!currentTrackData.id) return;
-            document.getElementById('shareTrackSubtitle').innerText = `${currentTrackData.name} - ${currentTrackData.artist}`;
-            document.getElementById('share-modal').classList.add('active');
-        }
-        
-        function closeShareModal() { document.getElementById('share-modal').classList.remove('active'); }
-
-        function copyTrackLink() {
-            const shareText = `Ascolta "${currentTrackData.name}" di ${currentTrackData.artist} su DarkSound Pro! https://www.youtube.com/watch?v=${currentTrackData.id}`;
-            navigator.clipboard.writeText(shareText).then(() => {
-                alert('Link copiato negli appunti!');
-                closeShareModal();
-            });
-        }
-
-        function shareViaWhatsApp() {
-            const shareText = encodeURIComponent(`Ascolta "${currentTrackData.name}" di ${currentTrackData.artist} su DarkSound Pro! https://www.youtube.com/watch?v=${currentTrackData.id}`);
-            window.open(`https://api.whatsapp.com/send?text=${shareText}`, '_blank');
-            closeShareModal();
-        }
-
-        function openNewPlaylistModal() {
-            if(!currentUser) return openAuthModal();
-            document.getElementById('new-playlist-modal').classList.add('active');
-        }
-        
-        function closeNewPlaylistModal() { document.getElementById('new-playlist-modal').classList.remove('active'); }
-
-        function submitNewPlaylist() {
-            const name = document.getElementById('newPlaylistName').value.trim();
-            const visibility = document.getElementById('newPlaylistVisibility').value;
-            if(!name) return alert('Inserisci un nome.');
-
-            userPlaylists.push({
-                id: 'pl_' + Date.now(),
-                name: name,
-                visibility: visibility,
-                owner: currentUser,
-                tracks: []
-            });
-            saveUserData();
-            closeNewPlaylistModal();
-            document.getElementById('newPlaylistName').value = '';
-            if(currentLibTab === 'playlists') renderLibraryContent();
-        }
-
-        function openPlaylistSelectorForCurrent() {
-            selectedTrackForPlaylist = currentTrackData;
-            showPlaylistSelectorModal();
-        }
-
-        function openPlaylistSelectorForTrackObj(trackJson) {
-            selectedTrackForPlaylist = JSON.parse(decodeURIComponent(escape(atob(trackJson))));
-            showPlaylistSelectorModal();
-        }
-
-        function showPlaylistSelectorModal() {
-            if(!currentUser) return openAuthModal();
-            const listEl = document.getElementById('playlistSelectList');
-            let allPlaylists = [...userPlaylists, ...autoPlaylists];
-            if(allPlaylists.length === 0) {
-                listEl.innerHTML = `<p style="color:var(--text-sub);">Nessuna playlist creata.</p>`;
-            } else {
-                listEl.innerHTML = allPlaylists.map(pl => `
-                    <div class="track-row" style="background:rgba(255,255,255,0.05); margin-bottom:6px;" onclick="addTrackToPlaylist('${pl.id}')">
-                        <div class="track-meta">
-                            <h4>${pl.name}</h4>
-                            <p>${pl.visibility === 'public' ? 'Pubblica' : 'Privata'} • ${pl.tracks.length} brani ${pl.autoGenerated ? '• Auto' : ''}</p>
-                        </div>
-                        <i class="fas fa-plus" style="color:var(--accent);"></i>
-                    </div>
-                `).join('');
+        function playWithYouTube(t) {
+            if (player && player.loadVideoById && playerReady) {
+                player.loadVideoById(t.id);
+                setTimeout(() => {
+                    player.playVideo();
+                    isPlaying = true;
+                    updatePlayIcons(true);
+                }, 300);
             }
-            document.getElementById('playlist-select-modal').classList.add('active');
-        }
-
-        function closePlaylistModal() { document.getElementById('playlist-select-modal').classList.remove('active'); }
-
-        function addTrackToPlaylist(playlistId) {
-            let pl = userPlaylists.find(p => p.id === playlistId) || autoPlaylists.find(p => p.id === playlistId);
-            if(pl && selectedTrackForPlaylist) {
-                if(!pl.tracks.some(t => t.id === selectedTrackForPlaylist.id)) {
-                    pl.tracks.push(selectedTrackForPlaylist);
-                    saveUserData();
-                    alert(`Brano aggiunto a "${pl.name}"!`);
-                } else {
-                    alert('Brano già presente nella playlist.');
-                }
-            }
-            closePlaylistModal();
-        }
-
-        function switchLibraryTab(tab) {
-            currentLibTab = tab;
-            if(tab === 'liked') {
-                switchView('liked-songs');
-                renderLikedSongsView();
-                return;
-            }
-            switchView('library');
-            document.getElementById('btnTabLiked').className = tab === 'liked' ? 'chip active' : 'chip';
-            document.getElementById('btnTabDownloads').className = tab === 'downloads' ? 'chip active' : 'chip';
-            document.getElementById('btnTabPlaylists').className = tab === 'playlists' ? 'chip active' : 'chip';
-            renderLibraryContent();
-        }
-
-        function renderLikedSongsView() {
-            document.getElementById('likedSongsCountSub').innerText = `${likedSongs.length} brani`;
-            renderTracksList(likedSongs, 'likedSongsFullContainer', likedSongs);
-        }
-
-        function playLikedFirst() {
-            if(likedSongs.length > 0) {
-                const t = likedSongs[0];
-                const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
-                const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(likedSongs))));
-                playSelectedTrack(trackJson, queueJson, 0);
-            }
-        }
-
-        function playLikedShuffled() {
-            if(likedSongs.length > 0) {
-                let randIdx = Math.floor(Math.random() * likedSongs.length);
-                const t = likedSongs[randIdx];
-                const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
-                const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(likedSongs))));
-                playSelectedTrack(trackJson, queueJson, randIdx);
-            }
-        }
-
-        function renderLibraryContent() {
-            const container = document.getElementById('libContentList');
-            if(currentLibTab === 'downloads') {
-                renderTracksList(downloadedTracks, 'libContentList', downloadedTracks);
-            } else if(currentLibTab === 'playlists') {
-                let allPlaylists = [...userPlaylists, ...autoPlaylists];
-                if(allPlaylists.length === 0) {
-                    container.innerHTML = `<p style="color:var(--text-sub); margin-top:20px;">Nessuna playlist.</p>`;
-                    return;
-                }
-                container.innerHTML = allPlaylists.map(pl => `
-                    <div class="track-row" onclick="${pl.autoGenerated ? `openAutoPlaylist('${pl.id}')` : `openUserPlaylistDetails('${pl.id}')`}">
-                        <div class="track-row-left">
-                            <div style="width:52px;height:52px;background:${pl.autoGenerated ? 'linear-gradient(135deg,#7928ca,#ff007f)' : 'linear-gradient(135deg,#30d158,#007aff)'};border-radius:10px;display:flex;align-items:center;justify-content:center;">
-                                <i class="fas ${pl.autoGenerated ? 'fa-wand-magic-sparkles' : 'fa-list'}" style="color:white;"></i>
-                            </div>
-                            <div class="track-meta">
-                                <h4>${pl.name}</h4>
-                                <p><span class="${pl.visibility === 'public' ? 'badge-public' : 'badge-private'}">${pl.visibility === 'public' ? 'PUBBLICA' : 'PRIVATA'}</span> ${pl.tracks.length} brani ${pl.autoGenerated ? '• <span class="badge-similar">AUTO</span>' : ''}</p>
-                            </div>
-                        </div>
-                        <div class="track-actions" onclick="event.stopPropagation()">
-                            <i class="fas fa-trash" style="color:#ff4d4d; font-size:1rem;" onclick="deletePlaylist('${pl.id}')"></i>
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function deletePlaylist(playlistId) {
-            userPlaylists = userPlaylists.filter(p => p.id !== playlistId);
-            autoPlaylists = autoPlaylists.filter(p => p.id !== playlistId);
-            saveUserData();
-            renderLibraryContent();
-        }
-
-        function openUserPlaylistDetails(playlistId) {
-            let pl = userPlaylists.find(p => p.id === playlistId);
-            if(!pl) return;
-            const container = document.getElementById('libContentList');
-            container.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding:0 15px;">
-                    <button class="chip" onclick="renderLibraryContent()"><i class="fas fa-arrow-left"></i> Indietro</button>
-                    <h3 style="font-size:1.1rem; font-weight:800;">${pl.name}</h3>
-                </div>
-            `;
-            let tempDiv = document.createElement('div');
-            tempDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
-            container.appendChild(tempDiv);
-        }
-
-        function openPublicPlaylist(playlistId) {
-            let pl = globalPublicPlaylists.find(p => p.id === playlistId);
-            if(!pl) return;
-            switchView('search', document.querySelectorAll('.nav-item')[1]);
-            const container = document.getElementById('searchResultsContainer');
-            container.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                    <button class="chip" onclick="executeSearch(document.getElementById('spotifySearchInput').value)"><i class="fas fa-arrow-left"></i> Indietro</button>
-                    <h3 style="font-size:1.1rem; font-weight:800;">${pl.name} (di ${pl.owner})</h3>
-                </div>
-            `;
-            let tempDiv = document.createElement('div');
-            tempDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
-            container.appendChild(tempDiv);
-        }
-
-        function savePublicPlaylistToLibrary(playlistId) {
-            let pl = globalPublicPlaylists.find(p => p.id === playlistId);
-            if(pl) {
-                userPlaylists.push({...pl, id: 'pl_saved_' + Date.now(), owner: currentUser + ' (Salvata)'});
-                saveUserData();
-                alert(`Playlist "${pl.name}" aggiunta alla tua libreria!`);
-            }
-        }
-
-        function deleteUserPlaylist(playlistId) {
-            userPlaylists = userPlaylists.filter(p => p.id !== playlistId);
-            saveUserData();
-            renderLibraryContent();
-        }
-
-        function toggleDownloadTrackObj(trackJson) {
-            const t = JSON.parse(decodeURIComponent(escape(atob(trackJson))));
-            const exists = downloadedTracks.findIndex(s => s.id === t.id);
-            if(exists > -1) downloadedTracks.splice(exists, 1);
-            else downloadedTracks.push(t);
-            saveUserData();
-            if(currentLibTab === 'downloads') renderLibraryContent();
-        }
-
-        function toggleDownloadCurrent() {
-            if(!currentTrackData.id) return;
-            const exists = downloadedTracks.findIndex(s => s.id === currentTrackData.id);
-            if(exists > -1) downloadedTracks.splice(exists, 1);
-            else downloadedTracks.push(currentTrackData);
-            saveUserData();
-            updateDownloadButtonUI();
-        }
-
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtube-player', {
-                height: '200', 
-                width: '200',
-                playerVars: { 
-                    'autoplay': 1, 
-                    'controls': 0, 
-                    'enablejsapi': 1,
-                    'rel': 0,
-                    'playsinline': 1,
-                    'origin': window.location.origin
-                },
-                events: {
-                    'onReady': () => {
-                        playerReady = true;
-                        console.log('Player YouTube pronto');
-                    },
-                    'onStateChange': (e) => {
-                        if(e.data === YT.PlayerState.PLAYING) { 
-                            isPlaying = true; 
-                            updatePlayIcons(true); 
-                            startProgressTracker(); 
-                        }
-                        if(e.data === YT.PlayerState.PAUSED) { 
-                            isPlaying = false; 
-                            updatePlayIcons(false); 
-                            clearInterval(progressInterval); 
-                        }
-                        if(e.data === YT.PlayerState.ENDED) { 
-                            if(isRepeatActive) {
-                                if(player && player.seekTo) {
-                                    player.seekTo(0);
-                                    player.playVideo();
-                                }
-                            } else {
-                                nextTrack(); 
-                            }
-                        }
-                    },
-                    'onError': (e) => {
-                        console.error('Errore player YouTube:', e);
-                        if (currentTrackData.id) {
-                            const youtubeContainer = document.getElementById('youtube-player');
-                            youtubeContainer.innerHTML = `
-                                <iframe 
-                                    width="100%" 
-                                    height="100%" 
-                                    src="https://www.youtube.com/embed/${currentTrackData.id}?autoplay=1&origin=${window.location.origin}" 
-                                    frameborder="0" 
-                                    allowfullscreen>
-                                </iframe>
-                            `;
-                        }
-                    }
-                }
-            });
-        }
-
-        function togglePlay() {
-            if(!player) return;
-            if(isPlaying) { 
-                player.pauseVideo(); 
-                isPlaying = false; 
-            } else { 
-                player.playVideo(); 
-                isPlaying = true; 
-            }
-            updatePlayIcons(isPlaying);
-        }
-
-        function updatePlayIcons(playing) {
-            const playPauseIcon = document.getElementById('playPauseIcon');
-            const fsPlayIcon = document.getElementById('fsPlayIcon');
-            if(playPauseIcon) playPauseIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
-            if(fsPlayIcon) fsPlayIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
-        }
-
-        function toggleShuffle() {
-            isShuffleActive = !isShuffleActive;
-            const shuffleBtn = document.querySelector('.fs-controls .fa-random');
-            if(shuffleBtn) {
-                shuffleBtn.style.color = isShuffleActive ? 'var(--accent)' : 'var(--text-sub)';
-            }
-        }
-
-        function toggleRepeat() {
-            isRepeatActive = !isRepeatActive;
-            const repeatBtn = document.querySelector('.fs-controls .fa-redo');
-            if(repeatBtn) {
-                repeatBtn.style.color = isRepeatActive ? 'var(--accent)' : 'var(--text-sub)';
-            }
-        }
-
-        function nextTrack() { 
-            if(isShuffleActive && playQueue.length > 0) {
-                let randomIdx = Math.floor(Math.random() * playQueue.length);
-                if(randomIdx === queueIndex && playQueue.length > 1) {
-                    randomIdx = (randomIdx + 1) % playQueue.length;
-                }
-                playQueueIndex(randomIdx);
-            } else {
-                if(queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1); 
-            }
-        }
-        
-        function prevTrack() { 
-            if(queueIndex > 0) playQueueIndex(queueIndex - 1); 
         }
 
         function playQueueIndex(index) {
@@ -2252,14 +1992,77 @@
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
                 
-                if (player && player.loadVideoById && playerReady) {
-                    player.loadVideoById(t.id);
-                    setTimeout(() => {
-                        player.playVideo();
+                if (audioPlayer && t.audioUrl) {
+                    audioPlayer.src = t.audioUrl;
+                    audioPlayer.play().then(() => {
                         isPlaying = true;
                         updatePlayIcons(true);
-                    }, 300);
+                        updateMediaSession();
+                    }).catch(err => {
+                        console.error('Errore audio:', err);
+                        playWithYouTube(t);
+                    });
+                } else {
+                    playWithYouTube(t);
                 }
+            }
+        }
+
+        function nextTrack() { 
+            if(isShuffleActive && playQueue.length > 0) {
+                let randomIdx = Math.floor(Math.random() * playQueue.length);
+                if(randomIdx === queueIndex && playQueue.length > 1) {
+                    randomIdx = (randomIdx + 1) % playQueue.length;
+                }
+                playQueueIndex(randomIdx);
+            } else {
+                if(queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1); 
+            }
+        }
+        
+        function prevTrack() { 
+            if(queueIndex > 0) playQueueIndex(queueIndex - 1); 
+        }
+
+        function togglePlay() {
+            if (audioPlayer && audioPlayer.src) {
+                if (isPlaying) {
+                    audioPlayer.pause();
+                } else {
+                    audioPlayer.play();
+                }
+            } else if (player) {
+                if(isPlaying) { 
+                    player.pauseVideo(); 
+                    isPlaying = false; 
+                } else { 
+                    player.playVideo(); 
+                    isPlaying = true; 
+                }
+                updatePlayIcons(isPlaying);
+            }
+        }
+
+        function updatePlayIcons(playing) {
+            const playPauseIcon = document.getElementById('playPauseIcon');
+            const fsPlayIcon = document.getElementById('fsPlayIcon');
+            if(playPauseIcon) playPauseIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
+            if(fsPlayIcon) fsPlayIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
+        }
+
+        function toggleShuffle() {
+            isShuffleActive = !isShuffleActive;
+            const shuffleBtn = document.querySelector('.fs-controls .fa-random');
+            if(shuffleBtn) {
+                shuffleBtn.style.color = isShuffleActive ? 'var(--accent)' : 'var(--text-sub)';
+            }
+        }
+
+        function toggleRepeat() {
+            isRepeatActive = !isRepeatActive;
+            const repeatBtn = document.querySelector('.fs-controls .fa-redo');
+            if(repeatBtn) {
+                repeatBtn.style.color = isRepeatActive ? 'var(--accent)' : 'var(--text-sub)';
             }
         }
 
@@ -2376,7 +2179,11 @@
         }
 
         function seekToLyric(timeSec) {
-            if(player && player.seekTo) player.seekTo(timeSec, true);
+            if (audioPlayer) {
+                audioPlayer.currentTime = timeSec;
+            } else if(player && player.seekTo) {
+                player.seekTo(timeSec, true);
+            }
         }
 
         function updateActiveLyric(currentTime) {
@@ -2444,7 +2251,12 @@
         function startProgressTracker() {
             clearInterval(progressInterval);
             progressInterval = setInterval(() => {
-                if(player && player.getCurrentTime && player.getDuration) {
+                if (audioPlayer && audioPlayer.duration) {
+                    document.getElementById('progressBarFill').style.width = ((audioPlayer.currentTime/audioPlayer.duration)*100) + '%';
+                    document.getElementById('currentTime').innerText = formatTime(audioPlayer.currentTime);
+                    document.getElementById('totalDuration').innerText = formatTime(audioPlayer.duration);
+                    updateActiveLyric(audioPlayer.currentTime);
+                } else if(player && player.getCurrentTime && player.getDuration) {
                     let cur = player.getCurrentTime();
                     let dur = player.getDuration();
                     if(dur) {
@@ -2460,9 +2272,12 @@
         function seekTrack(event) {
             const bg = document.getElementById('progressBarBg');
             const rect = bg.getBoundingClientRect();
-            if(player && player.getDuration) {
-                const seekTo = player.getDuration() * ((event.clientX - rect.left) / rect.width);
-                player.seekTo(seekTo, true);
+            const seekTime = ((event.clientX - rect.left) / rect.width);
+            
+            if (audioPlayer && audioPlayer.duration) {
+                audioPlayer.currentTime = seekTime * audioPlayer.duration;
+            } else if(player && player.getDuration) {
+                player.seekTo(player.getDuration() * seekTime, true);
             }
         }
 
