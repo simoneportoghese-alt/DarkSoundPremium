@@ -180,10 +180,12 @@
         .track-row { 
             display: flex; align-items: center; justify-content: space-between; 
             padding: 10px 12px; cursor: pointer; border-radius: 12px; margin-bottom: 4px; 
-            position: relative; z-index: 10;
+            position: relative; z-index: 10; transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent; touch-action: manipulation;
         }
-        .track-row:active { background: rgba(255,255,255,0.08); }
-        .track-row-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; overflow: hidden; pointer-events: none; }
+        .track-row:hover { background: rgba(255, 255, 255, 0.12); }
+        .track-row:active { background: rgba(255, 255, 255, 0.2); transform: scale(0.98); }
+        .track-row-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; overflow: hidden; pointer-events: auto; cursor: pointer; }
         .track-row-left img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: #333; flex-shrink: 0; }
         .track-meta { flex: 1; min-width: 0; overflow: hidden; }
         .track-meta h4 { font-size: 1.05rem; font-weight: 700; color: white; white-space: nowrap; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; }
@@ -221,8 +223,11 @@
             position: fixed; bottom: 76px; left: 12px; right: 12px; 
             background: rgba(30, 30, 34, 0.85); backdrop-filter: blur(30px);
             border-radius: 16px; padding: 10px 14px; display: none; align-items: center; gap: 14px; z-index: 100; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6); cursor: pointer;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6); cursor: pointer; transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent; touch-action: manipulation;
         }
+        .player-bar:hover { background: rgba(40, 40, 44, 0.9); }
+        .player-bar:active { transform: scale(0.98); }
         .player-bar img { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; }
         .player-meta { flex: 1; min-width: 0; }
         .p-title { font-size: 0.95rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -284,12 +289,18 @@
         .lyrics-toggle-btn.active { background: var(--accent); color: black; border-color: var(--accent); }
 
         .progress-container { width: 100%; margin-bottom: 16px; z-index: 2; }
-        .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px; position: relative; cursor: pointer; }
-        .progress-bar-fill { width: 0%; height: 100%; background: white; border-radius: 3px; position: relative; }
+        .progress-bar-bg { width: 100%; height: 12px; background: rgba(255,255,255,0.2); border-radius: 6px; position: relative; cursor: pointer; }
+        .progress-bar-bg:hover { background: rgba(255, 255, 255, 0.3); }
+        .progress-bar-fill { width: 0%; height: 100%; background: white; border-radius: 6px; position: relative; pointer-events: none; }
         .progress-times { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-sub); margin-top: 6px; }
 
         .fs-controls { display: flex; justify-content: space-between; align-items: center; font-size: 1.5rem; color: white; width: 100%; max-width: 340px; margin: 0 auto; z-index: 2; }
-        .fs-play-btn { width: 64px; height: 64px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; }
+        .fs-play-btn { width: 64px; height: 64px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; transition: all 0.2s ease; }
+        .fs-play-btn:hover { transform: scale(1.1); }
+        .fs-play-btn:active { transform: scale(0.9); }
+        .fs-controls i { cursor: pointer; transition: all 0.2s ease; }
+        .fs-controls i:hover { color: var(--accent); }
+        .fs-controls i:active { transform: scale(0.8); }
 
         nav {
             position: fixed; bottom: 12px; left: 16px; right: 16px; height: 64px; 
@@ -303,7 +314,7 @@
             cursor: pointer; background: none; border: none; padding: 6px 16px; 
         }
         .nav-item.active { color: var(--text-main); }
-        #youtube-player { position: fixed; bottom: 0; left: 0; width: 200px; height: 200px; opacity: 0.01; pointer-events: none; z-index: -1000; }
+        #youtube-player { position: fixed; bottom: 0; right: 0; width: 200px; height: 150px; opacity: 0.01; pointer-events: none; z-index: -1000; }
 
         #artistHeroImg {
             transition: opacity 0.3s ease-in-out;
@@ -312,60 +323,6 @@
         #artistTracksContainer {
             min-height: 200px;
         }
-
-        /* ==== Nuove funzionalità: stili aggiuntivi ==== */
-        .artist-action-row {
-            display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 18px 0;
-        }
-        .artist-action-btn {
-            display: flex; align-items: center; gap: 8px;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
-            color: white; font-weight: 700; font-size: 0.85rem;
-            padding: 10px 16px; border-radius: 20px; cursor: pointer; white-space: nowrap;
-        }
-        .artist-action-btn.primary { background: var(--accent); color: black; border-color: var(--accent); }
-        .artist-action-btn.active-toggle { background: rgba(255,149,0,0.2); color: #ff9500; border-color: rgba(255,149,0,0.4); }
-        .artist-action-btn i { font-size: 0.95rem; }
-        .artist-action-btn .spin { animation: spinLoader 0.8s linear infinite; }
-        @keyframes spinLoader { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .quick-profile-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 8px 0 14px 0; margin-bottom: 6px; }
-        .quick-profile-chip {
-            display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;
-            flex-shrink: 0; width: 62px; text-align: center; position: relative;
-        }
-        .quick-profile-avatar {
-            width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 1.1rem; color: black; background: linear-gradient(135deg, #ffb84d, #ff5f6d);
-            border: 2px solid transparent;
-        }
-        .quick-profile-chip.current .quick-profile-avatar { border-color: var(--accent); }
-        .quick-profile-chip span { font-size: 0.68rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-        .quick-profile-add { display:flex; align-items:center; justify-content:center; width:50px; height:50px; border-radius:50%; background: rgba(255,255,255,0.08); border: 1px dashed rgba(255,255,255,0.3); }
-
-        .session-history-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-        .session-history-item .shi-left { display:flex; flex-direction:column; }
-        .session-history-item .shi-left b { font-size: 0.92rem; color: white; }
-        .session-history-item .shi-left span { font-size: 0.75rem; color: var(--text-sub); }
-        .session-history-item .shi-badge {
-            font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;
-        }
-        .shi-online { background: rgba(48,209,88,0.15); color: var(--accent); }
-        .shi-offline { background: rgba(255,149,0,0.15); color: #ff9500; }
-        .shi-fallback { background: rgba(255,77,77,0.15); color: #ff4d4d; }
-
-        .anti-clone-note {
-            font-size: 0.78rem; color: var(--text-sub); margin: -6px 0 14px 0; display:flex; align-items:center; gap:6px;
-        }
-
-        .hybrid-status-dot {
-            width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; background: var(--accent);
-        }
-        .hybrid-status-dot.fallback { background: #ff9500; }
-        .hybrid-status-dot.offline { background: #ff4d4d; }
     </style>
 </head>
 <body>
@@ -398,19 +355,12 @@
             <div class="drawer-menu-left"><i class="fas fa-clock-rotate-left"></i> Recenti e Salvati</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
         </div>
-        <div class="drawer-menu-item" onclick="openSessionHistoryModal()">
-            <div class="drawer-menu-left"><i class="fas fa-satellite-dish"></i> Cronologia Sessioni Offline</div>
-            <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
-        </div>
         <div class="drawer-menu-item" onclick="alert('Impostazioni privacy e audio Lossless attive.')">
             <div class="drawer-menu-left"><i class="fas fa-gear"></i> Impostazioni e privacy</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
         </div>
 
-        <div style="margin-top: 24px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">Profili condivisi &middot; cambio rapido</div>
-        <div class="quick-profile-scroll" id="quickProfileScroll"></div>
-
-        <div style="margin-top: 4px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">Attività amici</div>
+        <div style="margin-top: 24px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">Attività amici</div>
         <div class="drawer-friends-scroll">
             <div class="friend-bubble" onclick="alert('Giancarlo sta ascoltando: Sfera Ebbasta')">
                 <img class="friend-avatar" src="https://picsum.photos/seed/friend1/100">
@@ -540,29 +490,6 @@
         </div>
     </div>
 
-    <div id="session-history-modal" class="modal-overlay">
-        <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:420px; max-height:80vh; overflow-y:auto;">
-            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:4px;"><span class="hybrid-status-dot" id="hybridStatusDot"></span>Cronologia Sessioni</h3>
-            <p style="color:var(--text-sub); font-size:0.82rem; margin-bottom:14px;" id="hybridStatusText">Motore ibrido attivo: sorgente YouTube primaria, fallback automatico in caso di errore.</p>
-            <div id="sessionHistoryList"><p style="color:var(--text-sub);">Nessuna sessione registrata ancora.</p></div>
-            <button class="auth-btn" style="background:rgba(255,77,77,0.15); color:#ff4d4d; margin-top:14px;" onclick="clearSessionHistory()">Cancella cronologia</button>
-            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('session-history-modal').classList.remove('active')">Chiudi</button>
-        </div>
-    </div>
-
-    <div id="quick-profile-onboarding-modal" class="modal-overlay">
-        <div class="auth-card" style="text-align:center;">
-            <h2>Nuovo profilo condiviso</h2>
-            <p>Aggiungi rapidamente un profilo da questo dispositivo (i gusti restano distinti e salvati localmente per ciascun profilo).</p>
-            <div class="auth-input-group">
-                <label>Nome profilo</label>
-                <input type="text" id="quickNewProfileName" placeholder="Es. Papà, Sorella, Ospite2...">
-            </div>
-            <button class="auth-btn" onclick="submitQuickNewProfile()">Crea e passa a questo profilo</button>
-            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('quick-profile-onboarding-modal').classList.remove('active')">Annulla</button>
-        </div>
-    </div>
-
     <div id="new-playlist-modal" class="modal-overlay">
         <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:400px;">
             <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Crea Nuova Playlist</h3>
@@ -669,18 +596,7 @@
         </div>
 
         <div style="padding: 20px;">
-            <div class="artist-action-row">
-                <button class="artist-action-btn primary" id="btnPlayDiscography" onclick="playFullDiscography()"><i class="fas fa-play"></i> Riproduci Discografia</button>
-                <button class="artist-action-btn" id="btnSimilarRadio" onclick="startSimilarArtistRadio()"><i class="fas fa-podcast"></i> Radio Artisti Simili</button>
-                <button class="artist-action-btn" id="btnAntiCloneToggle" onclick="toggleAntiCloneFilter()"><i class="fas fa-filter"></i> Filtro Anti-Cloni: ON</button>
-            </div>
-            <p class="anti-clone-note" id="antiCloneNote"><i class="fas fa-circle-info"></i> Live, remix e cover duplicate vengono filtrati automaticamente dai consigli.</p>
-
-            <div class="section-title" style="margin-top:10px;">Discografia Completa</div>
-            <p id="discographyStatusText" style="color:var(--text-sub); font-size:0.85rem; margin-top:-10px; margin-bottom:14px;">Tocca "Riproduci Discografia" per caricare tutti i brani dell'artista in un unico player sequenziale.</p>
-            <div id="artistDiscographyContainer"></div>
-
-            <div class="section-title" style="margin-top:22px;">Popolare</div>
+            <div class="section-title" style="margin-top:10px;">Popolare</div>
             <div id="artistTracksContainer"><p style="color:var(--text-sub);">Caricamento brani...</p></div>
         </div>
     </div>
@@ -808,7 +724,10 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        let player, isPlaying = false, playQueue = [], queueIndex = -1;
+        let player = null;
+        let isPlaying = false;
+        let playQueue = [];
+        let queueIndex = -1;
         let currentTrackData = { id: '', name: '', artist: '', image: '' };
         let currentUser = localStorage.getItem('darksound_current_user') || null;
         let userPreferences = JSON.parse(localStorage.getItem(currentUser ? `prefs_${currentUser}` : 'darksound_prefs') || 'null');
@@ -816,306 +735,21 @@
         let downloadedTracks = JSON.parse(localStorage.getItem(currentUser ? `downloads_${currentUser}` : 'darksound_downloads') || '[]');
         let userPlaylists = JSON.parse(localStorage.getItem(currentUser ? `playlists_${currentUser}` : 'darksound_playlists') || '[]');
         let globalPublicPlaylists = JSON.parse(localStorage.getItem('darksound_global_public_playlists') || '[]');
-        let progressInterval, searchTimer = null, currentLibTab = 'liked', selectedTrackForPlaylist = null;
+        let progressInterval = null;
+        let searchTimer = null;
+        let currentLibTab = 'liked';
+        let selectedTrackForPlaylist = null;
         let tempAuthName = '';
         let isLyricsActive = false;
         let parsedSyncedLyrics = [];
+        let playerReady = false;
 
-        // ==== Nuove funzionalità: stato globale ====
-        let antiCloneFilterEnabled = true;
-        let sessionHistory = JSON.parse(localStorage.getItem(currentUser ? `sessions_${currentUser}` : 'darksound_sessions') || '[]');
-        let currentArtistContext = { name: '', image: '' };
-        let hybridFallbackAttempted = false;
-        let allKnownProfiles = JSON.parse(localStorage.getItem('darksound_all_profiles') || '[]');
-
-        // Correlazioni statiche artista -> artisti simili (usate per generare la Radio Artisti Simili)
-        const ARTIST_CORRELATIONS = {
-            'sfera ebbasta': ['Lazza', 'Capo Plaza', 'Ghali', 'Tedua', 'Rondodasosa'],
-            'lazza': ['Sfera Ebbasta', 'Capo Plaza', 'Tedua', 'Shiva', 'Emis Killa'],
-            'ghali': ['Sfera Ebbasta', 'Ernia', 'Tedua', 'Marracash', 'Salmo'],
-            'travis scott': ['Drake', 'Future', 'Playboi Carti', 'Don Toliver', 'Metro Boomin'],
-            'drake': ['Travis Scott', 'Future', '21 Savage', 'J. Cole', 'Kendrick Lamar'],
-            'annalisa': ['Elodie', 'Emma', 'Elettra Lamborghini', 'Baby K', 'Alessandra Amoroso'],
-            'club dogo': ['Guè', 'Jake La Furia', 'Marracash', 'Salmo', 'Fabri Fibra'],
-            'twenty one pilots': ['Imagine Dragons', 'Panic! At The Disco', 'Fall Out Boy', 'The Neighbourhood'],
-            'marracash': ['Guè', 'Fabri Fibra', 'Salmo', 'Club Dogo', 'Ernia']
-        };
-
-        // Pattern usati per rilevare cloni/duplicati/versioni non pertinenti nei consigli
-        const ANTI_CLONE_PATTERNS = [
-            /\blive\b/i, /\bremix\b/i, /\bcover\b/i, /\bkaraoke\b/i, /\btribute\b/i,
-            /\bacoustic\b/i, /\bacustic[oa]\b/i, /\brework\b/i, /\bslowed\b/i, /\bsped ?up\b/i,
-            /\binstrumental\b/i, /\bnightcore\b/i, /\b8d audio\b/i, /\bfan ?made\b/i, /\btutorial\b/i,
-            /\breaction\b/i, /\bmashup\b/i, /\bcompilation\b/i, /\bmegamix\b/i
-        ];
-
-        function normalizeTrackKey(t) {
-            return (t.name + '|' + t.artist).toLowerCase().replace(/[^a-z0-9|]/g, '').trim();
-        }
-
-        // Filtra versioni live/remix/cover irrilevanti e rimuove i brani duplicati (stesso titolo+artista)
-        function filterAntiClones(tracks) {
-            if (!Array.isArray(tracks)) return [];
-            let seen = new Set();
-            let result = [];
-            for (let t of tracks) {
-                if (!t || !t.name) continue;
-                if (antiCloneFilterEnabled && ANTI_CLONE_PATTERNS.some(rx => rx.test(t.name))) continue;
-                let key = normalizeTrackKey(t);
-                if (seen.has(key)) continue;
-                seen.add(key);
-                result.push(t);
-            }
-            return result;
-        }
-
-        function toggleAntiCloneFilter() {
-            antiCloneFilterEnabled = !antiCloneFilterEnabled;
-            const btn = document.getElementById('btnAntiCloneToggle');
-            const note = document.getElementById('antiCloneNote');
-            if (btn) {
-                btn.innerHTML = `<i class="fas fa-filter"></i> Filtro Anti-Cloni: ${antiCloneFilterEnabled ? 'ON' : 'OFF'}`;
-                btn.classList.toggle('active-toggle', !antiCloneFilterEnabled);
-            }
-            if (note) {
-                note.innerHTML = antiCloneFilterEnabled
-                    ? '<i class="fas fa-circle-info"></i> Live, remix e cover duplicate vengono filtrati automaticamente dai consigli.'
-                    : '<i class="fas fa-triangle-exclamation"></i> Filtro disattivato: potrebbero comparire live, remix e duplicati.';
-            }
-            if (currentArtistContext.name) {
-                if (document.getElementById('discographyStatusText') && document.getElementById('discographyStatusText').innerText.includes('brani caricati')) {
-                    playFullDiscography(true);
-                }
-            }
-        }
-
-        // ==== Profili condivisi & Blend rapido ====
-        function registerProfile(name) {
-            if (!name) return;
-            if (!allKnownProfiles.includes(name)) {
-                allKnownProfiles.push(name);
-                localStorage.setItem('darksound_all_profiles', JSON.stringify(allKnownProfiles));
-            }
-            renderQuickProfileScroll();
-        }
-
-        function renderQuickProfileScroll() {
-            const el = document.getElementById('quickProfileScroll');
-            if (!el) return;
-            let html = allKnownProfiles.map(name => `
-                <div class="quick-profile-chip ${name === currentUser ? 'current' : ''}" onclick="quickSwitchProfile('${name.replace(/'/g, "\\'")}')">
-                    <div class="quick-profile-avatar">${name.charAt(0).toUpperCase()}</div>
-                    <span>${name}</span>
-                </div>
-            `).join('');
-            html += `
-                <div class="quick-profile-chip" onclick="document.getElementById('quick-profile-onboarding-modal').classList.add('active')">
-                    <div class="quick-profile-add"><i class="fas fa-plus" style="color:var(--accent);"></i></div>
-                    <span>Aggiungi</span>
-                </div>
-            `;
-            el.innerHTML = html;
-        }
-
-        function quickSwitchProfile(name) {
-            if (name === currentUser) { toggleProfileDrawer(); return; }
-            currentUser = name;
-            localStorage.setItem('darksound_current_user', currentUser);
-            userPreferences = JSON.parse(localStorage.getItem(`prefs_${currentUser}`) || 'null');
-            likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
-            downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
-            userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
-            sessionHistory = JSON.parse(localStorage.getItem(`sessions_${currentUser}`) || '[]');
-            updateUserUI();
-            renderQuickProfileScroll();
-            toggleProfileDrawer();
-            loadHomeTracks();
-            if (!userPreferences) setTimeout(() => openOnboardingModal(), 300);
-        }
-
-        function submitQuickNewProfile() {
-            const name = document.getElementById('quickNewProfileName').value.trim();
-            if (!name) return alert('Inserisci un nome profilo.');
-            registerProfile(name);
-            document.getElementById('quick-profile-onboarding-modal').classList.remove('active');
-            document.getElementById('quickNewProfileName').value = '';
-            quickSwitchProfile(name);
-        }
-
-        // ==== Discografia completa artista (player sequenziale unico) ====
-        async function playFullDiscography(silentRefresh) {
-            const artistName = currentArtistContext.name || document.getElementById('artistNameTitle').innerText;
-            if (!artistName) return;
-            const statusEl = document.getElementById('discographyStatusText');
-            const btn = document.getElementById('btnPlayDiscography');
-            if (btn) btn.innerHTML = '<i class="fas fa-spinner spin"></i> Caricamento discografia...';
-            if (statusEl) statusEl.innerText = 'Sto caricando l\'intera discografia in un unico player sequenziale...';
-
-            try {
-                const queries = [artistName, `${artistName} album`, `${artistName} greatest hits`, `${artistName} singoli`];
-                const responses = await Promise.all(queries.map(q => fetch(`/api/search?q=${encodeURIComponent(q)}`).then(r => r.json()).catch(() => [])));
-                let combined = [].concat(...responses);
-                combined = combined.filter(t => t && t.artist && t.artist.toLowerCase().includes(artistName.toLowerCase().split(' ')[0].toLowerCase()));
-                if (combined.length === 0) combined = [].concat(...responses);
-                let finalTracks = filterAntiClones(combined);
-
-                if (finalTracks.length === 0) {
-                    if (statusEl) statusEl.innerText = 'Nessun brano trovato per la discografia completa.';
-                } else {
-                    if (statusEl) statusEl.innerText = `${finalTracks.length} brani caricati nella discografia completa. Riproduzione sequenziale in un unico player.`;
-                    renderTracksList(finalTracks, 'artistDiscographyContainer', finalTracks);
-                    if (!silentRefresh) {
-                        const t = finalTracks[0];
-                        const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
-                        const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(finalTracks))));
-                        playSelectedTrack(trackJson, queueJson, 0);
-                    }
-                }
-            } catch (e) {
-                if (statusEl) statusEl.innerText = 'Errore nel caricamento della discografia completa.';
-            } finally {
-                if (btn) btn.innerHTML = '<i class="fas fa-play"></i> Riproduci Discografia';
-            }
-        }
-
-        // ==== Radio Artisti Simili (motore correlazioni) ====
-        async function startSimilarArtistRadio() {
-            const artistName = currentArtistContext.name || document.getElementById('artistNameTitle').innerText;
-            if (!artistName) return;
-            const btn = document.getElementById('btnSimilarRadio');
-            if (btn) btn.innerHTML = '<i class="fas fa-spinner spin"></i> Generazione mix...';
-
-            try {
-                let seeds = ARTIST_CORRELATIONS[artistName.toLowerCase()];
-                if (!seeds) {
-                    seeds = (userPreferences && userPreferences.genres && userPreferences.genres.length > 0)
-                        ? userPreferences.genres
-                        : [artistName + ' radio'];
-                }
-                const queries = [artistName, ...seeds];
-                const responses = await Promise.all(queries.map(q => fetch(`/api/search?q=${encodeURIComponent(q)}`).then(r => r.json()).catch(() => [])));
-                let combined = [].concat(...responses);
-                let mixTracks = filterAntiClones(combined).sort(() => Math.random() - 0.5).slice(0, 20);
-
-                if (mixTracks.length === 0) {
-                    alert('Non è stato possibile generare la radio in questo momento.');
-                } else {
-                    renderTracksList(mixTracks, 'artistDiscographyContainer', mixTracks);
-                    document.getElementById('discographyStatusText').innerText = `Radio Artisti Simili generata: ${mixTracks.length} brani basati sulle correlazioni con ${artistName}.`;
-                    const t = mixTracks[0];
-                    const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
-                    const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(mixTracks))));
-                    playSelectedTrack(trackJson, queueJson, 0);
-                }
-            } catch (e) {
-                alert('Errore nella generazione della Radio Artisti Simili.');
-            } finally {
-                if (btn) btn.innerHTML = '<i class="fas fa-podcast"></i> Radio Artisti Simili';
-            }
-        }
-
-        // ==== Cronologia sessioni offline & motore ibrido ====
-        function logSessionEvent(track, sourceType) {
-            if (!track || !track.id) return;
-            sessionHistory.unshift({
-                trackName: track.name,
-                artist: track.artist,
-                sourceType: sourceType || (navigator.onLine ? 'online' : 'offline'),
-                timestamp: new Date().toISOString()
-            });
-            sessionHistory = sessionHistory.slice(0, 100);
-            if (currentUser) {
-                localStorage.setItem(`sessions_${currentUser}`, JSON.stringify(sessionHistory));
-            } else {
-                localStorage.setItem('darksound_sessions', JSON.stringify(sessionHistory));
-            }
-        }
-
-        function renderSessionHistory() {
-            const listEl = document.getElementById('sessionHistoryList');
-            if (!listEl) return;
-            if (sessionHistory.length === 0) {
-                listEl.innerHTML = `<p style="color:var(--text-sub);">Nessuna sessione registrata ancora.</p>`;
-                return;
-            }
-            listEl.innerHTML = sessionHistory.map(s => {
-                const badgeClass = s.sourceType === 'fallback' ? 'shi-fallback' : (s.sourceType === 'offline' ? 'shi-offline' : 'shi-online');
-                const badgeLabel = s.sourceType === 'fallback' ? 'FALLBACK YT' : (s.sourceType === 'offline' ? 'OFFLINE' : 'ONLINE');
-                const d = new Date(s.timestamp);
-                const timeLabel = d.toLocaleDateString('it-IT') + ' ' + d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                return `
-                    <div class="session-history-item">
-                        <div class="shi-left">
-                            <b>${s.trackName}</b>
-                            <span>${s.artist} • ${timeLabel}</span>
-                        </div>
-                        <span class="shi-badge ${badgeClass}">${badgeLabel}</span>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function openSessionHistoryModal() {
-            toggleProfileDrawer();
-            renderSessionHistory();
-            updateHybridStatusUI();
-            document.getElementById('session-history-modal').classList.add('active');
-        }
-
-        function clearSessionHistory() {
-            sessionHistory = [];
-            if (currentUser) localStorage.setItem(`sessions_${currentUser}`, JSON.stringify(sessionHistory));
-            renderSessionHistory();
-        }
-
-        function updateHybridStatusUI() {
-            const dot = document.getElementById('hybridStatusDot');
-            const text = document.getElementById('hybridStatusText');
-            const syncBadge = document.getElementById('syncStatusBadge');
-            if (!navigator.onLine) {
-                if (dot) dot.className = 'hybrid-status-dot offline';
-                if (text) text.innerText = 'Sei offline: verranno riprodotti solo i brani scaricati localmente. Il motore ibrido riprenderà la sincronizzazione YouTube al ritorno della connessione.';
-                if (syncBadge) { syncBadge.innerText = 'Offline'; syncBadge.style.color = '#ff9500'; syncBadge.style.background = 'rgba(255,149,0,0.2)'; }
-            } else if (hybridFallbackAttempted) {
-                if (dot) dot.className = 'hybrid-status-dot fallback';
-                if (text) text.innerText = 'Motore ibrido: la sorgente principale ha avuto un problema, in uso una sorgente di fallback automatica.';
-                if (syncBadge) { syncBadge.innerText = 'Fallback attivo'; syncBadge.style.color = '#ff9500'; syncBadge.style.background = 'rgba(255,149,0,0.2)'; }
-            } else {
-                if (dot) dot.className = 'hybrid-status-dot';
-                if (text) text.innerText = 'Motore ibrido attivo: sorgente YouTube primaria, fallback automatico in caso di errore.';
-                if (syncBadge) { syncBadge.innerText = 'Online'; syncBadge.style.color = '#30d158'; syncBadge.style.background = 'rgba(46,189,89,0.2)'; }
-            }
-        }
-
-        async function resolveHybridFallback() {
-            if (!currentTrackData || !currentTrackData.name) return;
-            hybridFallbackAttempted = true;
-            updateHybridStatusUI();
-            try {
-                let res = await fetch(`/api/search?q=${encodeURIComponent(currentTrackData.name + ' ' + currentTrackData.artist)}`);
-                let candidates = await res.json();
-                let alternative = (candidates || []).find(c => c.id && c.id !== currentTrackData.id);
-                if (alternative && player && player.loadVideoById) {
-                    currentTrackData.id = alternative.id;
-                    player.loadVideoById(alternative.id);
-                    player.playVideo();
-                    logSessionEvent(currentTrackData, 'fallback');
-                } else if (downloadedTracks.some(t => t.name === currentTrackData.name)) {
-                    logSessionEvent(currentTrackData, 'offline');
-                }
-            } catch (e) { /* fallback silenzioso */ }
-        }
-
-        window.addEventListener('online', updateHybridStatusUI);
-        window.addEventListener('offline', updateHybridStatusUI);
+        const API_BASE = window.location.origin;
 
         window.onload = function() {
             updateUserUI();
             loadHomeTracks();
             updateCountdown();
-            if (currentUser) registerProfile(currentUser);
-            renderQuickProfileScroll();
-            updateHybridStatusUI();
             if(!currentUser) {
                 setTimeout(() => openAuthModal(), 400);
             } else if(!userPreferences) {
@@ -1125,15 +759,12 @@
 
         function updateCountdown() {
             const eventDate = new Date().getTime() + (24 * 60 * 60 * 1000);
-            
             setInterval(() => {
                 const now = new Date().getTime();
                 const distance = eventDate - now;
-                
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                
                 const countdownEl = document.getElementById("countdown");
                 if(countdownEl) {
                     countdownEl.innerHTML = 
@@ -1143,6 +774,7 @@
         }
 
         function toggleProfileDrawer() { document.getElementById('profileDrawer').classList.toggle('active'); }
+        
         function logoutUser() {
             localStorage.removeItem('darksound_current_user');
             currentUser = null;
@@ -1150,8 +782,14 @@
             updateUserUI();
             openAuthModal();
         }
-        function openAuthModal() { document.getElementById('profileDrawer').classList.remove('active'); document.getElementById('auth-modal').classList.add('active'); }
+        
+        function openAuthModal() { 
+            document.getElementById('profileDrawer').classList.remove('active'); 
+            document.getElementById('auth-modal').classList.add('active'); 
+        }
+        
         function closeAuthModal() { document.getElementById('auth-modal').classList.remove('active'); }
+        
         function proceedToOnboarding() {
             const name = document.getElementById('authEmail').value.trim();
             if(!name) return alert('Inserisci un nome utente.');
@@ -1159,7 +797,9 @@
             closeAuthModal();
             openOnboardingModal();
         }
+        
         function openOnboardingModal() { document.getElementById('onboarding-modal').classList.add('active'); }
+        
         function toggleGenre(el) { el.classList.toggle('selected'); }
         
         function completeOnboarding() {
@@ -1172,8 +812,6 @@
             likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
             downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
             userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
-            sessionHistory = JSON.parse(localStorage.getItem(`sessions_${currentUser}`) || '[]');
-            registerProfile(currentUser);
             document.getElementById('onboarding-modal').classList.remove('active');
             updateUserUI();
             loadHomeTracks();
@@ -1204,24 +842,29 @@
         }
 
         function openAiDjModal() { document.getElementById('ai-dj-modal').classList.add('active'); }
+        
         async function runAiDjSelection() {
             document.getElementById('aiDjStatusText').innerText = "Sto selezionando le migliori tracce per te...";
             try {
-                let res = await fetch(`/api/search?q=Top Hit`);
+                let res = await fetch(`${API_BASE}/api/search?q=Top Hit`);
                 let tracks = await res.json();
                 if(tracks.length > 0) {
                     playSelectedTrack(btoa(unescape(encodeURIComponent(JSON.stringify(tracks[0])))), btoa(unescape(encodeURIComponent(JSON.stringify(tracks)))), 0);
                     document.getElementById('ai-dj-modal').classList.remove('active');
                 }
-            } catch(e) { alert('Errore AI DJ'); }
+            } catch(e) { 
+                console.error('Errore AI DJ:', e);
+                alert('Errore AI DJ. Verifica che il server sia in esecuzione.');
+            }
         }
 
         function openAiPlaylistModal() { document.getElementById('ai-playlist-modal').classList.add('active'); }
+        
         async function generateAiPromptPlaylist() {
             const prompt = document.getElementById('aiPromptInput').value.trim();
             if(!prompt) return alert('Inserisci una descrizione.');
             try {
-                let res = await fetch(`/api/search?q=${encodeURIComponent(prompt)}`);
+                let res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(prompt)}`);
                 let tracks = await res.json();
                 if(tracks.length > 0) {
                     let newPl = {
@@ -1236,14 +879,18 @@
                     document.getElementById('ai-playlist-modal').classList.remove('active');
                     alert(`Playlist IA creata con successo! Controlla la tua libreria.`);
                 }
-            } catch(e) { alert('Errore generazione playlist IA'); }
+            } catch(e) { 
+                console.error('Errore generazione playlist IA:', e);
+                alert('Errore generazione playlist IA. Verifica che il server sia in esecuzione.');
+            }
         }
 
         function openBlendModal() { document.getElementById('blend-modal').classList.add('active'); }
+        
         async function createBlendPlaylist() {
             const friend = document.getElementById('blendFriendSelect').value;
             try {
-                let res = await fetch(`/api/search?q=${encodeURIComponent(friend)}`);
+                let res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(friend)}`);
                 let tracks = await res.json();
                 if(tracks.length > 0) {
                     let blendPl = {
@@ -1258,23 +905,31 @@
                     document.getElementById('blend-modal').classList.remove('active');
                     alert(`Playlist Blend creata con ${friend}!`);
                 }
-            } catch(e) { alert('Errore creazione Blend'); }
+            } catch(e) { 
+                console.error('Errore creazione Blend:', e);
+                alert('Errore creazione Blend. Verifica che il server sia in esecuzione.');
+            }
         }
 
-        function openWrappedModal() { document.getElementById('wrapped-modal').classList.add('active'); toggleProfileDrawer(); }
+        function openWrappedModal() { 
+            document.getElementById('wrapped-modal').classList.add('active'); 
+            toggleProfileDrawer(); 
+        }
 
         async function loadHomeTracks() {
             try {
                 let radioQuery = userPreferences ? (userPreferences.artist !== 'Hit Italia' ? userPreferences.artist : userPreferences.genres[0]) : 'Hit Italia';
-                let resRadio = await fetch(`/api/search?q=${encodeURIComponent(radioQuery)}`);
+                let resRadio = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(radioQuery)}`);
                 let radioTracks = await resRadio.json();
                 renderTracksList(radioTracks.slice(0, 5), 'radioTracksContainer', radioTracks.slice(0, 5));
 
-                let res = await fetch('/api/search?q=Hit Italia');
+                let res = await fetch(`${API_BASE}/api/search?q=Hit Italia`);
                 let homeTracks = await res.json();
                 renderTracksList(homeTracks, 'homeTracksContainer', homeTracks);
             } catch(e) {
-                document.getElementById('homeTracksContainer').innerHTML = `<p style="color:#ff4d4d;">Errore di caricamento.</p>`;
+                console.error('Errore caricamento home:', e);
+                document.getElementById('homeTracksContainer').innerHTML = `<p style="color:#ff4d4d;">Errore di caricamento. Verifica che il server sia in esecuzione.</p>`;
+                document.getElementById('radioTracksContainer').innerHTML = `<p style="color:#ff4d4d;">Errore di caricamento.</p>`;
             }
         }
 
@@ -1289,7 +944,7 @@
 
         async function executeSearch(query) {
             try {
-                let res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                let res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
                 let tracks = await res.json();
                 let matchedPlaylists = globalPublicPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
 
@@ -1320,7 +975,9 @@
                 let tempContainer = document.createElement('div');
                 tempContainer.innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, tracks)).join('');
                 container.appendChild(tempContainer);
-            } catch(e) {}
+            } catch(e) {
+                console.error('Errore ricerca:', e);
+            }
         }
 
         function renderSingleTrackRow(t, idx, sectionTracks) {
@@ -1369,17 +1026,12 @@
             
             document.getElementById('artistNameTitle').innerText = artistName;
             container.innerHTML = '<p style="color:var(--text-sub);">Caricamento in corso...</p>';
-            currentArtistContext = { name: artistName, image: artistImageOverride || '' };
-            const discogContainer = document.getElementById('artistDiscographyContainer');
-            const discogStatus = document.getElementById('discographyStatusText');
-            if (discogContainer) discogContainer.innerHTML = '';
-            if (discogStatus) discogStatus.innerText = 'Tocca "Riproduci Discografia" per caricare tutti i brani dell\'artista in un unico player sequenziale.';
             
             heroImgEl.style.opacity = '0.5';
             heroImgEl.src = artistImageOverride || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
             try {
-                let response = await fetch(`/api/search?q=${encodeURIComponent(artistName)}`);
+                let response = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artistName)}`);
                 let tracks = await response.json();
                 
                 if (Array.isArray(tracks) && tracks.length > 0) {
@@ -1418,13 +1070,26 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
-                hybridFallbackAttempted = false;
-                logSessionEvent(t, navigator.onLine ? 'online' : 'offline');
-                updateHybridStatusUI();
                 
-                if(player && player.loadVideoById) {
+                if (player && player.loadVideoById && playerReady) {
                     player.loadVideoById(t.id);
-                    player.playVideo();
+                    setTimeout(() => {
+                        player.playVideo();
+                        isPlaying = true;
+                        updatePlayIcons(true);
+                    }, 300);
+                } else {
+                    const youtubeContainer = document.getElementById('youtube-player');
+                    youtubeContainer.innerHTML = `
+                        <iframe 
+                            width="100%" 
+                            height="100%" 
+                            src="https://www.youtube.com/embed/${t.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    `;
                     isPlaying = true;
                     updatePlayIcons(true);
                 }
@@ -1438,6 +1103,7 @@
             document.getElementById('shareTrackSubtitle').innerText = `${currentTrackData.name} - ${currentTrackData.artist}`;
             document.getElementById('share-modal').classList.add('active');
         }
+        
         function closeShareModal() { document.getElementById('share-modal').classList.remove('active'); }
 
         function copyTrackLink() {
@@ -1458,6 +1124,7 @@
             if(!currentUser) return openAuthModal();
             document.getElementById('new-playlist-modal').classList.add('active');
         }
+        
         function closeNewPlaylistModal() { document.getElementById('new-playlist-modal').classList.remove('active'); }
 
         function submitNewPlaylist() {
@@ -1653,33 +1320,81 @@
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
-                height: '200', width: '200',
-                playerVars: { 'autoplay': 1, 'controls': 0, 'enablejsapi': 1 },
+                height: '200', 
+                width: '200',
+                playerVars: { 
+                    'autoplay': 1, 
+                    'controls': 0, 
+                    'enablejsapi': 1,
+                    'rel': 0,
+                    'playsinline': 1,
+                    'origin': window.location.origin
+                },
                 events: {
-                    'onStateChange': (e) => {
-                        if(e.data === YT.PlayerState.PLAYING) { isPlaying = true; updatePlayIcons(true); startProgressTracker(); }
-                        if(e.data === YT.PlayerState.PAUSED) { isPlaying = false; updatePlayIcons(false); clearInterval(progressInterval); }
-                        if(e.data === YT.PlayerState.ENDED) { nextTrack(); }
+                    'onReady': () => {
+                        playerReady = true;
+                        console.log('Player YouTube pronto');
                     },
-                    'onError': () => { resolveHybridFallback(); }
+                    'onStateChange': (e) => {
+                        if(e.data === YT.PlayerState.PLAYING) { 
+                            isPlaying = true; 
+                            updatePlayIcons(true); 
+                            startProgressTracker(); 
+                        }
+                        if(e.data === YT.PlayerState.PAUSED) { 
+                            isPlaying = false; 
+                            updatePlayIcons(false); 
+                            clearInterval(progressInterval); 
+                        }
+                        if(e.data === YT.PlayerState.ENDED) { 
+                            nextTrack(); 
+                        }
+                    },
+                    'onError': (e) => {
+                        console.error('Errore player YouTube:', e);
+                        if (currentTrackData.id) {
+                            const youtubeContainer = document.getElementById('youtube-player');
+                            youtubeContainer.innerHTML = `
+                                <iframe 
+                                    width="100%" 
+                                    height="100%" 
+                                    src="https://www.youtube.com/embed/${currentTrackData.id}?autoplay=1&origin=${window.location.origin}" 
+                                    frameborder="0" 
+                                    allowfullscreen>
+                                </iframe>
+                            `;
+                        }
+                    }
                 }
             });
         }
 
         function togglePlay() {
             if(!player) return;
-            if(isPlaying) { player.pauseVideo(); isPlaying = false; } 
-            else { player.playVideo(); isPlaying = true; }
+            if(isPlaying) { 
+                player.pauseVideo(); 
+                isPlaying = false; 
+            } else { 
+                player.playVideo(); 
+                isPlaying = true; 
+            }
             updatePlayIcons(isPlaying);
         }
 
         function updatePlayIcons(playing) {
-            document.getElementById('playPauseIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
-            document.getElementById('fsPlayIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
+            const playPauseIcon = document.getElementById('playPauseIcon');
+            const fsPlayIcon = document.getElementById('fsPlayIcon');
+            if(playPauseIcon) playPauseIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
+            if(fsPlayIcon) fsPlayIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
         }
 
-        function nextTrack() { if(queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1); }
-        function prevTrack() { if(queueIndex > 0) playQueueIndex(queueIndex - 1); }
+        function nextTrack() { 
+            if(queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1); 
+        }
+        
+        function prevTrack() { 
+            if(queueIndex > 0) playQueueIndex(queueIndex - 1); 
+        }
 
         function playQueueIndex(index) {
             if(index >= 0 && index < playQueue.length) {
@@ -1700,15 +1415,14 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
-                hybridFallbackAttempted = false;
-                logSessionEvent(t, navigator.onLine ? 'online' : 'offline');
-                updateHybridStatusUI();
                 
-                if(player && player.loadVideoById) {
+                if (player && player.loadVideoById && playerReady) {
                     player.loadVideoById(t.id);
-                    player.playVideo();
-                    isPlaying = true;
-                    updatePlayIcons(true);
+                    setTimeout(() => {
+                        player.playVideo();
+                        isPlaying = true;
+                        updatePlayIcons(true);
+                    }, 300);
                 }
             }
         }
@@ -1726,7 +1440,9 @@
             if(viewName === 'liked-songs') renderLikedSongsView();
         }
 
-        function toggleFullscreen() { document.getElementById('fullscreen-player').classList.toggle('active'); }
+        function toggleFullscreen() { 
+            document.getElementById('fullscreen-player').classList.toggle('active'); 
+        }
 
         function toggleLyricsView() {
             isLyricsActive = !isLyricsActive;
@@ -1869,19 +1585,27 @@
 
         function updateLikeButtonUI() {
             const isLiked = likedSongs.some(s => s.id === currentTrackData.id);
-            document.getElementById('fsLikeBtn').style.color = isLiked ? 'var(--accent)' : 'var(--text-sub)';
+            const fsLikeBtn = document.getElementById('fsLikeBtn');
+            const miniLikeBtn = document.getElementById('miniLikeBtn');
+            if(fsLikeBtn) fsLikeBtn.style.color = isLiked ? 'var(--accent)' : 'var(--text-sub)';
+            if(miniLikeBtn) {
+                miniLikeBtn.className = isLiked ? 'fas fa-heart' : 'far fa-heart';
+                miniLikeBtn.style.color = isLiked ? 'var(--accent)' : '';
+            }
         }
 
         function updateDownloadButtonUI() {
             const isDownloaded = downloadedTracks.some(s => s.id === currentTrackData.id);
-            document.getElementById('fsDownloadDirectBtn').style.color = isDownloaded ? 'var(--accent)' : 'var(--text-sub)';
+            const fsDownloadBtn = document.getElementById('fsDownloadDirectBtn');
+            if(fsDownloadBtn) fsDownloadBtn.style.color = isDownloaded ? 'var(--accent)' : 'var(--text-sub)';
         }
 
         function startProgressTracker() {
             clearInterval(progressInterval);
             progressInterval = setInterval(() => {
                 if(player && player.getCurrentTime && player.getDuration) {
-                    let cur = player.getCurrentTime(), dur = player.getDuration();
+                    let cur = player.getCurrentTime();
+                    let dur = player.getDuration();
                     if(dur) {
                         document.getElementById('progressBarFill').style.width = ((cur/dur)*100) + '%';
                         document.getElementById('currentTime').innerText = formatTime(cur);
@@ -1895,11 +1619,15 @@
         function seekTrack(event) {
             const bg = document.getElementById('progressBarBg');
             const rect = bg.getBoundingClientRect();
-            if(player && player.getDuration) player.seekTo(player.getDuration() * ((event.clientX - rect.left) / rect.width), true);
+            if(player && player.getDuration) {
+                const seekTo = player.getDuration() * ((event.clientX - rect.left) / rect.width);
+                player.seekTo(seekTo, true);
+            }
         }
 
         function formatTime(secs) {
-            let m = Math.floor(secs / 60), s = Math.floor(secs % 60);
+            let m = Math.floor(secs / 60);
+            let s = Math.floor(secs % 60);
             return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
     </script>
