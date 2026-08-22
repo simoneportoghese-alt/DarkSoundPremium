@@ -60,48 +60,31 @@
             visibility: hidden;
             pointer-events: none;
         }
-        
-        .splash-logo-icon {
-            font-size: 4rem;
-            color: var(--accent);
-            margin-bottom: 20px;
-            animation: bounce 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        .splash-title {
+        .splash-logo {
             font-size: 3rem;
             font-weight: 800;
-            color: white;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
-            animation: glow 2s ease-in-out infinite;
+            color: var(--accent);
+            margin-bottom: 20px;
+            animation: pulse 1.5s ease-in-out infinite;
         }
-        
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 0 10px rgba(48, 209, 88, 0.8), 0 0 20px rgba(48, 209, 88, 0.5), 0 0 30px rgba(48, 209, 88, 0.3); }
-            50% { text-shadow: 0 0 20px rgba(48, 209, 88, 1), 0 0 40px rgba(48, 209, 88, 0.8), 0 0 60px rgba(48, 209, 88, 0.5); }
+        .splash-logo i {
+            font-size: 4rem;
+            display: block;
+            text-align: center;
         }
-        
-        .splash-credit {
-            font-size: 1.1rem;
+        .splash-by {
+            font-size: 1rem;
             color: var(--text-sub);
-            margin-bottom: 30px;
-            font-weight: 500;
-            letter-spacing: 2px;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
             animation: fadeInUp 1s ease-in-out forwards;
             opacity: 0;
         }
-        
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
         .splash-loading {
             width: 200px;
             height: 4px;
@@ -123,17 +106,9 @@
             60% { width: 75%; }
             100% { width: 100%; }
         }
-        
-        .splash-status {
-            color: var(--text-sub);
-            margin-top: 15px;
-            font-size: 0.85rem;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        
         @keyframes pulse {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+            50% { opacity: 0.5; }
         }
 
         .view { 
@@ -256,11 +231,9 @@
         .auth-btn.secondary {
             background: rgba(255,255,255,0.1); color: white;
         }
-        .auth-btn.secondary:hover { box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
         .auth-btn.danger {
             background: rgba(255,77,77,0.2); color: #ff4d4d;
         }
-        .auth-btn.danger:hover { box-shadow: 0 10px 20px rgba(255,77,77,0.2); }
 
         .genre-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
         .genre-tag {
@@ -489,7 +462,6 @@
         .nav-item:hover { color: white; }
         .nav-item.active { color: var(--text-main); }
         #youtube-player { position: fixed; bottom: 0; right: 0; width: 200px; height: 150px; opacity: 0.01; pointer-events: none; z-index: -1000; }
-        #audio-player { display: none; }
 
         #artistHeroImg {
             transition: opacity 0.3s ease-in-out;
@@ -564,15 +536,15 @@
 <body>
 
     <div id="splash-screen">
-        <div class="splash-logo-icon">
+        <div class="splash-logo">
             <i class="fas fa-headphones"></i>
+            DarkSound Pro
         </div>
-        <div class="splash-title">DarkSound Pro</div>
-        <div class="splash-credit">by DarkSW</div>
+        <div class="splash-by">by DarkSW</div>
         <div class="splash-loading">
             <div class="splash-loading-bar"></div>
         </div>
-        <p class="splash-status">Caricamento in corso...</p>
+        <p style="color: var(--text-sub); margin-top: 15px; font-size: 0.85rem;">Caricamento in corso...</p>
     </div>
 
     <div id="profileDrawer" class="profile-drawer">
@@ -1019,7 +991,6 @@
     </div>
 
     <div id="youtube-player"></div>
-    <audio id="audio-player"></audio>
 
     <div class="player-bar" id="playerBar" onclick="toggleFullscreen()">
         <img id="playerImg" src="">
@@ -1043,7 +1014,6 @@
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         let player = null;
-        let audioPlayer = null;
         let isPlaying = false;
         let playQueue = [];
         let queueIndex = -1;
@@ -1068,7 +1038,6 @@
         let isShuffleActive = false;
         let isRepeatActive = false;
         let autoPlaylists = JSON.parse(localStorage.getItem(currentUser ? `auto_playlists_${currentUser}` : 'darksound_auto_playlists') || '[]');
-        let useAudioElement = false;
 
         const API_BASE = window.location.origin;
 
@@ -1109,7 +1078,6 @@
         }
 
         window.onload = function() {
-            initAudioPlayer();
             updateUserUI();
             loadHomeTracks();
             updateCountdown();
@@ -1124,85 +1092,6 @@
                 setTimeout(() => openOnboardingModal(), 2600);
             }
         };
-
-        function initAudioPlayer() {
-            audioPlayer = document.getElementById('audio-player');
-            audioPlayer.addEventListener('play', () => {
-                isPlaying = true;
-                updatePlayIcons(true);
-                startProgressTracker();
-                updateMediaSession();
-            });
-            audioPlayer.addEventListener('pause', () => {
-                isPlaying = false;
-                updatePlayIcons(false);
-                clearInterval(progressInterval);
-            });
-            audioPlayer.addEventListener('ended', () => {
-                if(isRepeatActive) {
-                    audioPlayer.currentTime = 0;
-                    audioPlayer.play();
-                } else {
-                    nextTrack();
-                }
-            });
-            audioPlayer.addEventListener('error', () => {
-                console.error('Errore audio player');
-                if (player && playerReady) {
-                    useAudioElement = false;
-                    playWithYouTube(currentTrackData);
-                }
-            });
-            audioPlayer.addEventListener('timeupdate', () => {
-                if (audioPlayer.duration) {
-                    updateProgress(audioPlayer.currentTime, audioPlayer.duration);
-                }
-            });
-        }
-
-        function updateMediaSession() {
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: currentTrackData.name,
-                    artist: currentTrackData.artist,
-                    album: 'DarkSound Pro',
-                    artwork: [
-                        { src: currentTrackData.image, sizes: '96x96', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '128x128', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '192x192', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '256x256', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '384x384', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '512x512', type: 'image/jpeg' }
-                    ]
-                });
-
-                navigator.mediaSession.setActionHandler('play', () => {
-                    togglePlay();
-                });
-                navigator.mediaSession.setActionHandler('pause', () => {
-                    togglePlay();
-                });
-                navigator.mediaSession.setActionHandler('previoustrack', () => {
-                    prevTrack();
-                });
-                navigator.mediaSession.setActionHandler('nexttrack', () => {
-                    nextTrack();
-                });
-                navigator.mediaSession.setActionHandler('seekto', (details) => {
-                    if (details.seekTime !== undefined) {
-                        seekTo(details.seekTime);
-                    }
-                });
-            }
-        }
-
-        function seekTo(time) {
-            if (useAudioElement && audioPlayer) {
-                audioPlayer.currentTime = time;
-            } else if (player && player.seekTo) {
-                player.seekTo(time, true);
-            }
-        }
 
         function loadAllUsers() {
             const stored = localStorage.getItem('darksound_all_users');
@@ -1976,23 +1865,14 @@
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
                 
-                if (audioPlayer && t.audioUrl) {
-                    useAudioElement = true;
-                    audioPlayer.src = t.audioUrl;
-                    audioPlayer.play().then(() => {
+                if (player && player.loadVideoById && playerReady) {
+                    player.loadVideoById(t.id);
+                    setTimeout(() => {
+                        player.playVideo();
                         isPlaying = true;
                         updatePlayIcons(true);
-                        updateMediaSession();
-                    }).catch(err => {
-                        console.error('Errore audio element:', err);
-                        useAudioElement = false;
-                        playWithYouTube(t);
-                    });
-                } else if (player && player.loadVideoById && playerReady) {
-                    useAudioElement = false;
-                    playWithYouTube(t);
+                    }, 300);
                 } else {
-                    useAudioElement = false;
                     const youtubeContainer = document.getElementById('youtube-player');
                     youtubeContainer.innerHTML = `
                         <iframe 
@@ -2006,22 +1886,9 @@
                     `;
                     isPlaying = true;
                     updatePlayIcons(true);
-                    updateMediaSession();
                 }
             } catch(err) {
                 console.error("Errore nella riproduzione del brano:", err);
-            }
-        }
-
-        function playWithYouTube(t) {
-            if (player && player.loadVideoById) {
-                player.loadVideoById(t.id);
-                setTimeout(() => {
-                    player.playVideo();
-                    isPlaying = true;
-                    updatePlayIcons(true);
-                    updateMediaSession();
-                }, 300);
             }
         }
 
@@ -2278,7 +2145,6 @@
                             isPlaying = true; 
                             updatePlayIcons(true); 
                             startProgressTracker(); 
-                            updateMediaSession();
                         }
                         if(e.data === YT.PlayerState.PAUSED) { 
                             isPlaying = false; 
@@ -2316,22 +2182,15 @@
         }
 
         function togglePlay() {
-            if (useAudioElement && audioPlayer) {
-                if (isPlaying) {
-                    audioPlayer.pause();
-                } else {
-                    audioPlayer.play();
-                }
-            } else if (player) {
-                if(isPlaying) { 
-                    player.pauseVideo(); 
-                    isPlaying = false; 
-                } else { 
-                    player.playVideo(); 
-                    isPlaying = true; 
-                }
-                updatePlayIcons(isPlaying);
+            if(!player) return;
+            if(isPlaying) { 
+                player.pauseVideo(); 
+                isPlaying = false; 
+            } else { 
+                player.playVideo(); 
+                isPlaying = true; 
             }
+            updatePlayIcons(isPlaying);
         }
 
         function updatePlayIcons(playing) {
@@ -2393,20 +2252,13 @@
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
                 
-                if (useAudioElement && audioPlayer && t.audioUrl) {
-                    audioPlayer.src = t.audioUrl;
-                    audioPlayer.play().then(() => {
+                if (player && player.loadVideoById && playerReady) {
+                    player.loadVideoById(t.id);
+                    setTimeout(() => {
+                        player.playVideo();
                         isPlaying = true;
                         updatePlayIcons(true);
-                        updateMediaSession();
-                    }).catch(err => {
-                        console.error('Errore audio element:', err);
-                        useAudioElement = false;
-                        if (player && playerReady) playWithYouTube(t);
-                    });
-                } else if (player && player.loadVideoById && playerReady) {
-                    useAudioElement = false;
-                    playWithYouTube(t);
+                    }, 300);
                 }
             }
         }
@@ -2524,11 +2376,7 @@
         }
 
         function seekToLyric(timeSec) {
-            if (useAudioElement && audioPlayer) {
-                audioPlayer.currentTime = timeSec;
-            } else if(player && player.seekTo) {
-                player.seekTo(timeSec, true);
-            }
+            if(player && player.seekTo) player.seekTo(timeSec, true);
         }
 
         function updateActiveLyric(currentTime) {
@@ -2593,27 +2441,17 @@
             if(fsDownloadBtn) fsDownloadBtn.style.color = isDownloaded ? 'var(--accent)' : 'var(--text-sub)';
         }
 
-        function updateProgress(currentTime, duration) {
-            if(duration) {
-                document.getElementById('progressBarFill').style.width = ((currentTime/duration)*100) + '%';
-                document.getElementById('currentTime').innerText = formatTime(currentTime);
-                document.getElementById('totalDuration').innerText = formatTime(duration);
-                updateActiveLyric(currentTime);
-            }
-        }
-
         function startProgressTracker() {
             clearInterval(progressInterval);
             progressInterval = setInterval(() => {
-                if (useAudioElement && audioPlayer) {
-                    if (audioPlayer.duration) {
-                        updateProgress(audioPlayer.currentTime, audioPlayer.duration);
-                    }
-                } else if(player && player.getCurrentTime && player.getDuration) {
+                if(player && player.getCurrentTime && player.getDuration) {
                     let cur = player.getCurrentTime();
                     let dur = player.getDuration();
                     if(dur) {
-                        updateProgress(cur, dur);
+                        document.getElementById('progressBarFill').style.width = ((cur/dur)*100) + '%';
+                        document.getElementById('currentTime').innerText = formatTime(cur);
+                        document.getElementById('totalDuration').innerText = formatTime(dur);
+                        updateActiveLyric(cur);
                     }
                 }
             }, 500);
@@ -2622,12 +2460,9 @@
         function seekTrack(event) {
             const bg = document.getElementById('progressBarBg');
             const rect = bg.getBoundingClientRect();
-            const seekTime = ((event.clientX - rect.left) / rect.width);
-            
-            if (useAudioElement && audioPlayer && audioPlayer.duration) {
-                audioPlayer.currentTime = seekTime * audioPlayer.duration;
-            } else if(player && player.getDuration) {
-                player.seekTo(player.getDuration() * seekTime, true);
+            if(player && player.getDuration) {
+                const seekTo = player.getDuration() * ((event.clientX - rect.left) / rect.width);
+                player.seekTo(seekTo, true);
             }
         }
 
