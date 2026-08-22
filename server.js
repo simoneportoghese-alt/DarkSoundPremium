@@ -2,7 +2,6 @@ const express = require('express');
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 const cors = require('cors');
-
 const app = express();
 const PORT = 3000;
 
