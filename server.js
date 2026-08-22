@@ -2,16 +2,15 @@ const express = require('express');
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 const cors = require('cors');
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Cache per le ricerche
 const searchCache = new Map();
-const streamCache = new Map();
 
 app.get('/api/search', async (req, res) => {
     const query = req.query.q;
@@ -38,11 +37,7 @@ app.get('/api/search', async (req, res) => {
                 audioUrl: `/api/stream/${item.id}`
             }));
         
-        searchCache.set(cacheKey, {
-            timestamp: Date.now(),
-            results: tracks
-        });
-        
+        searchCache.set(cacheKey, { timestamp: Date.now(), results: tracks });
         res.json(tracks);
     } catch (error) {
         console.error('Errore ricerca:', error);
@@ -50,36 +45,18 @@ app.get('/api/search', async (req, res) => {
     }
 });
 
-// Endpoint per lo streaming audio
 app.get('/api/stream/:videoId', async (req, res) => {
     const videoId = req.params.videoId;
     
     try {
-        // Verifica cache
-        if (streamCache.has(videoId)) {
-            const cached = streamCache.get(videoId);
-            if (Date.now() - cached.timestamp < 3600000) {
-                res.setHeader('Content-Type', 'audio/mpeg');
-                res.setHeader('Accept-Ranges', 'bytes');
-                res.setHeader('Cache-Control', 'public, max-age=3600');
-                return res.send(cached.buffer);
-            }
-        }
-        
-        const info = await ytdl.getInfo(videoId);
-        const audioFormat = ytdl.chooseFormat(info.formats, { 
-            quality: 'highestaudio',
-            filter: 'audioonly'
-        });
-        
         res.setHeader('Content-Type', 'audio/mpeg');
         res.setHeader('Accept-Ranges', 'bytes');
-        res.setHeader('Cache-Control', 'public, max-age=3600');
+        res.setHeader('Cache-Control', 'no-cache');
         
-        // Stream audio
-        const stream = ytdl(videoId, { 
-            format: audioFormat,
-            quality: 'highestaudio'
+        const stream = ytdl(videoId, {
+            quality: 'highestaudio',
+            filter: 'audioonly',
+            highWaterMark: 1024 * 1024
         });
         
         stream.pipe(res);
@@ -98,25 +75,13 @@ app.get('/api/stream/:videoId', async (req, res) => {
     }
 });
 
-// Endpoint per ottenere info audio
-app.get('/api/audio-info/:videoId', async (req, res) => {
-    try {
-        const info = await ytdl.getInfo(req.params.videoId);
-        const audioFormat = ytdl.chooseFormat(info.formats, { 
-            quality: 'highestaudio',
-            filter: 'audioonly'
-        });
-        
-        res.json({
-            title: info.videoDetails.title,
-            author: info.videoDetails.author.name,
-            thumbnail: info.videoDetails.thumbnails[0]?.url,
-            audioUrl: audioFormat.url,
-            duration: info.videoDetails.lengthSeconds
-        });
-    } catch (error) {
-        res.status(404).json({ error: 'Video non trovato' });
-    }
+app.get('/sw.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    res.sendFile(path.join(__dirname, 'public', 'sw.js'));
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, () => {
