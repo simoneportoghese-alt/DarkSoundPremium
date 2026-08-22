@@ -6,6 +6,9 @@
     <title>DarkSound Pro - Ultimate Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="DarkSound Pro">
     <style>
         :root {
             --bg-base: #000000;
@@ -38,7 +41,6 @@
             background-attachment: fixed;
         }
 
-        /* Splash Screen */
         #splash-screen {
             position: fixed;
             top: 0;
@@ -59,7 +61,6 @@
             pointer-events: none;
         }
         
-        /* Animazione per l'icona */
         .splash-logo-icon {
             font-size: 4rem;
             color: var(--accent);
@@ -72,7 +73,6 @@
             50% { transform: translateY(-20px); }
         }
         
-        /* Animazione per il testo DarkSound Pro */
         .splash-title {
             font-size: 3rem;
             font-weight: 800;
@@ -87,7 +87,6 @@
             50% { text-shadow: 0 0 20px rgba(48, 209, 88, 1), 0 0 40px rgba(48, 209, 88, 0.8), 0 0 60px rgba(48, 209, 88, 0.5); }
         }
         
-        /* Stile per il testo by DarkSW */
         .splash-credit {
             font-size: 1.1rem;
             color: var(--text-sub);
@@ -513,7 +512,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Profile page styles */
         .profile-hero {
             background: linear-gradient(135deg, #1f1147, #120b24);
             padding: 30px 20px;
@@ -565,7 +563,6 @@
 </head>
 <body>
 
-    <!-- Splash Screen -->
     <div id="splash-screen">
         <div class="splash-logo-icon">
             <i class="fas fa-headphones"></i>
@@ -578,7 +575,6 @@
         <p class="splash-status">Caricamento in corso...</p>
     </div>
 
-    <!-- Profile Drawer -->
     <div id="profileDrawer" class="profile-drawer">
         <div class="drawer-header">
             <div class="drawer-user-info">
@@ -627,7 +623,6 @@
         </div>
     </div>
 
-    <!-- Modals -->
     <div id="ai-dj-modal" class="modal-overlay">
         <div class="auth-card" style="text-align: center;">
             <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 1.8rem; color: white;">
@@ -804,7 +799,6 @@
         </div>
     </div>
 
-    <!-- Views -->
     <div id="view-home" class="view active">
         <div class="top-status-bar">
             <div class="badge-pro"><i class="fas fa-circle" style="font-size:0.45rem;"></i> LOSSLESS 24-BIT</div>
@@ -1048,7 +1042,6 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        // Variabili globali
         let player = null;
         let audioPlayer = null;
         let isPlaying = false;
@@ -1983,7 +1976,6 @@
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
                 
-                // Try audio element first for background playback
                 if (audioPlayer && t.audioUrl) {
                     useAudioElement = true;
                     audioPlayer.src = t.audioUrl;
