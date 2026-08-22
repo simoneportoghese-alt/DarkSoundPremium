@@ -1634,7 +1634,30 @@
             updateUserUI();
         }
 
-        function playSelectedTrack(encodedTrack, encodedQueue, index) {
+                function playSelectedTrack(encodedTrack, encodedQueue, index) {
+            try {
+                const t = JSON.parse(decodeURIComponent(escape(atob(encodedTrack))));
+                const queue = JSON.parse(decodeURIComponent(escape(atob(encodedQueue))));
+                playQueue = queue;
+                queueIndex = index;
+                currentTrackData = t;
+                document.getElementById('playerBar').style.display = 'flex';
+                document.getElementById('playerTitle').innerText = t.name;
+                document.getElementById('playerArtist').innerText = t.artist;
+                document.getElementById('playerImg').src = t.image;
+                document.getElementById('fsTitle').innerText = t.name;
+                document.getElementById('fsArtist').innerText = t.artist;
+                document.getElementById('fsCover').src = t.image;
+                document.getElementById('canvasBgLayer').style.backgroundImage = `url('${t.image}')`;
+                loadLyricsForCurrentTrack();
+                updateLikeButtonUI();
+                updateDownloadButtonUI();
+                updateMediaSessionMetadata();
+                document.getElementById('playPauseIcon').className = 'fas fa-spinner fa-spin';
+                document.getElementById('fsPlayIcon').className = 'fas fa-spinner fa-spin';
+                playWithInvidious(t);
+            } catch(err) { console.error("Errore riproduzione:", err); }
+        }
             try {
                 const t = JSON.parse(decodeURIComponent(escape(atob(encodedTrack))));
                 const queue = JSON.parse(decodeURIComponent(escape(atob(encodedQueue))));
