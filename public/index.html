@@ -12,6 +12,9 @@
             --text-main: #ffffff;
             --text-sub: #98989f;
             --accent: #30d158;
+            --accent-blue: #007aff;
+            --accent-purple: #7928ca;
+            --accent-pink: #ff007f;
             --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
         }
 
@@ -32,6 +35,63 @@
             background-image: radial-gradient(circle at 10% 20%, rgba(48, 48, 80, 0.25) 0%, transparent 40%),
                               radial-gradient(circle at 90% 80%, rgba(80, 30, 60, 0.2) 0%, transparent 40%);
             background-attachment: fixed;
+        }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .splash-logo {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 20px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        .splash-logo i {
+            font-size: 4rem;
+            display: block;
+            text-align: center;
+        }
+        .splash-loading {
+            width: 200px;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .splash-loading-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            animation: loading 2s ease-in-out forwards;
+        }
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         .view { 
@@ -113,7 +173,9 @@
             display: flex; align-items: center; justify-content: space-between;
             padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
             color: white; font-weight: 600; font-size: 1rem; cursor: pointer;
+            transition: all 0.2s ease;
         }
+        .drawer-menu-item:hover { background: rgba(255,255,255,0.05); padding-left: 8px; }
         .drawer-menu-item i { font-size: 1.2rem; color: var(--text-sub); width: 30px; }
         .drawer-menu-left { display: flex; align-items: center; gap: 12px; }
 
@@ -144,7 +206,10 @@
         .auth-btn {
             width: 100%; background: var(--accent); color: black; font-weight: 800; padding: 14px;
             border-radius: 12px; border: none; font-size: 1rem; cursor: pointer; margin-top: 10px;
+            transition: all 0.2s ease;
         }
+        .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(48,209,88,0.3); }
+        .auth-btn:active { transform: scale(0.98); }
 
         .genre-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
         .genre-tag {
@@ -204,19 +269,26 @@
         .btn-action-primary {
             background: var(--accent); color: black; font-weight: 700; border: none; 
             padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 0.85rem;
+            transition: all 0.2s ease;
         }
+        .btn-action-primary:hover { transform: translateY(-2px); }
+        .btn-action-primary:active { transform: scale(0.95); }
 
         .chip {
             background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.08);
             color: white; padding: 10px 18px; border-radius: 20px; 
             font-size: 0.95rem; font-weight: 600; cursor: pointer; white-space: nowrap; 
+            transition: all 0.2s ease;
         }
+        .chip:hover { background: rgba(255,255,255,0.15); }
         .chip.active { background: white; color: black; border-color: white; }
 
         .share-option-btn {
             display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px; background: rgba(255,255,255,0.06);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; font-weight: 700; font-size: 1rem; cursor: pointer; margin-bottom: 10px;
+            transition: all 0.2s ease;
         }
+        .share-option-btn:hover { background: rgba(255,255,255,0.12); }
         .share-option-btn i { font-size: 1.3rem; }
 
         .player-bar {
@@ -285,6 +357,7 @@
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
             color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
             cursor: pointer; display: flex; align-items: center; gap: 6px;
+            transition: all 0.2s ease;
         }
         .lyrics-toggle-btn.active { background: var(--accent); color: black; border-color: var(--accent); }
 
@@ -312,7 +385,9 @@
             display: flex; flex-direction: column; align-items: center; gap: 3px; 
             color: var(--text-sub); font-size: 0.75rem; font-weight: 600; 
             cursor: pointer; background: none; border: none; padding: 6px 16px; 
+            transition: all 0.2s ease;
         }
+        .nav-item:hover { color: white; }
         .nav-item.active { color: var(--text-main); }
         #youtube-player { position: fixed; bottom: 0; right: 0; width: 200px; height: 150px; opacity: 0.01; pointer-events: none; z-index: -1000; }
 
@@ -323,9 +398,35 @@
         #artistTracksContainer {
             min-height: 200px;
         }
+
+        /* Quick loading indicator */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="splash-logo">
+            <i class="fas fa-headphones"></i>
+            DarkSound Pro
+        </div>
+        <div class="splash-loading">
+            <div class="splash-loading-bar"></div>
+        </div>
+        <p style="color: var(--text-sub); margin-top: 15px; font-size: 0.85rem;">Caricamento in corso...</p>
+    </div>
 
     <div id="profileDrawer" class="profile-drawer">
         <div class="drawer-header">
@@ -694,11 +795,11 @@
         </div>
 
         <div class="fs-controls">
-            <i class="fas fa-random" style="color:var(--text-sub); cursor:pointer;"></i>
+            <i class="fas fa-random" style="color:var(--text-sub); cursor:pointer;" onclick="toggleShuffle()"></i>
             <i class="fas fa-step-backward" style="cursor:pointer;" onclick="prevTrack()"></i>
             <div class="fs-play-btn" onclick="togglePlay()"><i class="fas fa-play" id="fsPlayIcon"></i></div>
             <i class="fas fa-step-forward" style="cursor:pointer;" onclick="nextTrack()"></i>
-            <i class="fas fa-redo" style="color:var(--text-sub); cursor:pointer;"></i>
+            <i class="fas fa-redo" style="color:var(--text-sub); cursor:pointer;" onclick="toggleRepeat()"></i>
         </div>
     </div>
 
@@ -724,6 +825,7 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
+        // Variabili globali
         let player = null;
         let isPlaying = false;
         let playQueue = [];
@@ -743,17 +845,34 @@
         let isLyricsActive = false;
         let parsedSyncedLyrics = [];
         let playerReady = false;
+        let isShuffleActive = false;
+        let isRepeatActive = false;
 
         const API_BASE = window.location.origin;
+
+        // Splash screen
+        function hideSplashScreen() {
+            const splash = document.getElementById('splash-screen');
+            if (splash) {
+                splash.classList.add('hidden');
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 500);
+            }
+        }
 
         window.onload = function() {
             updateUserUI();
             loadHomeTracks();
             updateCountdown();
+            
+            // Hide splash after loading
+            setTimeout(hideSplashScreen, 2500);
+            
             if(!currentUser) {
-                setTimeout(() => openAuthModal(), 400);
+                setTimeout(() => openAuthModal(), 2600);
             } else if(!userPreferences) {
-                setTimeout(() => openOnboardingModal(), 400);
+                setTimeout(() => openOnboardingModal(), 2600);
             }
         };
 
@@ -1025,7 +1144,7 @@
             const container = document.getElementById('artistTracksContainer');
             
             document.getElementById('artistNameTitle').innerText = artistName;
-            container.innerHTML = '<p style="color:var(--text-sub);">Caricamento in corso...</p>';
+            container.innerHTML = '<p style="color:var(--text-sub);"><span class="loading-spinner"></span> Caricamento in corso...</p>';
             
             heroImgEl.style.opacity = '0.5';
             heroImgEl.src = artistImageOverride || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
@@ -1347,7 +1466,14 @@
                             clearInterval(progressInterval); 
                         }
                         if(e.data === YT.PlayerState.ENDED) { 
-                            nextTrack(); 
+                            if(isRepeatActive) {
+                                if(player && player.seekTo) {
+                                    player.seekTo(0);
+                                    player.playVideo();
+                                }
+                            } else {
+                                nextTrack(); 
+                            }
                         }
                     },
                     'onError': (e) => {
@@ -1388,8 +1514,32 @@
             if(fsPlayIcon) fsPlayIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
         }
 
+        function toggleShuffle() {
+            isShuffleActive = !isShuffleActive;
+            const shuffleBtn = document.querySelector('.fs-controls .fa-random');
+            if(shuffleBtn) {
+                shuffleBtn.style.color = isShuffleActive ? 'var(--accent)' : 'var(--text-sub)';
+            }
+        }
+
+        function toggleRepeat() {
+            isRepeatActive = !isRepeatActive;
+            const repeatBtn = document.querySelector('.fs-controls .fa-redo');
+            if(repeatBtn) {
+                repeatBtn.style.color = isRepeatActive ? 'var(--accent)' : 'var(--text-sub)';
+            }
+        }
+
         function nextTrack() { 
-            if(queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1); 
+            if(isShuffleActive && playQueue.length > 0) {
+                let randomIdx = Math.floor(Math.random() * playQueue.length);
+                if(randomIdx === queueIndex && playQueue.length > 1) {
+                    randomIdx = (randomIdx + 1) % playQueue.length;
+                }
+                playQueueIndex(randomIdx);
+            } else {
+                if(queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1); 
+            }
         }
         
         function prevTrack() { 
