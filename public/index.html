@@ -817,6 +817,31 @@
         }
         .download-all-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(48, 209, 88, 0.5); }
         .download-all-btn:active { transform: scale(0.95); }
+
+        .playlist-search-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--backdrop-blur));
+            -webkit-backdrop-filter: blur(var(--backdrop-blur));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.4s var(--transition-smooth);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .playlist-search-card:hover { 
+            background: var(--bg-glass-hover); 
+            transform: translateY(-2px);
+            border-color: var(--border-glass-strong);
+        }
+        .playlist-search-card:active { transform: scale(0.97); }
+        .playlist-search-card i { font-size: 1.8rem; color: var(--accent); }
+        .playlist-search-card-info { flex: 1; }
+        .playlist-search-card-info h3 { font-size: 1rem; font-weight: 700; color: white; margin-bottom: 4px; }
+        .playlist-search-card-info p { font-size: 0.8rem; color: var(--text-sub); }
     </style>
 </head>
 <body>
@@ -1161,13 +1186,18 @@
         <div class="genre-box">
             <div class="section-title" style="font-size:1rem; margin-bottom:8px;">Scegli un genere</div>
             <div class="genre-chips" id="genreChips">
-                <button class="genre-chip" onclick="filterByGenre(this, '')">Tutti</button>
+                <button class="genre-chip active" onclick="filterByGenre(this, '')">Tutti</button>
                 <button class="genre-chip" onclick="filterByGenre(this, 'Pop')">Pop</button>
                 <button class="genre-chip" onclick="filterByGenre(this, 'Rap')">Rap</button>
                 <button class="genre-chip" onclick="filterByGenre(this, 'Rock')">Rock</button>
                 <button class="genre-chip" onclick="filterByGenre(this, 'Techno')">Techno</button>
-                <button class="genre-chip" onclick="filterByGenre(this, 'Jazz')">Jazz</button>
-                <button class="genre-chip" onclick="filterByGenre(this, 'Latin')">Latin</button>
+                <button class="genre-chip" onclick="filterByGenre(this, 'Phonk')">Phonk</button>
+                <button class="genre-chip" onclick="filterByGenre(this, 'Trap')">Trap</button>
+                <button class="genre-chip" onclick="filterByGenre(this, 'Drill')">Drill</button>
+                <button class="genre-chip" onclick="filterByGenre(this, 'Indie')">Indie</button>
+                <button class="genre-chip" onclick="filterByGenre(this, 'Metal')">Metal</button>
+                <button class="genre-chip" onclick="filterByGenre(this, 'Lo-fi')">Lo-fi</button>
+                <button class="genre-chip" onclick="filterByGenre(this, 'Dance')">Dance</button>
             </div>
         </div>
         <div id="homeTracksContainer"><p style="color:var(--text-sub);">Caricamento...</p></div>
@@ -1177,7 +1207,7 @@
         <h1 class="home-title">Cerca</h1>
         <div class="search-box">
             <i class="fas fa-search" style="color: var(--text-sub);"></i>
-            <input type="text" id="spotifySearchInput" placeholder="Cerca artisti, brani o playlist..." oninput="handleSearchInput(this.value)">
+            <input type="text" id="spotifySearchInput" placeholder="Cerca artisti, brani, playlist o generi..." oninput="handleSearchInput(this.value)">
         </div>
         <div id="searchResultsContainer" style="margin-top:24px;"></div>
     </div>
@@ -1427,7 +1457,13 @@
             'future': ['Drake', 'Travis Scott', '21 Savage', 'J. Cole', 'Kendrick Lamar'],
             '21 savage': ['Drake', 'Travis Scott', 'Future', 'J. Cole', 'Kendrick Lamar'],
             'j. cole': ['Drake', 'Travis Scott', 'Future', '21 Savage', 'Kendrick Lamar'],
-            'kendrick lamar': ['Drake', 'Travis Scott', 'Future', '21 Savage', 'J. Cole']
+            'kendrick lamar': ['Drake', 'Travis Scott', 'Future', '21 Savage', 'J. Cole'],
+            'ogryzek': ['Mxzi', 'Kaito Shoma', 'Dxrk ダーク', 'MoonDeity', 'INTERWORLD'],
+            'mxzi': ['Ogryzek', 'Kaito Shoma', 'Dxrk ダーク', 'MoonDeity', 'INTERWORLD'],
+            'kaito shoma': ['Ogryzek', 'Mxzi', 'Dxrk ダーク', 'MoonDeity', 'INTERWORLD'],
+            'dxrk': ['Ogryzek', 'Mxzi', 'Kaito Shoma', 'MoonDeity', 'INTERWORLD'],
+            'moondeity': ['Ogryzek', 'Mxzi', 'Kaito Shoma', 'Dxrk ダーク', 'INTERWORLD'],
+            'interworld': ['Ogryzek', 'Mxzi', 'Kaito Shoma', 'Dxrk ダーク', 'MoonDeity']
         };
 
         function hideSplashScreen() {
@@ -1739,6 +1775,28 @@
                 const artistRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
                 const artistTracks = await artistRes.json();
                 let html = '';
+                
+                // Cerca playlist pubbliche
+                const publicPlaylists = globalPublicPlaylists.filter(pl => 
+                    pl.name.toLowerCase().includes(query.toLowerCase()) ||
+                    pl.owner.toLowerCase().includes(query.toLowerCase())
+                );
+                
+                if (publicPlaylists.length > 0) {
+                    html += `<div class="section-title">Playlist Pubbliche</div>`;
+                    html += publicPlaylists.map(pl => `
+                        <div class="playlist-search-card" onclick="openPublicPlaylist('${pl.id}')">
+                            <i class="fas fa-list-music"></i>
+                            <div class="playlist-search-card-info">
+                                <h3>${pl.name}</h3>
+                                <p>di ${pl.owner} • ${pl.tracks.length} brani • <span class="badge-public">PUBBLICA</span></p>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color:var(--text-sub);"></i>
+                        </div>
+                    `).join('');
+                }
+                
+                // Cerca artisti (prima gli artisti)
                 const artists = [...new Set(artistTracks.map(t => t.artist))].slice(0, 8);
                 const allArtists = new Set(artists);
                 artists.forEach(artist => {
@@ -1752,6 +1810,7 @@
                     query.toLowerCase().includes(a.toLowerCase().split(' ')[0])
                 ).slice(0, 8);
                 const displayArtists = filteredArtists.length > 0 ? filteredArtists : artists;
+                
                 if (displayArtists.length > 0) {
                     html += `<div class="section-title">Artisti</div>`;
                     html += displayArtists.map(artist => {
@@ -1768,10 +1827,14 @@
                         `;
                     }).join('');
                 }
+                
+                // Poi le canzoni
                 if (artistTracks.length > 0) {
                     html += `<div class="section-title" style="margin-top:20px;">Brani principali</div>`;
-                    html += artistTracks.slice(0, 5).map((t, idx) => renderSingleTrackRow(t, idx, artistTracks)).join('');
+                    html += artistTracks.slice(0, 8).map((t, idx) => renderSingleTrackRow(t, idx, artistTracks)).join('');
                 }
+                
+                // Brani simili
                 const similarArtists = [];
                 artistTracks.forEach(t => {
                     const correlations = ARTIST_CORRELATIONS[t.artist?.toLowerCase()];
@@ -1793,6 +1856,7 @@
                         } catch(e) {}
                     }
                 }
+                
                 if (html === '') {
                     html = '<p style="color:var(--text-sub);">Nessun risultato trovato. Prova con un altro termine.</p>';
                 }
@@ -1965,7 +2029,6 @@
                 events: {
                     'onReady': () => { 
                         playerReady = true; 
-                        console.log('Player YouTube pronto'); 
                     },
                     'onStateChange': (e) => {
                         if(e.data === YT.PlayerState.PLAYING) { 
