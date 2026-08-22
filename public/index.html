@@ -1078,6 +1078,11 @@
         }
 
         window.onload = function() {
+            // Inizializza il player YouTube
+            if (typeof YT !== 'undefined' && YT.Player) {
+                onYouTubeIframeAPIReady();
+            }
+            
             updateUserUI();
             loadHomeTracks();
             updateCountdown();
@@ -1092,6 +1097,24 @@
                 setTimeout(() => openOnboardingModal(), 2600);
             }
         };
+
+        function updateMediaSessionMetadata() {
+            if ('mediaSession' in navigator && currentTrackData) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: currentTrackData.name || 'Brano sconosciuto',
+                    artist: currentTrackData.artist || 'Artista sconosciuto',
+                    album: 'DarkSound Pro',
+                    artwork: [
+                        { src: currentTrackData.image || 'https://picsum.photos/96', sizes: '96x96', type: 'image/jpeg' },
+                        { src: currentTrackData.image || 'https://picsum.photos/128', sizes: '128x128', type: 'image/jpeg' },
+                        { src: currentTrackData.image || 'https://picsum.photos/192', sizes: '192x192', type: 'image/jpeg' },
+                        { src: currentTrackData.image || 'https://picsum.photos/256', sizes: '256x256', type: 'image/jpeg' },
+                        { src: currentTrackData.image || 'https://picsum.photos/384', sizes: '384x384', type: 'image/jpeg' },
+                        { src: currentTrackData.image || 'https://picsum.photos/512', sizes: '512x512', type: 'image/jpeg' }
+                    ]
+                });
+            }
+        }
 
         function loadAllUsers() {
             const stored = localStorage.getItem('darksound_all_users');
@@ -1864,7 +1887,9 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
+                updateMediaSessionMetadata();
                 
+                // CARICA IL VIDEO NEL PLAYER YOUTUBE
                 if (player && player.loadVideoById && playerReady) {
                     player.loadVideoById(t.id);
                     setTimeout(() => {
@@ -1874,7 +1899,7 @@
                         startProgressTracker();
                     }, 300);
                 } else {
-                    // Fallback: ricrea l'iframe con autoplay
+                    // Se player non è pronto, usa l'iframe diretto
                     const youtubeContainer = document.getElementById('youtube-player');
                     youtubeContainer.innerHTML = `
                         <iframe 
@@ -2125,6 +2150,7 @@
             updateDownloadButtonUI();
         }
 
+        // FUNZIONE CHE VIENE CHIAMATA DALL'API YOUTUBE
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
                 height: '200', 
@@ -2140,7 +2166,7 @@
                 events: {
                     'onReady': () => {
                         playerReady = true;
-                        console.log('Player YouTube pronto');
+                        console.log('✅ Player YouTube pronto');
                     },
                     'onStateChange': (e) => {
                         if(e.data === YT.PlayerState.PLAYING) { 
@@ -2165,7 +2191,7 @@
                         }
                     },
                     'onError': (e) => {
-                        console.error('Errore player YouTube:', e);
+                        console.error('❌ Errore player YouTube:', e);
                         if (currentTrackData.id) {
                             const youtubeContainer = document.getElementById('youtube-player');
                             youtubeContainer.innerHTML = `
@@ -2253,6 +2279,7 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
+                updateMediaSessionMetadata();
                 
                 if (player && player.loadVideoById && playerReady) {
                     player.loadVideoById(t.id);
