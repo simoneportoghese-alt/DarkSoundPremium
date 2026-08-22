@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
+const yts = require('yt-search');
 
 const app = express();
 
@@ -21,45 +22,31 @@ app.get('/manifest.json', (req, res) => {
     res.sendFile(path.join(publicPath, 'manifest.json'));
 });
 
-// Endpoint API Ricerca (gestisce sia /api/search che /api/v1/search)
-app.get(['/api/search', '/api/v1/search'], (req, res) => {
-    const query = req.query.q || req.query.query || 'Dark';
-    
-    res.json({
-        success: true,
-        results: [
-            {
-                id: 'dQw4w9WgXcQ',
-                title: `${query} - Track Official`,
-                artist: 'DarkSound Artist',
-                image: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg'
-            },
-            {
-                id: 'fJ9rUzIMcZQ',
-                title: `${query} - Remix Edition`,
-                artist: 'DarkSound Studio',
-                image: 'https://img.youtube.com/vi/fJ9rUzIMcZQ/hqdefault.jpg'
-            },
-            {
-                id: 'L_LUpnjgPso',
-                title: `${query} - Live Performance`,
-                artist: 'DarkSound Live',
-                image: 'https://img.youtube.com/vi/L_LUpnjgPso/hqdefault.jpg'
-            }
-        ]
-    });
+// Ricerca nativa su YouTube tramite il server
+app.get(['/api/search', '/api/v1/search'], async (req, res) => {
+    const query = req.query.q || req.query.query || '';
+    if (!query) {
+        return res.json({ success: true, results: [] });
+    }
+
+    try {
+        const r = await yts(query);
+        const videos = r.videos.slice(0, 15);
+
+        const results = videos.map(v => ({
+            id: v.videoId,
+            title: v.title,
+            artist: v.author.name,
+            image: v.thumbnail || `https://img.youtube.com/vi/${v.videoId}/hqdefault.jpg`
+        }));
+
+        res.json({ success: true, results });
+    } catch (err) {
+        console.error('Errore ricerca YouTube:', err);
+        res.status(500).json({ success: false, error: 'Errore durante la ricerca' });
+    }
 });
 
-app.get('/api/radio', (req, res) => {
-    res.json({
-        success: true,
-        tracks: [
-            { id: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up', artist: 'Rick Astley', image: 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg' }
-        ]
-    });
-});
-
-// Serve index.html
 app.get('*', (req, res) => {
     const indexPath = path.join(publicPath, 'index.html');
     if (fs.existsSync(indexPath)) {
