@@ -312,6 +312,60 @@
         #artistTracksContainer {
             min-height: 200px;
         }
+
+        /* ==== Nuove funzionalità: stili aggiuntivi ==== */
+        .artist-action-row {
+            display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 18px 0;
+        }
+        .artist-action-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+            color: white; font-weight: 700; font-size: 0.85rem;
+            padding: 10px 16px; border-radius: 20px; cursor: pointer; white-space: nowrap;
+        }
+        .artist-action-btn.primary { background: var(--accent); color: black; border-color: var(--accent); }
+        .artist-action-btn.active-toggle { background: rgba(255,149,0,0.2); color: #ff9500; border-color: rgba(255,149,0,0.4); }
+        .artist-action-btn i { font-size: 0.95rem; }
+        .artist-action-btn .spin { animation: spinLoader 0.8s linear infinite; }
+        @keyframes spinLoader { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .quick-profile-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 8px 0 14px 0; margin-bottom: 6px; }
+        .quick-profile-chip {
+            display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;
+            flex-shrink: 0; width: 62px; text-align: center; position: relative;
+        }
+        .quick-profile-avatar {
+            width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1rem; color: black; background: linear-gradient(135deg, #ffb84d, #ff5f6d);
+            border: 2px solid transparent;
+        }
+        .quick-profile-chip.current .quick-profile-avatar { border-color: var(--accent); }
+        .quick-profile-chip span { font-size: 0.68rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+        .quick-profile-add { display:flex; align-items:center; justify-content:center; width:50px; height:50px; border-radius:50%; background: rgba(255,255,255,0.08); border: 1px dashed rgba(255,255,255,0.3); }
+
+        .session-history-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .session-history-item .shi-left { display:flex; flex-direction:column; }
+        .session-history-item .shi-left b { font-size: 0.92rem; color: white; }
+        .session-history-item .shi-left span { font-size: 0.75rem; color: var(--text-sub); }
+        .session-history-item .shi-badge {
+            font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;
+        }
+        .shi-online { background: rgba(48,209,88,0.15); color: var(--accent); }
+        .shi-offline { background: rgba(255,149,0,0.15); color: #ff9500; }
+        .shi-fallback { background: rgba(255,77,77,0.15); color: #ff4d4d; }
+
+        .anti-clone-note {
+            font-size: 0.78rem; color: var(--text-sub); margin: -6px 0 14px 0; display:flex; align-items:center; gap:6px;
+        }
+
+        .hybrid-status-dot {
+            width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; background: var(--accent);
+        }
+        .hybrid-status-dot.fallback { background: #ff9500; }
+        .hybrid-status-dot.offline { background: #ff4d4d; }
     </style>
 </head>
 <body>
@@ -326,13 +380,6 @@
                 </div>
             </div>
             <i class="fas fa-xmark" style="font-size: 1.4rem; cursor: pointer; color: var(--text-sub);" onclick="toggleProfileDrawer()"></i>
-        </div>
-
-        <div style="margin-bottom: 18px; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 14px;">
-            <label style="font-size: 0.75rem; color: var(--text-sub); font-weight:700; display:block; margin-bottom:6px;">CAMBIA PROFILO ISTANTANEO</label>
-            <select id="quickProfileSelect" style="width:100%; background:rgba(0,0,0,0.5); color:white; border:1px solid rgba(255,255,255,0.1); padding:8px; border-radius:8px;" onchange="switchProfileQuickly(this.value)">
-                <option value="">Seleziona un profilo...</option>
-            </select>
         </div>
 
         <div class="drawer-menu-item" onclick="openAuthModal()">
@@ -351,12 +398,19 @@
             <div class="drawer-menu-left"><i class="fas fa-clock-rotate-left"></i> Recenti e Salvati</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
         </div>
+        <div class="drawer-menu-item" onclick="openSessionHistoryModal()">
+            <div class="drawer-menu-left"><i class="fas fa-satellite-dish"></i> Cronologia Sessioni Offline</div>
+            <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
+        </div>
         <div class="drawer-menu-item" onclick="alert('Impostazioni privacy e audio Lossless attive.')">
             <div class="drawer-menu-left"><i class="fas fa-gear"></i> Impostazioni e privacy</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
         </div>
 
-        <div style="margin-top: 24px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">Attività amici</div>
+        <div style="margin-top: 24px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">Profili condivisi &middot; cambio rapido</div>
+        <div class="quick-profile-scroll" id="quickProfileScroll"></div>
+
+        <div style="margin-top: 4px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">Attività amici</div>
         <div class="drawer-friends-scroll">
             <div class="friend-bubble" onclick="alert('Giancarlo sta ascoltando: Sfera Ebbasta')">
                 <img class="friend-avatar" src="https://picsum.photos/seed/friend1/100">
@@ -486,6 +540,29 @@
         </div>
     </div>
 
+    <div id="session-history-modal" class="modal-overlay">
+        <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:420px; max-height:80vh; overflow-y:auto;">
+            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:4px;"><span class="hybrid-status-dot" id="hybridStatusDot"></span>Cronologia Sessioni</h3>
+            <p style="color:var(--text-sub); font-size:0.82rem; margin-bottom:14px;" id="hybridStatusText">Motore ibrido attivo: sorgente YouTube primaria, fallback automatico in caso di errore.</p>
+            <div id="sessionHistoryList"><p style="color:var(--text-sub);">Nessuna sessione registrata ancora.</p></div>
+            <button class="auth-btn" style="background:rgba(255,77,77,0.15); color:#ff4d4d; margin-top:14px;" onclick="clearSessionHistory()">Cancella cronologia</button>
+            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('session-history-modal').classList.remove('active')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="quick-profile-onboarding-modal" class="modal-overlay">
+        <div class="auth-card" style="text-align:center;">
+            <h2>Nuovo profilo condiviso</h2>
+            <p>Aggiungi rapidamente un profilo da questo dispositivo (i gusti restano distinti e salvati localmente per ciascun profilo).</p>
+            <div class="auth-input-group">
+                <label>Nome profilo</label>
+                <input type="text" id="quickNewProfileName" placeholder="Es. Papà, Sorella, Ospite2...">
+            </div>
+            <button class="auth-btn" onclick="submitQuickNewProfile()">Crea e passa a questo profilo</button>
+            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('quick-profile-onboarding-modal').classList.remove('active')">Annulla</button>
+        </div>
+    </div>
+
     <div id="new-playlist-modal" class="modal-overlay">
         <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:400px;">
             <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Crea Nuova Playlist</h3>
@@ -569,7 +646,6 @@
             <button class="chip active" id="btnTabLiked" onclick="switchLibraryTab('liked')">Preferiti</button>
             <button class="chip" id="btnTabDownloads" onclick="switchLibraryTab('downloads')">Scaricati</button>
             <button class="chip" id="btnTabPlaylists" onclick="switchLibraryTab('playlists')">Le tue Playlist</button>
-            <button class="chip" id="btnTabHistory" onclick="switchLibraryTab('history')">Cronologia Offline</button>
         </div>
         <div id="libContentList"><p style="color:var(--text-sub);">Nessun elemento.</p></div>
     </div>
@@ -585,16 +661,26 @@
 
             <div style="position:absolute; bottom:20px; left:20px; right:20px; z-index:10;">
                 <h1 id="artistNameTitle" style="font-size:2.4rem; font-weight:800; color:white; line-height:1.1; margin-bottom:12px;">Artista</h1>
-                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="display:flex; align-items:center; gap:12px;">
                     <button class="btn-action-primary" style="padding:10px 24px; border-radius:20px; font-weight:700;" onclick="alert('Hai iniziato a seguire l\'artista!')">Segui</button>
-                    <button class="btn-action-primary" style="padding:10px 18px; border-radius:20px; font-weight:700; background:rgba(255,255,255,0.2); color:white;" onclick="playFullDiscography()"><i class="fas fa-play" style="margin-right:6px;"></i> Discografia Completa</button>
-                    <button class="btn-action-primary" style="padding:10px 18px; border-radius:20px; font-weight:700; background:rgba(0,122,255,0.3); color:white;" onclick="generateSimilarArtistRadio()"><i class="fas fa-tower-broadcast" style="margin-right:6px;"></i> Radio Simili</button>
+                    <i class="fas fa-ellipsis-vertical" style="font-size:1.4px; color:white; cursor:pointer;" onclick="alert('Opzioni artista')"></i>
                 </div>
             </div>
         </div>
 
         <div style="padding: 20px;">
-            <div class="section-title" style="margin-top:10px;">Discografia & Popolari</div>
+            <div class="artist-action-row">
+                <button class="artist-action-btn primary" id="btnPlayDiscography" onclick="playFullDiscography()"><i class="fas fa-play"></i> Riproduci Discografia</button>
+                <button class="artist-action-btn" id="btnSimilarRadio" onclick="startSimilarArtistRadio()"><i class="fas fa-podcast"></i> Radio Artisti Simili</button>
+                <button class="artist-action-btn" id="btnAntiCloneToggle" onclick="toggleAntiCloneFilter()"><i class="fas fa-filter"></i> Filtro Anti-Cloni: ON</button>
+            </div>
+            <p class="anti-clone-note" id="antiCloneNote"><i class="fas fa-circle-info"></i> Live, remix e cover duplicate vengono filtrati automaticamente dai consigli.</p>
+
+            <div class="section-title" style="margin-top:10px;">Discografia Completa</div>
+            <p id="discographyStatusText" style="color:var(--text-sub); font-size:0.85rem; margin-top:-10px; margin-bottom:14px;">Tocca "Riproduci Discografia" per caricare tutti i brani dell'artista in un unico player sequenziale.</p>
+            <div id="artistDiscographyContainer"></div>
+
+            <div class="section-title" style="margin-top:22px;">Popolare</div>
             <div id="artistTracksContainer"><p style="color:var(--text-sub);">Caricamento brani...</p></div>
         </div>
     </div>
@@ -729,48 +815,313 @@
         let likedSongs = JSON.parse(localStorage.getItem(currentUser ? `liked_${currentUser}` : 'darksound_liked') || '[]');
         let downloadedTracks = JSON.parse(localStorage.getItem(currentUser ? `downloads_${currentUser}` : 'darksound_downloads') || '[]');
         let userPlaylists = JSON.parse(localStorage.getItem(currentUser ? `playlists_${currentUser}` : 'darksound_playlists') || '[]');
-        let offlineHistory = JSON.parse(localStorage.getItem(currentUser ? `history_${currentUser}` : 'darksound_history') || '[]');
         let globalPublicPlaylists = JSON.parse(localStorage.getItem('darksound_global_public_playlists') || '[]');
         let progressInterval, searchTimer = null, currentLibTab = 'liked', selectedTrackForPlaylist = null;
         let tempAuthName = '';
         let isLyricsActive = false;
         let parsedSyncedLyrics = [];
-        let currentLoadedArtistTracks = [];
+
+        // ==== Nuove funzionalità: stato globale ====
+        let antiCloneFilterEnabled = true;
+        let sessionHistory = JSON.parse(localStorage.getItem(currentUser ? `sessions_${currentUser}` : 'darksound_sessions') || '[]');
+        let currentArtistContext = { name: '', image: '' };
+        let hybridFallbackAttempted = false;
+        let allKnownProfiles = JSON.parse(localStorage.getItem('darksound_all_profiles') || '[]');
+
+        // Correlazioni statiche artista -> artisti simili (usate per generare la Radio Artisti Simili)
+        const ARTIST_CORRELATIONS = {
+            'sfera ebbasta': ['Lazza', 'Capo Plaza', 'Ghali', 'Tedua', 'Rondodasosa'],
+            'lazza': ['Sfera Ebbasta', 'Capo Plaza', 'Tedua', 'Shiva', 'Emis Killa'],
+            'ghali': ['Sfera Ebbasta', 'Ernia', 'Tedua', 'Marracash', 'Salmo'],
+            'travis scott': ['Drake', 'Future', 'Playboi Carti', 'Don Toliver', 'Metro Boomin'],
+            'drake': ['Travis Scott', 'Future', '21 Savage', 'J. Cole', 'Kendrick Lamar'],
+            'annalisa': ['Elodie', 'Emma', 'Elettra Lamborghini', 'Baby K', 'Alessandra Amoroso'],
+            'club dogo': ['Guè', 'Jake La Furia', 'Marracash', 'Salmo', 'Fabri Fibra'],
+            'twenty one pilots': ['Imagine Dragons', 'Panic! At The Disco', 'Fall Out Boy', 'The Neighbourhood'],
+            'marracash': ['Guè', 'Fabri Fibra', 'Salmo', 'Club Dogo', 'Ernia']
+        };
+
+        // Pattern usati per rilevare cloni/duplicati/versioni non pertinenti nei consigli
+        const ANTI_CLONE_PATTERNS = [
+            /\blive\b/i, /\bremix\b/i, /\bcover\b/i, /\bkaraoke\b/i, /\btribute\b/i,
+            /\bacoustic\b/i, /\bacustic[oa]\b/i, /\brework\b/i, /\bslowed\b/i, /\bsped ?up\b/i,
+            /\binstrumental\b/i, /\bnightcore\b/i, /\b8d audio\b/i, /\bfan ?made\b/i, /\btutorial\b/i,
+            /\breaction\b/i, /\bmashup\b/i, /\bcompilation\b/i, /\bmegamix\b/i
+        ];
+
+        function normalizeTrackKey(t) {
+            return (t.name + '|' + t.artist).toLowerCase().replace(/[^a-z0-9|]/g, '').trim();
+        }
+
+        // Filtra versioni live/remix/cover irrilevanti e rimuove i brani duplicati (stesso titolo+artista)
+        function filterAntiClones(tracks) {
+            if (!Array.isArray(tracks)) return [];
+            let seen = new Set();
+            let result = [];
+            for (let t of tracks) {
+                if (!t || !t.name) continue;
+                if (antiCloneFilterEnabled && ANTI_CLONE_PATTERNS.some(rx => rx.test(t.name))) continue;
+                let key = normalizeTrackKey(t);
+                if (seen.has(key)) continue;
+                seen.add(key);
+                result.push(t);
+            }
+            return result;
+        }
+
+        function toggleAntiCloneFilter() {
+            antiCloneFilterEnabled = !antiCloneFilterEnabled;
+            const btn = document.getElementById('btnAntiCloneToggle');
+            const note = document.getElementById('antiCloneNote');
+            if (btn) {
+                btn.innerHTML = `<i class="fas fa-filter"></i> Filtro Anti-Cloni: ${antiCloneFilterEnabled ? 'ON' : 'OFF'}`;
+                btn.classList.toggle('active-toggle', !antiCloneFilterEnabled);
+            }
+            if (note) {
+                note.innerHTML = antiCloneFilterEnabled
+                    ? '<i class="fas fa-circle-info"></i> Live, remix e cover duplicate vengono filtrati automaticamente dai consigli.'
+                    : '<i class="fas fa-triangle-exclamation"></i> Filtro disattivato: potrebbero comparire live, remix e duplicati.';
+            }
+            if (currentArtistContext.name) {
+                if (document.getElementById('discographyStatusText') && document.getElementById('discographyStatusText').innerText.includes('brani caricati')) {
+                    playFullDiscography(true);
+                }
+            }
+        }
+
+        // ==== Profili condivisi & Blend rapido ====
+        function registerProfile(name) {
+            if (!name) return;
+            if (!allKnownProfiles.includes(name)) {
+                allKnownProfiles.push(name);
+                localStorage.setItem('darksound_all_profiles', JSON.stringify(allKnownProfiles));
+            }
+            renderQuickProfileScroll();
+        }
+
+        function renderQuickProfileScroll() {
+            const el = document.getElementById('quickProfileScroll');
+            if (!el) return;
+            let html = allKnownProfiles.map(name => `
+                <div class="quick-profile-chip ${name === currentUser ? 'current' : ''}" onclick="quickSwitchProfile('${name.replace(/'/g, "\\'")}')">
+                    <div class="quick-profile-avatar">${name.charAt(0).toUpperCase()}</div>
+                    <span>${name}</span>
+                </div>
+            `).join('');
+            html += `
+                <div class="quick-profile-chip" onclick="document.getElementById('quick-profile-onboarding-modal').classList.add('active')">
+                    <div class="quick-profile-add"><i class="fas fa-plus" style="color:var(--accent);"></i></div>
+                    <span>Aggiungi</span>
+                </div>
+            `;
+            el.innerHTML = html;
+        }
+
+        function quickSwitchProfile(name) {
+            if (name === currentUser) { toggleProfileDrawer(); return; }
+            currentUser = name;
+            localStorage.setItem('darksound_current_user', currentUser);
+            userPreferences = JSON.parse(localStorage.getItem(`prefs_${currentUser}`) || 'null');
+            likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
+            downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
+            userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
+            sessionHistory = JSON.parse(localStorage.getItem(`sessions_${currentUser}`) || '[]');
+            updateUserUI();
+            renderQuickProfileScroll();
+            toggleProfileDrawer();
+            loadHomeTracks();
+            if (!userPreferences) setTimeout(() => openOnboardingModal(), 300);
+        }
+
+        function submitQuickNewProfile() {
+            const name = document.getElementById('quickNewProfileName').value.trim();
+            if (!name) return alert('Inserisci un nome profilo.');
+            registerProfile(name);
+            document.getElementById('quick-profile-onboarding-modal').classList.remove('active');
+            document.getElementById('quickNewProfileName').value = '';
+            quickSwitchProfile(name);
+        }
+
+        // ==== Discografia completa artista (player sequenziale unico) ====
+        async function playFullDiscography(silentRefresh) {
+            const artistName = currentArtistContext.name || document.getElementById('artistNameTitle').innerText;
+            if (!artistName) return;
+            const statusEl = document.getElementById('discographyStatusText');
+            const btn = document.getElementById('btnPlayDiscography');
+            if (btn) btn.innerHTML = '<i class="fas fa-spinner spin"></i> Caricamento discografia...';
+            if (statusEl) statusEl.innerText = 'Sto caricando l\'intera discografia in un unico player sequenziale...';
+
+            try {
+                const queries = [artistName, `${artistName} album`, `${artistName} greatest hits`, `${artistName} singoli`];
+                const responses = await Promise.all(queries.map(q => fetch(`/api/search?q=${encodeURIComponent(q)}`).then(r => r.json()).catch(() => [])));
+                let combined = [].concat(...responses);
+                combined = combined.filter(t => t && t.artist && t.artist.toLowerCase().includes(artistName.toLowerCase().split(' ')[0].toLowerCase()));
+                if (combined.length === 0) combined = [].concat(...responses);
+                let finalTracks = filterAntiClones(combined);
+
+                if (finalTracks.length === 0) {
+                    if (statusEl) statusEl.innerText = 'Nessun brano trovato per la discografia completa.';
+                } else {
+                    if (statusEl) statusEl.innerText = `${finalTracks.length} brani caricati nella discografia completa. Riproduzione sequenziale in un unico player.`;
+                    renderTracksList(finalTracks, 'artistDiscographyContainer', finalTracks);
+                    if (!silentRefresh) {
+                        const t = finalTracks[0];
+                        const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
+                        const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(finalTracks))));
+                        playSelectedTrack(trackJson, queueJson, 0);
+                    }
+                }
+            } catch (e) {
+                if (statusEl) statusEl.innerText = 'Errore nel caricamento della discografia completa.';
+            } finally {
+                if (btn) btn.innerHTML = '<i class="fas fa-play"></i> Riproduci Discografia';
+            }
+        }
+
+        // ==== Radio Artisti Simili (motore correlazioni) ====
+        async function startSimilarArtistRadio() {
+            const artistName = currentArtistContext.name || document.getElementById('artistNameTitle').innerText;
+            if (!artistName) return;
+            const btn = document.getElementById('btnSimilarRadio');
+            if (btn) btn.innerHTML = '<i class="fas fa-spinner spin"></i> Generazione mix...';
+
+            try {
+                let seeds = ARTIST_CORRELATIONS[artistName.toLowerCase()];
+                if (!seeds) {
+                    seeds = (userPreferences && userPreferences.genres && userPreferences.genres.length > 0)
+                        ? userPreferences.genres
+                        : [artistName + ' radio'];
+                }
+                const queries = [artistName, ...seeds];
+                const responses = await Promise.all(queries.map(q => fetch(`/api/search?q=${encodeURIComponent(q)}`).then(r => r.json()).catch(() => [])));
+                let combined = [].concat(...responses);
+                let mixTracks = filterAntiClones(combined).sort(() => Math.random() - 0.5).slice(0, 20);
+
+                if (mixTracks.length === 0) {
+                    alert('Non è stato possibile generare la radio in questo momento.');
+                } else {
+                    renderTracksList(mixTracks, 'artistDiscographyContainer', mixTracks);
+                    document.getElementById('discographyStatusText').innerText = `Radio Artisti Simili generata: ${mixTracks.length} brani basati sulle correlazioni con ${artistName}.`;
+                    const t = mixTracks[0];
+                    const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
+                    const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(mixTracks))));
+                    playSelectedTrack(trackJson, queueJson, 0);
+                }
+            } catch (e) {
+                alert('Errore nella generazione della Radio Artisti Simili.');
+            } finally {
+                if (btn) btn.innerHTML = '<i class="fas fa-podcast"></i> Radio Artisti Simili';
+            }
+        }
+
+        // ==== Cronologia sessioni offline & motore ibrido ====
+        function logSessionEvent(track, sourceType) {
+            if (!track || !track.id) return;
+            sessionHistory.unshift({
+                trackName: track.name,
+                artist: track.artist,
+                sourceType: sourceType || (navigator.onLine ? 'online' : 'offline'),
+                timestamp: new Date().toISOString()
+            });
+            sessionHistory = sessionHistory.slice(0, 100);
+            if (currentUser) {
+                localStorage.setItem(`sessions_${currentUser}`, JSON.stringify(sessionHistory));
+            } else {
+                localStorage.setItem('darksound_sessions', JSON.stringify(sessionHistory));
+            }
+        }
+
+        function renderSessionHistory() {
+            const listEl = document.getElementById('sessionHistoryList');
+            if (!listEl) return;
+            if (sessionHistory.length === 0) {
+                listEl.innerHTML = `<p style="color:var(--text-sub);">Nessuna sessione registrata ancora.</p>`;
+                return;
+            }
+            listEl.innerHTML = sessionHistory.map(s => {
+                const badgeClass = s.sourceType === 'fallback' ? 'shi-fallback' : (s.sourceType === 'offline' ? 'shi-offline' : 'shi-online');
+                const badgeLabel = s.sourceType === 'fallback' ? 'FALLBACK YT' : (s.sourceType === 'offline' ? 'OFFLINE' : 'ONLINE');
+                const d = new Date(s.timestamp);
+                const timeLabel = d.toLocaleDateString('it-IT') + ' ' + d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                return `
+                    <div class="session-history-item">
+                        <div class="shi-left">
+                            <b>${s.trackName}</b>
+                            <span>${s.artist} • ${timeLabel}</span>
+                        </div>
+                        <span class="shi-badge ${badgeClass}">${badgeLabel}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openSessionHistoryModal() {
+            toggleProfileDrawer();
+            renderSessionHistory();
+            updateHybridStatusUI();
+            document.getElementById('session-history-modal').classList.add('active');
+        }
+
+        function clearSessionHistory() {
+            sessionHistory = [];
+            if (currentUser) localStorage.setItem(`sessions_${currentUser}`, JSON.stringify(sessionHistory));
+            renderSessionHistory();
+        }
+
+        function updateHybridStatusUI() {
+            const dot = document.getElementById('hybridStatusDot');
+            const text = document.getElementById('hybridStatusText');
+            const syncBadge = document.getElementById('syncStatusBadge');
+            if (!navigator.onLine) {
+                if (dot) dot.className = 'hybrid-status-dot offline';
+                if (text) text.innerText = 'Sei offline: verranno riprodotti solo i brani scaricati localmente. Il motore ibrido riprenderà la sincronizzazione YouTube al ritorno della connessione.';
+                if (syncBadge) { syncBadge.innerText = 'Offline'; syncBadge.style.color = '#ff9500'; syncBadge.style.background = 'rgba(255,149,0,0.2)'; }
+            } else if (hybridFallbackAttempted) {
+                if (dot) dot.className = 'hybrid-status-dot fallback';
+                if (text) text.innerText = 'Motore ibrido: la sorgente principale ha avuto un problema, in uso una sorgente di fallback automatica.';
+                if (syncBadge) { syncBadge.innerText = 'Fallback attivo'; syncBadge.style.color = '#ff9500'; syncBadge.style.background = 'rgba(255,149,0,0.2)'; }
+            } else {
+                if (dot) dot.className = 'hybrid-status-dot';
+                if (text) text.innerText = 'Motore ibrido attivo: sorgente YouTube primaria, fallback automatico in caso di errore.';
+                if (syncBadge) { syncBadge.innerText = 'Online'; syncBadge.style.color = '#30d158'; syncBadge.style.background = 'rgba(46,189,89,0.2)'; }
+            }
+        }
+
+        async function resolveHybridFallback() {
+            if (!currentTrackData || !currentTrackData.name) return;
+            hybridFallbackAttempted = true;
+            updateHybridStatusUI();
+            try {
+                let res = await fetch(`/api/search?q=${encodeURIComponent(currentTrackData.name + ' ' + currentTrackData.artist)}`);
+                let candidates = await res.json();
+                let alternative = (candidates || []).find(c => c.id && c.id !== currentTrackData.id);
+                if (alternative && player && player.loadVideoById) {
+                    currentTrackData.id = alternative.id;
+                    player.loadVideoById(alternative.id);
+                    player.playVideo();
+                    logSessionEvent(currentTrackData, 'fallback');
+                } else if (downloadedTracks.some(t => t.name === currentTrackData.name)) {
+                    logSessionEvent(currentTrackData, 'offline');
+                }
+            } catch (e) { /* fallback silenzioso */ }
+        }
+
+        window.addEventListener('online', updateHybridStatusUI);
+        window.addEventListener('offline', updateHybridStatusUI);
 
         window.onload = function() {
             updateUserUI();
-            populateQuickProfileSelector();
             loadHomeTracks();
             updateCountdown();
-            setupNetworkListeners();
+            if (currentUser) registerProfile(currentUser);
+            renderQuickProfileScroll();
+            updateHybridStatusUI();
             if(!currentUser) {
                 setTimeout(() => openAuthModal(), 400);
             } else if(!userPreferences) {
                 setTimeout(() => openOnboardingModal(), 400);
             }
         };
-
-        function setupNetworkListeners() {
-            window.addEventListener('online', updateNetworkStatus);
-            window.addEventListener('offline', updateNetworkStatus);
-            updateNetworkStatus();
-        }
-
-        function updateNetworkStatus() {
-            const badge = document.getElementById('syncStatusBadge');
-            if(badge) {
-                if(navigator.onLine) {
-                    badge.innerText = 'Online';
-                    badge.style.background = 'rgba(46, 189, 89, 0.2)';
-                    badge.style.color = '#30d158';
-                } else {
-                    badge.innerText = 'Offline (Fallback In
-                    ';
-                    badge.style.background = 'rgba(255, 149, 0, 0.2)';
-                    badge.style.color = '#ff9500';
-                }
-            }
-        }
 
         function updateCountdown() {
             const eventDate = new Date().getTime() + (24 * 60 * 60 * 1000);
@@ -792,41 +1143,6 @@
         }
 
         function toggleProfileDrawer() { document.getElementById('profileDrawer').classList.toggle('active'); }
-        
-        function populateQuickProfileSelector() {
-            const select = document.getElementById('quickProfileSelect');
-            if(!select) return;
-            select.innerHTML = '<option value="">Seleziona un profilo...</option>';
-            let profiles = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                let key = localStorage.key(i);
-                if (key.startsWith('prefs_')) {
-                    profiles.push(key.replace('prefs_', ''));
-                }
-            }
-            if(currentUser && !profiles.includes(currentUser)) profiles.push(currentUser);
-            profiles.forEach(p => {
-                select.innerHTML += `<option value="${p}" ${p === currentUser ? 'selected' : ''}>${p}</option>`;
-            });
-        }
-
-        function switchProfileQuickly(username) {
-            if(!username) return;
-            currentUser = username;
-            localStorage.setItem('darksound_current_user', currentUser);
-            userPreferences = JSON.parse(localStorage.getItem(`prefs_${currentUser}`) || 'null');
-            likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
-            downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
-            userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
-            offlineHistory = JSON.parse(localStorage.getItem(`history_${currentUser}`) || '[]');
-            updateUserUI();
-            populateQuickProfileSelector();
-            loadHomeTracks();
-            if(document.getElementById('view-library').classList.contains('active')) renderLibraryContent();
-            if(document.getElementById('view-liked-songs').classList.contains('active')) renderLikedSongsView();
-            toggleProfileDrawer();
-        }
-
         function logoutUser() {
             localStorage.removeItem('darksound_current_user');
             currentUser = null;
@@ -856,10 +1172,10 @@
             likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
             downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
             userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
-            offlineHistory = JSON.parse(localStorage.getItem(`history_${currentUser}`) || '[]');
+            sessionHistory = JSON.parse(localStorage.getItem(`sessions_${currentUser}`) || '[]');
+            registerProfile(currentUser);
             document.getElementById('onboarding-modal').classList.remove('active');
             updateUserUI();
-            populateQuickProfileSelector();
             loadHomeTracks();
         }
 
@@ -876,7 +1192,6 @@
                 localStorage.setItem(`liked_${currentUser}`, JSON.stringify(likedSongs));
                 localStorage.setItem(`downloads_${currentUser}`, JSON.stringify(downloadedTracks));
                 localStorage.setItem(`playlists_${currentUser}`, JSON.stringify(userPlaylists));
-                localStorage.setItem(`history_${currentUser}`, JSON.stringify(offlineHistory));
                 syncGlobalPublicPlaylists();
             }
         }
@@ -888,36 +1203,12 @@
             localStorage.setItem('darksound_global_public_playlists', JSON.stringify(globalPublicPlaylists));
         }
 
-        function cleanAndDeduplicateTracks(tracks) {
-            if(!Array.isArray(tracks)) return [];
-            const seen = new Set();
-            return tracks.filter(t => {
-                if(!t || !t.name) return false;
-                const lowerName = t.name.toLowerCase();
-                if(lowerName.includes('karaoke') || lowerName.includes('instrumental') || lowerName.includes('tribute')) return false;
-                const key = `${t.name.toLowerCase().trim()}_${(t.artist || '').toLowerCase().trim()}`;
-                if(seen.has(key) || (t.id && seen.has(t.id))) return false;
-                if(t.id) seen.add(t.id);
-                seen.add(key);
-                return true;
-            });
-        }
-
-        function recordTrackToHistory(track) {
-            if(!track || !track.id) return;
-            offlineHistory = offlineHistory.filter(item => item.id !== track.id);
-            offlineHistory.unshift({ ...track, playedAt: new Date().toISOString() });
-            if(offlineHistory.length > 50) offlineHistory = offlineHistory.slice(0, 50);
-            saveUserData();
-        }
-
         function openAiDjModal() { document.getElementById('ai-dj-modal').classList.add('active'); }
         async function runAiDjSelection() {
             document.getElementById('aiDjStatusText').innerText = "Sto selezionando le migliori tracce per te...";
             try {
                 let res = await fetch(`/api/search?q=Top Hit`);
-                let rawTracks = await res.json();
-                let tracks = cleanAndDeduplicateTracks(rawTracks);
+                let tracks = await res.json();
                 if(tracks.length > 0) {
                     playSelectedTrack(btoa(unescape(encodeURIComponent(JSON.stringify(tracks[0])))), btoa(unescape(encodeURIComponent(JSON.stringify(tracks)))), 0);
                     document.getElementById('ai-dj-modal').classList.remove('active');
@@ -931,8 +1222,7 @@
             if(!prompt) return alert('Inserisci una descrizione.');
             try {
                 let res = await fetch(`/api/search?q=${encodeURIComponent(prompt)}`);
-                let rawTracks = await res.json();
-                let tracks = cleanAndDeduplicateTracks(rawTracks);
+                let tracks = await res.json();
                 if(tracks.length > 0) {
                     let newPl = {
                         id: 'pl_ai_' + Date.now(),
@@ -954,8 +1244,7 @@
             const friend = document.getElementById('blendFriendSelect').value;
             try {
                 let res = await fetch(`/api/search?q=${encodeURIComponent(friend)}`);
-                let rawTracks = await res.json();
-                let tracks = cleanAndDeduplicateTracks(rawTracks);
+                let tracks = await res.json();
                 if(tracks.length > 0) {
                     let blendPl = {
                         id: 'pl_blend_' + Date.now(),
@@ -978,20 +1267,14 @@
             try {
                 let radioQuery = userPreferences ? (userPreferences.artist !== 'Hit Italia' ? userPreferences.artist : userPreferences.genres[0]) : 'Hit Italia';
                 let resRadio = await fetch(`/api/search?q=${encodeURIComponent(radioQuery)}`);
-                let rawRadio = await resRadio.json();
-                let radioTracks = cleanAndDeduplicateTracks(rawRadio);
+                let radioTracks = await resRadio.json();
                 renderTracksList(radioTracks.slice(0, 5), 'radioTracksContainer', radioTracks.slice(0, 5));
 
                 let res = await fetch('/api/search?q=Hit Italia');
-                let rawHome = await res.json();
-                let homeTracks = cleanAndDeduplicateTracks(rawHome);
+                let homeTracks = await res.json();
                 renderTracksList(homeTracks, 'homeTracksContainer', homeTracks);
             } catch(e) {
-                if(downloadedTracks.length > 0) {
-                    renderTracksList(downloadedTracks, 'homeTracksContainer', downloadedTracks);
-                } else {
-                    document.getElementById('homeTracksContainer').innerHTML = `<p style="color:#ff4d4d;">Errore di caricamento. Modalità Offline.</p>`;
-                }
+                document.getElementById('homeTracksContainer').innerHTML = `<p style="color:#ff4d4d;">Errore di caricamento.</p>`;
             }
         }
 
@@ -1007,8 +1290,7 @@
         async function executeSearch(query) {
             try {
                 let res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-                let rawTracks = await res.json();
-                let tracks = cleanAndDeduplicateTracks(rawTracks);
+                let tracks = await res.json();
                 let matchedPlaylists = globalPublicPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
 
                 let container = document.getElementById('searchResultsContainer');
@@ -1086,53 +1368,31 @@
             const container = document.getElementById('artistTracksContainer');
             
             document.getElementById('artistNameTitle').innerText = artistName;
-            container.innerHTML = '<p style="color:var(--text-sub);">Caricamento discografia in corso...</p>';
+            container.innerHTML = '<p style="color:var(--text-sub);">Caricamento in corso...</p>';
+            currentArtistContext = { name: artistName, image: artistImageOverride || '' };
+            const discogContainer = document.getElementById('artistDiscographyContainer');
+            const discogStatus = document.getElementById('discographyStatusText');
+            if (discogContainer) discogContainer.innerHTML = '';
+            if (discogStatus) discogStatus.innerText = 'Tocca "Riproduci Discografia" per caricare tutti i brani dell\'artista in un unico player sequenziale.';
             
             heroImgEl.style.opacity = '0.5';
             heroImgEl.src = artistImageOverride || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
             try {
                 let response = await fetch(`/api/search?q=${encodeURIComponent(artistName)}`);
-                let rawTracks = await response.json();
-                let tracks = cleanAndDeduplicateTracks(rawTracks);
-                currentLoadedArtistTracks = tracks;
+                let tracks = await response.json();
                 
                 if (Array.isArray(tracks) && tracks.length > 0) {
                     heroImgEl.src = tracks[0].image;
                     renderTracksList(tracks, 'artistTracksContainer', tracks);
                 } else {
-                    container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano trovato per ${artistName}.</p>`;
+                    container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano popolare trovato per ${artistName}.</p>`;
                 }
                 heroImgEl.style.opacity = '1';
             } catch(e) {
-                container.innerHTML = `<p style="color:#ff4d4d;">Errore: Impossibile recuperare la discografia. Riprova più tardi.</p>`;
+                container.innerHTML = `<p style="color:#ff4d4d;">Errore: Impossibile recuperare i brani. Riprova più tardi.</p>`;
                 heroImgEl.style.opacity = '1';
-            }
-        }
-
-        function playFullDiscography() {
-            if(currentLoadedArtistTracks.length === 0) return alert('Nessun brano caricato per questo artista.');
-            const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(currentLoadedArtistTracks[0]))));
-            const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(currentLoadedArtistTracks))));
-            playSelectedTrack(trackJson, queueJson, 0);
-        }
-
-        async function generateSimilarArtistRadio() {
-            const currentArtist = document.getElementById('artistNameTitle').innerText;
-            if(!currentArtist) return;
-            try {
-                let res = await fetch(`/api/search?q=${encodeURIComponent(currentArtist + ' radio mix')}`);
-                let rawTracks = await res.json();
-                let tracks = cleanAndDeduplicateTracks(rawTracks);
-                if(tracks.length > 0) {
-                    const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(tracks[0]))));
-                    const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(tracks))));
-                    playSelectedTrack(trackJson, queueJson, 0);
-                } else {
-                    alert('Impossibile generare la radio per questo artista.');
-                }
-            } catch(e) {
-                alert('Errore nella generazione della radio artisti simili.');
+                console.error("Errore API Artist:", e);
             }
         }
 
@@ -1144,7 +1404,6 @@
                 playQueue = queue;
                 queueIndex = index;
                 currentTrackData = t;
-                recordTrackToHistory(t);
 
                 document.getElementById('playerBar').style.display = 'flex';
                 document.getElementById('playerTitle').innerText = t.name;
@@ -1159,6 +1418,9 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
+                hybridFallbackAttempted = false;
+                logSessionEvent(t, navigator.onLine ? 'online' : 'offline');
+                updateHybridStatusUI();
                 
                 if(player && player.loadVideoById) {
                     player.loadVideoById(t.id);
@@ -1272,7 +1534,6 @@
             document.getElementById('btnTabLiked').className = tab === 'liked' ? 'chip active' : 'chip';
             document.getElementById('btnTabDownloads').className = tab === 'downloads' ? 'chip active' : 'chip';
             document.getElementById('btnTabPlaylists').className = tab === 'playlists' ? 'chip active' : 'chip';
-            document.getElementById('btnTabHistory').className = tab === 'history' ? 'chip active' : 'chip';
             renderLibraryContent();
         }
 
@@ -1304,8 +1565,6 @@
             const container = document.getElementById('libContentList');
             if(currentLibTab === 'downloads') {
                 renderTracksList(downloadedTracks, 'libContentList', downloadedTracks);
-            } else if(currentLibTab === 'history') {
-                renderTracksList(offlineHistory, 'libContentList', offlineHistory);
             } else if(currentLibTab === 'playlists') {
                 if(userPlaylists.length === 0) {
                     container.innerHTML = `<p style="color:var(--text-sub); margin-top:20px;">Nessuna playlist.</p>`;
@@ -1402,10 +1661,7 @@
                         if(e.data === YT.PlayerState.PAUSED) { isPlaying = false; updatePlayIcons(false); clearInterval(progressInterval); }
                         if(e.data === YT.PlayerState.ENDED) { nextTrack(); }
                     },
-                    'onError': (e) => {
-                        console.warn("YouTube fallback attivato per errore nel player:", e.data);
-                        nextTrack();
-                    }
+                    'onError': () => { resolveHybridFallback(); }
                 }
             });
         }
@@ -1430,7 +1686,6 @@
                 queueIndex = index;
                 const t = playQueue[queueIndex];
                 currentTrackData = t;
-                recordTrackToHistory(t);
 
                 document.getElementById('playerBar').style.display = 'flex';
                 document.getElementById('playerTitle').innerText = t.name;
@@ -1445,6 +1700,9 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
+                hybridFallbackAttempted = false;
+                logSessionEvent(t, navigator.onLine ? 'online' : 'offline');
+                updateHybridStatusUI();
                 
                 if(player && player.loadVideoById) {
                     player.loadVideoById(t.id);
