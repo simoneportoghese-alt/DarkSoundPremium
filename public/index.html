@@ -869,7 +869,7 @@
             <div class="drawer-menu-left"><i class="fas fa-clock-rotate-left"></i> Recenti e Salvati</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
         </div>
-        <div class="drawer-menu-item" onclick="alert('Impostazioni privacy e audio Lossless attive.')">
+        <div class="drawer-menu-item" onclick="toggleProfileDrawer()">
             <div class="drawer-menu-left"><i class="fas fa-gear"></i> Impostazioni e privacy</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
         </div>
@@ -1231,7 +1231,7 @@
                 <h1 id="artistNameTitle" style="font-size:2.4rem; font-weight:800; color:white; line-height:1.1; margin-bottom:12px;">Artista</h1>
                 <div style="display:flex; align-items:center; gap:12px;">
                     <button class="btn-action-primary" id="followArtistBtn" style="padding:10px 24px; border-radius:20px; font-weight:700;" onclick="toggleFollowArtist()">Segui</button>
-                    <i class="fas fa-ellipsis-vertical" style="font-size:1.4rem; color:white; cursor:pointer;" onclick="alert('Opzioni artista')"></i>
+                    <i class="fas fa-ellipsis-vertical" style="font-size:1.4rem; color:white; cursor:pointer;" onclick="toggleProfileDrawer()"></i>
                 </div>
             </div>
         </div>
@@ -1401,7 +1401,6 @@
         let selectedSubgenres = JSON.parse(localStorage.getItem(currentUser ? `subgenres_${currentUser}` : 'darksound_subgenres') || '[]');
         let selectedSubgenresTemp = [];
         let currentArtistPage = '';
-        let currentGenreFilter = '';
 
         const API_BASE = window.location.origin;
 
@@ -1492,7 +1491,7 @@
         
         function proceedToOnboarding() {
             const name = document.getElementById('authEmail').value.trim();
-            if(!name) return alert('Inserisci un nome utente.');
+            if(!name) return;
             tempAuthName = name;
             if (!allUsers.includes(name)) {
                 allUsers.push(name);
@@ -1713,7 +1712,6 @@
             const chips = document.querySelectorAll('.genre-chip');
             chips.forEach(c => c.classList.remove('active'));
             el.classList.add('active');
-            currentGenreFilter = genre;
             try {
                 const container = document.getElementById('homeTracksContainer');
                 container.innerHTML = '<p style="color:var(--text-sub);"><span class="loading-spinner"></span> Caricamento...</p>';
@@ -1906,10 +1904,8 @@
             const artistName = currentArtistPage;
             if (followedArtists.includes(artistName)) {
                 followedArtists = followedArtists.filter(a => a !== artistName);
-                alert(`Hai smesso di seguire ${artistName}`);
             } else {
                 followedArtists.push(artistName);
-                alert(`Hai iniziato a seguire ${artistName}!`);
             }
             if (currentUser) {
                 localStorage.setItem(`followed_artists_${currentUser}`, JSON.stringify(followedArtists));
@@ -2261,10 +2257,7 @@
         }
 
         function downloadAllLikedSongs() {
-            if (likedSongs.length === 0) {
-                alert('Non hai ancora brani preferiti.');
-                return;
-            }
+            if (likedSongs.length === 0) return;
             let addedCount = 0;
             likedSongs.forEach(track => {
                 if (!downloadedTracks.some(s => s.id === track.id)) {
@@ -2274,9 +2267,6 @@
             });
             if (addedCount > 0) {
                 saveUserData();
-                alert(`${addedCount} brani scaricati con successo!`);
-            } else {
-                alert('Tutti i brani preferiti sono già disponibili offline.');
             }
         }
 
@@ -2353,7 +2343,7 @@
         function submitNewPlaylist() {
             const name = document.getElementById('newPlaylistName').value.trim();
             const visibility = document.getElementById('newPlaylistVisibility').value;
-            if(!name) return alert('Inserisci un nome.');
+            if(!name) return;
             userPlaylists.push({ id: 'pl_' + Date.now(), name: name, visibility: visibility, owner: currentUser, tracks: [] });
             saveUserData();
             closeNewPlaylistModal();
@@ -2392,13 +2382,13 @@
                     document.getElementById('ai-dj-modal').classList.remove('active');
                 }
             } catch(e) {
-                alert('Errore AI DJ');
+                console.error('Errore AI DJ:', e);
             }
         }
 
         async function generateAiPromptPlaylist() {
             const prompt = document.getElementById('aiPromptInput').value.trim();
-            if(!prompt) return alert('Inserisci una descrizione.');
+            if(!prompt) return;
             try {
                 let res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(prompt)}`);
                 let tracks = await res.json();
@@ -2407,16 +2397,15 @@
                     userPlaylists.push(newPl);
                     saveUserData();
                     document.getElementById('ai-playlist-modal').classList.remove('active');
-                    alert(`Playlist IA creata con successo!`);
                 }
             } catch(e) {
-                alert('Errore generazione playlist IA');
+                console.error('Errore playlist IA:', e);
             }
         }
 
         async function createBlendPlaylist() {
             const friend = document.getElementById('blendFriendSelect').value;
-            if (!friend) return alert('Aggiungi prima un amico.');
+            if (!friend) return;
             try {
                 let res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(friend)}`);
                 let tracks = await res.json();
@@ -2425,10 +2414,9 @@
                     userPlaylists.push(blendPl);
                     saveUserData();
                     document.getElementById('blend-modal').classList.remove('active');
-                    alert(`Playlist Blend creata con ${friend}!`);
                 }
             } catch(e) {
-                alert('Errore creazione Blend');
+                console.error('Errore Blend:', e);
             }
         }
 
@@ -2456,7 +2444,7 @@
             const newBio = document.getElementById('editProfileBio').value.trim();
             const newAvatar = document.getElementById('editProfileAvatar').value.trim() || (newName ? newName.charAt(0).toUpperCase() : 'S');
             const newGenre = document.getElementById('editProfileGenre').value;
-            if (!newName) return alert('Inserisci un nome.');
+            if (!newName) return;
             if (newName !== currentUser) {
                 const oldLiked = localStorage.getItem(`liked_${currentUser}`);
                 const oldDownloads = localStorage.getItem(`downloads_${currentUser}`);
@@ -2605,7 +2593,6 @@
                 localStorage.setItem(`friends_${currentUser}`, JSON.stringify(friendsList));
                 document.getElementById('add-friend-modal').classList.remove('active');
                 loadFriendsList();
-                alert(`${friendName} aggiunto ai tuoi amici!`);
             }
         }
 
@@ -2613,7 +2600,7 @@
             const friendProfile = JSON.parse(localStorage.getItem(`profile_${friendName}`) || 'null');
             const friendLiked = JSON.parse(localStorage.getItem(`liked_${friendName}`) || '[]');
             const friendPlaylists = JSON.parse(localStorage.getItem(`playlists_${friendName}`) || '[]');
-            alert(`Profilo di ${friendName}\nBio: ${friendProfile?.bio || 'Nessuna bio'}\nGenere: ${friendProfile?.genre || 'N/D'}\nBrani preferiti: ${friendLiked.length}\nPlaylist: ${friendPlaylists.length}`);
+            console.log(`Profilo di ${friendName}:`, { friendProfile, friendLiked, friendPlaylists });
         }
 
         function loadAllUsers() {
@@ -2637,7 +2624,6 @@
 
         function copyTrackLink() {
             navigator.clipboard.writeText(`Ascolta "${currentTrackData.name}" di ${currentTrackData.artist} su DarkSound Pro! https://www.youtube.com/watch?v=${currentTrackData.id}`).then(() => {
-                alert('Link copiato!');
                 closeShareModal();
             });
         }
@@ -2687,9 +2673,6 @@
                 if(!pl.tracks.some(t => t.id === selectedTrackForPlaylist.id)) {
                     pl.tracks.push(selectedTrackForPlaylist);
                     saveUserData();
-                    alert(`Brano aggiunto a "${pl.name}"!`);
-                } else {
-                    alert('Brano già presente nella playlist.');
                 }
             }
             closePlaylistModal();
@@ -2732,7 +2715,6 @@
             if(pl) {
                 userPlaylists.push({...pl, id: 'pl_saved_' + Date.now(), owner: currentUser + ' (Salvata)'});
                 saveUserData();
-                alert(`Playlist "${pl.name}" aggiunta alla tua libreria!`);
             }
         }
 
