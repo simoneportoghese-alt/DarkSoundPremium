@@ -1,15 +1,19 @@
 {
   "name": "darksound-pro",
   "version": "1.0.0",
-  "description": "DarkSound Pro - Ultimate Edition",
+  "description": "DarkSound Pro - Ultimate Edition Music Streaming App",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
-    "ytdl-core": "^4.11.5",
-    "ytsr": "^3.5.3"
+    "node-fetch": "^2.7.0",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
