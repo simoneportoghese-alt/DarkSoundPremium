@@ -1078,86 +1078,6 @@
         }
 
         window.onload = function() {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            let audioContext = null;
-            let isIOSUnlocked = false;
-            
-            function unlockIOSAudio() {
-                if (isIOSUnlocked) return;
-                try {
-                    if (!audioContext) {
-                        audioContext = new AudioContext();
-                        const silentBuffer = audioContext.createBuffer(1, audioContext.sampleRate * 1, audioContext.sampleRate);
-                        const source = audioContext.createBufferSource();
-                        source.buffer = silentBuffer;
-                        source.connect(audioContext.destination);
-                        source.start(0);
-                        source.stop(audioContext.currentTime + 1);
-                    }
-                    if (audioContext.state === 'suspended') {
-                        audioContext.resume().then(() => {
-                            isIOSUnlocked = true;
-                            console.log('✅ Audio iOS sbloccato');
-                        }).catch(err => {
-                            console.error('Errore sblocco audio:', err);
-                        });
-                    } else {
-                        isIOSUnlocked = true;
-                        console.log('✅ Audio iOS già sbloccato');
-                    }
-                } catch(e) {
-                    console.error('Errore audio context:', e);
-                }
-            }
-            
-            document.addEventListener('click', unlockIOSAudio, { once: false });
-            document.addEventListener('touchstart', unlockIOSAudio, { once: false });
-            document.addEventListener('keydown', unlockIOSAudio, { once: false });
-            
-            document.addEventListener('visibilitychange', (e) => {
-                if (document.hidden && player && isPlaying) {
-                    console.log('🔄 Mantengo riproduzione in background');
-                }
-                e.stopPropagation();
-            }, true);
-            
-            const originalVisibilityHandler = document.onvisibilitychange;
-            document.onvisibilitychange = (e) => {
-                if (document.hidden && player && isPlaying) {
-                    console.log('🔄 Background playback attivo');
-                    return false;
-                }
-                if (originalVisibilityHandler) originalVisibilityHandler(e);
-            };
-            
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.setActionHandler('play', () => {
-                    if (player && player.playVideo) {
-                        player.playVideo();
-                        isPlaying = true;
-                        updatePlayIcons(true);
-                    }
-                });
-                navigator.mediaSession.setActionHandler('pause', () => {
-                    if (player && player.pauseVideo) {
-                        player.pauseVideo();
-                        isPlaying = false;
-                        updatePlayIcons(false);
-                    }
-                });
-                navigator.mediaSession.setActionHandler('previoustrack', () => {
-                    if (queueIndex > 0) playQueueIndex(queueIndex - 1);
-                });
-                navigator.mediaSession.setActionHandler('nexttrack', () => {
-                    if (queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1);
-                });
-                navigator.mediaSession.setActionHandler('seekto', (details) => {
-                    if (details.seekTime !== undefined && player && player.seekTo) {
-                        player.seekTo(details.seekTime, true);
-                    }
-                });
-            }
-            
             updateUserUI();
             loadHomeTracks();
             updateCountdown();
@@ -1172,24 +1092,6 @@
                 setTimeout(() => openOnboardingModal(), 2600);
             }
         };
-
-        function updateMediaSessionMetadata() {
-            if ('mediaSession' in navigator && currentTrackData) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: currentTrackData.name || 'Brano sconosciuto',
-                    artist: currentTrackData.artist || 'Artista sconosciuto',
-                    album: 'DarkSound Pro',
-                    artwork: [
-                        { src: currentTrackData.image || 'https://picsum.photos/96', sizes: '96x96', type: 'image/jpeg' },
-                        { src: currentTrackData.image || 'https://picsum.photos/128', sizes: '128x128', type: 'image/jpeg' },
-                        { src: currentTrackData.image || 'https://picsum.photos/192', sizes: '192x192', type: 'image/jpeg' },
-                        { src: currentTrackData.image || 'https://picsum.photos/256', sizes: '256x256', type: 'image/jpeg' },
-                        { src: currentTrackData.image || 'https://picsum.photos/384', sizes: '384x384', type: 'image/jpeg' },
-                        { src: currentTrackData.image || 'https://picsum.photos/512', sizes: '512x512', type: 'image/jpeg' }
-                    ]
-                });
-            }
-        }
 
         function loadAllUsers() {
             const stored = localStorage.getItem('darksound_all_users');
@@ -1962,7 +1864,6 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
-                updateMediaSessionMetadata();
                 
                 if (player && player.loadVideoById && playerReady) {
                     player.loadVideoById(t.id);
@@ -1973,6 +1874,7 @@
                         startProgressTracker();
                     }, 300);
                 } else {
+                    // Fallback: ricrea l'iframe con autoplay
                     const youtubeContainer = document.getElementById('youtube-player');
                     youtubeContainer.innerHTML = `
                         <iframe 
@@ -2351,7 +2253,6 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
-                updateMediaSessionMetadata();
                 
                 if (player && player.loadVideoById && playerReady) {
                     player.loadVideoById(t.id);
@@ -2359,6 +2260,7 @@
                         player.playVideo();
                         isPlaying = true;
                         updatePlayIcons(true);
+                        startProgressTracker();
                     }, 300);
                 }
             }
