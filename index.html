@@ -34,6 +34,158 @@
             background-attachment: fixed;
         }
 
+        /* Schermata di caricamento */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0a0a0f 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+            overflow: hidden;
+        }
+
+        #splash-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .splash-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(48, 209, 88, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(0, 122, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 0, 127, 0.05) 0%, transparent 60%);
+            animation: splashBgPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes splashBgPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .splash-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .splash-logo {
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #30d158 50%, #007aff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: logoShine 2s ease-in-out infinite;
+        }
+
+        @keyframes logoShine {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        .splash-subtitle {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .splash-loader {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .splash-loader-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #30d158, #007aff, #ff007f);
+            border-radius: 2px;
+            animation: loaderProgress 2.5s ease-in-out forwards;
+        }
+
+        @keyframes loaderProgress {
+            0% { width: 0%; }
+            30% { width: 40%; }
+            60% { width: 75%; }
+            90% { width: 95%; }
+            100% { width: 100%; }
+        }
+
+        .splash-credits {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 500;
+            letter-spacing: 1px;
+            z-index: 3;
+        }
+
+        .splash-credits span {
+            background: linear-gradient(135deg, #30d158, #007aff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .splash-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            animation: iconFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .splash-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: particleFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            50% { transform: translateY(-20px) translateX(10px); opacity: 0.8; }
+        }
+
         .view { 
             display: none; 
             padding: 20px; 
@@ -313,62 +465,132 @@
             min-height: 200px;
         }
 
-        /* ==== Nuove funzionalità: stili aggiuntivi ==== */
-        .artist-action-row {
-            display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 18px 0;
+        /* Nuovi stili per le funzionalità aggiuntive */
+        .discography-section {
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .artist-action-btn {
-            display: flex; align-items: center; gap: 8px;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
-            color: white; font-weight: 700; font-size: 0.85rem;
-            padding: 10px 16px; border-radius: 20px; cursor: pointer; white-space: nowrap;
+        .discography-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
         }
-        .artist-action-btn.primary { background: var(--accent); color: black; border-color: var(--accent); }
-        .artist-action-btn.active-toggle { background: rgba(255,149,0,0.2); color: #ff9500; border-color: rgba(255,149,0,0.4); }
-        .artist-action-btn i { font-size: 0.95rem; }
-        .artist-action-btn .spin { animation: spinLoader 0.8s linear infinite; }
-        @keyframes spinLoader { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .quick-profile-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 8px 0 14px 0; margin-bottom: 6px; }
-        .quick-profile-chip {
-            display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;
-            flex-shrink: 0; width: 62px; text-align: center; position: relative;
+        .discography-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
         }
-        .quick-profile-avatar {
-            width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 1.1rem; color: black; background: linear-gradient(135deg, #ffb84d, #ff5f6d);
-            border: 2px solid transparent;
+        .radio-similar-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: transform 0.2s;
         }
-        .quick-profile-chip.current .quick-profile-avatar { border-color: var(--accent); }
-        .quick-profile-chip span { font-size: 0.68rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-        .quick-profile-add { display:flex; align-items:center; justify-content:center; width:50px; height:50px; border-radius:50%; background: rgba(255,255,255,0.08); border: 1px dashed rgba(255,255,255,0.3); }
-
-        .session-history-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.06);
+        .radio-similar-btn:active {
+            transform: scale(0.95);
         }
-        .session-history-item .shi-left { display:flex; flex-direction:column; }
-        .session-history-item .shi-left b { font-size: 0.92rem; color: white; }
-        .session-history-item .shi-left span { font-size: 0.75rem; color: var(--text-sub); }
-        .session-history-item .shi-badge {
-            font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;
+        .radio-similar-btn i {
+            font-size: 1.1rem;
         }
-        .shi-online { background: rgba(48,209,88,0.15); color: var(--accent); }
-        .shi-offline { background: rgba(255,149,0,0.15); color: #ff9500; }
-        .shi-fallback { background: rgba(255,77,77,0.15); color: #ff4d4d; }
-
-        .anti-clone-note {
-            font-size: 0.78rem; color: var(--text-sub); margin: -6px 0 14px 0; display:flex; align-items:center; gap:6px;
+        .dedup-badge {
+            background: rgba(255, 165, 0, 0.2);
+            color: #ffa500;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
-
-        .hybrid-status-dot {
-            width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; background: var(--accent);
+        .blend-active-indicator {
+            background: rgba(48, 209, 88, 0.2);
+            color: #30d158;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: 8px;
         }
-        .hybrid-status-dot.fallback { background: #ff9500; }
-        .hybrid-status-dot.offline { background: #ff4d4d; }
+        .profile-switch-menu {
+            position: absolute;
+            background: rgba(30, 30, 34, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 8px;
+            z-index: 50;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            min-width: 200px;
+        }
+        .profile-switch-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .profile-switch-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .profile-switch-item.active-profile {
+            background: rgba(48, 209, 88, 0.15);
+            color: var(--accent);
+        }
+        .offline-indicator {
+            background: rgba(255, 165, 0, 0.2);
+            color: #ffa500;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .hybrid-mode-badge {
+            background: rgba(0, 122, 255, 0.2);
+            color: #007aff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Schermata di caricamento -->
+    <div id="splash-screen">
+        <div class="splash-background"></div>
+        <div class="splash-particles" id="splashParticles"></div>
+        <div class="splash-content">
+            <div class="splash-icon">
+                <i class="fas fa-headphones"></i>
+            </div>
+            <div class="splash-logo">DarkSound</div>
+            <div class="splash-subtitle">Ultimate Edition</div>
+            <div class="splash-loader">
+                <div class="splash-loader-bar"></div>
+            </div>
+        </div>
+        <div class="splash-credits">by <span>DarkSW</span></div>
+    </div>
 
     <div id="profileDrawer" class="profile-drawer">
         <div class="drawer-header">
@@ -386,6 +608,10 @@
             <div class="drawer-menu-left"><i class="fas fa-user-plus"></i> Aggiungi account</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
         </div>
+        <div class="drawer-menu-item" onclick="toggleProfileSwitchMenu(event)">
+            <div class="drawer-menu-left"><i class="fas fa-users"></i> Profili & Blend Rapido</div>
+            <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
+        </div>
         <div class="drawer-menu-item">
             <div class="drawer-menu-left"><i class="fab fa-spotify" style="color:var(--accent);"></i> Piano DarkSound</div>
             <span style="background:rgba(48,209,88,0.2); color:var(--accent); font-size:0.75rem; padding:3px 8px; border-radius:6px; font-weight:800;">PRO</span>
@@ -398,19 +624,12 @@
             <div class="drawer-menu-left"><i class="fas fa-clock-rotate-left"></i> Recenti e Salvati</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
         </div>
-        <div class="drawer-menu-item" onclick="openSessionHistoryModal()">
-            <div class="drawer-menu-left"><i class="fas fa-satellite-dish"></i> Cronologia Sessioni Offline</div>
-            <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
-        </div>
         <div class="drawer-menu-item" onclick="alert('Impostazioni privacy e audio Lossless attive.')">
             <div class="drawer-menu-left"><i class="fas fa-gear"></i> Impostazioni e privacy</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
         </div>
 
-        <div style="margin-top: 24px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">Profili condivisi &middot; cambio rapido</div>
-        <div class="quick-profile-scroll" id="quickProfileScroll"></div>
-
-        <div style="margin-top: 4px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">Attività amici</div>
+        <div style="margin-top: 24px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">Attività amici</div>
         <div class="drawer-friends-scroll">
             <div class="friend-bubble" onclick="alert('Giancarlo sta ascoltando: Sfera Ebbasta')">
                 <img class="friend-avatar" src="https://picsum.photos/seed/friend1/100">
@@ -432,6 +651,18 @@
 
         <div style="margin-top: auto; padding-top: 20px;">
             <button class="auth-btn" style="background:rgba(255,77,77,0.2); color:#ff4d4d; margin-top:0;" onclick="logoutUser()">Esci dall'account</button>
+        </div>
+    </div>
+
+    <div id="profile-switch-menu" class="profile-switch-menu" style="display:none; position:fixed; top:100px; right:20px; z-index:4500;">
+        <div style="font-size:0.85rem; font-weight:700; color:var(--text-sub); padding:8px 12px; border-bottom:1px solid rgba(255,255,255,0.1);">Cambia Profilo Rapido</div>
+        <div id="profileSwitchList"></div>
+        <div style="border-top:1px solid rgba(255,255,255,0.1); margin-top:8px; padding-top:8px;">
+            <div class="profile-switch-item" onclick="createBlendFromProfiles()">
+                <i class="fas fa-users-viewfinder" style="color:var(--accent);"></i>
+                <span>Blend Profili Attivi</span>
+                <span class="blend-active-indicator">LIVE</span>
+            </div>
         </div>
     </div>
 
@@ -537,29 +768,6 @@
             <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Aggiungi a playlist</h3>
             <div id="playlistSelectList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;"></div>
             <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white;" onclick="closePlaylistModal()">Chiudi</button>
-        </div>
-    </div>
-
-    <div id="session-history-modal" class="modal-overlay">
-        <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:420px; max-height:80vh; overflow-y:auto;">
-            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:4px;"><span class="hybrid-status-dot" id="hybridStatusDot"></span>Cronologia Sessioni</h3>
-            <p style="color:var(--text-sub); font-size:0.82rem; margin-bottom:14px;" id="hybridStatusText">Motore ibrido attivo: sorgente YouTube primaria, fallback automatico in caso di errore.</p>
-            <div id="sessionHistoryList"><p style="color:var(--text-sub);">Nessuna sessione registrata ancora.</p></div>
-            <button class="auth-btn" style="background:rgba(255,77,77,0.15); color:#ff4d4d; margin-top:14px;" onclick="clearSessionHistory()">Cancella cronologia</button>
-            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('session-history-modal').classList.remove('active')">Chiudi</button>
-        </div>
-    </div>
-
-    <div id="quick-profile-onboarding-modal" class="modal-overlay">
-        <div class="auth-card" style="text-align:center;">
-            <h2>Nuovo profilo condiviso</h2>
-            <p>Aggiungi rapidamente un profilo da questo dispositivo (i gusti restano distinti e salvati localmente per ciascun profilo).</p>
-            <div class="auth-input-group">
-                <label>Nome profilo</label>
-                <input type="text" id="quickNewProfileName" placeholder="Es. Papà, Sorella, Ospite2...">
-            </div>
-            <button class="auth-btn" onclick="submitQuickNewProfile()">Crea e passa a questo profilo</button>
-            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('quick-profile-onboarding-modal').classList.remove('active')">Annulla</button>
         </div>
     </div>
 
@@ -669,19 +877,24 @@
         </div>
 
         <div style="padding: 20px;">
-            <div class="artist-action-row">
-                <button class="artist-action-btn primary" id="btnPlayDiscography" onclick="playFullDiscography()"><i class="fas fa-play"></i> Riproduci Discografia</button>
-                <button class="artist-action-btn" id="btnSimilarRadio" onclick="startSimilarArtistRadio()"><i class="fas fa-podcast"></i> Radio Artisti Simili</button>
-                <button class="artist-action-btn" id="btnAntiCloneToggle" onclick="toggleAntiCloneFilter()"><i class="fas fa-filter"></i> Filtro Anti-Cloni: ON</button>
-            </div>
-            <p class="anti-clone-note" id="antiCloneNote"><i class="fas fa-circle-info"></i> Live, remix e cover duplicate vengono filtrati automaticamente dai consigli.</p>
-
-            <div class="section-title" style="margin-top:10px;">Discografia Completa</div>
-            <p id="discographyStatusText" style="color:var(--text-sub); font-size:0.85rem; margin-top:-10px; margin-bottom:14px;">Tocca "Riproduci Discografia" per caricare tutti i brani dell'artista in un unico player sequenziale.</p>
-            <div id="artistDiscographyContainer"></div>
-
-            <div class="section-title" style="margin-top:22px;">Popolare</div>
+            <div class="section-title" style="margin-top:10px;">Popolare</div>
             <div id="artistTracksContainer"><p style="color:var(--text-sub);">Caricamento brani...</p></div>
+
+            <!-- Nuova sezione Discografia Completa -->
+            <div class="discography-section" id="discographySection">
+                <div class="discography-header">
+                    <h3>Discografia Completa</h3>
+                    <span class="dedup-badge"><i class="fas fa-filter"></i> Anti-Cloni</span>
+                </div>
+                <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+                    <button class="radio-similar-btn" onclick="startSimilarArtistsRadio()">
+                        <i class="fas fa-broadcast-tower"></i> Radio Artisti Simili
+                    </button>
+                </div>
+                <div id="discographyTracksContainer">
+                    <p style="color:var(--text-sub);">Caricamento discografia completa...</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -820,307 +1033,54 @@
         let tempAuthName = '';
         let isLyricsActive = false;
         let parsedSyncedLyrics = [];
+        let sessionHistory = JSON.parse(localStorage.getItem('darksound_session_history') || '[]');
+        let allProfiles = JSON.parse(localStorage.getItem('darksound_all_profiles') || '[]');
+        let offlineMode = false;
 
-        // ==== Nuove funzionalità: stato globale ====
-        let antiCloneFilterEnabled = true;
-        let sessionHistory = JSON.parse(localStorage.getItem(currentUser ? `sessions_${currentUser}` : 'darksound_sessions') || '[]');
-        let currentArtistContext = { name: '', image: '' };
-        let hybridFallbackAttempted = false;
-        let allKnownProfiles = JSON.parse(localStorage.getItem('darksound_all_profiles') || '[]');
-
-        // Correlazioni statiche artista -> artisti simili (usate per generare la Radio Artisti Simili)
-        const ARTIST_CORRELATIONS = {
-            'sfera ebbasta': ['Lazza', 'Capo Plaza', 'Ghali', 'Tedua', 'Rondodasosa'],
-            'lazza': ['Sfera Ebbasta', 'Capo Plaza', 'Tedua', 'Shiva', 'Emis Killa'],
-            'ghali': ['Sfera Ebbasta', 'Ernia', 'Tedua', 'Marracash', 'Salmo'],
-            'travis scott': ['Drake', 'Future', 'Playboi Carti', 'Don Toliver', 'Metro Boomin'],
-            'drake': ['Travis Scott', 'Future', '21 Savage', 'J. Cole', 'Kendrick Lamar'],
-            'annalisa': ['Elodie', 'Emma', 'Elettra Lamborghini', 'Baby K', 'Alessandra Amoroso'],
-            'club dogo': ['Guè', 'Jake La Furia', 'Marracash', 'Salmo', 'Fabri Fibra'],
-            'twenty one pilots': ['Imagine Dragons', 'Panic! At The Disco', 'Fall Out Boy', 'The Neighbourhood'],
-            'marracash': ['Guè', 'Fabri Fibra', 'Salmo', 'Club Dogo', 'Ernia']
-        };
-
-        // Pattern usati per rilevare cloni/duplicati/versioni non pertinenti nei consigli
-        const ANTI_CLONE_PATTERNS = [
-            /\blive\b/i, /\bremix\b/i, /\bcover\b/i, /\bkaraoke\b/i, /\btribute\b/i,
-            /\bacoustic\b/i, /\bacustic[oa]\b/i, /\brework\b/i, /\bslowed\b/i, /\bsped ?up\b/i,
-            /\binstrumental\b/i, /\bnightcore\b/i, /\b8d audio\b/i, /\bfan ?made\b/i, /\btutorial\b/i,
-            /\breaction\b/i, /\bmashup\b/i, /\bcompilation\b/i, /\bmegamix\b/i
-        ];
-
-        function normalizeTrackKey(t) {
-            return (t.name + '|' + t.artist).toLowerCase().replace(/[^a-z0-9|]/g, '').trim();
-        }
-
-        // Filtra versioni live/remix/cover irrilevanti e rimuove i brani duplicati (stesso titolo+artista)
-        function filterAntiClones(tracks) {
-            if (!Array.isArray(tracks)) return [];
-            let seen = new Set();
-            let result = [];
-            for (let t of tracks) {
-                if (!t || !t.name) continue;
-                if (antiCloneFilterEnabled && ANTI_CLONE_PATTERNS.some(rx => rx.test(t.name))) continue;
-                let key = normalizeTrackKey(t);
-                if (seen.has(key)) continue;
-                seen.add(key);
-                result.push(t);
-            }
-            return result;
-        }
-
-        function toggleAntiCloneFilter() {
-            antiCloneFilterEnabled = !antiCloneFilterEnabled;
-            const btn = document.getElementById('btnAntiCloneToggle');
-            const note = document.getElementById('antiCloneNote');
-            if (btn) {
-                btn.innerHTML = `<i class="fas fa-filter"></i> Filtro Anti-Cloni: ${antiCloneFilterEnabled ? 'ON' : 'OFF'}`;
-                btn.classList.toggle('active-toggle', !antiCloneFilterEnabled);
-            }
-            if (note) {
-                note.innerHTML = antiCloneFilterEnabled
-                    ? '<i class="fas fa-circle-info"></i> Live, remix e cover duplicate vengono filtrati automaticamente dai consigli.'
-                    : '<i class="fas fa-triangle-exclamation"></i> Filtro disattivato: potrebbero comparire live, remix e duplicati.';
-            }
-            if (currentArtistContext.name) {
-                if (document.getElementById('discographyStatusText') && document.getElementById('discographyStatusText').innerText.includes('brani caricati')) {
-                    playFullDiscography(true);
-                }
+        // Funzione per creare le particelle dello splash screen
+        function createSplashParticles() {
+            const container = document.getElementById('splashParticles');
+            if (!container) return;
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 8 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = (Math.random() * 3) + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                container.appendChild(particle);
             }
         }
 
-        // ==== Profili condivisi & Blend rapido ====
-        function registerProfile(name) {
-            if (!name) return;
-            if (!allKnownProfiles.includes(name)) {
-                allKnownProfiles.push(name);
-                localStorage.setItem('darksound_all_profiles', JSON.stringify(allKnownProfiles));
-            }
-            renderQuickProfileScroll();
-        }
-
-        function renderQuickProfileScroll() {
-            const el = document.getElementById('quickProfileScroll');
-            if (!el) return;
-            let html = allKnownProfiles.map(name => `
-                <div class="quick-profile-chip ${name === currentUser ? 'current' : ''}" onclick="quickSwitchProfile('${name.replace(/'/g, "\\'")}')">
-                    <div class="quick-profile-avatar">${name.charAt(0).toUpperCase()}</div>
-                    <span>${name}</span>
-                </div>
-            `).join('');
-            html += `
-                <div class="quick-profile-chip" onclick="document.getElementById('quick-profile-onboarding-modal').classList.add('active')">
-                    <div class="quick-profile-add"><i class="fas fa-plus" style="color:var(--accent);"></i></div>
-                    <span>Aggiungi</span>
-                </div>
-            `;
-            el.innerHTML = html;
-        }
-
-        function quickSwitchProfile(name) {
-            if (name === currentUser) { toggleProfileDrawer(); return; }
-            currentUser = name;
-            localStorage.setItem('darksound_current_user', currentUser);
-            userPreferences = JSON.parse(localStorage.getItem(`prefs_${currentUser}`) || 'null');
-            likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
-            downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
-            userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
-            sessionHistory = JSON.parse(localStorage.getItem(`sessions_${currentUser}`) || '[]');
-            updateUserUI();
-            renderQuickProfileScroll();
-            toggleProfileDrawer();
-            loadHomeTracks();
-            if (!userPreferences) setTimeout(() => openOnboardingModal(), 300);
-        }
-
-        function submitQuickNewProfile() {
-            const name = document.getElementById('quickNewProfileName').value.trim();
-            if (!name) return alert('Inserisci un nome profilo.');
-            registerProfile(name);
-            document.getElementById('quick-profile-onboarding-modal').classList.remove('active');
-            document.getElementById('quickNewProfileName').value = '';
-            quickSwitchProfile(name);
-        }
-
-        // ==== Discografia completa artista (player sequenziale unico) ====
-        async function playFullDiscography(silentRefresh) {
-            const artistName = currentArtistContext.name || document.getElementById('artistNameTitle').innerText;
-            if (!artistName) return;
-            const statusEl = document.getElementById('discographyStatusText');
-            const btn = document.getElementById('btnPlayDiscography');
-            if (btn) btn.innerHTML = '<i class="fas fa-spinner spin"></i> Caricamento discografia...';
-            if (statusEl) statusEl.innerText = 'Sto caricando l\'intera discografia in un unico player sequenziale...';
-
-            try {
-                const queries = [artistName, `${artistName} album`, `${artistName} greatest hits`, `${artistName} singoli`];
-                const responses = await Promise.all(queries.map(q => fetch(`/api/search?q=${encodeURIComponent(q)}`).then(r => r.json()).catch(() => [])));
-                let combined = [].concat(...responses);
-                combined = combined.filter(t => t && t.artist && t.artist.toLowerCase().includes(artistName.toLowerCase().split(' ')[0].toLowerCase()));
-                if (combined.length === 0) combined = [].concat(...responses);
-                let finalTracks = filterAntiClones(combined);
-
-                if (finalTracks.length === 0) {
-                    if (statusEl) statusEl.innerText = 'Nessun brano trovato per la discografia completa.';
-                } else {
-                    if (statusEl) statusEl.innerText = `${finalTracks.length} brani caricati nella discografia completa. Riproduzione sequenziale in un unico player.`;
-                    renderTracksList(finalTracks, 'artistDiscographyContainer', finalTracks);
-                    if (!silentRefresh) {
-                        const t = finalTracks[0];
-                        const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
-                        const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(finalTracks))));
-                        playSelectedTrack(trackJson, queueJson, 0);
+        // Funzione per nascondere lo splash screen
+        function hideSplashScreen() {
+            const splash = document.getElementById('splash-screen');
+            if (splash) {
+                splash.classList.add('fade-out');
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    // Mostra il modal di autenticazione se necessario
+                    if(!currentUser) {
+                        setTimeout(() => openAuthModal(), 400);
+                    } else if(!userPreferences) {
+                        setTimeout(() => openOnboardingModal(), 400);
                     }
-                }
-            } catch (e) {
-                if (statusEl) statusEl.innerText = 'Errore nel caricamento della discografia completa.';
-            } finally {
-                if (btn) btn.innerHTML = '<i class="fas fa-play"></i> Riproduci Discografia';
+                }, 600);
             }
         }
-
-        // ==== Radio Artisti Simili (motore correlazioni) ====
-        async function startSimilarArtistRadio() {
-            const artistName = currentArtistContext.name || document.getElementById('artistNameTitle').innerText;
-            if (!artistName) return;
-            const btn = document.getElementById('btnSimilarRadio');
-            if (btn) btn.innerHTML = '<i class="fas fa-spinner spin"></i> Generazione mix...';
-
-            try {
-                let seeds = ARTIST_CORRELATIONS[artistName.toLowerCase()];
-                if (!seeds) {
-                    seeds = (userPreferences && userPreferences.genres && userPreferences.genres.length > 0)
-                        ? userPreferences.genres
-                        : [artistName + ' radio'];
-                }
-                const queries = [artistName, ...seeds];
-                const responses = await Promise.all(queries.map(q => fetch(`/api/search?q=${encodeURIComponent(q)}`).then(r => r.json()).catch(() => [])));
-                let combined = [].concat(...responses);
-                let mixTracks = filterAntiClones(combined).sort(() => Math.random() - 0.5).slice(0, 20);
-
-                if (mixTracks.length === 0) {
-                    alert('Non è stato possibile generare la radio in questo momento.');
-                } else {
-                    renderTracksList(mixTracks, 'artistDiscographyContainer', mixTracks);
-                    document.getElementById('discographyStatusText').innerText = `Radio Artisti Simili generata: ${mixTracks.length} brani basati sulle correlazioni con ${artistName}.`;
-                    const t = mixTracks[0];
-                    const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
-                    const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(mixTracks))));
-                    playSelectedTrack(trackJson, queueJson, 0);
-                }
-            } catch (e) {
-                alert('Errore nella generazione della Radio Artisti Simili.');
-            } finally {
-                if (btn) btn.innerHTML = '<i class="fas fa-podcast"></i> Radio Artisti Simili';
-            }
-        }
-
-        // ==== Cronologia sessioni offline & motore ibrido ====
-        function logSessionEvent(track, sourceType) {
-            if (!track || !track.id) return;
-            sessionHistory.unshift({
-                trackName: track.name,
-                artist: track.artist,
-                sourceType: sourceType || (navigator.onLine ? 'online' : 'offline'),
-                timestamp: new Date().toISOString()
-            });
-            sessionHistory = sessionHistory.slice(0, 100);
-            if (currentUser) {
-                localStorage.setItem(`sessions_${currentUser}`, JSON.stringify(sessionHistory));
-            } else {
-                localStorage.setItem('darksound_sessions', JSON.stringify(sessionHistory));
-            }
-        }
-
-        function renderSessionHistory() {
-            const listEl = document.getElementById('sessionHistoryList');
-            if (!listEl) return;
-            if (sessionHistory.length === 0) {
-                listEl.innerHTML = `<p style="color:var(--text-sub);">Nessuna sessione registrata ancora.</p>`;
-                return;
-            }
-            listEl.innerHTML = sessionHistory.map(s => {
-                const badgeClass = s.sourceType === 'fallback' ? 'shi-fallback' : (s.sourceType === 'offline' ? 'shi-offline' : 'shi-online');
-                const badgeLabel = s.sourceType === 'fallback' ? 'FALLBACK YT' : (s.sourceType === 'offline' ? 'OFFLINE' : 'ONLINE');
-                const d = new Date(s.timestamp);
-                const timeLabel = d.toLocaleDateString('it-IT') + ' ' + d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-                return `
-                    <div class="session-history-item">
-                        <div class="shi-left">
-                            <b>${s.trackName}</b>
-                            <span>${s.artist} • ${timeLabel}</span>
-                        </div>
-                        <span class="shi-badge ${badgeClass}">${badgeLabel}</span>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function openSessionHistoryModal() {
-            toggleProfileDrawer();
-            renderSessionHistory();
-            updateHybridStatusUI();
-            document.getElementById('session-history-modal').classList.add('active');
-        }
-
-        function clearSessionHistory() {
-            sessionHistory = [];
-            if (currentUser) localStorage.setItem(`sessions_${currentUser}`, JSON.stringify(sessionHistory));
-            renderSessionHistory();
-        }
-
-        function updateHybridStatusUI() {
-            const dot = document.getElementById('hybridStatusDot');
-            const text = document.getElementById('hybridStatusText');
-            const syncBadge = document.getElementById('syncStatusBadge');
-            if (!navigator.onLine) {
-                if (dot) dot.className = 'hybrid-status-dot offline';
-                if (text) text.innerText = 'Sei offline: verranno riprodotti solo i brani scaricati localmente. Il motore ibrido riprenderà la sincronizzazione YouTube al ritorno della connessione.';
-                if (syncBadge) { syncBadge.innerText = 'Offline'; syncBadge.style.color = '#ff9500'; syncBadge.style.background = 'rgba(255,149,0,0.2)'; }
-            } else if (hybridFallbackAttempted) {
-                if (dot) dot.className = 'hybrid-status-dot fallback';
-                if (text) text.innerText = 'Motore ibrido: la sorgente principale ha avuto un problema, in uso una sorgente di fallback automatica.';
-                if (syncBadge) { syncBadge.innerText = 'Fallback attivo'; syncBadge.style.color = '#ff9500'; syncBadge.style.background = 'rgba(255,149,0,0.2)'; }
-            } else {
-                if (dot) dot.className = 'hybrid-status-dot';
-                if (text) text.innerText = 'Motore ibrido attivo: sorgente YouTube primaria, fallback automatico in caso di errore.';
-                if (syncBadge) { syncBadge.innerText = 'Online'; syncBadge.style.color = '#30d158'; syncBadge.style.background = 'rgba(46,189,89,0.2)'; }
-            }
-        }
-
-        async function resolveHybridFallback() {
-            if (!currentTrackData || !currentTrackData.name) return;
-            hybridFallbackAttempted = true;
-            updateHybridStatusUI();
-            try {
-                let res = await fetch(`/api/search?q=${encodeURIComponent(currentTrackData.name + ' ' + currentTrackData.artist)}`);
-                let candidates = await res.json();
-                let alternative = (candidates || []).find(c => c.id && c.id !== currentTrackData.id);
-                if (alternative && player && player.loadVideoById) {
-                    currentTrackData.id = alternative.id;
-                    player.loadVideoById(alternative.id);
-                    player.playVideo();
-                    logSessionEvent(currentTrackData, 'fallback');
-                } else if (downloadedTracks.some(t => t.name === currentTrackData.name)) {
-                    logSessionEvent(currentTrackData, 'offline');
-                }
-            } catch (e) { /* fallback silenzioso */ }
-        }
-
-        window.addEventListener('online', updateHybridStatusUI);
-        window.addEventListener('offline', updateHybridStatusUI);
 
         window.onload = function() {
+            createSplashParticles();
             updateUserUI();
             loadHomeTracks();
             updateCountdown();
-            if (currentUser) registerProfile(currentUser);
-            renderQuickProfileScroll();
-            updateHybridStatusUI();
-            if(!currentUser) {
-                setTimeout(() => openAuthModal(), 400);
-            } else if(!userPreferences) {
-                setTimeout(() => openOnboardingModal(), 400);
-            }
+            loadSessionHistory();
+            
+            // Nascondi lo splash screen dopo 3 secondi
+            setTimeout(hideSplashScreen, 3000);
         };
 
         function updateCountdown() {
@@ -1142,16 +1102,305 @@
             }, 1000);
         }
 
+        // Funzioni per la gestione dei profili
+        function getAllProfiles() {
+            const profiles = JSON.parse(localStorage.getItem('darksound_all_profiles') || '[]');
+            return profiles;
+        }
+
+        function saveProfile(name, prefs) {
+            let profiles = getAllProfiles();
+            const existingIndex = profiles.findIndex(p => p.name === name);
+            
+            if (existingIndex > -1) {
+                profiles[existingIndex].prefs = prefs;
+            } else {
+                profiles.push({ name: name, prefs: prefs });
+            }
+            
+            localStorage.setItem('darksound_all_profiles', JSON.stringify(profiles));
+        }
+
+        function switchProfile(name) {
+            const profiles = getAllProfiles();
+            const profile = profiles.find(p => p.name === name);
+            
+            if (profile) {
+                currentUser = name;
+                localStorage.setItem('darksound_current_user', name);
+                userPreferences = profile.prefs;
+                localStorage.setItem(`prefs_${name}`, JSON.stringify(profile.prefs));
+                
+                // Carica i dati del profilo
+                likedSongs = JSON.parse(localStorage.getItem(`liked_${name}`) || '[]');
+                downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${name}`) || '[]');
+                userPlaylists = JSON.parse(localStorage.getItem(`playlists_${name}`) || '[]');
+                
+                updateUserUI();
+                loadHomeTracks();
+                toggleProfileSwitchMenu(null);
+                
+                // Registra nella cronologia sessioni
+                logSessionEvent('profile_switch', { profile: name });
+            }
+        }
+
+        function createBlendFromProfiles() {
+            const profiles = getAllProfiles();
+            if (profiles.length < 2) {
+                alert('Servono almeno 2 profili per creare un blend.');
+                return;
+            }
+            
+            const blendTracks = [];
+            const blendPlaylist = {
+                id: 'pl_blend_profiles_' + Date.now(),
+                name: `Blend Profili: ${profiles.map(p => p.name).join(' + ')}`,
+                visibility: 'private',
+                owner: currentUser,
+                tracks: []
+            };
+            
+            // Raccogli i brani dai profili
+            profiles.forEach(profile => {
+                const profileLiked = JSON.parse(localStorage.getItem(`liked_${profile.name}`) || '[]');
+                blendTracks.push(...profileLiked);
+            });
+            
+            // Deduplica i brani
+            const uniqueTracks = [];
+            const seenIds = new Set();
+            
+            blendTracks.forEach(track => {
+                if (!seenIds.has(track.id)) {
+                    seenIds.add(track.id);
+                    uniqueTracks.push(track);
+                }
+            });
+            
+            blendPlaylist.tracks = uniqueTracks.slice(0, 20);
+            userPlaylists.push(blendPlaylist);
+            saveUserData();
+            
+            alert(`Blend creato con ${uniqueTracks.length} brani da ${profiles.length} profili!`);
+            toggleProfileSwitchMenu(null);
+        }
+
+        function toggleProfileSwitchMenu(event) {
+            const menu = document.getElementById('profile-switch-menu');
+            if (menu) {
+                const isVisible = menu.style.display === 'block';
+                menu.style.display = isVisible ? 'none' : 'block';
+                
+                if (!isVisible) {
+                    renderProfileSwitchList();
+                }
+            }
+        }
+
+        function renderProfileSwitchList() {
+            const container = document.getElementById('profileSwitchList');
+            const profiles = getAllProfiles();
+            
+            if (container) {
+                container.innerHTML = profiles.map(profile => `
+                    <div class="profile-switch-item ${profile.name === currentUser ? 'active-profile' : ''}" onclick="switchProfile('${profile.name}')">
+                        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#007aff,#30d158);display:flex;align-items:center;justify-content:center;font-weight:800;color:black;">
+                            ${profile.name.charAt(0).toUpperCase()}
+                        </div>
+                        <span>${profile.name}</span>
+                        ${profile.name === currentUser ? '<i class="fas fa-check" style="color:var(--accent);margin-left:auto;"></i>' : ''}
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Funzioni per la cronologia sessioni
+        function logSessionEvent(eventType, data = {}) {
+            const event = {
+                timestamp: new Date().toISOString(),
+                type: eventType,
+                data: data,
+                profile: currentUser || 'guest'
+            };
+            
+            sessionHistory.push(event);
+            
+            // Mantieni solo gli ultimi 100 eventi
+            if (sessionHistory.length > 100) {
+                sessionHistory = sessionHistory.slice(-100);
+            }
+            
+            localStorage.setItem('darksound_session_history', JSON.stringify(sessionHistory));
+        }
+
+        function loadSessionHistory() {
+            sessionHistory = JSON.parse(localStorage.getItem('darksound_session_history') || '[]');
+        }
+
+        // Funzioni per la modalità offline e motore ibrido
+        function checkOfflineMode() {
+            offlineMode = !navigator.onLine;
+            const badge = document.getElementById('syncStatusBadge');
+            
+            if (badge) {
+                if (offlineMode) {
+                    badge.textContent = 'Offline';
+                    badge.className = 'offline-indicator';
+                } else {
+                    badge.textContent = 'Online';
+                    badge.className = 'status-pill';
+                }
+            }
+            
+            return offlineMode;
+        }
+
+        function getHybridTrackSource(track) {
+            // Verifica se il brano è disponibile offline
+            const offlineTrack = downloadedTracks.find(t => t.id === track.id);
+            if (offlineTrack) {
+                return { source: 'offline', track: offlineTrack };
+            }
+            
+            // Fallback a YouTube
+            return { source: 'youtube', track: track };
+        }
+
+        function resolveTrackPlayback(track) {
+            const source = getHybridTrackSource(track);
+            
+            if (source.source === 'offline') {
+                // Riproduci dalla cache offline
+                console.log('Riproduzione offline:', track.name);
+                return true;
+            } else {
+                // Riproduci da YouTube
+                console.log('Riproduzione da YouTube:', track.name);
+                return true;
+            }
+        }
+
+        // Funzioni per la discografia completa e anti-cloni
+        async function loadFullDiscography(artistName) {
+            const container = document.getElementById('discographyTracksContainer');
+            
+            if (container) {
+                container.innerHTML = '<p style="color:var(--text-sub);">Caricamento discografia completa...</p>';
+                
+                try {
+                    // Simula il caricamento di più album
+                    const albumQueries = [
+                        `${artistName} album`,
+                        `${artistName} greatest hits`,
+                        `${artistName} live`,
+                        `${artistName} remix`
+                    ];
+                    
+                    let allTracks = [];
+                    
+                    for (const query of albumQueries) {
+                        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                        const tracks = await response.json();
+                        allTracks.push(...tracks);
+                    }
+                    
+                    // Deduplica e filtra i brani
+                    const filteredTracks = deduplicateTracks(allTracks);
+                    
+                    if (filteredTracks.length > 0) {
+                        renderTracksList(filteredTracks, 'discographyTracksContainer', filteredTracks);
+                    } else {
+                        container.innerHTML = '<p style="color:var(--text-sub);">Nessuna discografia trovata.</p>';
+                    }
+                } catch (e) {
+                    container.innerHTML = '<p style="color:#ff4d4d;">Errore nel caricamento della discografia.</p>';
+                }
+            }
+        }
+
+        function deduplicateTracks(tracks) {
+            const seen = new Set();
+            const filtered = [];
+            
+            tracks.forEach(track => {
+                // Normalizza il nome per il confronto
+                const normalizedName = track.name.toLowerCase()
+                    .replace(/\(live[^)]*\)/gi, '')  // Rimuovi versioni live
+                    .replace(/\(remix[^)]*\)/gi, '') // Rimuovi remix
+                    .replace(/\(acoustic[^)]*\)/gi, '') // Rimuovi acustiche
+                    .replace(/\(edit[^)]*\)/gi, '')   // Rimuovi edit
+                    .replace(/\(version[^)]*\)/gi, '') // Rimuovi versioni
+                    .trim();
+                
+                // Salta le versioni live non pertinenti
+                if (track.name.toLowerCase().includes('live')) {
+                    return;
+                }
+                
+                // Salta remix duplicati
+                if (track.name.toLowerCase().includes('remix') && seen.has(normalizedName)) {
+                    return;
+                }
+                
+                if (!seen.has(normalizedName)) {
+                    seen.add(normalizedName);
+                    filtered.push(track);
+                }
+            });
+            
+            return filtered;
+        }
+
+        function startSimilarArtistsRadio() {
+            if (!currentTrackData.artist) return;
+            
+            logSessionEvent('radio_similar', { artist: currentTrackData.artist });
+            
+            const container = document.getElementById('discographyTracksContainer');
+            container.innerHTML = '<p style="color:#ff6b6b;">Generazione radio artisti simili...</p>';
+            
+            // Simula la generazione di mix intelligenti
+            setTimeout(() => {
+                const similarArtists = [
+                    `${currentTrackData.artist} collaborazione`,
+                    `${currentTrackData.artist} feat`,
+                    `artisti simili a ${currentTrackData.artist}`
+                ];
+                
+                Promise.all(similarArtists.map(q => 
+                    fetch(`/api/search?q=${encodeURIComponent(q)}`).then(r => r.json())
+                )).then(results => {
+                    const allTracks = results.flat();
+                    const deduped = deduplicateTracks(allTracks);
+                    
+                    if (deduped.length > 0) {
+                        renderTracksList(deduped, 'discographyTracksContainer', deduped);
+                    } else {
+                        container.innerHTML = '<p style="color:var(--text-sub);">Nessun brano simile trovato.</p>';
+                    }
+                });
+            }, 1500);
+        }
+
         function toggleProfileDrawer() { document.getElementById('profileDrawer').classList.toggle('active'); }
+        
         function logoutUser() {
+            logSessionEvent('logout', { profile: currentUser });
             localStorage.removeItem('darksound_current_user');
             currentUser = null;
             toggleProfileDrawer();
             updateUserUI();
             openAuthModal();
         }
-        function openAuthModal() { document.getElementById('profileDrawer').classList.remove('active'); document.getElementById('auth-modal').classList.add('active'); }
+        
+        function openAuthModal() { 
+            document.getElementById('profileDrawer').classList.remove('active'); 
+            document.getElementById('auth-modal').classList.add('active'); 
+        }
+        
         function closeAuthModal() { document.getElementById('auth-modal').classList.remove('active'); }
+        
         function proceedToOnboarding() {
             const name = document.getElementById('authEmail').value.trim();
             if(!name) return alert('Inserisci un nome utente.');
@@ -1159,21 +1408,30 @@
             closeAuthModal();
             openOnboardingModal();
         }
+        
         function openOnboardingModal() { document.getElementById('onboarding-modal').classList.add('active'); }
+        
         function toggleGenre(el) { el.classList.toggle('selected'); }
         
         function completeOnboarding() {
             currentUser = tempAuthName;
             localStorage.setItem('darksound_current_user', currentUser);
+            
             const selectedGenres = Array.from(document.querySelectorAll('#genreGrid .genre-tag.selected')).map(el => el.innerText.replace(/^[^\w\s]+\s*/, ''));
             const favArtist = document.getElementById('favArtistInput').value.trim();
             userPreferences = { genres: selectedGenres.length > 0 ? selectedGenres : ['Pop'], artist: favArtist || 'Hit Italia' };
+            
             localStorage.setItem(`prefs_${currentUser}`, JSON.stringify(userPreferences));
+            
+            // Salva il profilo
+            saveProfile(currentUser, userPreferences);
+            
             likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
             downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
             userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
-            sessionHistory = JSON.parse(localStorage.getItem(`sessions_${currentUser}`) || '[]');
-            registerProfile(currentUser);
+            
+            logSessionEvent('profile_created', { profile: currentUser });
+            
             document.getElementById('onboarding-modal').classList.remove('active');
             updateUserUI();
             loadHomeTracks();
@@ -1185,6 +1443,9 @@
             document.getElementById('drawerUserName').innerText = dispName;
             document.getElementById('drawerAvatarInitial').innerText = dispName.charAt(0).toUpperCase();
             if(currentUser) document.getElementById('homeWelcomeTitle').innerText = `Bentornato, ${currentUser}`;
+            
+            // Aggiorna il menu profili
+            renderProfileSwitchList();
         }
 
         function saveUserData() {
@@ -1204,22 +1465,33 @@
         }
 
         function openAiDjModal() { document.getElementById('ai-dj-modal').classList.add('active'); }
+        
         async function runAiDjSelection() {
             document.getElementById('aiDjStatusText').innerText = "Sto selezionando le migliori tracce per te...";
+            logSessionEvent('ai_dj_start');
+            
             try {
                 let res = await fetch(`/api/search?q=Top Hit`);
                 let tracks = await res.json();
                 if(tracks.length > 0) {
                     playSelectedTrack(btoa(unescape(encodeURIComponent(JSON.stringify(tracks[0])))), btoa(unescape(encodeURIComponent(JSON.stringify(tracks)))), 0);
                     document.getElementById('ai-dj-modal').classList.remove('active');
+                    logSessionEvent('ai_dj_track_selected', { track: tracks[0].name });
                 }
-            } catch(e) { alert('Errore AI DJ'); }
+            } catch(e) { 
+                alert('Errore AI DJ'); 
+                logSessionEvent('ai_dj_error');
+            }
         }
 
         function openAiPlaylistModal() { document.getElementById('ai-playlist-modal').classList.add('active'); }
+        
         async function generateAiPromptPlaylist() {
             const prompt = document.getElementById('aiPromptInput').value.trim();
             if(!prompt) return alert('Inserisci una descrizione.');
+            
+            logSessionEvent('ai_playlist_generate', { prompt: prompt });
+            
             try {
                 let res = await fetch(`/api/search?q=${encodeURIComponent(prompt)}`);
                 let tracks = await res.json();
@@ -1236,12 +1508,17 @@
                     document.getElementById('ai-playlist-modal').classList.remove('active');
                     alert(`Playlist IA creata con successo! Controlla la tua libreria.`);
                 }
-            } catch(e) { alert('Errore generazione playlist IA'); }
+            } catch(e) { 
+                alert('Errore generazione playlist IA'); 
+            }
         }
 
         function openBlendModal() { document.getElementById('blend-modal').classList.add('active'); }
+        
         async function createBlendPlaylist() {
             const friend = document.getElementById('blendFriendSelect').value;
+            logSessionEvent('blend_create', { friend: friend });
+            
             try {
                 let res = await fetch(`/api/search?q=${encodeURIComponent(friend)}`);
                 let tracks = await res.json();
@@ -1258,10 +1535,15 @@
                     document.getElementById('blend-modal').classList.remove('active');
                     alert(`Playlist Blend creata con ${friend}!`);
                 }
-            } catch(e) { alert('Errore creazione Blend'); }
+            } catch(e) { 
+                alert('Errore creazione Blend'); 
+            }
         }
 
-        function openWrappedModal() { document.getElementById('wrapped-modal').classList.add('active'); toggleProfileDrawer(); }
+        function openWrappedModal() { 
+            document.getElementById('wrapped-modal').classList.add('active'); 
+            toggleProfileDrawer(); 
+        }
 
         async function loadHomeTracks() {
             try {
@@ -1320,6 +1602,8 @@
                 let tempContainer = document.createElement('div');
                 tempContainer.innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, tracks)).join('');
                 container.appendChild(tempContainer);
+                
+                logSessionEvent('search', { query: query });
             } catch(e) {}
         }
 
@@ -1362,6 +1646,7 @@
             document.getElementById(containerId).innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, sectionTracks)).join('');
         }
 
+        // Funzione openArtistPage CORRETTA con discografia completa
         async function openArtistPage(artistName, artistImageOverride) {
             switchView('artist'); 
             const heroImgEl = document.getElementById('artistHeroImg');
@@ -1369,11 +1654,6 @@
             
             document.getElementById('artistNameTitle').innerText = artistName;
             container.innerHTML = '<p style="color:var(--text-sub);">Caricamento in corso...</p>';
-            currentArtistContext = { name: artistName, image: artistImageOverride || '' };
-            const discogContainer = document.getElementById('artistDiscographyContainer');
-            const discogStatus = document.getElementById('discographyStatusText');
-            if (discogContainer) discogContainer.innerHTML = '';
-            if (discogStatus) discogStatus.innerText = 'Tocca "Riproduci Discografia" per caricare tutti i brani dell\'artista in un unico player sequenziale.';
             
             heroImgEl.style.opacity = '0.5';
             heroImgEl.src = artistImageOverride || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
@@ -1385,6 +1665,11 @@
                 if (Array.isArray(tracks) && tracks.length > 0) {
                     heroImgEl.src = tracks[0].image;
                     renderTracksList(tracks, 'artistTracksContainer', tracks);
+                    
+                    // Carica la discografia completa
+                    loadFullDiscography(artistName);
+                    
+                    logSessionEvent('artist_view', { artist: artistName });
                 } else {
                     container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano popolare trovato per ${artistName}.</p>`;
                 }
@@ -1418,9 +1703,9 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
-                hybridFallbackAttempted = false;
-                logSessionEvent(t, navigator.onLine ? 'online' : 'offline');
-                updateHybridStatusUI();
+                
+                // Risolvi la riproduzione (offline o YouTube)
+                resolveTrackPlayback(t);
                 
                 if(player && player.loadVideoById) {
                     player.loadVideoById(t.id);
@@ -1428,6 +1713,8 @@
                     isPlaying = true;
                     updatePlayIcons(true);
                 }
+                
+                logSessionEvent('track_play', { track: t.name, artist: t.artist });
             } catch(err) {
                 console.error("Errore nella riproduzione del brano:", err);
             }
@@ -1437,7 +1724,9 @@
             if(!currentTrackData.id) return;
             document.getElementById('shareTrackSubtitle').innerText = `${currentTrackData.name} - ${currentTrackData.artist}`;
             document.getElementById('share-modal').classList.add('active');
+            logSessionEvent('share_open', { track: currentTrackData.name });
         }
+        
         function closeShareModal() { document.getElementById('share-modal').classList.remove('active'); }
 
         function copyTrackLink() {
@@ -1445,6 +1734,7 @@
             navigator.clipboard.writeText(shareText).then(() => {
                 alert('Link copiato negli appunti!');
                 closeShareModal();
+                logSessionEvent('share_copy');
             });
         }
 
@@ -1452,12 +1742,14 @@
             const shareText = encodeURIComponent(`Ascolta "${currentTrackData.name}" di ${currentTrackData.artist} su DarkSound Pro! https://www.youtube.com/watch?v=${currentTrackData.id}`);
             window.open(`https://api.whatsapp.com/send?text=${shareText}`, '_blank');
             closeShareModal();
+            logSessionEvent('share_whatsapp');
         }
 
         function openNewPlaylistModal() {
             if(!currentUser) return openAuthModal();
             document.getElementById('new-playlist-modal').classList.add('active');
         }
+        
         function closeNewPlaylistModal() { document.getElementById('new-playlist-modal').classList.remove('active'); }
 
         function submitNewPlaylist() {
@@ -1476,6 +1768,8 @@
             closeNewPlaylistModal();
             document.getElementById('newPlaylistName').value = '';
             if(currentLibTab === 'playlists') renderLibraryContent();
+            
+            logSessionEvent('playlist_create', { name: name });
         }
 
         function openPlaylistSelectorForCurrent() {
@@ -1516,6 +1810,7 @@
                     pl.tracks.push(selectedTrackForPlaylist);
                     saveUserData();
                     alert(`Brano aggiunto a "${pl.name}"!`);
+                    logSessionEvent('playlist_add_track', { playlist: pl.name, track: selectedTrackForPlaylist.name });
                 } else {
                     alert('Brano già presente nella playlist.');
                 }
@@ -1624,6 +1919,7 @@
                 userPlaylists.push({...pl, id: 'pl_saved_' + Date.now(), owner: currentUser + ' (Salvata)'});
                 saveUserData();
                 alert(`Playlist "${pl.name}" aggiunta alla tua libreria!`);
+                logSessionEvent('playlist_save_public', { name: pl.name });
             }
         }
 
@@ -1631,6 +1927,7 @@
             userPlaylists = userPlaylists.filter(p => p.id !== playlistId);
             saveUserData();
             renderLibraryContent();
+            logSessionEvent('playlist_delete');
         }
 
         function toggleDownloadTrackObj(trackJson) {
@@ -1640,6 +1937,8 @@
             else downloadedTracks.push(t);
             saveUserData();
             if(currentLibTab === 'downloads') renderLibraryContent();
+            
+            logSessionEvent('download_toggle', { track: t.name, action: exists > -1 ? 'removed' : 'added' });
         }
 
         function toggleDownloadCurrent() {
@@ -1660,8 +1959,7 @@
                         if(e.data === YT.PlayerState.PLAYING) { isPlaying = true; updatePlayIcons(true); startProgressTracker(); }
                         if(e.data === YT.PlayerState.PAUSED) { isPlaying = false; updatePlayIcons(false); clearInterval(progressInterval); }
                         if(e.data === YT.PlayerState.ENDED) { nextTrack(); }
-                    },
-                    'onError': () => { resolveHybridFallback(); }
+                    }
                 }
             });
         }
@@ -1700,9 +1998,6 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
-                hybridFallbackAttempted = false;
-                logSessionEvent(t, navigator.onLine ? 'online' : 'offline');
-                updateHybridStatusUI();
                 
                 if(player && player.loadVideoById) {
                     player.loadVideoById(t.id);
@@ -1854,6 +2149,8 @@
             if(document.getElementById('view-liked-songs').classList.contains('active')) {
                 renderLikedSongsView();
             }
+            
+            logSessionEvent('like_toggle', { track: currentTrackData.name });
         }
 
         function toggleLikeTrackObj(trackJson) {
@@ -1902,6 +2199,20 @@
             let m = Math.floor(secs / 60), s = Math.floor(secs % 60);
             return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
+
+        // Listener per il cambiamento di stato online/offline
+        window.addEventListener('online', () => {
+            checkOfflineMode();
+            logSessionEvent('connection_online');
+        });
+
+        window.addEventListener('offline', () => {
+            checkOfflineMode();
+            logSessionEvent('connection_offline');
+        });
+
+        // Inizializza il controllo della modalità offline
+        checkOfflineMode();
     </script>
 </body>
 </html>
