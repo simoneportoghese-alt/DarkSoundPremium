@@ -1446,37 +1446,50 @@
         let currentArtistPage = '';
         const API_BASE = window.location.origin;
 
-        const ARTIST_CORRELATIONS = {
-            'sfera ebbasta': ['Lazza', 'Capo Plaza', 'Ghali', 'Tedua', 'Rondodasosa'],
-            'lazza': ['Sfera Ebbasta', 'Capo Plaza', 'Tedua', 'Shiva', 'Emis Killa'],
-            'ghali': ['Sfera Ebbasta', 'Ernia', 'Tedua', 'Marracash', 'Salmo'],
-            'travis scott': ['Drake', 'Future', 'Playboi Carti', 'Don Toliver', 'Metro Boomin'],
-            'drake': ['Travis Scott', 'Future', '21 Savage', 'J. Cole', 'Kendrick Lamar'],
-            'annalisa': ['Elodie', 'Emma', 'Elettra Lamborghini', 'Baby K', 'Alessandra Amoroso'],
-            'club dogo': ['Guè', 'Jake La Furia', 'Marracash', 'Salmo', 'Fabri Fibra'],
-            'twenty one pilots': ['Imagine Dragons', 'Panic! At The Disco', 'Fall Out Boy', 'The Neighbourhood'],
-            'marracash': ['Guè', 'Fabri Fibra', 'Salmo', 'Club Dogo', 'Ernia'],
-            'guè': ['Marracash', 'Club Dogo', 'Fabri Fibra', 'Salmo', 'Jake La Furia'],
-            'elodie': ['Annalisa', 'Emma', 'Alessandra Amoroso', 'Baby K', 'Elettra Lamborghini'],
-            'emma': ['Annalisa', 'Elodie', 'Alessandra Amoroso', 'Baby K', 'Elettra Lamborghini'],
-            'shiva': ['Lazza', 'Sfera Ebbasta', 'Capo Plaza', 'Rondodasosa', 'Tedua'],
-            'capo plaza': ['Sfera Ebbasta', 'Lazza', 'Shiva', 'Rondodasosa', 'Tedua'],
-            'tedua': ['Sfera Ebbasta', 'Lazza', 'Capo Plaza', 'Shiva', 'Rondodasosa'],
-            'rondodasosa': ['Sfera Ebbasta', 'Lazza', 'Capo Plaza', 'Shiva', 'Tedua'],
-            'fabri fibra': ['Marracash', 'Guè', 'Club Dogo', 'Salmo', 'Jake La Furia'],
-            'salmo': ['Marracash', 'Guè', 'Club Dogo', 'Fabri Fibra', 'Jake La Furia'],
-            'imagine dragons': ['Twenty One Pilots', 'Panic! At The Disco', 'Fall Out Boy', 'The Neighbourhood'],
-            'future': ['Drake', 'Travis Scott', '21 Savage', 'J. Cole', 'Kendrick Lamar'],
-            '21 savage': ['Drake', 'Travis Scott', 'Future', 'J. Cole', 'Kendrick Lamar'],
-            'j. cole': ['Drake', 'Travis Scott', 'Future', '21 Savage', 'Kendrick Lamar'],
-            'kendrick lamar': ['Drake', 'Travis Scott', 'Future', '21 Savage', 'J. Cole'],
-            'ogryzek': ['Mxzi', 'Kaito Shoma', 'Dxrk ダーク', 'MoonDeity', 'INTERWORLD'],
-            'mxzi': ['Ogryzek', 'Kaito Shoma', 'Dxrk ダーク', 'MoonDeity', 'INTERWORLD'],
-            'kaito shoma': ['Ogryzek', 'Mxzi', 'Dxrk ダーク', 'MoonDeity', 'INTERWORLD'],
-            'dxrk': ['Ogryzek', 'Mxzi', 'Kaito Shoma', 'MoonDeity', 'INTERWORLD'],
-            'moondeity': ['Ogryzek', 'Mxzi', 'Kaito Shoma', 'Dxrk ダーク', 'INTERWORLD'],
-            'interworld': ['Ogryzek', 'Mxzi', 'Kaito Shoma', 'Dxrk ダーク', 'MoonDeity']
-        };
+        // ============ SOLUZIONE AUDIO BACKGROUND iOS CON WEB AUDIO API ============
+        let backgroundAudioContext = null;
+        let backgroundGainNode = null;
+        let backgroundOscillator = null;
+
+        function initializeBackgroundAudio() {
+            try {
+                // Crea un AudioContext se non esiste
+                if (!backgroundAudioContext) {
+                    backgroundAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                
+                // Crea un oscillatore silenzioso
+                if (!backgroundOscillator) {
+                    backgroundOscillator = backgroundAudioContext.createOscillator();
+                    backgroundGainNode = backgroundAudioContext.createGain();
+                    
+                    // Imposta un volume quasi impercettibile
+                    backgroundGainNode.gain.value = 0.001;
+                    
+                    // Collega l'oscillatore al gain node e poi all'output
+                    backgroundOscillator.connect(backgroundGainNode);
+                    backgroundGainNode.connect(backgroundAudioContext.destination);
+                    
+                    // Avvia l'oscillatore
+                    backgroundOscillator.start();
+                }
+                
+                // Riprendi l'AudioContext se è sospeso
+                if (backgroundAudioContext.state === 'suspended') {
+                    backgroundAudioContext.resume();
+                }
+                
+                console.log('Background audio inizializzato con Web Audio API');
+            } catch(e) {
+                console.log('Errore inizializzazione Web Audio API:', e);
+            }
+        }
+
+        function keepAudioAlive() {
+            if (backgroundAudioContext && backgroundAudioContext.state === 'suspended') {
+                backgroundAudioContext.resume();
+            }
+        }
 
         // ============ FUNZIONI PRINCIPALI ============
         function hideSplashScreen() {
@@ -1494,6 +1507,15 @@
             loadFriendsList();
             loadAllUsers();
             setTimeout(hideSplashScreen, 2500);
+            
+            // Inizializza background audio al primo tap
+            document.addEventListener('touchstart', function() {
+                initializeBackgroundAudio();
+            }, { once: true });
+            
+            // Mantieni attivo l'audio ogni 5 secondi
+            setInterval(keepAudioAlive, 5000);
+            
             if(!currentUser) {
                 setTimeout(() => openAuthModal(), 2600);
             } else if(!userPreferences) {
@@ -1994,6 +2016,10 @@
                 playQueue = queue;
                 queueIndex = index;
                 currentTrackData = t;
+                
+                // Inizializza background audio
+                initializeBackgroundAudio();
+                
                 document.getElementById('playerBar').style.display = 'flex';
                 document.getElementById('playerTitle').innerText = t.name;
                 document.getElementById('playerArtist').innerText = t.artist;
@@ -2044,6 +2070,7 @@
                             isPlaying = true; 
                             updatePlayIcons(true); 
                             startProgressTracker(); 
+                            keepAudioAlive();
                         }
                         if(e.data === YT.PlayerState.PAUSED) { 
                             isPlaying = false; 
@@ -2076,6 +2103,7 @@
             } else { 
                 player.playVideo(); 
                 isPlaying = true; 
+                keepAudioAlive();
             }
             updatePlayIcons(isPlaying);
         }
