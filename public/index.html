@@ -6,19 +6,12 @@
     <title>DarkSound Pro - Ultimate Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="DarkSound Pro">
     <style>
         :root {
             --bg-base: #000000;
             --text-main: #ffffff;
             --text-sub: #98989f;
             --accent: #30d158;
-            --accent-blue: #007aff;
-            --accent-purple: #7928ca;
-            --accent-pink: #ff007f;
-            --accent-orange: #ff9500;
             --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
         }
 
@@ -41,101 +34,6 @@
             background-attachment: fixed;
         }
 
-        #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: #000000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-        #splash-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-        
-        .splash-logo-icon {
-            font-size: 4rem;
-            color: var(--accent);
-            margin-bottom: 20px;
-            animation: bounce 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        .splash-title {
-            font-size: 3rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
-            animation: glow 2s ease-in-out infinite;
-        }
-        
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 0 10px rgba(48, 209, 88, 0.8), 0 0 20px rgba(48, 209, 88, 0.5), 0 0 30px rgba(48, 209, 88, 0.3); }
-            50% { text-shadow: 0 0 20px rgba(48, 209, 88, 1), 0 0 40px rgba(48, 209, 88, 0.8), 0 0 60px rgba(48, 209, 88, 0.5); }
-        }
-        
-        .splash-credit {
-            font-size: 1.1rem;
-            color: var(--text-sub);
-            margin-bottom: 30px;
-            font-weight: 500;
-            letter-spacing: 2px;
-            animation: fadeInUp 1s ease-in-out forwards;
-            opacity: 0;
-        }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .splash-loading {
-            width: 200px;
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        .splash-loading-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent), #4cd964, var(--accent));
-            border-radius: 2px;
-            animation: loading 2.5s ease-in-out forwards;
-        }
-        @keyframes loading {
-            0% { width: 0%; }
-            30% { width: 40%; }
-            60% { width: 75%; }
-            100% { width: 100%; }
-        }
-        
-        .splash-status {
-            color: var(--text-sub);
-            margin-top: 15px;
-            font-size: 0.85rem;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-
         .view { 
             display: none; 
             padding: 20px; 
@@ -144,7 +42,7 @@
         }
         .view.active { display: block; }
         
-        #view-artist, #view-liked-songs, #view-profile {
+        #view-artist, #view-liked-songs {
             padding: 0;
             padding-bottom: 280px;
         }
@@ -215,9 +113,7 @@
             display: flex; align-items: center; justify-content: space-between;
             padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
             color: white; font-weight: 600; font-size: 1rem; cursor: pointer;
-            transition: all 0.2s ease;
         }
-        .drawer-menu-item:hover { background: rgba(255,255,255,0.05); padding-left: 8px; }
         .drawer-menu-item i { font-size: 1.2rem; color: var(--text-sub); width: 30px; }
         .drawer-menu-left { display: flex; align-items: center; gap: 12px; }
 
@@ -241,26 +137,14 @@
         .auth-card p { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 20px; }
         .auth-input-group { margin-bottom: 16px; }
         .auth-input-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-sub); }
-        .auth-input-group input, .auth-input-group select, .auth-input-group textarea {
+        .auth-input-group input, .auth-input-group select {
             width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
             padding: 14px; border-radius: 12px; color: white; font-size: 1rem; outline: none;
         }
-        .auth-input-group textarea { min-height: 80px; resize: vertical; }
         .auth-btn {
             width: 100%; background: var(--accent); color: black; font-weight: 800; padding: 14px;
             border-radius: 12px; border: none; font-size: 1rem; cursor: pointer; margin-top: 10px;
-            transition: all 0.2s ease;
         }
-        .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(48,209,88,0.3); }
-        .auth-btn:active { transform: scale(0.98); }
-        .auth-btn.secondary {
-            background: rgba(255,255,255,0.1); color: white;
-        }
-        .auth-btn.secondary:hover { box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
-        .auth-btn.danger {
-            background: rgba(255,77,77,0.2); color: #ff4d4d;
-        }
-        .auth-btn.danger:hover { box-shadow: 0 10px 20px rgba(255,77,77,0.2); }
 
         .genre-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
         .genre-tag {
@@ -296,12 +180,10 @@
         .track-row { 
             display: flex; align-items: center; justify-content: space-between; 
             padding: 10px 12px; cursor: pointer; border-radius: 12px; margin-bottom: 4px; 
-            position: relative; z-index: 10; transition: all 0.2s ease;
-            -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+            position: relative; z-index: 10;
         }
-        .track-row:hover { background: rgba(255, 255, 255, 0.12); }
-        .track-row:active { background: rgba(255, 255, 255, 0.2); transform: scale(0.98); }
-        .track-row-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; overflow: hidden; pointer-events: auto; cursor: pointer; }
+        .track-row:active { background: rgba(255,255,255,0.08); }
+        .track-row-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; overflow: hidden; pointer-events: none; }
         .track-row-left img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: #333; flex-shrink: 0; }
         .track-meta { flex: 1; min-width: 0; overflow: hidden; }
         .track-meta h4 { font-size: 1.05rem; font-weight: 700; color: white; white-space: nowrap; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; }
@@ -309,8 +191,6 @@
         .badge-full { background: rgba(48,209,88,0.2); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
         .badge-public { background: rgba(0, 122, 255, 0.2); color: #007aff; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
         .badge-private { background: rgba(255, 149, 0, 0.2); color: #ff9500; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
-        .badge-similar { background: rgba(121, 40, 202, 0.2); color: #7928ca; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; }
-        .badge-listening { background: rgba(48,209,88,0.2); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; }
         .track-actions { display: flex; align-items: center; gap: 14px; color: var(--text-sub); font-size: 1.2rem; padding: 6px; flex-shrink: 0; position: relative; z-index: 11; }
 
         .search-box { 
@@ -322,83 +202,27 @@
         .btn-action-primary {
             background: var(--accent); color: black; font-weight: 700; border: none; 
             padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 0.85rem;
-            transition: all 0.2s ease;
         }
-        .btn-action-primary:hover { transform: translateY(-2px); }
-        .btn-action-primary:active { transform: scale(0.95); }
 
         .chip {
             background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.08);
             color: white; padding: 10px 18px; border-radius: 20px; 
             font-size: 0.95rem; font-weight: 600; cursor: pointer; white-space: nowrap; 
-            transition: all 0.2s ease;
         }
-        .chip:hover { background: rgba(255,255,255,0.15); }
         .chip.active { background: white; color: black; border-color: white; }
-
-        .artist-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .artist-card:hover { background: rgba(255,255,255,0.12); }
-        .artist-card:active { transform: scale(0.97); }
-        .artist-card img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent);
-        }
-        .artist-card-info { flex: 1; }
-        .artist-card-info h3 { font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 4px; }
-        .artist-card-info p { font-size: 0.85rem; color: var(--text-sub); }
-
-        .auto-playlist-card {
-            background: linear-gradient(135deg, #7928ca 0%, #ff007f 100%);
-            border-radius: 16px;
-            padding: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .auto-playlist-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(121,40,202,0.3); }
-        .auto-playlist-card:active { transform: scale(0.97); }
-        .auto-playlist-card i {
-            font-size: 2rem;
-            color: white;
-        }
-        .auto-playlist-card-info { flex: 1; }
-        .auto-playlist-card-info h3 { font-size: 1rem; font-weight: 700; color: white; margin-bottom: 4px; }
-        .auto-playlist-card-info p { font-size: 0.8rem; color: rgba(255,255,255,0.8); }
 
         .share-option-btn {
             display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px; background: rgba(255,255,255,0.06);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; font-weight: 700; font-size: 1rem; cursor: pointer; margin-bottom: 10px;
-            transition: all 0.2s ease;
         }
-        .share-option-btn:hover { background: rgba(255,255,255,0.12); }
         .share-option-btn i { font-size: 1.3rem; }
 
         .player-bar {
             position: fixed; bottom: 76px; left: 12px; right: 12px; 
             background: rgba(30, 30, 34, 0.85); backdrop-filter: blur(30px);
             border-radius: 16px; padding: 10px 14px; display: none; align-items: center; gap: 14px; z-index: 100; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6); cursor: pointer; transition: all 0.3s ease;
-            -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6); cursor: pointer;
         }
-        .player-bar:hover { background: rgba(40, 40, 44, 0.9); }
-        .player-bar:active { transform: scale(0.98); }
         .player-bar img { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; }
         .player-meta { flex: 1; min-width: 0; }
         .p-title { font-size: 0.95rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -456,23 +280,16 @@
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
             color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
             cursor: pointer; display: flex; align-items: center; gap: 6px;
-            transition: all 0.2s ease;
         }
         .lyrics-toggle-btn.active { background: var(--accent); color: black; border-color: var(--accent); }
 
         .progress-container { width: 100%; margin-bottom: 16px; z-index: 2; }
-        .progress-bar-bg { width: 100%; height: 12px; background: rgba(255,255,255,0.2); border-radius: 6px; position: relative; cursor: pointer; }
-        .progress-bar-bg:hover { background: rgba(255, 255, 255, 0.3); }
-        .progress-bar-fill { width: 0%; height: 100%; background: white; border-radius: 6px; position: relative; pointer-events: none; }
+        .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.15); border-radius: 3px; position: relative; cursor: pointer; }
+        .progress-bar-fill { width: 0%; height: 100%; background: white; border-radius: 3px; position: relative; }
         .progress-times { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-sub); margin-top: 6px; }
 
         .fs-controls { display: flex; justify-content: space-between; align-items: center; font-size: 1.5rem; color: white; width: 100%; max-width: 340px; margin: 0 auto; z-index: 2; }
-        .fs-play-btn { width: 64px; height: 64px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; transition: all 0.2s ease; }
-        .fs-play-btn:hover { transform: scale(1.1); }
-        .fs-play-btn:active { transform: scale(0.9); }
-        .fs-controls i { cursor: pointer; transition: all 0.2s ease; }
-        .fs-controls i:hover { color: var(--accent); }
-        .fs-controls i:active { transform: scale(0.8); }
+        .fs-play-btn { width: 64px; height: 64px; background: white; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; }
 
         nav {
             position: fixed; bottom: 12px; left: 16px; right: 16px; height: 64px; 
@@ -484,12 +301,9 @@
             display: flex; flex-direction: column; align-items: center; gap: 3px; 
             color: var(--text-sub); font-size: 0.75rem; font-weight: 600; 
             cursor: pointer; background: none; border: none; padding: 6px 16px; 
-            transition: all 0.2s ease;
         }
-        .nav-item:hover { color: white; }
         .nav-item.active { color: var(--text-main); }
-        #youtube-player { position: fixed; bottom: 0; right: 0; width: 200px; height: 150px; opacity: 0.01; pointer-events: none; z-index: -1000; }
-        #audio-player { display: none; }
+        #youtube-player { position: fixed; bottom: 0; left: 0; width: 200px; height: 200px; opacity: 0.01; pointer-events: none; z-index: -1000; }
 
         #artistHeroImg {
             transition: opacity 0.3s ease-in-out;
@@ -499,81 +313,62 @@
             min-height: 200px;
         }
 
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: var(--accent);
-            animation: spin 0.8s linear infinite;
+        /* ==== Nuove funzionalità: stili aggiuntivi ==== */
+        .artist-action-row {
+            display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 18px 0;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .artist-action-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+            color: white; font-weight: 700; font-size: 0.85rem;
+            padding: 10px 16px; border-radius: 20px; cursor: pointer; white-space: nowrap;
+        }
+        .artist-action-btn.primary { background: var(--accent); color: black; border-color: var(--accent); }
+        .artist-action-btn.active-toggle { background: rgba(255,149,0,0.2); color: #ff9500; border-color: rgba(255,149,0,0.4); }
+        .artist-action-btn i { font-size: 0.95rem; }
+        .artist-action-btn .spin { animation: spinLoader 0.8s linear infinite; }
+        @keyframes spinLoader { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .quick-profile-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 8px 0 14px 0; margin-bottom: 6px; }
+        .quick-profile-chip {
+            display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;
+            flex-shrink: 0; width: 62px; text-align: center; position: relative;
+        }
+        .quick-profile-avatar {
+            width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1rem; color: black; background: linear-gradient(135deg, #ffb84d, #ff5f6d);
+            border: 2px solid transparent;
+        }
+        .quick-profile-chip.current .quick-profile-avatar { border-color: var(--accent); }
+        .quick-profile-chip span { font-size: 0.68rem; color: var(--text-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+        .quick-profile-add { display:flex; align-items:center; justify-content:center; width:50px; height:50px; border-radius:50%; background: rgba(255,255,255,0.08); border: 1px dashed rgba(255,255,255,0.3); }
+
+        .session-history-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .session-history-item .shi-left { display:flex; flex-direction:column; }
+        .session-history-item .shi-left b { font-size: 0.92rem; color: white; }
+        .session-history-item .shi-left span { font-size: 0.75rem; color: var(--text-sub); }
+        .session-history-item .shi-badge {
+            font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;
+        }
+        .shi-online { background: rgba(48,209,88,0.15); color: var(--accent); }
+        .shi-offline { background: rgba(255,149,0,0.15); color: #ff9500; }
+        .shi-fallback { background: rgba(255,77,77,0.15); color: #ff4d4d; }
+
+        .anti-clone-note {
+            font-size: 0.78rem; color: var(--text-sub); margin: -6px 0 14px 0; display:flex; align-items:center; gap:6px;
         }
 
-        .profile-hero {
-            background: linear-gradient(135deg, #1f1147, #120b24);
-            padding: 30px 20px;
-            text-align: center;
-            border-radius: 0 0 24px 24px;
+        .hybrid-status-dot {
+            width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; background: var(--accent);
         }
-        .profile-avatar-large {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #007aff, #30d158);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: black;
-            margin: 0 auto 15px auto;
-            border: 3px solid rgba(255,255,255,0.3);
-        }
-        .profile-bio {
-            color: var(--text-sub);
-            font-size: 0.9rem;
-            margin-top: 8px;
-            line-height: 1.5;
-        }
-        .friend-list-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px;
-            background: rgba(255,255,255,0.06);
-            border-radius: 12px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .friend-list-item:hover { background: rgba(255,255,255,0.12); }
-        .friend-list-item img {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 2px solid var(--accent);
-        }
-        .friend-list-info { flex: 1; }
-        .friend-list-info h4 { font-size: 0.95rem; font-weight: 700; color: white; }
-        .friend-list-info p { font-size: 0.78rem; color: var(--text-sub); }
+        .hybrid-status-dot.fallback { background: #ff9500; }
+        .hybrid-status-dot.offline { background: #ff4d4d; }
     </style>
 </head>
 <body>
-
-    <div id="splash-screen">
-        <div class="splash-logo-icon">
-            <i class="fas fa-headphones"></i>
-        </div>
-        <div class="splash-title">DarkSound Pro</div>
-        <div class="splash-credit">by DarkSW</div>
-        <div class="splash-loading">
-            <div class="splash-loading-bar"></div>
-        </div>
-        <p class="splash-status">Caricamento in corso...</p>
-    </div>
 
     <div id="profileDrawer" class="profile-drawer">
         <div class="drawer-header">
@@ -581,7 +376,7 @@
                 <div class="drawer-avatar" id="drawerAvatarInitial">S</div>
                 <div class="drawer-user-text">
                     <h3 id="drawerUserName">Ospite</h3>
-                    <p onclick="openProfileView()">Visualizza profilo</p>
+                    <p onclick="openAuthModal()">Visualizza profilo</p>
                 </div>
             </div>
             <i class="fas fa-xmark" style="font-size: 1.4rem; cursor: pointer; color: var(--text-sub);" onclick="toggleProfileDrawer()"></i>
@@ -589,10 +384,6 @@
 
         <div class="drawer-menu-item" onclick="openAuthModal()">
             <div class="drawer-menu-left"><i class="fas fa-user-plus"></i> Aggiungi account</div>
-            <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
-        </div>
-        <div class="drawer-menu-item" onclick="openProfileView()">
-            <div class="drawer-menu-left"><i class="fas fa-user-edit"></i> Modifica Profilo</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
         </div>
         <div class="drawer-menu-item">
@@ -607,19 +398,40 @@
             <div class="drawer-menu-left"><i class="fas fa-clock-rotate-left"></i> Recenti e Salvati</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
         </div>
+        <div class="drawer-menu-item" onclick="openSessionHistoryModal()">
+            <div class="drawer-menu-left"><i class="fas fa-satellite-dish"></i> Cronologia Sessioni Offline</div>
+            <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
+        </div>
         <div class="drawer-menu-item" onclick="alert('Impostazioni privacy e audio Lossless attive.')">
             <div class="drawer-menu-left"><i class="fas fa-gear"></i> Impostazioni e privacy</div>
             <i class="fas fa-chevron-right" style="font-size:0.8rem;"></i>
         </div>
 
-        <div style="margin-top: 24px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">I tuoi Amici</div>
-        <div id="drawerFriendsList"></div>
-        <button class="auth-btn secondary" style="margin-top:12px;" onclick="openAddFriendModal()">
-            <i class="fas fa-user-plus"></i> Aggiungi Amico
-        </button>
+        <div style="margin-top: 24px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">Profili condivisi &middot; cambio rapido</div>
+        <div class="quick-profile-scroll" id="quickProfileScroll"></div>
+
+        <div style="margin-top: 4px; font-size:0.9rem; font-weight:700; color:var(--text-sub); margin-bottom:10px;">Attività amici</div>
+        <div class="drawer-friends-scroll">
+            <div class="friend-bubble" onclick="alert('Giancarlo sta ascoltando: Sfera Ebbasta')">
+                <img class="friend-avatar" src="https://picsum.photos/seed/friend1/100">
+                <span>Giancarlo</span>
+            </div>
+            <div class="friend-bubble" onclick="alert('Claudio sta ascoltando: Club Dogo')">
+                <img class="friend-avatar" src="https://picsum.photos/seed/friend2/100">
+                <span>Claudio</span>
+            </div>
+            <div class="friend-bubble" onclick="alert('Martina sta ascoltando: Annalisa')">
+                <img class="friend-avatar" src="https://picsum.photos/seed/friend3/100">
+                <span>Martina</span>
+            </div>
+            <div class="friend-bubble" onclick="openBlendModal()">
+                <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;"><i class="fas fa-users" style="color:var(--accent);"></i></div>
+                <span>Blend</span>
+            </div>
+        </div>
 
         <div style="margin-top: auto; padding-top: 20px;">
-            <button class="auth-btn danger" style="margin-top:0;" onclick="logoutUser()">Esci dall'account</button>
+            <button class="auth-btn" style="background:rgba(255,77,77,0.2); color:#ff4d4d; margin-top:0;" onclick="logoutUser()">Esci dall'account</button>
         </div>
     </div>
 
@@ -631,7 +443,7 @@
             <h2>AI DJ</h2>
             <p id="aiDjStatusText">"Ciao! Sono il tuo DJ virtuale. Sto analizzando i tuoi gusti per mixare la prossima traccia perfetta per te..."</p>
             <button class="auth-btn" onclick="runAiDjSelection()">Avvia Mix Intelligente</button>
-            <button class="auth-btn secondary" style="margin-top:8px;" onclick="document.getElementById('ai-dj-modal').classList.remove('active')">Chiudi</button>
+            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('ai-dj-modal').classList.remove('active')">Chiudi</button>
         </div>
     </div>
 
@@ -643,7 +455,7 @@
                 <input type="text" id="aiPromptInput" placeholder="Es. Notte elettronica chill in autostrada...">
             </div>
             <button class="auth-btn" onclick="generateAiPromptPlaylist()">Genera con IA</button>
-            <button class="auth-btn secondary" style="margin-top:8px;" onclick="document.getElementById('ai-playlist-modal').classList.remove('active')">Annulla</button>
+            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('ai-playlist-modal').classList.remove('active')">Annulla</button>
         </div>
     </div>
 
@@ -653,10 +465,14 @@
             <h2>Crea Blend con un Amico</h2>
             <p>Fondi i tuoi gusti musicali con quelli di un tuo contatto in tempo reale.</p>
             <div class="auth-input-group">
-                <select id="blendFriendSelect"></select>
+                <select id="blendFriendSelect">
+                    <option value="Giancarlo">Giancarlo (Rap & Trap)</option>
+                    <option value="Claudio">Claudio (Club Dogo & Hip Hop)</option>
+                    <option value="Martina">Martina (Pop & Hit)</option>
+                </select>
             </div>
             <button class="auth-btn" onclick="createBlendPlaylist()">Crea Playlist Blend</button>
-            <button class="auth-btn secondary" style="margin-top:8px;" onclick="document.getElementById('blend-modal').classList.remove('active')">Chiudi</button>
+            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('blend-modal').classList.remove('active')">Chiudi</button>
         </div>
     </div>
 
@@ -676,23 +492,13 @@
 
     <div id="auth-modal" class="modal-overlay">
         <div class="auth-card">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #30d158, #007aff); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; font-size: 2rem; color: black;">
-                    <i class="fas fa-headphones"></i>
-                </div>
-                <h2>Benvenuto su DarkSound</h2>
-                <p style="text-align: center;">Accedi per ascoltare la tua musica preferita</p>
-            </div>
+            <h2>Benvenuto su DarkSound</h2>
+            <p>Inserisci il tuo nome utente per iniziare.</p>
             <div class="auth-input-group">
                 <label>Nome Utente</label>
-                <input type="text" id="authEmail" placeholder="mario_rossi" onkeydown="if(event.key==='Enter') proceedToOnboarding()">
+                <input type="text" id="authEmail" placeholder="mario_rossi">
             </div>
-            <div class="auth-input-group">
-                <label>Password (opzionale)</label>
-                <input type="password" id="authPassword" placeholder="••••••••">
-            </div>
-            <button class="auth-btn" onclick="proceedToOnboarding()">Accedi</button>
-            <button class="auth-btn secondary" style="margin-top:8px;" onclick="document.getElementById('auth-modal').classList.remove('active')">Continua come Ospite</button>
+            <button class="auth-btn" onclick="proceedToOnboarding()">Continua</button>
         </div>
     </div>
 
@@ -716,72 +522,49 @@
         </div>
     </div>
 
-    <div id="profile-edit-modal" class="modal-overlay">
-        <div class="auth-card">
-            <h2>Modifica Profilo</h2>
-            <p>Personalizza le tue informazioni</p>
-            <div class="auth-input-group">
-                <label>Nome Utente</label>
-                <input type="text" id="editProfileName" placeholder="Il tuo nome">
-            </div>
-            <div class="auth-input-group">
-                <label>Bio</label>
-                <textarea id="editProfileBio" placeholder="Racconta qualcosa di te..."></textarea>
-            </div>
-            <div class="auth-input-group">
-                <label>Avatar (emoji o iniziale)</label>
-                <input type="text" id="editProfileAvatar" placeholder="Es. 🎧, A, M..." maxlength="2">
-            </div>
-            <div class="auth-input-group">
-                <label>Genere musicale preferito</label>
-                <select id="editProfileGenre">
-                    <option value="Pop">Pop</option>
-                    <option value="Rap">Rap & Trap</option>
-                    <option value="Rock">Rock</option>
-                    <option value="Techno">Techno & House</option>
-                    <option value="Jazz">Jazz & Chill</option>
-                    <option value="Latin">Reggaeton & Latin</option>
-                </select>
-            </div>
-            <button class="auth-btn" onclick="saveProfileChanges()">Salva Modifiche</button>
-            <button class="auth-btn secondary" style="margin-top:8px;" onclick="document.getElementById('profile-edit-modal').classList.remove('active')">Annulla</button>
-        </div>
-    </div>
-
-    <div id="add-friend-modal" class="modal-overlay">
-        <div class="auth-card">
-            <h2>Aggiungi Amico</h2>
-            <p>Cerca un utente per aggiungerlo ai tuoi amici</p>
-            <div class="auth-input-group">
-                <label>Nome Utente</label>
-                <input type="text" id="addFriendInput" placeholder="Nome utente dell'amico">
-            </div>
-            <div id="addFriendResults"></div>
-            <button class="auth-btn" onclick="searchFriend()">Cerca</button>
-            <button class="auth-btn secondary" style="margin-top:8px;" onclick="document.getElementById('add-friend-modal').classList.remove('active')">Chiudi</button>
-        </div>
-    </div>
-
     <div id="share-modal" class="modal-overlay">
-        <div class="auth-card">
+        <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:400px;">
             <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px;">Condividi brano</h3>
             <p id="shareTrackSubtitle" style="color:var(--text-sub); font-size:0.9rem; margin-bottom:20px;"></p>
             <button class="share-option-btn" style="color:#25D366;" onclick="shareViaWhatsApp()"><i class="fab fa-whatsapp"></i> Invia su WhatsApp</button>
             <button class="share-option-btn" onclick="copyTrackLink()"><i class="fas fa-link" style="color:#007aff;"></i> Copia Link Brano</button>
-            <button class="auth-btn secondary" style="margin-top:10px;" onclick="closeShareModal()">Chiudi</button>
+            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:10px;" onclick="closeShareModal()">Chiudi</button>
         </div>
     </div>
 
     <div id="playlist-select-modal" class="modal-overlay">
-        <div class="auth-card">
+        <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:400px;">
             <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Aggiungi a playlist</h3>
             <div id="playlistSelectList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;"></div>
-            <button class="auth-btn secondary" onclick="closePlaylistModal()">Chiudi</button>
+            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white;" onclick="closePlaylistModal()">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="session-history-modal" class="modal-overlay">
+        <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:420px; max-height:80vh; overflow-y:auto;">
+            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:4px;"><span class="hybrid-status-dot" id="hybridStatusDot"></span>Cronologia Sessioni</h3>
+            <p style="color:var(--text-sub); font-size:0.82rem; margin-bottom:14px;" id="hybridStatusText">Motore ibrido attivo: sorgente YouTube primaria, fallback automatico in caso di errore.</p>
+            <div id="sessionHistoryList"><p style="color:var(--text-sub);">Nessuna sessione registrata ancora.</p></div>
+            <button class="auth-btn" style="background:rgba(255,77,77,0.15); color:#ff4d4d; margin-top:14px;" onclick="clearSessionHistory()">Cancella cronologia</button>
+            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('session-history-modal').classList.remove('active')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="quick-profile-onboarding-modal" class="modal-overlay">
+        <div class="auth-card" style="text-align:center;">
+            <h2>Nuovo profilo condiviso</h2>
+            <p>Aggiungi rapidamente un profilo da questo dispositivo (i gusti restano distinti e salvati localmente per ciascun profilo).</p>
+            <div class="auth-input-group">
+                <label>Nome profilo</label>
+                <input type="text" id="quickNewProfileName" placeholder="Es. Papà, Sorella, Ospite2...">
+            </div>
+            <button class="auth-btn" onclick="submitQuickNewProfile()">Crea e passa a questo profilo</button>
+            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="document.getElementById('quick-profile-onboarding-modal').classList.remove('active')">Annulla</button>
         </div>
     </div>
 
     <div id="new-playlist-modal" class="modal-overlay">
-        <div class="auth-card">
+        <div class="modal-card" style="background:rgba(28,28,34,0.95); border:1px solid rgba(255,255,255,0.15); border-radius:24px; padding:24px; width:100%; max-width:400px;">
             <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Crea Nuova Playlist</h3>
             <div class="auth-input-group">
                 <label>Nome Playlist</label>
@@ -795,7 +578,7 @@
                 </select>
             </div>
             <button class="auth-btn" onclick="submitNewPlaylist()">Crea</button>
-            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeNewPlaylistModal()">Annulla</button>
+            <button class="auth-btn" style="background:rgba(255,255,255,0.1); color:white; margin-top:8px;" onclick="closeNewPlaylistModal()">Annulla</button>
         </div>
     </div>
 
@@ -849,7 +632,7 @@
         <h1 class="home-title">Cerca</h1>
         <div class="search-box">
             <i class="fas fa-search" style="color: var(--text-sub);"></i>
-            <input type="text" id="spotifySearchInput" placeholder="Cerca artisti, brani o playlist..." oninput="handleSearchInput(this.value)">
+            <input type="text" id="spotifySearchInput" placeholder="Cerca brani o playlist pubbliche..." oninput="handleSearchInput(this.value)">
         </div>
         <div id="searchResultsContainer" style="margin-top:24px;"></div>
     </div>
@@ -867,36 +650,13 @@
         <div id="libContentList"><p style="color:var(--text-sub);">Nessun elemento.</p></div>
     </div>
 
-    <div id="view-profile" class="view">
-        <div class="profile-hero">
-            <div style="margin-bottom: 20px; text-align: left;">
-                <button class="chip" onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:rgba(0,0,0,0.4); backdrop-filter:blur(10px); border:none;"><i class="fas fa-arrow-left"></i></button>
-            </div>
-            <div class="profile-avatar-large" id="profileAvatarLarge">S</div>
-            <h1 style="font-size: 1.8rem; font-weight: 800;" id="profileNameLarge">Ospite</h1>
-            <p style="color: var(--accent); font-weight: 600; margin-top: 4px;" id="profileGenreLarge">Pop</p>
-            <p class="profile-bio" id="profileBioLarge">Nessuna bio ancora.</p>
-            <button class="btn-action-primary" style="margin-top: 15px;" onclick="openProfileEditModal()">
-                <i class="fas fa-edit"></i> Modifica Profilo
-            </button>
-        </div>
-        
-        <div style="padding: 20px;">
-            <div class="section-title">I miei Amici</div>
-            <div id="profileFriendsList"></div>
-            
-            <div class="section-title" style="margin-top:24px;">Le mie Playlist Pubbliche</div>
-            <div id="profilePublicPlaylists"></div>
-        </div>
-    </div>
-
     <div id="view-artist" class="view">
         <div style="position:relative; width:100%; height:320px;">
             <img id="artistHeroImg" src="" style="width:100%; height:100%; object-fit:cover; filter: brightness(0.7);" onerror="this.src='https://picsum.photos/seed/artist/600'">
             <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.9) 100%);"></div>
             
             <div style="position:absolute; top:20px; left:20px; z-index:10;">
-                <button class="chip" onclick="switchView('search', document.querySelectorAll('.nav-item')[1])" style="background:rgba(0,0,0,0.5); backdrop-filter:blur(10px); border:none;"><i class="fas fa-arrow-left"></i></button>
+                <button class="chip" onclick="switchView('home')" style="background:rgba(0,0,0,0.5); backdrop-filter:blur(10px); border:none;"><i class="fas fa-arrow-left"></i></button>
             </div>
 
             <div style="position:absolute; bottom:20px; left:20px; right:20px; z-index:10;">
@@ -909,11 +669,19 @@
         </div>
 
         <div style="padding: 20px;">
-            <div class="section-title" style="margin-top:10px;">Popolare</div>
+            <div class="artist-action-row">
+                <button class="artist-action-btn primary" id="btnPlayDiscography" onclick="playFullDiscography()"><i class="fas fa-play"></i> Riproduci Discografia</button>
+                <button class="artist-action-btn" id="btnSimilarRadio" onclick="startSimilarArtistRadio()"><i class="fas fa-podcast"></i> Radio Artisti Simili</button>
+                <button class="artist-action-btn" id="btnAntiCloneToggle" onclick="toggleAntiCloneFilter()"><i class="fas fa-filter"></i> Filtro Anti-Cloni: ON</button>
+            </div>
+            <p class="anti-clone-note" id="antiCloneNote"><i class="fas fa-circle-info"></i> Live, remix e cover duplicate vengono filtrati automaticamente dai consigli.</p>
+
+            <div class="section-title" style="margin-top:10px;">Discografia Completa</div>
+            <p id="discographyStatusText" style="color:var(--text-sub); font-size:0.85rem; margin-top:-10px; margin-bottom:14px;">Tocca "Riproduci Discografia" per caricare tutti i brani dell'artista in un unico player sequenziale.</p>
+            <div id="artistDiscographyContainer"></div>
+
+            <div class="section-title" style="margin-top:22px;">Popolare</div>
             <div id="artistTracksContainer"><p style="color:var(--text-sub);">Caricamento brani...</p></div>
-            
-            <div class="section-title" style="margin-top:22px;">Brani Simili</div>
-            <div id="similarTracksContainer"><p style="color:var(--text-sub);">Caricamento brani simili...</p></div>
         </div>
     </div>
 
@@ -1010,16 +778,15 @@
         </div>
 
         <div class="fs-controls">
-            <i class="fas fa-random" style="color:var(--text-sub); cursor:pointer;" onclick="toggleShuffle()"></i>
+            <i class="fas fa-random" style="color:var(--text-sub); cursor:pointer;"></i>
             <i class="fas fa-step-backward" style="cursor:pointer;" onclick="prevTrack()"></i>
             <div class="fs-play-btn" onclick="togglePlay()"><i class="fas fa-play" id="fsPlayIcon"></i></div>
             <i class="fas fa-step-forward" style="cursor:pointer;" onclick="nextTrack()"></i>
-            <i class="fas fa-redo" style="color:var(--text-sub); cursor:pointer;" onclick="toggleRepeat()"></i>
+            <i class="fas fa-redo" style="color:var(--text-sub); cursor:pointer;"></i>
         </div>
     </div>
 
     <div id="youtube-player"></div>
-    <audio id="audio-player"></audio>
 
     <div class="player-bar" id="playerBar" onclick="toggleFullscreen()">
         <img id="playerImg" src="">
@@ -1037,41 +804,31 @@
         <button class="nav-item active" onclick="switchView('home', this)"><i class="fas fa-home"></i><span>Home</span></button>
         <button class="nav-item" onclick="switchView('search', this)"><i class="fas fa-search"></i><span>Cerca</span></button>
         <button class="nav-item" onclick="switchView('library', this)"><i class="fas fa-bookmark"></i><span>Libreria</span></button>
-        <button class="nav-item" onclick="switchView('profile', this)"><i class="fas fa-user"></i><span>Profilo</span></button>
     </nav>
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        let player = null;
-        let audioPlayer = null;
-        let isPlaying = false;
-        let playQueue = [];
-        let queueIndex = -1;
+        let player, isPlaying = false, playQueue = [], queueIndex = -1;
         let currentTrackData = { id: '', name: '', artist: '', image: '' };
         let currentUser = localStorage.getItem('darksound_current_user') || null;
-        let userProfile = JSON.parse(localStorage.getItem(currentUser ? `profile_${currentUser}` : 'darksound_profile') || 'null');
         let userPreferences = JSON.parse(localStorage.getItem(currentUser ? `prefs_${currentUser}` : 'darksound_prefs') || 'null');
         let likedSongs = JSON.parse(localStorage.getItem(currentUser ? `liked_${currentUser}` : 'darksound_liked') || '[]');
         let downloadedTracks = JSON.parse(localStorage.getItem(currentUser ? `downloads_${currentUser}` : 'darksound_downloads') || '[]');
         let userPlaylists = JSON.parse(localStorage.getItem(currentUser ? `playlists_${currentUser}` : 'darksound_playlists') || '[]');
         let globalPublicPlaylists = JSON.parse(localStorage.getItem('darksound_global_public_playlists') || '[]');
-        let friendsList = JSON.parse(localStorage.getItem(currentUser ? `friends_${currentUser}` : 'darksound_friends') || '[]');
-        let allUsers = JSON.parse(localStorage.getItem('darksound_all_users') || '[]');
-        let progressInterval = null;
-        let searchTimer = null;
-        let currentLibTab = 'liked';
-        let selectedTrackForPlaylist = null;
+        let progressInterval, searchTimer = null, currentLibTab = 'liked', selectedTrackForPlaylist = null;
         let tempAuthName = '';
         let isLyricsActive = false;
         let parsedSyncedLyrics = [];
-        let playerReady = false;
-        let isShuffleActive = false;
-        let isRepeatActive = false;
-        let autoPlaylists = JSON.parse(localStorage.getItem(currentUser ? `auto_playlists_${currentUser}` : 'darksound_auto_playlists') || '[]');
-        let useAudioElement = false;
 
-        const API_BASE = window.location.origin;
+        // ==== Nuove funzionalità: stato globale ====
+        let antiCloneFilterEnabled = true;
+        let sessionHistory = JSON.parse(localStorage.getItem(currentUser ? `sessions_${currentUser}` : 'darksound_sessions') || '[]');
+        let currentArtistContext = { name: '', image: '' };
+        let hybridFallbackAttempted = false;
+        let allKnownProfiles = JSON.parse(localStorage.getItem('darksound_all_profiles') || '[]');
 
+        // Correlazioni statiche artista -> artisti simili (usate per generare la Radio Artisti Simili)
         const ARTIST_CORRELATIONS = {
             'sfera ebbasta': ['Lazza', 'Capo Plaza', 'Ghali', 'Tedua', 'Rondodasosa'],
             'lazza': ['Sfera Ebbasta', 'Capo Plaza', 'Tedua', 'Shiva', 'Emis Killa'],
@@ -1081,152 +838,302 @@
             'annalisa': ['Elodie', 'Emma', 'Elettra Lamborghini', 'Baby K', 'Alessandra Amoroso'],
             'club dogo': ['Guè', 'Jake La Furia', 'Marracash', 'Salmo', 'Fabri Fibra'],
             'twenty one pilots': ['Imagine Dragons', 'Panic! At The Disco', 'Fall Out Boy', 'The Neighbourhood'],
-            'marracash': ['Guè', 'Fabri Fibra', 'Salmo', 'Club Dogo', 'Ernia'],
-            'guè': ['Marracash', 'Club Dogo', 'Fabri Fibra', 'Salmo', 'Jake La Furia'],
-            'elodie': ['Annalisa', 'Emma', 'Alessandra Amoroso', 'Baby K', 'Elettra Lamborghini'],
-            'emma': ['Annalisa', 'Elodie', 'Alessandra Amoroso', 'Baby K', 'Elettra Lamborghini'],
-            'shiva': ['Lazza', 'Sfera Ebbasta', 'Capo Plaza', 'Rondodasosa', 'Tedua'],
-            'capo plaza': ['Sfera Ebbasta', 'Lazza', 'Shiva', 'Rondodasosa', 'Tedua'],
-            'tedua': ['Sfera Ebbasta', 'Lazza', 'Capo Plaza', 'Shiva', 'Rondodasosa'],
-            'rondodasosa': ['Sfera Ebbasta', 'Lazza', 'Capo Plaza', 'Shiva', 'Tedua'],
-            'fabri fibra': ['Marracash', 'Guè', 'Club Dogo', 'Salmo', 'Jake La Furia'],
-            'salmo': ['Marracash', 'Guè', 'Club Dogo', 'Fabri Fibra', 'Jake La Furia'],
-            'imagine dragons': ['Twenty One Pilots', 'Panic! At The Disco', 'Fall Out Boy', 'The Neighbourhood'],
-            'future': ['Drake', 'Travis Scott', '21 Savage', 'J. Cole', 'Kendrick Lamar'],
-            '21 savage': ['Drake', 'Travis Scott', 'Future', 'J. Cole', 'Kendrick Lamar'],
-            'j. cole': ['Drake', 'Travis Scott', 'Future', '21 Savage', 'Kendrick Lamar'],
-            'kendrick lamar': ['Drake', 'Travis Scott', 'Future', '21 Savage', 'J. Cole']
+            'marracash': ['Guè', 'Fabri Fibra', 'Salmo', 'Club Dogo', 'Ernia']
         };
 
-        function hideSplashScreen() {
-            const splash = document.getElementById('splash-screen');
-            if (splash) {
-                splash.classList.add('hidden');
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                }, 500);
+        // Pattern usati per rilevare cloni/duplicati/versioni non pertinenti nei consigli
+        const ANTI_CLONE_PATTERNS = [
+            /\blive\b/i, /\bremix\b/i, /\bcover\b/i, /\bkaraoke\b/i, /\btribute\b/i,
+            /\bacoustic\b/i, /\bacustic[oa]\b/i, /\brework\b/i, /\bslowed\b/i, /\bsped ?up\b/i,
+            /\binstrumental\b/i, /\bnightcore\b/i, /\b8d audio\b/i, /\bfan ?made\b/i, /\btutorial\b/i,
+            /\breaction\b/i, /\bmashup\b/i, /\bcompilation\b/i, /\bmegamix\b/i
+        ];
+
+        function normalizeTrackKey(t) {
+            return (t.name + '|' + t.artist).toLowerCase().replace(/[^a-z0-9|]/g, '').trim();
+        }
+
+        // Filtra versioni live/remix/cover irrilevanti e rimuove i brani duplicati (stesso titolo+artista)
+        function filterAntiClones(tracks) {
+            if (!Array.isArray(tracks)) return [];
+            let seen = new Set();
+            let result = [];
+            for (let t of tracks) {
+                if (!t || !t.name) continue;
+                if (antiCloneFilterEnabled && ANTI_CLONE_PATTERNS.some(rx => rx.test(t.name))) continue;
+                let key = normalizeTrackKey(t);
+                if (seen.has(key)) continue;
+                seen.add(key);
+                result.push(t);
+            }
+            return result;
+        }
+
+        function toggleAntiCloneFilter() {
+            antiCloneFilterEnabled = !antiCloneFilterEnabled;
+            const btn = document.getElementById('btnAntiCloneToggle');
+            const note = document.getElementById('antiCloneNote');
+            if (btn) {
+                btn.innerHTML = `<i class="fas fa-filter"></i> Filtro Anti-Cloni: ${antiCloneFilterEnabled ? 'ON' : 'OFF'}`;
+                btn.classList.toggle('active-toggle', !antiCloneFilterEnabled);
+            }
+            if (note) {
+                note.innerHTML = antiCloneFilterEnabled
+                    ? '<i class="fas fa-circle-info"></i> Live, remix e cover duplicate vengono filtrati automaticamente dai consigli.'
+                    : '<i class="fas fa-triangle-exclamation"></i> Filtro disattivato: potrebbero comparire live, remix e duplicati.';
+            }
+            if (currentArtistContext.name) {
+                if (document.getElementById('discographyStatusText') && document.getElementById('discographyStatusText').innerText.includes('brani caricati')) {
+                    playFullDiscography(true);
+                }
             }
         }
 
+        // ==== Profili condivisi & Blend rapido ====
+        function registerProfile(name) {
+            if (!name) return;
+            if (!allKnownProfiles.includes(name)) {
+                allKnownProfiles.push(name);
+                localStorage.setItem('darksound_all_profiles', JSON.stringify(allKnownProfiles));
+            }
+            renderQuickProfileScroll();
+        }
+
+        function renderQuickProfileScroll() {
+            const el = document.getElementById('quickProfileScroll');
+            if (!el) return;
+            let html = allKnownProfiles.map(name => `
+                <div class="quick-profile-chip ${name === currentUser ? 'current' : ''}" onclick="quickSwitchProfile('${name.replace(/'/g, "\\'")}')">
+                    <div class="quick-profile-avatar">${name.charAt(0).toUpperCase()}</div>
+                    <span>${name}</span>
+                </div>
+            `).join('');
+            html += `
+                <div class="quick-profile-chip" onclick="document.getElementById('quick-profile-onboarding-modal').classList.add('active')">
+                    <div class="quick-profile-add"><i class="fas fa-plus" style="color:var(--accent);"></i></div>
+                    <span>Aggiungi</span>
+                </div>
+            `;
+            el.innerHTML = html;
+        }
+
+        function quickSwitchProfile(name) {
+            if (name === currentUser) { toggleProfileDrawer(); return; }
+            currentUser = name;
+            localStorage.setItem('darksound_current_user', currentUser);
+            userPreferences = JSON.parse(localStorage.getItem(`prefs_${currentUser}`) || 'null');
+            likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
+            downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
+            userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
+            sessionHistory = JSON.parse(localStorage.getItem(`sessions_${currentUser}`) || '[]');
+            updateUserUI();
+            renderQuickProfileScroll();
+            toggleProfileDrawer();
+            loadHomeTracks();
+            if (!userPreferences) setTimeout(() => openOnboardingModal(), 300);
+        }
+
+        function submitQuickNewProfile() {
+            const name = document.getElementById('quickNewProfileName').value.trim();
+            if (!name) return alert('Inserisci un nome profilo.');
+            registerProfile(name);
+            document.getElementById('quick-profile-onboarding-modal').classList.remove('active');
+            document.getElementById('quickNewProfileName').value = '';
+            quickSwitchProfile(name);
+        }
+
+        // ==== Discografia completa artista (player sequenziale unico) ====
+        async function playFullDiscography(silentRefresh) {
+            const artistName = currentArtistContext.name || document.getElementById('artistNameTitle').innerText;
+            if (!artistName) return;
+            const statusEl = document.getElementById('discographyStatusText');
+            const btn = document.getElementById('btnPlayDiscography');
+            if (btn) btn.innerHTML = '<i class="fas fa-spinner spin"></i> Caricamento discografia...';
+            if (statusEl) statusEl.innerText = 'Sto caricando l\'intera discografia in un unico player sequenziale...';
+
+            try {
+                const queries = [artistName, `${artistName} album`, `${artistName} greatest hits`, `${artistName} singoli`];
+                const responses = await Promise.all(queries.map(q => fetch(`/api/search?q=${encodeURIComponent(q)}`).then(r => r.json()).catch(() => [])));
+                let combined = [].concat(...responses);
+                combined = combined.filter(t => t && t.artist && t.artist.toLowerCase().includes(artistName.toLowerCase().split(' ')[0].toLowerCase()));
+                if (combined.length === 0) combined = [].concat(...responses);
+                let finalTracks = filterAntiClones(combined);
+
+                if (finalTracks.length === 0) {
+                    if (statusEl) statusEl.innerText = 'Nessun brano trovato per la discografia completa.';
+                } else {
+                    if (statusEl) statusEl.innerText = `${finalTracks.length} brani caricati nella discografia completa. Riproduzione sequenziale in un unico player.`;
+                    renderTracksList(finalTracks, 'artistDiscographyContainer', finalTracks);
+                    if (!silentRefresh) {
+                        const t = finalTracks[0];
+                        const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
+                        const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(finalTracks))));
+                        playSelectedTrack(trackJson, queueJson, 0);
+                    }
+                }
+            } catch (e) {
+                if (statusEl) statusEl.innerText = 'Errore nel caricamento della discografia completa.';
+            } finally {
+                if (btn) btn.innerHTML = '<i class="fas fa-play"></i> Riproduci Discografia';
+            }
+        }
+
+        // ==== Radio Artisti Simili (motore correlazioni) ====
+        async function startSimilarArtistRadio() {
+            const artistName = currentArtistContext.name || document.getElementById('artistNameTitle').innerText;
+            if (!artistName) return;
+            const btn = document.getElementById('btnSimilarRadio');
+            if (btn) btn.innerHTML = '<i class="fas fa-spinner spin"></i> Generazione mix...';
+
+            try {
+                let seeds = ARTIST_CORRELATIONS[artistName.toLowerCase()];
+                if (!seeds) {
+                    seeds = (userPreferences && userPreferences.genres && userPreferences.genres.length > 0)
+                        ? userPreferences.genres
+                        : [artistName + ' radio'];
+                }
+                const queries = [artistName, ...seeds];
+                const responses = await Promise.all(queries.map(q => fetch(`/api/search?q=${encodeURIComponent(q)}`).then(r => r.json()).catch(() => [])));
+                let combined = [].concat(...responses);
+                let mixTracks = filterAntiClones(combined).sort(() => Math.random() - 0.5).slice(0, 20);
+
+                if (mixTracks.length === 0) {
+                    alert('Non è stato possibile generare la radio in questo momento.');
+                } else {
+                    renderTracksList(mixTracks, 'artistDiscographyContainer', mixTracks);
+                    document.getElementById('discographyStatusText').innerText = `Radio Artisti Simili generata: ${mixTracks.length} brani basati sulle correlazioni con ${artistName}.`;
+                    const t = mixTracks[0];
+                    const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
+                    const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(mixTracks))));
+                    playSelectedTrack(trackJson, queueJson, 0);
+                }
+            } catch (e) {
+                alert('Errore nella generazione della Radio Artisti Simili.');
+            } finally {
+                if (btn) btn.innerHTML = '<i class="fas fa-podcast"></i> Radio Artisti Simili';
+            }
+        }
+
+        // ==== Cronologia sessioni offline & motore ibrido ====
+        function logSessionEvent(track, sourceType) {
+            if (!track || !track.id) return;
+            sessionHistory.unshift({
+                trackName: track.name,
+                artist: track.artist,
+                sourceType: sourceType || (navigator.onLine ? 'online' : 'offline'),
+                timestamp: new Date().toISOString()
+            });
+            sessionHistory = sessionHistory.slice(0, 100);
+            if (currentUser) {
+                localStorage.setItem(`sessions_${currentUser}`, JSON.stringify(sessionHistory));
+            } else {
+                localStorage.setItem('darksound_sessions', JSON.stringify(sessionHistory));
+            }
+        }
+
+        function renderSessionHistory() {
+            const listEl = document.getElementById('sessionHistoryList');
+            if (!listEl) return;
+            if (sessionHistory.length === 0) {
+                listEl.innerHTML = `<p style="color:var(--text-sub);">Nessuna sessione registrata ancora.</p>`;
+                return;
+            }
+            listEl.innerHTML = sessionHistory.map(s => {
+                const badgeClass = s.sourceType === 'fallback' ? 'shi-fallback' : (s.sourceType === 'offline' ? 'shi-offline' : 'shi-online');
+                const badgeLabel = s.sourceType === 'fallback' ? 'FALLBACK YT' : (s.sourceType === 'offline' ? 'OFFLINE' : 'ONLINE');
+                const d = new Date(s.timestamp);
+                const timeLabel = d.toLocaleDateString('it-IT') + ' ' + d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                return `
+                    <div class="session-history-item">
+                        <div class="shi-left">
+                            <b>${s.trackName}</b>
+                            <span>${s.artist} • ${timeLabel}</span>
+                        </div>
+                        <span class="shi-badge ${badgeClass}">${badgeLabel}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openSessionHistoryModal() {
+            toggleProfileDrawer();
+            renderSessionHistory();
+            updateHybridStatusUI();
+            document.getElementById('session-history-modal').classList.add('active');
+        }
+
+        function clearSessionHistory() {
+            sessionHistory = [];
+            if (currentUser) localStorage.setItem(`sessions_${currentUser}`, JSON.stringify(sessionHistory));
+            renderSessionHistory();
+        }
+
+        function updateHybridStatusUI() {
+            const dot = document.getElementById('hybridStatusDot');
+            const text = document.getElementById('hybridStatusText');
+            const syncBadge = document.getElementById('syncStatusBadge');
+            if (!navigator.onLine) {
+                if (dot) dot.className = 'hybrid-status-dot offline';
+                if (text) text.innerText = 'Sei offline: verranno riprodotti solo i brani scaricati localmente. Il motore ibrido riprenderà la sincronizzazione YouTube al ritorno della connessione.';
+                if (syncBadge) { syncBadge.innerText = 'Offline'; syncBadge.style.color = '#ff9500'; syncBadge.style.background = 'rgba(255,149,0,0.2)'; }
+            } else if (hybridFallbackAttempted) {
+                if (dot) dot.className = 'hybrid-status-dot fallback';
+                if (text) text.innerText = 'Motore ibrido: la sorgente principale ha avuto un problema, in uso una sorgente di fallback automatica.';
+                if (syncBadge) { syncBadge.innerText = 'Fallback attivo'; syncBadge.style.color = '#ff9500'; syncBadge.style.background = 'rgba(255,149,0,0.2)'; }
+            } else {
+                if (dot) dot.className = 'hybrid-status-dot';
+                if (text) text.innerText = 'Motore ibrido attivo: sorgente YouTube primaria, fallback automatico in caso di errore.';
+                if (syncBadge) { syncBadge.innerText = 'Online'; syncBadge.style.color = '#30d158'; syncBadge.style.background = 'rgba(46,189,89,0.2)'; }
+            }
+        }
+
+        async function resolveHybridFallback() {
+            if (!currentTrackData || !currentTrackData.name) return;
+            hybridFallbackAttempted = true;
+            updateHybridStatusUI();
+            try {
+                let res = await fetch(`/api/search?q=${encodeURIComponent(currentTrackData.name + ' ' + currentTrackData.artist)}`);
+                let candidates = await res.json();
+                let alternative = (candidates || []).find(c => c.id && c.id !== currentTrackData.id);
+                if (alternative && player && player.loadVideoById) {
+                    currentTrackData.id = alternative.id;
+                    player.loadVideoById(alternative.id);
+                    player.playVideo();
+                    logSessionEvent(currentTrackData, 'fallback');
+                } else if (downloadedTracks.some(t => t.name === currentTrackData.name)) {
+                    logSessionEvent(currentTrackData, 'offline');
+                }
+            } catch (e) { /* fallback silenzioso */ }
+        }
+
+        window.addEventListener('online', updateHybridStatusUI);
+        window.addEventListener('offline', updateHybridStatusUI);
+
         window.onload = function() {
-            initAudioPlayer();
             updateUserUI();
             loadHomeTracks();
             updateCountdown();
-            loadFriendsList();
-            loadAllUsers();
-            
-            setTimeout(hideSplashScreen, 2500);
-            
+            if (currentUser) registerProfile(currentUser);
+            renderQuickProfileScroll();
+            updateHybridStatusUI();
             if(!currentUser) {
-                setTimeout(() => openAuthModal(), 2600);
+                setTimeout(() => openAuthModal(), 400);
             } else if(!userPreferences) {
-                setTimeout(() => openOnboardingModal(), 2600);
+                setTimeout(() => openOnboardingModal(), 400);
             }
         };
 
-        function initAudioPlayer() {
-            audioPlayer = document.getElementById('audio-player');
-            audioPlayer.addEventListener('play', () => {
-                isPlaying = true;
-                updatePlayIcons(true);
-                startProgressTracker();
-                updateMediaSession();
-            });
-            audioPlayer.addEventListener('pause', () => {
-                isPlaying = false;
-                updatePlayIcons(false);
-                clearInterval(progressInterval);
-            });
-            audioPlayer.addEventListener('ended', () => {
-                if(isRepeatActive) {
-                    audioPlayer.currentTime = 0;
-                    audioPlayer.play();
-                } else {
-                    nextTrack();
-                }
-            });
-            audioPlayer.addEventListener('error', () => {
-                console.error('Errore audio player');
-                if (player && playerReady) {
-                    useAudioElement = false;
-                    playWithYouTube(currentTrackData);
-                }
-            });
-            audioPlayer.addEventListener('timeupdate', () => {
-                if (audioPlayer.duration) {
-                    updateProgress(audioPlayer.currentTime, audioPlayer.duration);
-                }
-            });
-        }
-
-        function updateMediaSession() {
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: currentTrackData.name,
-                    artist: currentTrackData.artist,
-                    album: 'DarkSound Pro',
-                    artwork: [
-                        { src: currentTrackData.image, sizes: '96x96', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '128x128', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '192x192', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '256x256', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '384x384', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '512x512', type: 'image/jpeg' }
-                    ]
-                });
-
-                navigator.mediaSession.setActionHandler('play', () => {
-                    togglePlay();
-                });
-                navigator.mediaSession.setActionHandler('pause', () => {
-                    togglePlay();
-                });
-                navigator.mediaSession.setActionHandler('previoustrack', () => {
-                    prevTrack();
-                });
-                navigator.mediaSession.setActionHandler('nexttrack', () => {
-                    nextTrack();
-                });
-                navigator.mediaSession.setActionHandler('seekto', (details) => {
-                    if (details.seekTime !== undefined) {
-                        seekTo(details.seekTime);
-                    }
-                });
-            }
-        }
-
-        function seekTo(time) {
-            if (useAudioElement && audioPlayer) {
-                audioPlayer.currentTime = time;
-            } else if (player && player.seekTo) {
-                player.seekTo(time, true);
-            }
-        }
-
-        function loadAllUsers() {
-            const stored = localStorage.getItem('darksound_all_users');
-            if (stored) allUsers = JSON.parse(stored);
-            if (allUsers.length === 0) {
-                allUsers = [
-                    { name: 'Giancarlo', bio: 'Amo il rap italiano', avatar: 'G', genre: 'Rap' },
-                    { name: 'Claudio', bio: 'Club Dogo forever', avatar: 'C', genre: 'Rap' },
-                    { name: 'Martina', bio: 'Pop e hit del momento', avatar: 'M', genre: 'Pop' },
-                    { name: 'Francesco', bio: 'Rock e alternative', avatar: 'F', genre: 'Rock' },
-                    { name: 'Giulia', bio: 'Techno e house', avatar: 'G', genre: 'Techno' }
-                ];
-                localStorage.setItem('darksound_all_users', JSON.stringify(allUsers));
-            }
-        }
-
         function updateCountdown() {
             const eventDate = new Date().getTime() + (24 * 60 * 60 * 1000);
+            
             setInterval(() => {
                 const now = new Date().getTime();
                 const distance = eventDate - now;
+                
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
                 const countdownEl = document.getElementById("countdown");
                 if(countdownEl) {
                     countdownEl.innerHTML = 
@@ -1235,8 +1142,7 @@
             }, 1000);
         }
 
-        function toggleProfileDrawer() { document.getElementById('profileDrawer').classList.toggle('active'); renderDrawerFriends(); }
-        
+        function toggleProfileDrawer() { document.getElementById('profileDrawer').classList.toggle('active'); }
         function logoutUser() {
             localStorage.removeItem('darksound_current_user');
             currentUser = null;
@@ -1244,282 +1150,41 @@
             updateUserUI();
             openAuthModal();
         }
-        
-        function openAuthModal() { 
-            document.getElementById('profileDrawer').classList.remove('active'); 
-            document.getElementById('auth-modal').classList.add('active'); 
-        }
-        
+        function openAuthModal() { document.getElementById('profileDrawer').classList.remove('active'); document.getElementById('auth-modal').classList.add('active'); }
         function closeAuthModal() { document.getElementById('auth-modal').classList.remove('active'); }
-        
         function proceedToOnboarding() {
             const name = document.getElementById('authEmail').value.trim();
             if(!name) return alert('Inserisci un nome utente.');
             tempAuthName = name;
-            
-            if (!allUsers.includes(name)) {
-                allUsers.push(name);
-                localStorage.setItem('darksound_all_users', JSON.stringify(allUsers));
-            }
-            
             closeAuthModal();
             openOnboardingModal();
         }
-        
         function openOnboardingModal() { document.getElementById('onboarding-modal').classList.add('active'); }
-        
         function toggleGenre(el) { el.classList.toggle('selected'); }
         
         function completeOnboarding() {
             currentUser = tempAuthName;
             localStorage.setItem('darksound_current_user', currentUser);
-            
             const selectedGenres = Array.from(document.querySelectorAll('#genreGrid .genre-tag.selected')).map(el => el.innerText.replace(/^[^\w\s]+\s*/, ''));
             const favArtist = document.getElementById('favArtistInput').value.trim();
             userPreferences = { genres: selectedGenres.length > 0 ? selectedGenres : ['Pop'], artist: favArtist || 'Hit Italia' };
             localStorage.setItem(`prefs_${currentUser}`, JSON.stringify(userPreferences));
-            
-            userProfile = {
-                name: currentUser,
-                bio: '',
-                avatar: currentUser.charAt(0).toUpperCase(),
-                genre: selectedGenres.length > 0 ? selectedGenres[0] : 'Pop'
-            };
-            localStorage.setItem(`profile_${currentUser}`, JSON.stringify(userProfile));
-            
             likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
             downloadedTracks = JSON.parse(localStorage.getItem(`downloads_${currentUser}`) || '[]');
             userPlaylists = JSON.parse(localStorage.getItem(`playlists_${currentUser}`) || '[]');
-            autoPlaylists = JSON.parse(localStorage.getItem(`auto_playlists_${currentUser}`) || '[]');
-            friendsList = JSON.parse(localStorage.getItem(`friends_${currentUser}`) || '[]');
-            
+            sessionHistory = JSON.parse(localStorage.getItem(`sessions_${currentUser}`) || '[]');
+            registerProfile(currentUser);
             document.getElementById('onboarding-modal').classList.remove('active');
             updateUserUI();
             loadHomeTracks();
-            loadFriendsList();
         }
 
         function updateUserUI() {
             const dispName = currentUser ? currentUser : 'Ospite';
-            const avatarChar = userProfile?.avatar || dispName.charAt(0).toUpperCase();
             document.getElementById('pillUserNameBtn').innerText = dispName;
             document.getElementById('drawerUserName').innerText = dispName;
-            document.getElementById('drawerAvatarInitial').innerText = avatarChar;
-            document.getElementById('profileAvatarLarge').innerText = avatarChar;
-            document.getElementById('profileNameLarge').innerText = dispName;
-            document.getElementById('profileBioLarge').innerText = userProfile?.bio || 'Nessuna bio ancora.';
-            document.getElementById('profileGenreLarge').innerText = userProfile?.genre || 'Pop';
+            document.getElementById('drawerAvatarInitial').innerText = dispName.charAt(0).toUpperCase();
             if(currentUser) document.getElementById('homeWelcomeTitle').innerText = `Bentornato, ${currentUser}`;
-        }
-
-        function openProfileView() {
-            toggleProfileDrawer();
-            switchView('profile');
-            updateUserUI();
-            renderProfileFriends();
-            renderProfilePublicPlaylists();
-        }
-
-        function openProfileEditModal() {
-            if (!userProfile) {
-                userProfile = {
-                    name: currentUser || '',
-                    bio: '',
-                    avatar: currentUser ? currentUser.charAt(0).toUpperCase() : 'S',
-                    genre: 'Pop'
-                };
-            }
-            document.getElementById('editProfileName').value = userProfile.name || currentUser || '';
-            document.getElementById('editProfileBio').value = userProfile.bio || '';
-            document.getElementById('editProfileAvatar').value = userProfile.avatar || '';
-            document.getElementById('editProfileGenre').value = userProfile.genre || 'Pop';
-            document.getElementById('profile-edit-modal').classList.add('active');
-        }
-
-        function saveProfileChanges() {
-            const newName = document.getElementById('editProfileName').value.trim();
-            const newBio = document.getElementById('editProfileBio').value.trim();
-            const newAvatar = document.getElementById('editProfileAvatar').value.trim() || (newName ? newName.charAt(0).toUpperCase() : 'S');
-            const newGenre = document.getElementById('editProfileGenre').value;
-            
-            if (!newName) return alert('Inserisci un nome.');
-            
-            if (newName !== currentUser) {
-                const oldLiked = localStorage.getItem(`liked_${currentUser}`);
-                const oldDownloads = localStorage.getItem(`downloads_${currentUser}`);
-                const oldPlaylists = localStorage.getItem(`playlists_${currentUser}`);
-                const oldAutoPlaylists = localStorage.getItem(`auto_playlists_${currentUser}`);
-                const oldFriends = localStorage.getItem(`friends_${currentUser}`);
-                const oldPrefs = localStorage.getItem(`prefs_${currentUser}`);
-                const oldProfile = localStorage.getItem(`profile_${currentUser}`);
-                
-                if (oldLiked) localStorage.setItem(`liked_${newName}`, oldLiked);
-                if (oldDownloads) localStorage.setItem(`downloads_${newName}`, oldDownloads);
-                if (oldPlaylists) localStorage.setItem(`playlists_${newName}`, oldPlaylists);
-                if (oldAutoPlaylists) localStorage.setItem(`auto_playlists_${newName}`, oldAutoPlaylists);
-                if (oldFriends) localStorage.setItem(`friends_${newName}`, oldFriends);
-                if (oldPrefs) localStorage.setItem(`prefs_${newName}`, oldPrefs);
-                if (oldProfile) {
-                    const parsedProfile = JSON.parse(oldProfile);
-                    parsedProfile.name = newName;
-                    localStorage.setItem(`profile_${newName}`, JSON.stringify(parsedProfile));
-                }
-                
-                localStorage.removeItem(`liked_${currentUser}`);
-                localStorage.removeItem(`downloads_${currentUser}`);
-                localStorage.removeItem(`playlists_${currentUser}`);
-                localStorage.removeItem(`auto_playlists_${currentUser}`);
-                localStorage.removeItem(`friends_${currentUser}`);
-                localStorage.removeItem(`prefs_${currentUser}`);
-                localStorage.removeItem(`profile_${currentUser}`);
-                
-                currentUser = newName;
-                localStorage.setItem('darksound_current_user', currentUser);
-                
-                if (!allUsers.includes(newName)) {
-                    allUsers.push(newName);
-                    localStorage.setItem('darksound_all_users', JSON.stringify(allUsers));
-                }
-            }
-            
-            userProfile = {
-                name: newName,
-                bio: newBio,
-                avatar: newAvatar,
-                genre: newGenre
-            };
-            localStorage.setItem(`profile_${currentUser}`, JSON.stringify(userProfile));
-            
-            document.getElementById('profile-edit-modal').classList.remove('active');
-            updateUserUI();
-            loadFriendsList();
-        }
-
-        function renderDrawerFriends() {
-            const container = document.getElementById('drawerFriendsList');
-            if (!container) return;
-            if (friendsList.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-sub); font-size:0.85rem;">Nessun amico ancora.</p>';
-                return;
-            }
-            container.innerHTML = friendsList.map(friend => `
-                <div class="friend-list-item" onclick="viewFriendProfile('${friend.replace(/'/g, "\\'")}')">
-                    <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#007aff,#30d158);display:flex;align-items:center;justify-content:center;font-weight:800;color:black;">${friend.charAt(0).toUpperCase()}</div>
-                    <div class="friend-list-info">
-                        <h4>${friend}</h4>
-                        <p><span class="badge-listening"><i class="fas fa-circle" style="font-size:0.4rem;"></i> In ascolto</span></p>
-                    </div>
-                    <i class="fas fa-chevron-right" style="color:var(--text-sub);"></i>
-                </div>
-            `).join('');
-        }
-
-        function renderProfileFriends() {
-            const container = document.getElementById('profileFriendsList');
-            if (!container) return;
-            if (friendsList.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-sub);">Nessun amico ancora. Aggiungi i tuoi amici!</p>';
-                return;
-            }
-            container.innerHTML = friendsList.map(friend => `
-                <div class="friend-list-item" onclick="viewFriendProfile('${friend.replace(/'/g, "\\'")}')">
-                    <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#007aff,#30d158);display:flex;align-items:center;justify-content:center;font-weight:800;color:black;">${friend.charAt(0).toUpperCase()}</div>
-                    <div class="friend-list-info">
-                        <h4>${friend}</h4>
-                        <p><span class="badge-listening"><i class="fas fa-circle" style="font-size:0.4rem;"></i> In ascolto</span></p>
-                    </div>
-                    <i class="fas fa-chevron-right" style="color:var(--text-sub);"></i>
-                </div>
-            `).join('');
-        }
-
-        function renderProfilePublicPlaylists() {
-            const container = document.getElementById('profilePublicPlaylists');
-            if (!container) return;
-            const publicPls = userPlaylists.filter(p => p.visibility === 'public');
-            if (publicPls.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-sub);">Nessuna playlist pubblica.</p>';
-                return;
-            }
-            container.innerHTML = publicPls.map(pl => `
-                <div class="track-row" onclick="openUserPlaylistDetails('${pl.id}')">
-                    <div class="track-row-left">
-                        <div style="width:52px;height:52px;background:linear-gradient(135deg,#30d158,#007aff);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:white;"></i></div>
-                        <div class="track-meta">
-                            <h4>${pl.name}</h4>
-                            <p><span class="badge-public">PUBBLICA</span> ${pl.tracks.length} brani</p>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function loadFriendsList() {
-            if (!currentUser) return;
-            friendsList = JSON.parse(localStorage.getItem(`friends_${currentUser}`) || '[]');
-            renderDrawerFriends();
-        }
-
-        function openAddFriendModal() {
-            toggleProfileDrawer();
-            document.getElementById('addFriendInput').value = '';
-            document.getElementById('addFriendResults').innerHTML = '';
-            document.getElementById('add-friend-modal').classList.add('active');
-        }
-
-        function searchFriend() {
-            const query = document.getElementById('addFriendInput').value.trim().toLowerCase();
-            const resultsContainer = document.getElementById('addFriendResults');
-            if (!query) {
-                resultsContainer.innerHTML = '';
-                return;
-            }
-            
-            const matches = allUsers.filter(u => 
-                u.toLowerCase().includes(query) && 
-                u !== currentUser && 
-                !friendsList.includes(u)
-            );
-            
-            if (matches.length === 0) {
-                resultsContainer.innerHTML = '<p style="color:var(--text-sub);">Nessun utente trovato.</p>';
-                return;
-            }
-            
-            resultsContainer.innerHTML = matches.map(user => `
-                <div class="friend-list-item" onclick="addFriend('${user.replace(/'/g, "\\'")}')">
-                    <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#007aff,#30d158);display:flex;align-items:center;justify-content:center;font-weight:800;color:black;">${user.charAt(0).toUpperCase()}</div>
-                    <div class="friend-list-info">
-                        <h4>${user}</h4>
-                        <p>Utente DarkSound</p>
-                    </div>
-                    <button class="btn-action-primary">Aggiungi</button>
-                </div>
-            `).join('');
-        }
-
-        function addFriend(friendName) {
-            if (!friendsList.includes(friendName)) {
-                friendsList.push(friendName);
-                localStorage.setItem(`friends_${currentUser}`, JSON.stringify(friendsList));
-                document.getElementById('add-friend-modal').classList.remove('active');
-                loadFriendsList();
-                alert(`${friendName} aggiunto ai tuoi amici!`);
-            }
-        }
-
-        function viewFriendProfile(friendName) {
-            const friendProfile = JSON.parse(localStorage.getItem(`profile_${friendName}`) || 'null');
-            const friendLiked = JSON.parse(localStorage.getItem(`liked_${friendName}`) || '[]');
-            const friendPlaylists = JSON.parse(localStorage.getItem(`playlists_${friendName}`) || '[]');
-            
-            alert(`
-                Profilo di ${friendName}
-                Bio: ${friendProfile?.bio || 'Nessuna bio'}
-                Genere: ${friendProfile?.genre || 'N/D'}
-                Brani preferiti: ${friendLiked.length}
-                Playlist: ${friendPlaylists.length}
-            `);
         }
 
         function saveUserData() {
@@ -1527,9 +1192,6 @@
                 localStorage.setItem(`liked_${currentUser}`, JSON.stringify(likedSongs));
                 localStorage.setItem(`downloads_${currentUser}`, JSON.stringify(downloadedTracks));
                 localStorage.setItem(`playlists_${currentUser}`, JSON.stringify(userPlaylists));
-                localStorage.setItem(`auto_playlists_${currentUser}`, JSON.stringify(autoPlaylists));
-                localStorage.setItem(`friends_${currentUser}`, JSON.stringify(friendsList));
-                if (userProfile) localStorage.setItem(`profile_${currentUser}`, JSON.stringify(userProfile));
                 syncGlobalPublicPlaylists();
             }
         }
@@ -1542,29 +1204,24 @@
         }
 
         function openAiDjModal() { document.getElementById('ai-dj-modal').classList.add('active'); }
-        
         async function runAiDjSelection() {
             document.getElementById('aiDjStatusText').innerText = "Sto selezionando le migliori tracce per te...";
             try {
-                let res = await fetch(`${API_BASE}/api/search?q=Top Hit`);
+                let res = await fetch(`/api/search?q=Top Hit`);
                 let tracks = await res.json();
                 if(tracks.length > 0) {
                     playSelectedTrack(btoa(unescape(encodeURIComponent(JSON.stringify(tracks[0])))), btoa(unescape(encodeURIComponent(JSON.stringify(tracks)))), 0);
                     document.getElementById('ai-dj-modal').classList.remove('active');
                 }
-            } catch(e) { 
-                console.error('Errore AI DJ:', e);
-                alert('Errore AI DJ. Verifica che il server sia in esecuzione.');
-            }
+            } catch(e) { alert('Errore AI DJ'); }
         }
 
         function openAiPlaylistModal() { document.getElementById('ai-playlist-modal').classList.add('active'); }
-        
         async function generateAiPromptPlaylist() {
             const prompt = document.getElementById('aiPromptInput').value.trim();
             if(!prompt) return alert('Inserisci una descrizione.');
             try {
-                let res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(prompt)}`);
+                let res = await fetch(`/api/search?q=${encodeURIComponent(prompt)}`);
                 let tracks = await res.json();
                 if(tracks.length > 0) {
                     let newPl = {
@@ -1579,25 +1236,14 @@
                     document.getElementById('ai-playlist-modal').classList.remove('active');
                     alert(`Playlist IA creata con successo! Controlla la tua libreria.`);
                 }
-            } catch(e) { 
-                console.error('Errore generazione playlist IA:', e);
-                alert('Errore generazione playlist IA. Verifica che il server sia in esecuzione.');
-            }
+            } catch(e) { alert('Errore generazione playlist IA'); }
         }
 
-        function openBlendModal() { 
-            const select = document.getElementById('blendFriendSelect');
-            if (select) {
-                select.innerHTML = friendsList.map(f => `<option value="${f}">${f}</option>`).join('') || '<option value="">Nessun amico</option>';
-            }
-            document.getElementById('blend-modal').classList.add('active'); 
-        }
-        
+        function openBlendModal() { document.getElementById('blend-modal').classList.add('active'); }
         async function createBlendPlaylist() {
             const friend = document.getElementById('blendFriendSelect').value;
-            if (!friend) return alert('Aggiungi prima un amico.');
             try {
-                let res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(friend)}`);
+                let res = await fetch(`/api/search?q=${encodeURIComponent(friend)}`);
                 let tracks = await res.json();
                 if(tracks.length > 0) {
                     let blendPl = {
@@ -1612,134 +1258,46 @@
                     document.getElementById('blend-modal').classList.remove('active');
                     alert(`Playlist Blend creata con ${friend}!`);
                 }
-            } catch(e) { 
-                console.error('Errore creazione Blend:', e);
-                alert('Errore creazione Blend. Verifica che il server sia in esecuzione.');
-            }
+            } catch(e) { alert('Errore creazione Blend'); }
         }
 
-        function openWrappedModal() { 
-            document.getElementById('wrapped-modal').classList.add('active'); 
-            toggleProfileDrawer(); 
-        }
+        function openWrappedModal() { document.getElementById('wrapped-modal').classList.add('active'); toggleProfileDrawer(); }
 
         async function loadHomeTracks() {
             try {
                 let radioQuery = userPreferences ? (userPreferences.artist !== 'Hit Italia' ? userPreferences.artist : userPreferences.genres[0]) : 'Hit Italia';
-                let resRadio = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(radioQuery)}`);
+                let resRadio = await fetch(`/api/search?q=${encodeURIComponent(radioQuery)}`);
                 let radioTracks = await resRadio.json();
                 renderTracksList(radioTracks.slice(0, 5), 'radioTracksContainer', radioTracks.slice(0, 5));
 
-                let res = await fetch(`${API_BASE}/api/search?q=Hit Italia`);
+                let res = await fetch('/api/search?q=Hit Italia');
                 let homeTracks = await res.json();
                 renderTracksList(homeTracks, 'homeTracksContainer', homeTracks);
             } catch(e) {
-                console.error('Errore caricamento home:', e);
-                document.getElementById('homeTracksContainer').innerHTML = `<p style="color:#ff4d4d;">Errore di caricamento. Verifica che il server sia in esecuzione.</p>`;
-                document.getElementById('radioTracksContainer').innerHTML = `<p style="color:#ff4d4d;">Errore di caricamento.</p>`;
+                document.getElementById('homeTracksContainer').innerHTML = `<p style="color:#ff4d4d;">Errore di caricamento.</p>`;
             }
         }
 
         function handleSearchInput(val) {
             clearTimeout(searchTimer);
-            if(val.trim().length < 1) {
+            if(val.trim().length < 2) {
                 document.getElementById('searchResultsContainer').innerHTML = '';
                 return;
             }
-            searchTimer = setTimeout(() => executeSearch(val), 300);
+            searchTimer = setTimeout(() => executeSearch(val), 250);
         }
 
         async function executeSearch(query) {
-            const container = document.getElementById('searchResultsContainer');
-            container.innerHTML = '<p style="color:var(--text-sub);"><span class="loading-spinner"></span> Ricerca in corso...</p>';
-            
             try {
-                const artistRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
-                const artistTracks = await artistRes.json();
-                
+                let res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                let tracks = await res.json();
+                let matchedPlaylists = globalPublicPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+
+                let container = document.getElementById('searchResultsContainer');
                 let html = '';
-                const artists = [...new Set(artistTracks.map(t => t.artist))].slice(0, 8);
-                
-                const allArtists = new Set(artists);
-                artists.forEach(artist => {
-                    const correlations = ARTIST_CORRELATIONS[artist.toLowerCase()];
-                    if (correlations) {
-                        correlations.forEach(c => allArtists.add(c));
-                    }
-                });
-                
-                const filteredArtists = [...allArtists].filter(a => 
-                    a.toLowerCase().includes(query.toLowerCase()) || 
-                    query.toLowerCase().includes(a.toLowerCase().split(' ')[0])
-                ).slice(0, 8);
-                
-                const displayArtists = filteredArtists.length > 0 ? filteredArtists : artists;
-                
-                if (displayArtists.length > 0) {
-                    html += `<div class="section-title">Artisti</div>`;
-                    html += displayArtists.map(artist => {
-                        const artistImage = artistTracks.find(t => t.artist === artist)?.image || `https://picsum.photos/seed/${encodeURIComponent(artist)}/200`;
-                        return `
-                            <div class="artist-card" onclick="openArtistPage('${artist.replace(/'/g, "\\'")}', '${artistImage}')">
-                                <img src="${artistImage}" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(artist)}/200'">
-                                <div class="artist-card-info">
-                                    <h3>${artist}</h3>
-                                    <p>Artista</p>
-                                </div>
-                                <i class="fas fa-chevron-right" style="color:var(--text-sub);"></i>
-                            </div>
-                        `;
-                    }).join('');
-                }
 
-                if (artistTracks.length > 0) {
-                    html += `<div class="section-title" style="margin-top:20px;">Brani principali</div>`;
-                    html += artistTracks.slice(0, 5).map((t, idx) => renderSingleTrackRow(t, idx, artistTracks)).join('');
-                }
-
-                const similarArtists = [];
-                artistTracks.forEach(t => {
-                    const correlations = ARTIST_CORRELATIONS[t.artist?.toLowerCase()];
-                    if (correlations) {
-                        correlations.forEach(c => {
-                            if (!similarArtists.includes(c)) similarArtists.push(c);
-                        });
-                    }
-                });
-
-                if (similarArtists.length > 0) {
-                    html += `<div class="section-title" style="margin-top:20px;">Brani Simili</div>`;
-                    for (const artist of similarArtists.slice(0, 3)) {
-                        try {
-                            const similarRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artist)}`);
-                            const similarTracks = await similarRes.json();
-                            if (similarTracks.length > 0) {
-                                html += similarTracks.slice(0, 3).map((t, idx) => renderSingleTrackRow(t, idx, similarTracks)).join('');
-                            }
-                        } catch(e) {}
-                    }
-                }
-
-                if (autoPlaylists.length > 0) {
-                    const matchedAuto = autoPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
-                    if (matchedAuto.length > 0) {
-                        html += `<div class="section-title" style="margin-top:20px;">Playlist Automatiche</div>`;
-                        html += matchedAuto.map(pl => `
-                            <div class="auto-playlist-card" onclick="openAutoPlaylist('${pl.id}')">
-                                <i class="fas fa-list-music"></i>
-                                <div class="auto-playlist-card-info">
-                                    <h3>${pl.name}</h3>
-                                    <p>${pl.tracks.length} brani • Generata automaticamente</p>
-                                </div>
-                                <i class="fas fa-play-circle" style="font-size:1.5rem; color:white;"></i>
-                            </div>
-                        `).join('');
-                    }
-                }
-
-                const matchedPlaylists = globalPublicPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
-                if (matchedPlaylists.length > 0) {
-                    html += `<div class="section-title" style="margin-top:20px;">Playlist Pubbliche</div>`;
+                if(matchedPlaylists.length > 0) {
+                    html += `<div class="section-title">Playlist Pubbliche Trovate</div>`;
                     html += matchedPlaylists.map(pl => `
                         <div class="track-row" onclick="openPublicPlaylist('${pl.id}')">
                             <div class="track-row-left">
@@ -1756,110 +1314,13 @@
                     `).join('');
                 }
 
-                if (artistTracks.length > 0) {
-                    html += `
-                        <div class="section-title" style="margin-top:20px;">Genera Playlist Automatica</div>
-                        <div class="auto-playlist-card" onclick="generateAutoPlaylist('${query.replace(/'/g, "\\'")}')">
-                            <i class="fas fa-wand-magic-sparkles"></i>
-                            <div class="auto-playlist-card-info">
-                                <h3>Genera playlist da "${query}"</h3>
-                                <p>Crea una playlist con brani simili a "${query}"</p>
-                            </div>
-                            <i class="fas fa-plus-circle" style="font-size:1.5rem; color:white;"></i>
-                        </div>
-                    `;
-                }
-
-                if (html === '') {
-                    html = '<p style="color:var(--text-sub);">Nessun risultato trovato. Prova con un altro termine.</p>';
-                }
-
+                html += `<div class="section-title" style="margin-top:20px;">Brani Musicali</div>`;
                 container.innerHTML = html;
-            } catch(e) {
-                console.error('Errore ricerca:', e);
-                container.innerHTML = '<p style="color:#ff4d4d;">Errore di ricerca. Verifica che il server sia in esecuzione.</p>';
-            }
-        }
-
-        async function generateAutoPlaylist(query) {
-            if (!currentUser) return openAuthModal();
-            
-            try {
-                let mainRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
-                let mainTracks = await mainRes.json();
                 
-                if (mainTracks.length === 0) {
-                    alert('Nessun brano trovato per generare la playlist.');
-                    return;
-                }
-
-                let allTracks = [...mainTracks.slice(0, 5)];
-                const artistNames = [...new Set(mainTracks.map(t => t.artist))].slice(0, 3);
-                
-                for (const artist of artistNames) {
-                    const correlations = ARTIST_CORRELATIONS[artist.toLowerCase()];
-                    if (correlations) {
-                        for (const relatedArtist of correlations.slice(0, 2)) {
-                            try {
-                                const relatedRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(relatedArtist)}`);
-                                const relatedTracks = await relatedRes.json();
-                                allTracks.push(...relatedTracks.slice(0, 2));
-                            } catch(e) {}
-                        }
-                    }
-                }
-
-                const seen = new Set();
-                allTracks = allTracks.filter(t => {
-                    const key = t.id;
-                    if (seen.has(key)) return false;
-                    seen.add(key);
-                    return true;
-                });
-
-                if (allTracks.length > 0) {
-                    const newAutoPlaylist = {
-                        id: 'auto_' + Date.now(),
-                        name: `Mix: ${query}`,
-                        visibility: 'private',
-                        owner: currentUser,
-                        tracks: allTracks.slice(0, 15),
-                        autoGenerated: true,
-                        createdAt: new Date().toISOString()
-                    };
-                    autoPlaylists.push(newAutoPlaylist);
-                    saveUserData();
-                    alert(`Playlist automatica "${newAutoPlaylist.name}" creata con ${newAutoPlaylist.tracks.length} brani!`);
-                }
-            } catch(e) {
-                console.error('Errore generazione playlist automatica:', e);
-                alert('Errore nella generazione della playlist automatica.');
-            }
-        }
-
-        function openAutoPlaylist(playlistId) {
-            const pl = autoPlaylists.find(p => p.id === playlistId);
-            if (!pl) return;
-            
-            switchView('library', document.querySelectorAll('.nav-item')[2]);
-            currentLibTab = 'playlists';
-            document.getElementById('btnTabLiked').className = 'chip';
-            document.getElementById('btnTabDownloads').className = 'chip';
-            document.getElementById('btnTabPlaylists').className = 'chip active';
-            
-            const container = document.getElementById('libContentList');
-            container.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding:0 15px;">
-                    <button class="chip" onclick="renderLibraryContent()"><i class="fas fa-arrow-left"></i> Indietro</button>
-                    <div>
-                        <h3 style="font-size:1.1rem; font-weight:800;">${pl.name}</h3>
-                        <p style="font-size:0.75rem; color:var(--text-sub);">Generata automaticamente</p>
-                    </div>
-                </div>
-            `;
-            let tempDiv = document.createElement('div');
-            tempDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
-            container.appendChild(tempDiv);
+                let tempContainer = document.createElement('div');
+                tempContainer.innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, tracks)).join('');
+                container.appendChild(tempContainer);
+            } catch(e) {}
         }
 
         function renderSingleTrackRow(t, idx, sectionTracks) {
@@ -1905,17 +1366,20 @@
             switchView('artist'); 
             const heroImgEl = document.getElementById('artistHeroImg');
             const container = document.getElementById('artistTracksContainer');
-            const similarContainer = document.getElementById('similarTracksContainer');
             
             document.getElementById('artistNameTitle').innerText = artistName;
-            container.innerHTML = '<p style="color:var(--text-sub);"><span class="loading-spinner"></span> Caricamento in corso...</p>';
-            if (similarContainer) similarContainer.innerHTML = '<p style="color:var(--text-sub);"><span class="loading-spinner"></span> Caricamento brani simili...</p>';
+            container.innerHTML = '<p style="color:var(--text-sub);">Caricamento in corso...</p>';
+            currentArtistContext = { name: artistName, image: artistImageOverride || '' };
+            const discogContainer = document.getElementById('artistDiscographyContainer');
+            const discogStatus = document.getElementById('discographyStatusText');
+            if (discogContainer) discogContainer.innerHTML = '';
+            if (discogStatus) discogStatus.innerText = 'Tocca "Riproduci Discografia" per caricare tutti i brani dell\'artista in un unico player sequenziale.';
             
             heroImgEl.style.opacity = '0.5';
             heroImgEl.src = artistImageOverride || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
 
             try {
-                let response = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artistName)}`);
+                let response = await fetch(`/api/search?q=${encodeURIComponent(artistName)}`);
                 let tracks = await response.json();
                 
                 if (Array.isArray(tracks) && tracks.length > 0) {
@@ -1925,27 +1389,6 @@
                     container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano popolare trovato per ${artistName}.</p>`;
                 }
                 heroImgEl.style.opacity = '1';
-
-                if (similarContainer) {
-                    const correlations = ARTIST_CORRELATIONS[artistName.toLowerCase()];
-                    if (correlations && correlations.length > 0) {
-                        let similarTracks = [];
-                        for (const relatedArtist of correlations.slice(0, 3)) {
-                            try {
-                                const similarRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(relatedArtist)}`);
-                                const relatedTracks = await similarRes.json();
-                                similarTracks.push(...relatedTracks.slice(0, 3));
-                            } catch(e) {}
-                        }
-                        if (similarTracks.length > 0) {
-                            renderTracksList(similarTracks, 'similarTracksContainer', similarTracks);
-                        } else {
-                            similarContainer.innerHTML = '<p style="color:var(--text-sub);">Nessun brano simile trovato.</p>';
-                        }
-                    } else {
-                        similarContainer.innerHTML = '<p style="color:var(--text-sub);">Nessun brano simile trovato per questo artista.</p>';
-                    }
-                }
             } catch(e) {
                 container.innerHTML = `<p style="color:#ff4d4d;">Errore: Impossibile recuperare i brani. Riprova più tardi.</p>`;
                 heroImgEl.style.opacity = '1';
@@ -1975,53 +1418,18 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
+                hybridFallbackAttempted = false;
+                logSessionEvent(t, navigator.onLine ? 'online' : 'offline');
+                updateHybridStatusUI();
                 
-                if (audioPlayer && t.audioUrl) {
-                    useAudioElement = true;
-                    audioPlayer.src = t.audioUrl;
-                    audioPlayer.play().then(() => {
-                        isPlaying = true;
-                        updatePlayIcons(true);
-                        updateMediaSession();
-                    }).catch(err => {
-                        console.error('Errore audio element:', err);
-                        useAudioElement = false;
-                        playWithYouTube(t);
-                    });
-                } else if (player && player.loadVideoById && playerReady) {
-                    useAudioElement = false;
-                    playWithYouTube(t);
-                } else {
-                    useAudioElement = false;
-                    const youtubeContainer = document.getElementById('youtube-player');
-                    youtubeContainer.innerHTML = `
-                        <iframe 
-                            width="100%" 
-                            height="100%" 
-                            src="https://www.youtube.com/embed/${t.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>
-                    `;
-                    isPlaying = true;
-                    updatePlayIcons(true);
-                    updateMediaSession();
-                }
-            } catch(err) {
-                console.error("Errore nella riproduzione del brano:", err);
-            }
-        }
-
-        function playWithYouTube(t) {
-            if (player && player.loadVideoById) {
-                player.loadVideoById(t.id);
-                setTimeout(() => {
+                if(player && player.loadVideoById) {
+                    player.loadVideoById(t.id);
                     player.playVideo();
                     isPlaying = true;
                     updatePlayIcons(true);
-                    updateMediaSession();
-                }, 300);
+                }
+            } catch(err) {
+                console.error("Errore nella riproduzione del brano:", err);
             }
         }
 
@@ -2030,7 +1438,6 @@
             document.getElementById('shareTrackSubtitle').innerText = `${currentTrackData.name} - ${currentTrackData.artist}`;
             document.getElementById('share-modal').classList.add('active');
         }
-        
         function closeShareModal() { document.getElementById('share-modal').classList.remove('active'); }
 
         function copyTrackLink() {
@@ -2051,7 +1458,6 @@
             if(!currentUser) return openAuthModal();
             document.getElementById('new-playlist-modal').classList.add('active');
         }
-        
         function closeNewPlaylistModal() { document.getElementById('new-playlist-modal').classList.remove('active'); }
 
         function submitNewPlaylist() {
@@ -2085,15 +1491,14 @@
         function showPlaylistSelectorModal() {
             if(!currentUser) return openAuthModal();
             const listEl = document.getElementById('playlistSelectList');
-            let allPlaylists = [...userPlaylists, ...autoPlaylists];
-            if(allPlaylists.length === 0) {
+            if(userPlaylists.length === 0) {
                 listEl.innerHTML = `<p style="color:var(--text-sub);">Nessuna playlist creata.</p>`;
             } else {
-                listEl.innerHTML = allPlaylists.map(pl => `
+                listEl.innerHTML = userPlaylists.map(pl => `
                     <div class="track-row" style="background:rgba(255,255,255,0.05); margin-bottom:6px;" onclick="addTrackToPlaylist('${pl.id}')">
                         <div class="track-meta">
                             <h4>${pl.name}</h4>
-                            <p>${pl.visibility === 'public' ? 'Pubblica' : 'Privata'} • ${pl.tracks.length} brani ${pl.autoGenerated ? '• Auto' : ''}</p>
+                            <p>${pl.visibility === 'public' ? 'Pubblica' : 'Privata'} • ${pl.tracks.length} brani</p>
                         </div>
                         <i class="fas fa-plus" style="color:var(--accent);"></i>
                     </div>
@@ -2105,7 +1510,7 @@
         function closePlaylistModal() { document.getElementById('playlist-select-modal').classList.remove('active'); }
 
         function addTrackToPlaylist(playlistId) {
-            let pl = userPlaylists.find(p => p.id === playlistId) || autoPlaylists.find(p => p.id === playlistId);
+            let pl = userPlaylists.find(p => p.id === playlistId);
             if(pl && selectedTrackForPlaylist) {
                 if(!pl.tracks.some(t => t.id === selectedTrackForPlaylist.id)) {
                     pl.tracks.push(selectedTrackForPlaylist);
@@ -2161,35 +1566,25 @@
             if(currentLibTab === 'downloads') {
                 renderTracksList(downloadedTracks, 'libContentList', downloadedTracks);
             } else if(currentLibTab === 'playlists') {
-                let allPlaylists = [...userPlaylists, ...autoPlaylists];
-                if(allPlaylists.length === 0) {
+                if(userPlaylists.length === 0) {
                     container.innerHTML = `<p style="color:var(--text-sub); margin-top:20px;">Nessuna playlist.</p>`;
                     return;
                 }
-                container.innerHTML = allPlaylists.map(pl => `
-                    <div class="track-row" onclick="${pl.autoGenerated ? `openAutoPlaylist('${pl.id}')` : `openUserPlaylistDetails('${pl.id}')`}">
+                container.innerHTML = userPlaylists.map(pl => `
+                    <div class="track-row" onclick="openUserPlaylistDetails('${pl.id}')">
                         <div class="track-row-left">
-                            <div style="width:52px;height:52px;background:${pl.autoGenerated ? 'linear-gradient(135deg,#7928ca,#ff007f)' : 'linear-gradient(135deg,#30d158,#007aff)'};border-radius:10px;display:flex;align-items:center;justify-content:center;">
-                                <i class="fas ${pl.autoGenerated ? 'fa-wand-magic-sparkles' : 'fa-list'}" style="color:white;"></i>
-                            </div>
+                            <div style="width:52px;height:52px;background:linear-gradient(135deg,#30d158,#007aff);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:black;"></i></div>
                             <div class="track-meta">
                                 <h4>${pl.name}</h4>
-                                <p><span class="${pl.visibility === 'public' ? 'badge-public' : 'badge-private'}">${pl.visibility === 'public' ? 'PUBBLICA' : 'PRIVATA'}</span> ${pl.tracks.length} brani ${pl.autoGenerated ? '• <span class="badge-similar">AUTO</span>' : ''}</p>
+                                <p><span class="${pl.visibility === 'public' ? 'badge-public' : 'badge-private'}">${pl.visibility === 'public' ? 'PUBBLICA' : 'PRIVATA'}</span> ${pl.tracks.length} brani</p>
                             </div>
                         </div>
                         <div class="track-actions" onclick="event.stopPropagation()">
-                            <i class="fas fa-trash" style="color:#ff4d4d; font-size:1rem;" onclick="deletePlaylist('${pl.id}')"></i>
+                            <i class="fas fa-trash" style="color:#ff4d4d; font-size:1rem;" onclick="deleteUserPlaylist('${pl.id}')"></i>
                         </div>
                     </div>
                 `).join('');
             }
-        }
-
-        function deletePlaylist(playlistId) {
-            userPlaylists = userPlaylists.filter(p => p.id !== playlistId);
-            autoPlaylists = autoPlaylists.filter(p => p.id !== playlistId);
-            saveUserData();
-            renderLibraryContent();
         }
 
         function openUserPlaylistDetails(playlistId) {
@@ -2214,7 +1609,7 @@
             const container = document.getElementById('searchResultsContainer');
             container.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                    <button class="chip" onclick="executeSearch(document.getElementById('spotifySearchInput').value)"><i class="fas fa-arrow-left"></i> Indietro</button>
+                    <button class="chip" onclick="document.getElementById('searchResultsContainer').innerHTML=''"><i class="fas fa-arrow-left"></i> Indietro</button>
                     <h3 style="font-size:1.1rem; font-weight:800;">${pl.name} (di ${pl.owner})</h3>
                 </div>
             `;
@@ -2258,120 +1653,33 @@
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
-                height: '200', 
-                width: '200',
-                playerVars: { 
-                    'autoplay': 1, 
-                    'controls': 0, 
-                    'enablejsapi': 1,
-                    'rel': 0,
-                    'playsinline': 1,
-                    'origin': window.location.origin
-                },
+                height: '200', width: '200',
+                playerVars: { 'autoplay': 1, 'controls': 0, 'enablejsapi': 1 },
                 events: {
-                    'onReady': () => {
-                        playerReady = true;
-                        console.log('Player YouTube pronto');
-                    },
                     'onStateChange': (e) => {
-                        if(e.data === YT.PlayerState.PLAYING) { 
-                            isPlaying = true; 
-                            updatePlayIcons(true); 
-                            startProgressTracker(); 
-                            updateMediaSession();
-                        }
-                        if(e.data === YT.PlayerState.PAUSED) { 
-                            isPlaying = false; 
-                            updatePlayIcons(false); 
-                            clearInterval(progressInterval); 
-                        }
-                        if(e.data === YT.PlayerState.ENDED) { 
-                            if(isRepeatActive) {
-                                if(player && player.seekTo) {
-                                    player.seekTo(0);
-                                    player.playVideo();
-                                }
-                            } else {
-                                nextTrack(); 
-                            }
-                        }
+                        if(e.data === YT.PlayerState.PLAYING) { isPlaying = true; updatePlayIcons(true); startProgressTracker(); }
+                        if(e.data === YT.PlayerState.PAUSED) { isPlaying = false; updatePlayIcons(false); clearInterval(progressInterval); }
+                        if(e.data === YT.PlayerState.ENDED) { nextTrack(); }
                     },
-                    'onError': (e) => {
-                        console.error('Errore player YouTube:', e);
-                        if (currentTrackData.id) {
-                            const youtubeContainer = document.getElementById('youtube-player');
-                            youtubeContainer.innerHTML = `
-                                <iframe 
-                                    width="100%" 
-                                    height="100%" 
-                                    src="https://www.youtube.com/embed/${currentTrackData.id}?autoplay=1&origin=${window.location.origin}" 
-                                    frameborder="0" 
-                                    allowfullscreen>
-                                </iframe>
-                            `;
-                        }
-                    }
+                    'onError': () => { resolveHybridFallback(); }
                 }
             });
         }
 
         function togglePlay() {
-            if (useAudioElement && audioPlayer) {
-                if (isPlaying) {
-                    audioPlayer.pause();
-                } else {
-                    audioPlayer.play();
-                }
-            } else if (player) {
-                if(isPlaying) { 
-                    player.pauseVideo(); 
-                    isPlaying = false; 
-                } else { 
-                    player.playVideo(); 
-                    isPlaying = true; 
-                }
-                updatePlayIcons(isPlaying);
-            }
+            if(!player) return;
+            if(isPlaying) { player.pauseVideo(); isPlaying = false; } 
+            else { player.playVideo(); isPlaying = true; }
+            updatePlayIcons(isPlaying);
         }
 
         function updatePlayIcons(playing) {
-            const playPauseIcon = document.getElementById('playPauseIcon');
-            const fsPlayIcon = document.getElementById('fsPlayIcon');
-            if(playPauseIcon) playPauseIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
-            if(fsPlayIcon) fsPlayIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
+            document.getElementById('playPauseIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
+            document.getElementById('fsPlayIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
         }
 
-        function toggleShuffle() {
-            isShuffleActive = !isShuffleActive;
-            const shuffleBtn = document.querySelector('.fs-controls .fa-random');
-            if(shuffleBtn) {
-                shuffleBtn.style.color = isShuffleActive ? 'var(--accent)' : 'var(--text-sub)';
-            }
-        }
-
-        function toggleRepeat() {
-            isRepeatActive = !isRepeatActive;
-            const repeatBtn = document.querySelector('.fs-controls .fa-redo');
-            if(repeatBtn) {
-                repeatBtn.style.color = isRepeatActive ? 'var(--accent)' : 'var(--text-sub)';
-            }
-        }
-
-        function nextTrack() { 
-            if(isShuffleActive && playQueue.length > 0) {
-                let randomIdx = Math.floor(Math.random() * playQueue.length);
-                if(randomIdx === queueIndex && playQueue.length > 1) {
-                    randomIdx = (randomIdx + 1) % playQueue.length;
-                }
-                playQueueIndex(randomIdx);
-            } else {
-                if(queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1); 
-            }
-        }
-        
-        function prevTrack() { 
-            if(queueIndex > 0) playQueueIndex(queueIndex - 1); 
-        }
+        function nextTrack() { if(queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1); }
+        function prevTrack() { if(queueIndex > 0) playQueueIndex(queueIndex - 1); }
 
         function playQueueIndex(index) {
             if(index >= 0 && index < playQueue.length) {
@@ -2392,21 +1700,15 @@
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
+                hybridFallbackAttempted = false;
+                logSessionEvent(t, navigator.onLine ? 'online' : 'offline');
+                updateHybridStatusUI();
                 
-                if (useAudioElement && audioPlayer && t.audioUrl) {
-                    audioPlayer.src = t.audioUrl;
-                    audioPlayer.play().then(() => {
-                        isPlaying = true;
-                        updatePlayIcons(true);
-                        updateMediaSession();
-                    }).catch(err => {
-                        console.error('Errore audio element:', err);
-                        useAudioElement = false;
-                        if (player && playerReady) playWithYouTube(t);
-                    });
-                } else if (player && player.loadVideoById && playerReady) {
-                    useAudioElement = false;
-                    playWithYouTube(t);
+                if(player && player.loadVideoById) {
+                    player.loadVideoById(t.id);
+                    player.playVideo();
+                    isPlaying = true;
+                    updatePlayIcons(true);
                 }
             }
         }
@@ -2422,16 +1724,9 @@
             }
             if(viewName === 'library') renderLibraryContent();
             if(viewName === 'liked-songs') renderLikedSongsView();
-            if(viewName === 'profile') {
-                updateUserUI();
-                renderProfileFriends();
-                renderProfilePublicPlaylists();
-            }
         }
 
-        function toggleFullscreen() { 
-            document.getElementById('fullscreen-player').classList.toggle('active'); 
-        }
+        function toggleFullscreen() { document.getElementById('fullscreen-player').classList.toggle('active'); }
 
         function toggleLyricsView() {
             isLyricsActive = !isLyricsActive;
@@ -2524,11 +1819,7 @@
         }
 
         function seekToLyric(timeSec) {
-            if (useAudioElement && audioPlayer) {
-                audioPlayer.currentTime = timeSec;
-            } else if(player && player.seekTo) {
-                player.seekTo(timeSec, true);
-            }
+            if(player && player.seekTo) player.seekTo(timeSec, true);
         }
 
         function updateActiveLyric(currentTime) {
@@ -2578,42 +1869,24 @@
 
         function updateLikeButtonUI() {
             const isLiked = likedSongs.some(s => s.id === currentTrackData.id);
-            const fsLikeBtn = document.getElementById('fsLikeBtn');
-            const miniLikeBtn = document.getElementById('miniLikeBtn');
-            if(fsLikeBtn) fsLikeBtn.style.color = isLiked ? 'var(--accent)' : 'var(--text-sub)';
-            if(miniLikeBtn) {
-                miniLikeBtn.className = isLiked ? 'fas fa-heart' : 'far fa-heart';
-                miniLikeBtn.style.color = isLiked ? 'var(--accent)' : '';
-            }
+            document.getElementById('fsLikeBtn').style.color = isLiked ? 'var(--accent)' : 'var(--text-sub)';
         }
 
         function updateDownloadButtonUI() {
             const isDownloaded = downloadedTracks.some(s => s.id === currentTrackData.id);
-            const fsDownloadBtn = document.getElementById('fsDownloadDirectBtn');
-            if(fsDownloadBtn) fsDownloadBtn.style.color = isDownloaded ? 'var(--accent)' : 'var(--text-sub)';
-        }
-
-        function updateProgress(currentTime, duration) {
-            if(duration) {
-                document.getElementById('progressBarFill').style.width = ((currentTime/duration)*100) + '%';
-                document.getElementById('currentTime').innerText = formatTime(currentTime);
-                document.getElementById('totalDuration').innerText = formatTime(duration);
-                updateActiveLyric(currentTime);
-            }
+            document.getElementById('fsDownloadDirectBtn').style.color = isDownloaded ? 'var(--accent)' : 'var(--text-sub)';
         }
 
         function startProgressTracker() {
             clearInterval(progressInterval);
             progressInterval = setInterval(() => {
-                if (useAudioElement && audioPlayer) {
-                    if (audioPlayer.duration) {
-                        updateProgress(audioPlayer.currentTime, audioPlayer.duration);
-                    }
-                } else if(player && player.getCurrentTime && player.getDuration) {
-                    let cur = player.getCurrentTime();
-                    let dur = player.getDuration();
+                if(player && player.getCurrentTime && player.getDuration) {
+                    let cur = player.getCurrentTime(), dur = player.getDuration();
                     if(dur) {
-                        updateProgress(cur, dur);
+                        document.getElementById('progressBarFill').style.width = ((cur/dur)*100) + '%';
+                        document.getElementById('currentTime').innerText = formatTime(cur);
+                        document.getElementById('totalDuration').innerText = formatTime(dur);
+                        updateActiveLyric(cur);
                     }
                 }
             }, 500);
@@ -2622,18 +1895,11 @@
         function seekTrack(event) {
             const bg = document.getElementById('progressBarBg');
             const rect = bg.getBoundingClientRect();
-            const seekTime = ((event.clientX - rect.left) / rect.width);
-            
-            if (useAudioElement && audioPlayer && audioPlayer.duration) {
-                audioPlayer.currentTime = seekTime * audioPlayer.duration;
-            } else if(player && player.getDuration) {
-                player.seekTo(player.getDuration() * seekTime, true);
-            }
+            if(player && player.getDuration) player.seekTo(player.getDuration() * ((event.clientX - rect.left) / rect.width), true);
         }
 
         function formatTime(secs) {
-            let m = Math.floor(secs / 60);
-            let s = Math.floor(secs % 60);
+            let m = Math.floor(secs / 60), s = Math.floor(secs % 60);
             return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
     </script>
