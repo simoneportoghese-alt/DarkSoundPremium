@@ -649,6 +649,14 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        #artistHeroImg {
+            transition: opacity 0.3s ease-in-out;
+            background-color: #1a1a1a;
+        }
+        #artistTracksContainer {
+            min-height: 200px;
+        }
     </style>
 </head>
 <body>
@@ -710,6 +718,182 @@
 
         <div style="margin-top: auto; padding-top: 20px;">
             <button class="auth-btn danger" style="margin-top:0;" onclick="logoutUser()">Esci dall'account</button>
+        </div>
+    </div>
+
+    <div id="ai-dj-modal" class="modal-overlay">
+        <div class="auth-card" style="text-align: center;">
+            <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #ff007f, #7928ca); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 1.8rem; color: white;">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h2>AI DJ</h2>
+            <p id="aiDjStatusText">"Ciao! Sono il tuo DJ virtuale. Sto analizzando i tuoi gusti per mixare la prossima traccia perfetta per te..."</p>
+            <button class="auth-btn" onclick="runAiDjSelection()">Avvia Mix Intelligente</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="document.getElementById('ai-dj-modal').classList.remove('active')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="ai-playlist-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Crea Playlist con IA</h2>
+            <p>Descrivi l'atmosfera o il momento che stai vivendo:</p>
+            <div class="auth-input-group">
+                <input type="text" id="aiPromptInput" placeholder="Es. Notte elettronica chill in autostrada...">
+            </div>
+            <button class="auth-btn" onclick="generateAiPromptPlaylist()">Genera con IA</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="document.getElementById('ai-playlist-modal').classList.remove('active')">Annulla</button>
+        </div>
+    </div>
+
+    <div id="blend-modal" class="modal-overlay">
+        <div class="auth-card" style="text-align: center;">
+            <div style="font-size: 2.2rem; color: var(--accent); margin-bottom: 10px;"><i class="fas fa-users-viewfinder"></i></div>
+            <h2>Crea Blend con un Amico</h2>
+            <p>Fondi i tuoi gusti musicali con quelli di un tuo contatto in tempo reale.</p>
+            <div class="auth-input-group">
+                <select id="blendFriendSelect"></select>
+            </div>
+            <button class="auth-btn" onclick="createBlendPlaylist()">Crea Playlist Blend</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="document.getElementById('blend-modal').classList.remove('active')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="wrapped-modal" class="modal-overlay">
+        <div class="auth-card" style="text-align: center; background: linear-gradient(135deg, #1f1147, #120b24);">
+            <div style="font-size: 2.5rem; color: #ff007f; margin-bottom: 10px;"><i class="fas fa-fire"></i></div>
+            <h2 style="color:white;">Il tuo DarkSound Stats</h2>
+            <p style="color:var(--text-sub); margin-bottom:15px;">Ecco il riepilogo delle tue abitudini di ascolto recenti:</p>
+            <div style="background: rgba(255,255,255,0.06); padding: 14px; border-radius: 14px; text-align: left; margin-bottom: 15px; font-size:0.9rem;">
+                <p>🎧 <b>Minuti di ascolto:</b> 1,420 min</p>
+                <p style="margin-top:6px;">👑 <b>Genere Top:</b> Elettronica / Pop</p>
+                <p style="margin-top:6px;">🔥 <b>Brano più riprodotto:</b> Chlorine (Twenty One Pilots)</p>
+            </div>
+            <button class="auth-btn" onclick="document.getElementById('wrapped-modal').classList.remove('active')">Fantastico!</button>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="modal-overlay">
+        <div class="auth-card">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #30d158, #007aff); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; font-size: 2rem; color: black;">
+                    <i class="fas fa-headphones"></i>
+                </div>
+                <h2>Benvenuto su DarkSound</h2>
+                <p style="text-align: center;">Accedi per ascoltare la tua musica preferita</p>
+            </div>
+            <div class="auth-input-group">
+                <label>Nome Utente</label>
+                <input type="text" id="authEmail" placeholder="mario_rossi" onkeydown="if(event.key==='Enter') proceedToOnboarding()">
+            </div>
+            <div class="auth-input-group">
+                <label>Password (opzionale)</label>
+                <input type="password" id="authPassword" placeholder="••••••••">
+            </div>
+            <button class="auth-btn" onclick="proceedToOnboarding()">Accedi</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="document.getElementById('auth-modal').classList.remove('active')">Continua come Ospite</button>
+        </div>
+    </div>
+
+    <div id="onboarding-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>I tuoi gusti</h2>
+            <p>Seleziona i tuoi generi musicali preferiti:</p>
+            <div class="genre-grid" id="genreGrid">
+                <div class="genre-tag" onclick="toggleGenre(this)">🔥 Pop & Hit</div>
+                <div class="genre-tag" onclick="toggleGenre(this)">🎤 Rap & Trap</div>
+                <div class="genre-tag" onclick="toggleGenre(this)">🎸 Rock & Alternative</div>
+                <div class="genre-tag" onclick="toggleGenre(this)">🎧 Techno & House</div>
+                <div class="genre-tag" onclick="toggleGenre(this)">🎷 Jazz & Chill</div>
+                <div class="genre-tag" onclick="toggleGenre(this)">🌴 Reggaeton & Latin</div>
+            </div>
+            <div class="auth-input-group">
+                <label>Artista preferito (opzionale)</label>
+                <input type="text" id="favArtistInput" placeholder="Es. Travis Scott, Sfera Ebbasta...">
+            </div>
+            <button class="auth-btn" onclick="completeOnboarding()">Crea la mia Radio</button>
+        </div>
+    </div>
+
+    <div id="profile-edit-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Modifica Profilo</h2>
+            <p>Personalizza le tue informazioni</p>
+            <div class="auth-input-group">
+                <label>Nome Utente</label>
+                <input type="text" id="editProfileName" placeholder="Il tuo nome">
+            </div>
+            <div class="auth-input-group">
+                <label>Bio</label>
+                <textarea id="editProfileBio" placeholder="Racconta qualcosa di te..."></textarea>
+            </div>
+            <div class="auth-input-group">
+                <label>Avatar (emoji o iniziale)</label>
+                <input type="text" id="editProfileAvatar" placeholder="Es. 🎧, A, M..." maxlength="2">
+            </div>
+            <div class="auth-input-group">
+                <label>Genere musicale preferito</label>
+                <select id="editProfileGenre">
+                    <option value="Pop">Pop</option>
+                    <option value="Rap">Rap & Trap</option>
+                    <option value="Rock">Rock</option>
+                    <option value="Techno">Techno & House</option>
+                    <option value="Jazz">Jazz & Chill</option>
+                    <option value="Latin">Reggaeton & Latin</option>
+                </select>
+            </div>
+            <button class="auth-btn" onclick="saveProfileChanges()">Salva Modifiche</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="document.getElementById('profile-edit-modal').classList.remove('active')">Annulla</button>
+        </div>
+    </div>
+
+    <div id="add-friend-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Aggiungi Amico</h2>
+            <p>Cerca un utente per aggiungerlo ai tuoi amici</p>
+            <div class="auth-input-group">
+                <label>Nome Utente</label>
+                <input type="text" id="addFriendInput" placeholder="Nome utente dell'amico">
+            </div>
+            <div id="addFriendResults"></div>
+            <button class="auth-btn" onclick="searchFriend()">Cerca</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="document.getElementById('add-friend-modal').classList.remove('active')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="share-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px;">Condividi brano</h3>
+            <p id="shareTrackSubtitle" style="color:var(--text-sub); font-size:0.9rem; margin-bottom:20px;"></p>
+            <button class="share-option-btn" style="color:#25D366;" onclick="shareViaWhatsApp()"><i class="fab fa-whatsapp"></i> Invia su WhatsApp</button>
+            <button class="share-option-btn" onclick="copyTrackLink()"><i class="fas fa-link" style="color:#007aff;"></i> Copia Link Brano</button>
+            <button class="auth-btn secondary" style="margin-top:10px;" onclick="closeShareModal()">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="playlist-select-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Aggiungi a playlist</h3>
+            <div id="playlistSelectList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;"></div>
+            <button class="auth-btn secondary" onclick="closePlaylistModal()">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="new-playlist-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px;">Crea Nuova Playlist</h3>
+            <div class="auth-input-group">
+                <label>Nome Playlist</label>
+                <input type="text" id="newPlaylistName" placeholder="Es. I miei preferiti">
+            </div>
+            <div class="auth-input-group">
+                <label>Visibilità</label>
+                <select id="newPlaylistVisibility">
+                    <option value="private">Privata (Solo tu)</option>
+                    <option value="public">Pubblica (Tutti possono cercarla)</option>
+                </select>
+            </div>
+            <button class="auth-btn" onclick="submitNewPlaylist()">Crea</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeNewPlaylistModal()">Annulla</button>
         </div>
     </div>
 
@@ -983,6 +1167,32 @@
 
         const API_BASE = window.location.origin;
 
+        const ARTIST_CORRELATIONS = {
+            'sfera ebbasta': ['Lazza', 'Capo Plaza', 'Ghali', 'Tedua', 'Rondodasosa'],
+            'lazza': ['Sfera Ebbasta', 'Capo Plaza', 'Tedua', 'Shiva', 'Emis Killa'],
+            'ghali': ['Sfera Ebbasta', 'Ernia', 'Tedua', 'Marracash', 'Salmo'],
+            'travis scott': ['Drake', 'Future', 'Playboi Carti', 'Don Toliver', 'Metro Boomin'],
+            'drake': ['Travis Scott', 'Future', '21 Savage', 'J. Cole', 'Kendrick Lamar'],
+            'annalisa': ['Elodie', 'Emma', 'Elettra Lamborghini', 'Baby K', 'Alessandra Amoroso'],
+            'club dogo': ['Guè', 'Jake La Furia', 'Marracash', 'Salmo', 'Fabri Fibra'],
+            'twenty one pilots': ['Imagine Dragons', 'Panic! At The Disco', 'Fall Out Boy', 'The Neighbourhood'],
+            'marracash': ['Guè', 'Fabri Fibra', 'Salmo', 'Club Dogo', 'Ernia'],
+            'guè': ['Marracash', 'Club Dogo', 'Fabri Fibra', 'Salmo', 'Jake La Furia'],
+            'elodie': ['Annalisa', 'Emma', 'Alessandra Amoroso', 'Baby K', 'Elettra Lamborghini'],
+            'emma': ['Annalisa', 'Elodie', 'Alessandra Amoroso', 'Baby K', 'Elettra Lamborghini'],
+            'shiva': ['Lazza', 'Sfera Ebbasta', 'Capo Plaza', 'Rondodasosa', 'Tedua'],
+            'capo plaza': ['Sfera Ebbasta', 'Lazza', 'Shiva', 'Rondodasosa', 'Tedua'],
+            'tedua': ['Sfera Ebbasta', 'Lazza', 'Capo Plaza', 'Shiva', 'Rondodasosa'],
+            'rondodasosa': ['Sfera Ebbasta', 'Lazza', 'Capo Plaza', 'Shiva', 'Tedua'],
+            'fabri fibra': ['Marracash', 'Guè', 'Club Dogo', 'Salmo', 'Jake La Furia'],
+            'salmo': ['Marracash', 'Guè', 'Club Dogo', 'Fabri Fibra', 'Jake La Furia'],
+            'imagine dragons': ['Twenty One Pilots', 'Panic! At The Disco', 'Fall Out Boy', 'The Neighbourhood'],
+            'future': ['Drake', 'Travis Scott', '21 Savage', 'J. Cole', 'Kendrick Lamar'],
+            '21 savage': ['Drake', 'Travis Scott', 'Future', 'J. Cole', 'Kendrick Lamar'],
+            'j. cole': ['Drake', 'Travis Scott', 'Future', '21 Savage', 'Kendrick Lamar'],
+            'kendrick lamar': ['Drake', 'Travis Scott', 'Future', '21 Savage', 'J. Cole']
+        };
+
         function hideSplashScreen() {
             const splash = document.getElementById('splash-screen');
             if (splash) {
@@ -1139,14 +1349,208 @@
         }
 
         async function executeSearch(query) {
+            const container = document.getElementById('searchResultsContainer');
+            container.innerHTML = '<p style="color:var(--text-sub);"><span class="loading-spinner"></span> Ricerca in corso...</p>';
+            
             try {
-                let res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
-                let tracks = await res.json();
-                renderTracksList(tracks, 'searchResultsContainer', tracks);
-            } catch(e) { 
+                const artistRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
+                const artistTracks = await artistRes.json();
+                
+                let html = '';
+                const artists = [...new Set(artistTracks.map(t => t.artist))].slice(0, 8);
+                
+                const allArtists = new Set(artists);
+                artists.forEach(artist => {
+                    const correlations = ARTIST_CORRELATIONS[artist.toLowerCase()];
+                    if (correlations) {
+                        correlations.forEach(c => allArtists.add(c));
+                    }
+                });
+                
+                const filteredArtists = [...allArtists].filter(a => 
+                    a.toLowerCase().includes(query.toLowerCase()) || 
+                    query.toLowerCase().includes(a.toLowerCase().split(' ')[0])
+                ).slice(0, 8);
+                
+                const displayArtists = filteredArtists.length > 0 ? filteredArtists : artists;
+                
+                if (displayArtists.length > 0) {
+                    html += `<div class="section-title">Artisti</div>`;
+                    html += displayArtists.map(artist => {
+                        const artistImage = artistTracks.find(t => t.artist === artist)?.image || `https://picsum.photos/seed/${encodeURIComponent(artist)}/200`;
+                        return `
+                            <div class="artist-card" onclick="openArtistPage('${artist.replace(/'/g, "\\'")}', '${artistImage}')">
+                                <img src="${artistImage}" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(artist)}/200'">
+                                <div class="artist-card-info">
+                                    <h3>${artist}</h3>
+                                    <p>Artista</p>
+                                </div>
+                                <i class="fas fa-chevron-right" style="color:var(--text-sub);"></i>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                if (artistTracks.length > 0) {
+                    html += `<div class="section-title" style="margin-top:20px;">Brani principali</div>`;
+                    html += artistTracks.slice(0, 5).map((t, idx) => renderSingleTrackRow(t, idx, artistTracks)).join('');
+                }
+
+                const similarArtists = [];
+                artistTracks.forEach(t => {
+                    const correlations = ARTIST_CORRELATIONS[t.artist?.toLowerCase()];
+                    if (correlations) {
+                        correlations.forEach(c => {
+                            if (!similarArtists.includes(c)) similarArtists.push(c);
+                        });
+                    }
+                });
+
+                if (similarArtists.length > 0) {
+                    html += `<div class="section-title" style="margin-top:20px;">Brani Simili</div>`;
+                    for (const artist of similarArtists.slice(0, 3)) {
+                        try {
+                            const similarRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artist)}`);
+                            const similarTracks = await similarRes.json();
+                            if (similarTracks.length > 0) {
+                                html += similarTracks.slice(0, 3).map((t, idx) => renderSingleTrackRow(t, idx, similarTracks)).join('');
+                            }
+                        } catch(e) {}
+                    }
+                }
+
+                if (autoPlaylists.length > 0) {
+                    const matchedAuto = autoPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+                    if (matchedAuto.length > 0) {
+                        html += `<div class="section-title" style="margin-top:20px;">Playlist Automatiche</div>`;
+                        html += matchedAuto.map(pl => `
+                            <div class="auto-playlist-card" onclick="openAutoPlaylist('${pl.id}')">
+                                <i class="fas fa-list-music"></i>
+                                <div class="auto-playlist-card-info">
+                                    <h3>${pl.name}</h3>
+                                    <p>${pl.tracks.length} brani • Generata automaticamente</p>
+                                </div>
+                                <i class="fas fa-play-circle" style="font-size:1.5rem; color:white;"></i>
+                            </div>
+                        `).join('');
+                    }
+                }
+
+                const matchedPlaylists = globalPublicPlaylists.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+                if (matchedPlaylists.length > 0) {
+                    html += `<div class="section-title" style="margin-top:20px;">Playlist Pubbliche</div>`;
+                    html += matchedPlaylists.map(pl => `
+                        <div class="track-row" onclick="openPublicPlaylist('${pl.id}')">
+                            <div class="track-row-left">
+                                <div style="width:52px;height:52px;background:linear-gradient(135deg,#007aff,#5856d6);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:white;"></i></div>
+                                <div class="track-meta">
+                                    <h4>${pl.name}</h4>
+                                    <p><span class="badge-public">PUBBLICA</span> Di ${pl.owner} • ${pl.tracks.length} brani</p>
+                                </div>
+                            </div>
+                            <div class="track-actions" onclick="event.stopPropagation()">
+                                <button class="btn-action-primary" onclick="savePublicPlaylistToLibrary('${pl.id}')">Salva</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                if (artistTracks.length > 0) {
+                    html += `
+                        <div class="section-title" style="margin-top:20px;">Genera Playlist Automatica</div>
+                        <div class="auto-playlist-card" onclick="generateAutoPlaylist('${query.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            <div class="auto-playlist-card-info">
+                                <h3>Genera playlist da "${query}"</h3>
+                                <p>Crea una playlist con brani simili a "${query}"</p>
+                            </div>
+                            <i class="fas fa-plus-circle" style="font-size:1.5rem; color:white;"></i>
+                        </div>
+                    `;
+                }
+
+                if (html === '') {
+                    html = '<p style="color:var(--text-sub);">Nessun risultato trovato. Prova con un altro termine.</p>';
+                }
+
+                container.innerHTML = html;
+            } catch(e) {
                 console.error('Errore ricerca:', e);
-                document.getElementById('searchResultsContainer').innerHTML = `<p style="color:#ff4d4d;">Errore di ricerca.</p>`; 
+                container.innerHTML = '<p style="color:#ff4d4d;">Errore di ricerca. Verifica che il server sia in esecuzione.</p>';
             }
+        }
+
+        async function generateAutoPlaylist(query) {
+            if (!currentUser) return openAuthModal();
+            try {
+                let mainRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
+                let mainTracks = await mainRes.json();
+                if (mainTracks.length === 0) {
+                    alert('Nessun brano trovato per generare la playlist.');
+                    return;
+                }
+                let allTracks = [...mainTracks.slice(0, 5)];
+                const artistNames = [...new Set(mainTracks.map(t => t.artist))].slice(0, 3);
+                for (const artist of artistNames) {
+                    const correlations = ARTIST_CORRELATIONS[artist.toLowerCase()];
+                    if (correlations) {
+                        for (const relatedArtist of correlations.slice(0, 2)) {
+                            try {
+                                const relatedRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(relatedArtist)}`);
+                                const relatedTracks = await relatedRes.json();
+                                allTracks.push(...relatedTracks.slice(0, 2));
+                            } catch(e) {}
+                        }
+                    }
+                }
+                const seen = new Set();
+                allTracks = allTracks.filter(t => {
+                    const key = t.id;
+                    if (seen.has(key)) return false;
+                    seen.add(key);
+                    return true;
+                });
+                if (allTracks.length > 0) {
+                    const newAutoPlaylist = {
+                        id: 'auto_' + Date.now(),
+                        name: `Mix: ${query}`,
+                        visibility: 'private',
+                        owner: currentUser,
+                        tracks: allTracks.slice(0, 15),
+                        autoGenerated: true,
+                        createdAt: new Date().toISOString()
+                    };
+                    autoPlaylists.push(newAutoPlaylist);
+                    saveUserData();
+                    alert(`Playlist automatica "${newAutoPlaylist.name}" creata con ${newAutoPlaylist.tracks.length} brani!`);
+                }
+            } catch(e) {
+                console.error('Errore generazione playlist automatica:', e);
+                alert('Errore nella generazione della playlist automatica.');
+            }
+        }
+
+        function openAutoPlaylist(playlistId) {
+            const pl = autoPlaylists.find(p => p.id === playlistId);
+            if (!pl) return;
+            switchView('library', document.querySelectorAll('.nav-item')[2]);
+            currentLibTab = 'playlists';
+            document.getElementById('btnTabLiked').className = 'chip';
+            document.getElementById('btnTabDownloads').className = 'chip';
+            document.getElementById('btnTabPlaylists').className = 'chip active';
+            const container = document.getElementById('libContentList');
+            container.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding:0 15px;">
+                    <button class="chip" onclick="renderLibraryContent()"><i class="fas fa-arrow-left"></i> Indietro</button>
+                    <div>
+                        <h3 style="font-size:1.1rem; font-weight:800;">${pl.name}</h3>
+                        <p style="font-size:0.75rem; color:var(--text-sub);">Generata automaticamente</p>
+                    </div>
+                </div>
+            `;
+            let tempDiv = document.createElement('div');
+            tempDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
+            container.appendChild(tempDiv);
         }
 
         function renderSingleTrackRow(t, idx, sectionTracks) {
@@ -1181,6 +1585,53 @@
                 return; 
             }
             document.getElementById(containerId).innerHTML = tracks.map((t, idx) => renderSingleTrackRow(t, idx, sectionTracks)).join('');
+        }
+
+        async function openArtistPage(artistName, artistImageOverride) {
+            switchView('artist'); 
+            const heroImgEl = document.getElementById('artistHeroImg');
+            const container = document.getElementById('artistTracksContainer');
+            const similarContainer = document.getElementById('similarTracksContainer');
+            document.getElementById('artistNameTitle').innerText = artistName;
+            container.innerHTML = '<p style="color:var(--text-sub);"><span class="loading-spinner"></span> Caricamento in corso...</p>';
+            if (similarContainer) similarContainer.innerHTML = '<p style="color:var(--text-sub);"><span class="loading-spinner"></span> Caricamento brani simili...</p>';
+            heroImgEl.style.opacity = '0.5';
+            heroImgEl.src = artistImageOverride || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+            try {
+                let response = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artistName)}`);
+                let tracks = await response.json();
+                if (Array.isArray(tracks) && tracks.length > 0) {
+                    heroImgEl.src = tracks[0].image;
+                    renderTracksList(tracks, 'artistTracksContainer', tracks);
+                } else {
+                    container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano popolare trovato per ${artistName}.</p>`;
+                }
+                heroImgEl.style.opacity = '1';
+                if (similarContainer) {
+                    const correlations = ARTIST_CORRELATIONS[artistName.toLowerCase()];
+                    if (correlations && correlations.length > 0) {
+                        let similarTracks = [];
+                        for (const relatedArtist of correlations.slice(0, 3)) {
+                            try {
+                                const similarRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(relatedArtist)}`);
+                                const relatedTracks = await similarRes.json();
+                                similarTracks.push(...relatedTracks.slice(0, 3));
+                            } catch(e) {}
+                        }
+                        if (similarTracks.length > 0) {
+                            renderTracksList(similarTracks, 'similarTracksContainer', similarTracks);
+                        } else {
+                            similarContainer.innerHTML = '<p style="color:var(--text-sub);">Nessun brano simile trovato.</p>';
+                        }
+                    } else {
+                        similarContainer.innerHTML = '<p style="color:var(--text-sub);">Nessun brano simile trovato per questo artista.</p>';
+                    }
+                }
+            } catch(e) {
+                container.innerHTML = `<p style="color:#ff4d4d;">Errore: Impossibile recuperare i brani. Riprova più tardi.</p>`;
+                heroImgEl.style.opacity = '1';
+                console.error("Errore API Artist:", e);
+            }
         }
 
         function playSelectedTrack(encodedTrack, encodedQueue, index) {
@@ -1940,6 +2391,31 @@
             let tempDiv = document.createElement('div');
             tempDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
             container.appendChild(tempDiv);
+        }
+
+        function openPublicPlaylist(playlistId) {
+            let pl = globalPublicPlaylists.find(p => p.id === playlistId);
+            if(!pl) return;
+            switchView('search', document.querySelectorAll('.nav-item')[1]);
+            const container = document.getElementById('searchResultsContainer');
+            container.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                    <button class="chip" onclick="executeSearch(document.getElementById('spotifySearchInput').value)"><i class="fas fa-arrow-left"></i> Indietro</button>
+                    <h3 style="font-size:1.1rem; font-weight:800;">${pl.name} (di ${pl.owner})</h3>
+                </div>
+            `;
+            let tempDiv = document.createElement('div');
+            tempDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
+            container.appendChild(tempDiv);
+        }
+
+        function savePublicPlaylistToLibrary(playlistId) {
+            let pl = globalPublicPlaylists.find(p => p.id === playlistId);
+            if(pl) {
+                userPlaylists.push({...pl, id: 'pl_saved_' + Date.now(), owner: currentUser + ' (Salvata)'});
+                saveUserData();
+                alert(`Playlist "${pl.name}" aggiunta alla tua libreria!`);
+            }
         }
 
         function deletePlaylist(playlistId) {
