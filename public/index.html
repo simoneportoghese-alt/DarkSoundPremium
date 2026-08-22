@@ -608,7 +608,7 @@
         }
         .nav-item:hover { color: white; background: var(--bg-glass); }
         .nav-item.active { color: var(--accent); }
-        #youtube-player { position: fixed; bottom: 0; right: 0; width: 200px; height: 150px; opacity: 0.01; pointer-events: none; z-index: -1000; }
+        #youtube-player { position: fixed; bottom: 0; right: 0; width: 1px; height: 1px; opacity: 0.01; pointer-events: none; z-index: -1000; }
 
         .profile-hero {
             background: linear-gradient(180deg, rgba(191, 90, 242, 0.2) 0%, rgba(15, 15, 22, 0.9) 100%);
@@ -1438,7 +1438,172 @@
         let selectedSubgenres = JSON.parse(localStorage.getItem(currentUser ? `subgenres_${currentUser}` : 'darksound_subgenres') || '[]');
         let selectedSubgenresTemp = [];
         let currentArtistPage = '';
+        let html5Audio = null;
+        let isHtml5Mode = false;
         const API_BASE = window.location.origin;
+
+        // === AUDIO PLAYER HTML5 PER iOS BACKGROUND ===
+        function initHtml5Audio() {
+            if (!html5Audio) {
+                html5Audio = new Audio();
+                html5Audio.setAttribute('playsinline', 'true');
+                html5Audio.setAttribute('webkit-playsinline', 'true');
+                html5Audio.setAttribute('x-webkit-airplay', 'allow');
+                html5Audio.preload = 'auto';
+                html5Audio.crossOrigin = 'anonymous';
+                
+                html5Audio.addEventListener('play', function() {
+                    isPlaying = true;
+                    updatePlayIcons(true);
+                    startProgressTrackerHtml5();
+                });
+                
+                html5Audio.addEventListener('pause', function() {
+                    isPlaying = false;
+                    updatePlayIcons(false);
+                    clearInterval(progressInterval);
+                });
+                
+                html5Audio.addEventListener('ended', function() {
+                    if(isRepeatActive) {
+                        html5Audio.currentTime = 0;
+                        html5Audio.play();
+                    } else {
+                        nextTrack();
+                    }
+                });
+                
+                html5Audio.addEventListener('error', function(e) {
+                    console.error('Errore audio HTML5, fallback a YouTube:', e);
+                    isHtml5Mode = false;
+                    if (currentTrackData.id) {
+                        playWithYouTube(currentTrackData);
+                    }
+                });
+            }
+            return html5Audio;
+        }
+
+        function startProgressTrackerHtml5() {
+            clearInterval(progressInterval);
+            progressInterval = setInterval(() => {
+                if(html5Audio && html5Audio.duration) {
+                    let cur = html5Audio.currentTime;
+                    let dur = html5Audio.duration;
+                    document.getElementById('progressBarFill').style.width = ((cur/dur)*100) + '%';
+                    document.getElementById('currentTime').innerText = formatTime(cur);
+                    document.getElementById('totalDuration').innerText = formatTime(dur);
+                    updateActiveLyric(cur);
+                }
+            }, 500);
+        }
+
+        async function getAudioStreamFromPiped(trackId) {
+            try {
+                const response = await fetch(`https://pipedapi.kavin.rocks/streams/${trackId}`);
+                const data = await response.json();
+                if (data.audioStreams && data.audioStreams.length > 0) {
+                    return data.audioStreams[0].url;
+                }
+                return null;
+            } catch(e) {
+                return null;
+            }
+        }
+
+        function playWithHtml5(track) {
+            initHtml5Audio();
+            getAudioStreamFromPiped(track.id).then(audioUrl => {
+                if (audioUrl) {
+                    isHtml5Mode = true;
+                    html5Audio.src = audioUrl;
+                    html5Audio.play().then(() => {
+                        isPlaying = true;
+                        updatePlayIcons(true);
+                    }).catch(err => {
+                        console.log('HTML5 play fallito, uso YouTube:', err);
+                        isHtml5Mode = false;
+                        playWithYouTube(track);
+                    });
+                } else {
+                    playWithYouTube(track);
+                }
+            });
+        }
+
+        function playWithYouTube(track) {
+            isHtml5Mode = false;
+            if (player && player.loadVideoById && playerReady) {
+                player.loadVideoById(track.id);
+                setTimeout(() => { 
+                    player.playVideo(); 
+                    isPlaying = true; 
+                    updatePlayIcons(true); 
+                }, 300);
+            } else {
+                const youtubeContainer = document.getElementById('youtube-player');
+                youtubeContainer.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${track.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}&playsinline=1&controls=0&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                isPlaying = true;
+                updatePlayIcons(true);
+            }
+        }
+        // ========================================
+
+        // === MEDIA SESSION API ===
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.setActionHandler('play', function() {
+                if (isHtml5Mode && html5Audio) {
+                    html5Audio.play();
+                } else if (player && player.playVideo) {
+                    player.playVideo();
+                }
+            });
+            
+            navigator.mediaSession.setActionHandler('pause', function() {
+                if (isHtml5Mode && html5Audio) {
+                    html5Audio.pause();
+                } else if (player && player.pauseVideo) {
+                    player.pauseVideo();
+                }
+            });
+            
+            navigator.mediaSession.setActionHandler('previoustrack', function() {
+                prevTrack();
+            });
+            
+            navigator.mediaSession.setActionHandler('nexttrack', function() {
+                nextTrack();
+            });
+        }
+
+        function updateMediaSessionMetadata() {
+            if ('mediaSession' in navigator && currentTrackData.id) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: currentTrackData.name || 'DarkSound Pro',
+                    artist: currentTrackData.artist || '',
+                    album: 'DarkSound Pro',
+                    artwork: [
+                        { src: currentTrackData.image, sizes: '96x96', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '128x128', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '192x192', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '256x256', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '384x384', type: 'image/jpeg' },
+                        { src: currentTrackData.image, sizes: '512x512', type: 'image/jpeg' }
+                    ]
+                });
+            }
+        }
+
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && isPlaying) {
+                if (isHtml5Mode && html5Audio) {
+                    html5Audio.play().catch(() => {});
+                } else if (player && player.playVideo) {
+                    player.playVideo();
+                }
+            }
+        });
+        // ======================
 
         const ARTIST_CORRELATIONS = {
             'sfera ebbasta': ['Lazza', 'Capo Plaza', 'Ghali', 'Tedua', 'Rondodasosa'],
@@ -1471,50 +1636,6 @@
             'moondeity': ['Ogryzek', 'Mxzi', 'Kaito Shoma', 'Dxrk ダーク', 'INTERWORLD'],
             'interworld': ['Ogryzek', 'Mxzi', 'Kaito Shoma', 'Dxrk ダーク', 'MoonDeity']
         };
-
-        // === AUDIO BACKGROUND iOS ===
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.setActionHandler('play', function() {
-                if (player && player.playVideo) player.playVideo();
-            });
-            
-            navigator.mediaSession.setActionHandler('pause', function() {
-                if (player && player.pauseVideo) player.pauseVideo();
-            });
-            
-            navigator.mediaSession.setActionHandler('previoustrack', function() {
-                prevTrack();
-            });
-            
-            navigator.mediaSession.setActionHandler('nexttrack', function() {
-                nextTrack();
-            });
-        }
-
-        function updateMediaSessionMetadata() {
-            if ('mediaSession' in navigator && currentTrackData.id) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: currentTrackData.name || 'DarkSound Pro',
-                    artist: currentTrackData.artist || '',
-                    album: 'DarkSound Pro',
-                    artwork: [
-                        { src: currentTrackData.image, sizes: '96x96', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '128x128', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '192x192', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '256x256', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '384x384', type: 'image/jpeg' },
-                        { src: currentTrackData.image, sizes: '512x512', type: 'image/jpeg' }
-                    ]
-                });
-            }
-        }
-
-        document.addEventListener('visibilitychange', function() {
-            if (!document.hidden && isPlaying && player && player.playVideo) {
-                player.playVideo();
-            }
-        });
-        // ============================
 
         function hideSplashScreen() {
             const splash = document.getElementById('splash-screen');
@@ -2031,6 +2152,7 @@
                 playQueue = queue;
                 queueIndex = index;
                 currentTrackData = t;
+                
                 document.getElementById('playerBar').style.display = 'flex';
                 document.getElementById('playerTitle').innerText = t.name;
                 document.getElementById('playerArtist').innerText = t.artist;
@@ -2043,19 +2165,8 @@
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
                 updateMediaSessionMetadata();
-                if (player && player.loadVideoById && playerReady) {
-                    player.loadVideoById(t.id);
-                    setTimeout(() => { 
-                        player.playVideo(); 
-                        isPlaying = true; 
-                        updatePlayIcons(true); 
-                    }, 300);
-                } else {
-                    const youtubeContainer = document.getElementById('youtube-player');
-                    youtubeContainer.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${t.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}&playsinline=1&controls=0&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-                    isPlaying = true;
-                    updatePlayIcons(true);
-                }
+                
+                playWithHtml5(t);
             } catch(err) { 
                 console.error("Errore nella riproduzione del brano:", err); 
             }
@@ -2107,6 +2218,15 @@
         }
 
         function togglePlay() {
+            if(isHtml5Mode && html5Audio) {
+                if(isPlaying) { 
+                    html5Audio.pause(); 
+                } else { 
+                    html5Audio.play().catch(() => {}); 
+                }
+                return;
+            }
+            
             if(!player) return;
             if(isPlaying) { 
                 player.pauseVideo(); 
@@ -2146,6 +2266,7 @@
                 queueIndex = index;
                 const t = playQueue[queueIndex];
                 currentTrackData = t;
+                
                 document.getElementById('playerBar').style.display = 'flex';
                 document.getElementById('playerTitle').innerText = t.name;
                 document.getElementById('playerArtist').innerText = t.artist;
@@ -2158,14 +2279,8 @@
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
                 updateMediaSessionMetadata();
-                if (player && player.loadVideoById && playerReady) {
-                    player.loadVideoById(t.id);
-                    setTimeout(() => { 
-                        player.playVideo(); 
-                        isPlaying = true; 
-                        updatePlayIcons(true); 
-                    }, 300);
-                }
+                
+                playWithHtml5(t);
             }
         }
 
@@ -2263,7 +2378,11 @@
         }
 
         function seekToLyric(timeSec) {
-            if(player && player.seekTo) player.seekTo(timeSec, true);
+            if(isHtml5Mode && html5Audio) {
+                html5Audio.currentTime = timeSec;
+            } else if(player && player.seekTo) {
+                player.seekTo(timeSec, true);
+            }
         }
 
         function updateActiveLyric(currentTime) {
@@ -2305,8 +2424,12 @@
         function seekTrack(event) {
             const bg = document.getElementById('progressBarBg');
             const rect = bg.getBoundingClientRect();
-            if(player && player.getDuration) {
-                player.seekTo(player.getDuration() * ((event.clientX - rect.left) / rect.width), true);
+            const seekRatio = (event.clientX - rect.left) / rect.width;
+            
+            if(isHtml5Mode && html5Audio && html5Audio.duration) {
+                html5Audio.currentTime = html5Audio.duration * seekRatio;
+            } else if(player && player.getDuration) {
+                player.seekTo(player.getDuration() * seekRatio, true);
             }
         }
 
