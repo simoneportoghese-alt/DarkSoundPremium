@@ -249,7 +249,7 @@
             position: fixed; bottom: 0; left: 0; right: 0; height: 72px;
             background: rgba(8, 8, 10, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid var(--border-light);
-            display: flex; justify-content: space-around; align-items: center; z-index: 900;
+            display: flex; justify-around: space-around; align-items: center; z-index: 900;
             max-width: 800px; margin: 0 auto;
         }
         .nav-link { 
@@ -288,7 +288,7 @@
     <div id="view-search" class="view">
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-input" id="searchInput" placeholder="Cerca canzoni o artisti e premi Invio..." onkeyup="handleSearch(event)">
+            <input type="search" class="search-input" id="searchInput" placeholder="Cerca canzoni o artisti e premi Invio..." onkeydown="handleSearch(event)">
         </div>
         <div class="section-header">Risultati</div>
         <div class="track-list" id="searchList"></div>
@@ -370,6 +370,7 @@
         let player = null;
         let isPlaying = false;
         let currentQueue = [];
+        let searchResultsList = [];
         let currentIndex = -1;
         let likedTracks = JSON.parse(localStorage.getItem('darksound_likes')) || [];
         let isShuffle = false;
@@ -442,7 +443,7 @@
                 return `
                     <div class="track-card ${currentIndex >= 0 && currentQueue[currentIndex]?.id === track.id ? 'active' : ''}" onclick="playFromQueue('${containerId}', ${idx})">
                         <div class="track-info">
-                            <img src="${track.image}" class="track-img">
+                            <img src="${track.image || 'https://img.youtube.com/vi/' + track.id + '/hqdefault.jpg'}" class="track-img">
                             <div class="track-details">
                                 <div class="track-title">${track.title}</div>
                                 <div class="track-artist">${track.artist}</div>
@@ -459,12 +460,13 @@
         }
 
         function escapeQuotes(str) {
-            return str ? str.replace(/'/g, "\\'") : '';
+            return str ? str.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
         }
 
         function playFromQueue(containerId, index) {
             if (containerId === 'homeList') currentQueue = defaultTracks;
             else if (containerId === 'likesList') currentQueue = likedTracks;
+            else if (containerId === 'searchList') currentQueue = searchResultsList;
             
             currentIndex = index;
             loadAndPlayTrack(currentQueue[currentIndex]);
@@ -475,12 +477,14 @@
             
             player.loadVideoById(track.id);
 
+            const trackImg = track.image || 'https://img.youtube.com/vi/' + track.id + '/hqdefault.jpg';
+
             document.getElementById('miniPlayer').classList.add('active');
-            document.getElementById('miniImg').src = track.image;
+            document.getElementById('miniImg').src = trackImg;
             document.getElementById('miniTitle').innerText = track.title;
             document.getElementById('miniArtist').innerText = track.artist;
 
-            document.getElementById('fsImg').src = track.image;
+            document.getElementById('fsImg').src = trackImg;
             document.getElementById('fsTitle').innerText = track.title;
             document.getElementById('fsArtist').innerText = track.artist;
 
@@ -550,21 +554,31 @@
         }
 
         // --- RICERCA INTEGRATA COL SERVER ---
-        function handleSearch(e) {
-            const query = e.target.value.trim();
-            if (e.key === 'Enter' && query.length > 0) {
-                fetch(`/api/search?q=${encodeURIComponent(query)}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        const results = data.results || data.tracks || [];
-                        currentQueue = results;
-                        renderTrackList('searchList', results);
-                    })
-                    .catch(err => {
-                        console.error('Errore nella ricerca:', err);
-                        document.getElementById('searchList').innerHTML = 
-                            '<p style="color:var(--danger); padding:20px 0;">Errore nella ricerca. Riprova tra poco.</p>';
-                    });
+        async function handleSearch(e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                e.preventDefault();
+                const query = e.target.value.trim();
+                const searchListEl = document.getElementById('searchList');
+
+                if (!query) return;
+
+                searchListEl.innerHTML = '<p style="color:var(--text-sub); padding:20px 0;"><i class="fas fa-spinner fa-spin"></i> Ricerca in corso...</p>';
+
+                try {
+                    const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                    if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+                    
+                    const data = await res.json();
+                    
+                    // Supporta vari formati di risposta backend
+                    const results = Array.isArray(data) ? data : (data.results || data.tracks || []);
+                    
+                    searchResultsList = results;
+                    renderTrackList('searchList', results);
+                } catch (err) {
+                    console.error('Errore durante la ricerca:', err);
+                    searchListEl.innerHTML = '<p style="color:var(--danger); padding:20px 0;">Errore di connessione al server. Verifica che la rete sia attiva.</p>';
+                }
             }
         }
 
