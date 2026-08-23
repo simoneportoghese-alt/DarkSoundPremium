@@ -203,12 +203,43 @@
         @keyframes loadingBar { 0% { width: 0%; } 50% { width: 60%; } 100% { width: 100%; } }
         @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        .equalizer { display: flex; align-items: center; gap: 2px; width: 18px; height: 18px; }
-        .equalizer-bar { width: 3px; background: var(--spotify-green); border-radius: 2px; animation: eq-bar 0.8s ease-in-out infinite; }
+        /* Equalizer con Web Audio API - Onda musicale dinamica */
+        .equalizer { 
+            display: flex; 
+            align-items: center; 
+            gap: 2px; 
+            width: 20px; 
+            height: 20px; 
+        }
+        .equalizer-bar { 
+            width: 3px; 
+            background: var(--spotify-green); 
+            border-radius: 2px; 
+            animation: eq-bar 0.8s ease-in-out infinite; 
+            transition: height 0.1s ease;
+        }
         .equalizer-bar:nth-child(2) { animation-delay: 0.15s; }
         .equalizer-bar:nth-child(3) { animation-delay: 0.3s; }
         .equalizer-bar:nth-child(4) { animation-delay: 0.45s; }
+        .equalizer-bar:nth-child(5) { animation-delay: 0.6s; }
         .equalizer.paused .equalizer-bar { animation-play-state: paused; height: 3px; }
+        
+        /* Equalizer grande nel player */
+        .player-equalizer-large {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            height: 30px;
+            margin: 8px 0;
+        }
+        .player-equalizer-large .eq-large-bar {
+            width: 4px;
+            background: var(--spotify-green);
+            border-radius: 2px;
+            transition: height 0.1s ease;
+            min-height: 3px;
+        }
 
         /* SPLASH SCREEN */
         #splash-screen {
@@ -1047,6 +1078,7 @@
             <div class="section-title">Riproduzione</div>
             <div class="settings-item"><span style="font-size:0.85rem;">Riproduzione automatica</span><div class="toggle-switch active" id="toggleAutoplay" onclick="toggleSetting('autoplay')"></div></div>
             <div class="settings-item"><span style="font-size:0.85rem;">Riproduzione in background</span><div class="toggle-switch active" id="toggleBackgroundPlay" onclick="toggleSetting('backgroundPlay')"></div></div>
+            <div class="settings-item"><span style="font-size:0.85rem;">Qualità massima</span><div class="toggle-switch active" id="toggleHighQuality" onclick="toggleSetting('highQuality')"></div></div>
         </div>
         
         <div class="settings-group">
@@ -1113,6 +1145,14 @@
             <img id="fsCover" class="fs-cover" src="">
             <h3 class="fs-title" id="fsTitle">-</h3>
             <p class="fs-artist" id="fsArtist">-</p>
+            <!-- Equalizer grande con Web Audio API -->
+            <div class="player-equalizer-large" id="playerEqualizerLarge">
+                <div class="eq-large-bar" style="height:5px;"></div>
+                <div class="eq-large-bar" style="height:8px;"></div>
+                <div class="eq-large-bar" style="height:12px;"></div>
+                <div class="eq-large-bar" style="height:8px;"></div>
+                <div class="eq-large-bar" style="height:5px;"></div>
+            </div>
             <div class="fs-actions">
                 <i class="far fa-heart" id="fsLikeBtn" onclick="toggleLikeCurrent()"></i>
                 <i class="fas fa-download" id="fsDownloadDirectBtn" onclick="toggleDownloadCurrent()"></i>
@@ -1148,6 +1188,7 @@
     <div class="player-bar" id="playerBar" onclick="toggleFullscreen()">
         <img id="playerImg" src="">
         <div id="playerEqualizer" class="equalizer paused">
+            <div class="equalizer-bar"></div>
             <div class="equalizer-bar"></div>
             <div class="equalizer-bar"></div>
             <div class="equalizer-bar"></div>
@@ -1339,6 +1380,10 @@
         let listeningMinutes = parseInt(localStorage.getItem('darksound_listening_minutes') || '0');
         let googleUser = null;
         let currentPlaylistToAddTo = null;
+        let audioContext = null;
+        let analyser = null;
+        let frequencyData = null;
+        let eqAnimationFrame = null;
         const API_BASE = window.location.origin;
 
         // ============ FUNZIONE CAMBIO TEMA ============
@@ -1346,7 +1391,6 @@
             document.body.setAttribute('data-theme', themeColor);
             localStorage.setItem('darksound_theme', themeColor);
             
-            // Aggiorna i dots
             document.querySelectorAll('.theme-dot').forEach(dot => {
                 dot.classList.remove('active');
                 if (dot.getAttribute('data-theme-color') === themeColor) {
@@ -1354,17 +1398,79 @@
                 }
             });
             
-            // Aggiorna anche lo splash screen se visibile
             const splash = document.getElementById('splash-screen');
             if (splash && splash.style.display !== 'none') {
                 splash.style.background = `var(--gradient-bg)`;
             }
         }
 
-        // Carica tema salvato
         function loadTheme() {
             const savedTheme = localStorage.getItem('darksound_theme') || 'verde';
             changeTheme(savedTheme);
+        }
+
+        // ============ WEB AUDIO API PER ONDA MUSICALE ============
+        function initAudioVisualizer() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 64;
+                frequencyData = new Uint8Array(analyser.frequencyBinCount);
+            } catch(e) {
+                console.log('[Visualizer] Web Audio API non supportata');
+            }
+        }
+        
+        function updateEqualizerBars() {
+            if (!analyser || !frequencyData) return;
+            
+            analyser.getByteFrequencyData(frequencyData);
+            
+            // Aggiorna le barre dell'equalizer piccolo
+            const miniBars = document.querySelectorAll('#playerEqualizer .equalizer-bar');
+            if (miniBars.length > 0) {
+                miniBars.forEach((bar, i) => {
+                    const freqIndex = i * 2 + 2;
+                    if (freqIndex < frequencyData.length) {
+                        const height = Math.max(3, (frequencyData[freqIndex] / 255) * 18);
+                        bar.style.height = height + 'px';
+                    }
+                });
+            }
+            
+            // Aggiorna le barre dell'equalizer grande
+            const largeBars = document.querySelectorAll('#playerEqualizerLarge .eq-large-bar');
+            if (largeBars.length > 0) {
+                largeBars.forEach((bar, i) => {
+                    const freqIndex = i * 3 + 1;
+                    if (freqIndex < frequencyData.length) {
+                        const height = Math.max(3, (frequencyData[freqIndex] / 255) * 28);
+                        bar.style.height = height + 'px';
+                    }
+                });
+            }
+            
+            eqAnimationFrame = requestAnimationFrame(updateEqualizerBars);
+        }
+        
+        function startEqualizerAnimation() {
+            if (eqAnimationFrame) cancelAnimationFrame(eqAnimationFrame);
+            updateEqualizerBars();
+        }
+        
+        function stopEqualizerAnimation() {
+            if (eqAnimationFrame) {
+                cancelAnimationFrame(eqAnimationFrame);
+                eqAnimationFrame = null;
+            }
+            
+            // Reset barre
+            document.querySelectorAll('.equalizer-bar').forEach(bar => {
+                bar.style.height = '3px';
+            });
+            document.querySelectorAll('.eq-large-bar').forEach(bar => {
+                bar.style.height = '3px';
+            });
         }
 
         // ============ GOOGLE SIGN-IN ============
@@ -1422,7 +1528,8 @@
             parsedSyncedLyrics: [],
             settings: {
                 autoplay: true,
-                backgroundPlay: true
+                backgroundPlay: true,
+                highQuality: true
             },
             
             init() {
@@ -1550,7 +1657,7 @@
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 btnElement.classList.add('active');
             }
-            if (viewName === 'library') renderLibraryContent();
+            if (viewName === 'library') { currentLibTab = 'liked'; renderLibraryContent(); updateLibraryTabButtons(); }
             if (viewName === 'liked-songs') renderLikedSongsView();
             if (viewName === 'history') renderHistory();
             if (viewName === 'downloads') renderDownloads();
@@ -1690,6 +1797,7 @@
             const s = AppState.settings;
             document.getElementById('toggleAutoplay').className = s.autoplay ? 'toggle-switch active' : 'toggle-switch';
             document.getElementById('toggleBackgroundPlay').className = s.backgroundPlay ? 'toggle-switch active' : 'toggle-switch';
+            document.getElementById('toggleHighQuality').className = s.highQuality ? 'toggle-switch active' : 'toggle-switch';
         }
 
         function toggleSetting(name) {
@@ -2018,7 +2126,7 @@
             updateFollowButtonState(currentArtistPage);
         }
 
-        // ============ PLAYER ============
+        // ============ PLAYER CON QUALITÀ MASSIMA ============
         function playSelectedTrack(encodedTrack, encodedQueue, index) {
             try {
                 const t = JSON.parse(decodeURIComponent(escape(atob(encodedTrack))));
@@ -2044,28 +2152,38 @@
                 loadLyricsForCurrentTrack();
                 
                 if (AppState.player && AppState.playerReady) {
-                    AppState.player.loadVideoById(t.id);
+                    AppState.player.loadVideoById({videoId: t.id, suggestedQuality: 'hd720'});
                     AppState.player.playVideo();
                     AppState.isPlaying = true;
                     updatePlayIcons(true);
+                    startEqualizerAnimation();
                 } else {
                     document.getElementById('youtube-player').innerHTML = 
-                        `<iframe width="1" height="1" src="https://www.youtube.com/embed/${t.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}&playsinline=1&controls=0&rel=0"></iframe>`;
+                        `<iframe width="1" height="1" src="https://www.youtube.com/embed/${t.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}&playsinline=1&controls=0&rel=0&vq=hd720"></iframe>`;
                     AppState.isPlaying = true;
                     updatePlayIcons(true);
+                    setTimeout(() => startEqualizerAnimation(), 1000);
                 }
             } catch(err) { console.error('[Player] Errore:', err); }
         }
 
         function updateEqualizer(playing) {
             const eq = document.getElementById('playerEqualizer');
-            if (eq) { if (playing) eq.classList.remove('paused'); else eq.classList.add('paused'); }
+            if (eq) { 
+                if (playing) { 
+                    eq.classList.remove('paused'); 
+                    startEqualizerAnimation();
+                } else { 
+                    eq.classList.add('paused'); 
+                    stopEqualizerAnimation();
+                }
+            }
         }
 
         function onYouTubeIframeAPIReady() {
             AppState.player = new YT.Player('youtube-player', {
                 height: '1', width: '1',
-                playerVars: { autoplay: 1, controls: 0, enablejsapi: 1, rel: 0, playsinline: 1, origin: window.location.origin },
+                playerVars: { autoplay: 1, controls: 0, enablejsapi: 1, rel: 0, playsinline: 1, origin: window.location.origin, vq: 'hd720' },
                 events: {
                     onReady: () => { AppState.playerReady = true; },
                     onStateChange: (e) => {
@@ -2082,6 +2200,7 @@
                             clearInterval(progressInterval);
                         }
                         if (e.data === YT.PlayerState.ENDED) {
+                            stopEqualizerAnimation();
                             if (AppState.repeat) { AppState.player.seekTo(0); AppState.player.playVideo(); }
                             else { nextTrack(); }
                         }
@@ -2095,9 +2214,11 @@
             if (AppState.isPlaying) {
                 AppState.player.pauseVideo();
                 AppState.isPlaying = false;
+                stopEqualizerAnimation();
             } else {
                 AppState.player.playVideo();
                 AppState.isPlaying = true;
+                startEqualizerAnimation();
             }
             updatePlayIcons(AppState.isPlaying);
             updateEqualizer(AppState.isPlaying);
@@ -2145,7 +2266,7 @@
                 addToHistory(t);
                 loadLyricsForCurrentTrack();
                 if (AppState.player && AppState.playerReady) {
-                    AppState.player.loadVideoById(t.id);
+                    AppState.player.loadVideoById({videoId: t.id, suggestedQuality: 'hd720'});
                     AppState.player.playVideo();
                 }
             }
@@ -2347,10 +2468,12 @@
             alert(`${likedSongs.length} brani aggiunti ai download!`);
         }
 
-        // ============ LIBRARY ============
+        // ============ LIBRARY FIX ============
         function renderLibraryContent() {
             const c = document.getElementById('libContentList');
-            if (currentLibTab === 'downloads') {
+            if (currentLibTab === 'liked') {
+                renderTracksList(likedSongs, 'libContentList', likedSongs);
+            } else if (currentLibTab === 'downloads') {
                 renderTracksList(downloadedTracks, 'libContentList', downloadedTracks);
             } else if (currentLibTab === 'playlists') {
                 const all = [...userPlaylists, ...autoPlaylists];
@@ -2368,16 +2491,19 @@
             }
         }
 
+        function updateLibraryTabButtons() {
+            document.getElementById('btnTabLiked').style.background = currentLibTab === 'liked' ? '#fff' : 'var(--card-bg)';
+            document.getElementById('btnTabLiked').style.color = currentLibTab === 'liked' ? '#000' : '#fff';
+            document.getElementById('btnTabDownloads').style.background = currentLibTab === 'downloads' ? '#fff' : 'var(--card-bg)';
+            document.getElementById('btnTabDownloads').style.color = currentLibTab === 'downloads' ? '#000' : '#fff';
+            document.getElementById('btnTabPlaylists').style.background = currentLibTab === 'playlists' ? '#fff' : 'var(--card-bg)';
+            document.getElementById('btnTabPlaylists').style.color = currentLibTab === 'playlists' ? '#000' : '#fff';
+        }
+
         function switchLibraryTab(tab) {
             currentLibTab = tab;
-            if (tab === 'liked') { switchView('liked-songs'); renderLikedSongsView(); return; }
             switchView('library');
-            document.getElementById('btnTabLiked').style.background = tab === 'liked' ? '#fff' : 'var(--card-bg)';
-            document.getElementById('btnTabLiked').style.color = tab === 'liked' ? '#000' : '#fff';
-            document.getElementById('btnTabDownloads').style.background = tab === 'downloads' ? '#fff' : 'var(--card-bg)';
-            document.getElementById('btnTabDownloads').style.color = tab === 'downloads' ? '#000' : '#fff';
-            document.getElementById('btnTabPlaylists').style.background = tab === 'playlists' ? '#fff' : 'var(--card-bg)';
-            document.getElementById('btnTabPlaylists').style.color = tab === 'playlists' ? '#000' : '#fff';
+            updateLibraryTabButtons();
             renderLibraryContent();
         }
 
@@ -2544,7 +2670,6 @@
                 
                 progressEl.innerHTML = `Rilevato link ${type}. Ricerca brani simili...`;
                 
-                // Simula l'importazione cercando brani popolari
                 const searchQueries = ['Top Hits', 'Popular Songs', 'Trending Music', 'Best Songs'];
                 let allTracks = [];
                 
@@ -2596,20 +2721,16 @@
             showSiriNotification('🤖 AI DJ: creo il tuo mix personale...');
             
             try {
-                // Raccogli le canzoni più ascoltate dalla cronologia
                 let aiMixTracks = [];
                 
-                // Prendi dalla cronologia (più ascoltate)
                 if (historyTracks.length > 0) {
                     aiMixTracks.push(...historyTracks.slice(0, 10));
                 }
                 
-                // Prendi dai preferiti
                 if (likedSongs.length > 0) {
                     aiMixTracks.push(...likedSongs.slice(0, 5));
                 }
                 
-                // Se non ci sono abbastanza brani, cerca hit popolari
                 if (aiMixTracks.length < 5) {
                     const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent('Top Hits')}`);
                     let tracks = await res.json();
@@ -2617,14 +2738,10 @@
                     aiMixTracks.push(...tracks.slice(0, 10 - aiMixTracks.length));
                 }
                 
-                // Rimuovi duplicati
                 aiMixTracks = aiMixTracks.filter((t, i, self) => self.findIndex(x => x.id === t.id) === i);
-                
-                // Limita a 15 brani
                 aiMixTracks = aiMixTracks.slice(0, 15);
                 
                 if (aiMixTracks.length > 0) {
-                    // Crea playlist temporanea
                     const tempPlaylist = {
                         id: 'pl_ai_mix_' + Date.now(),
                         name: '🤖 AI Mix - Le tue hit',
@@ -2635,11 +2752,9 @@
                         temporary: true
                     };
                     
-                    // Aggiungi alla lista autoPlaylists
                     autoPlaylists.push(tempPlaylist);
                     saveUserData();
                     
-                    // Riproduci immediatamente
                     playSelectedTrack(
                         btoa(unescape(encodeURIComponent(JSON.stringify(aiMixTracks[0])))),
                         btoa(unescape(encodeURIComponent(JSON.stringify(aiMixTracks)))),
@@ -3241,6 +3356,7 @@
             loadSettings();
             initSiriIntegration();
             addSiriButtonToPlayer();
+            initAudioVisualizer();
             
             // FIX: La splash screen sparisce sempre
             setTimeout(hideSplashScreen, 2500);
