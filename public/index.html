@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DarkSound Pro - Ultimate Music Experience</title>
-    <link href="https://fonts.googleapis.com/css2?family=Circular+Std:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,44 +13,23 @@
     <meta name="theme-color" content="#000000">
     <style>
         :root {
-            /* Spotify Color Palette */
             --spotify-black: #000000;
-            --spotify-dark-gray: #121212;
-            --spotify-light-gray: #181818;
+            --spotify-dark: #121212;
+            --spotify-card: #181818;
             --spotify-hover: #282828;
             --spotify-green: #1db954;
             --spotify-green-hover: #1ed760;
             --spotify-white: #ffffff;
-            --spotify-text-gray: #b3b3b3;
-            --spotify-text-light-gray: #a7a7a7;
-            
-            /* Typography */
-            --font-primary: 'Circular Std', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-weight-normal: 400;
-            --font-weight-medium: 500;
-            --font-weight-bold: 700;
-            --font-weight-black: 900;
-            
-            /* Sizing */
+            --spotify-gray: #b3b3b3;
+            --spotify-light-gray: #a7a7a7;
+            --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             --radius-sm: 4px;
             --radius-md: 8px;
             --radius-lg: 16px;
             --radius-full: 9999px;
-            
-            /* Spacing */
-            --spacing-xs: 4px;
-            --spacing-sm: 8px;
-            --spacing-md: 16px;
-            --spacing-lg: 24px;
-            --spacing-xl: 32px;
-            
-            /* Transitions */
-            --transition-fast: 0.2s ease;
-            --transition-normal: 0.3s ease;
-            
-            /* Safe Areas */
-            --safe-area-top: env(safe-area-inset-top, 0px);
-            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+            --transition: 0.2s ease;
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         * {
@@ -61,30 +40,23 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        html, body {
-            height: 100%;
-            width: 100%;
-            overflow-x: hidden;
-        }
-
         body {
             background-color: var(--spotify-black);
             color: var(--spotify-white);
             min-height: 100vh;
             font-size: 16px;
             overscroll-behavior: none;
-            padding-top: var(--safe-area-top);
+            padding-top: var(--safe-top);
         }
 
         body.modal-open {
             overflow: hidden;
             position: fixed;
             width: 100%;
-            height: 100%;
         }
 
-        /* ============ ANIMAZIONE PLAYER BAR (SPOTIFY STYLE) ============ */
-        @keyframes equalizer-bar {
+        /* Equalizer Animation */
+        @keyframes eq-bar {
             0% { height: 3px; }
             50% { height: 16px; }
             100% { height: 3px; }
@@ -95,15 +67,13 @@
             gap: 2px;
             width: 18px;
             height: 18px;
-            flex-shrink: 0;
         }
         .equalizer-bar {
             width: 3px;
             background: var(--spotify-green);
             border-radius: 2px;
-            animation: equalizer-bar 0.8s ease-in-out infinite;
+            animation: eq-bar 0.8s ease-in-out infinite;
         }
-        .equalizer-bar:nth-child(1) { animation-delay: 0s; }
         .equalizer-bar:nth-child(2) { animation-delay: 0.15s; }
         .equalizer-bar:nth-child(3) { animation-delay: 0.3s; }
         .equalizer-bar:nth-child(4) { animation-delay: 0.45s; }
@@ -112,86 +82,69 @@
             height: 3px;
         }
 
-        /* ============ SPLASH SCREEN ============ */
+        /* Splash */
         #splash-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: var(--spotify-black);
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: #000;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
+            transition: opacity 0.6s, visibility 0.6s;
         }
-        #splash-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
+        #splash-screen.hidden { opacity: 0; visibility: hidden; }
         .splash-logo {
-            font-size: 2.5rem;
-            font-weight: var(--font-weight-black);
+            font-size: 2rem;
+            font-weight: 900;
             color: var(--spotify-green);
-            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
-        .splash-logo i {
-            font-size: 3rem;
-        }
+        .splash-logo i { font-size: 2.5rem; }
         .splash-by {
-            font-size: 0.9rem;
-            color: var(--spotify-text-gray);
+            font-size: 0.8rem;
+            color: var(--spotify-gray);
             letter-spacing: 3px;
             text-transform: uppercase;
+            margin-top: 8px;
         }
         .splash-loading {
             width: 180px;
             height: 2px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.1);
             border-radius: 1px;
             overflow: hidden;
-            margin-top: 24px;
+            margin-top: 20px;
         }
         .splash-loading-bar {
-            width: 0%;
             height: 100%;
             background: var(--spotify-green);
-            animation: loading 2.5s ease forwards;
+            animation: loading 2s ease forwards;
         }
         @keyframes loading {
             0% { width: 0%; }
-            50% { width: 60%; }
             100% { width: 100%; }
         }
 
-        /* ============ VIEW CONTAINERS ============ */
-        .view { 
-            display: none; 
-            padding: 16px; 
-            padding-bottom: 170px; 
-            animation: fadeIn 0.3s ease forwards; 
+        /* Views */
+        .view {
+            display: none;
+            padding: 16px;
+            padding-bottom: 170px;
+            animation: fadeIn 0.3s ease;
             max-width: 1400px;
             margin: 0 auto;
-            min-height: 100vh;
         }
         .view.active { display: block; }
-        #view-artist, #view-liked-songs, #view-profile, #view-settings, #view-help, #view-about, #view-downloads, #view-history, #view-stats { 
-            padding: 0; 
-            padding-bottom: 170px; 
-        }
-
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
 
-        /* ============ TOP BAR ============ */
+        /* Top Bar */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -199,225 +152,173 @@
             padding: 12px 0;
             margin-bottom: 16px;
         }
-        .top-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
         .top-bar-title {
             font-size: 1.5rem;
-            font-weight: var(--font-weight-black);
-            color: var(--spotify-white);
+            font-weight: 900;
             letter-spacing: -0.5px;
         }
-        .user-avatar-btn {
+        .user-btn {
             width: 36px;
             height: 36px;
             border-radius: 50%;
             background: var(--spotify-green);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-weight: var(--font-weight-bold);
-            color: var(--spotify-black);
             border: none;
-            transition: transform 0.2s;
+            color: #000;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 0.9rem;
         }
-        .user-avatar-btn:hover { transform: scale(1.1); }
-        .user-avatar-btn:active { transform: scale(0.95); }
 
-        /* ============ HOME TITLE & SECTIONS ============ */
-        .home-title { 
-            font-size: 1.5rem; 
-            font-weight: var(--font-weight-black); 
-            margin-bottom: 16px; 
-            letter-spacing: -0.5px;
-            color: var(--spotify-white);
-        }
-        .section-title { 
-            font-size: 1.2rem; 
-            font-weight: var(--font-weight-bold); 
-            margin-bottom: 12px; 
-            color: var(--spotify-white);
+        /* Section Title */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
             letter-spacing: -0.3px;
         }
-        .section-title .see-all {
-            font-size: 0.75rem;
-            color: var(--spotify-text-gray);
-            cursor: pointer;
-            font-weight: var(--font-weight-bold);
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            transition: color 0.2s;
-        }
-        .section-title .see-all:hover { color: var(--spotify-white); }
 
-        /* ============ QUICK ACTIONS ============ */
-        .quick-actions-grid {
+        /* Quick Actions */
+        .quick-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 8px;
             margin-bottom: 20px;
         }
-        .quick-action-card {
-            background: var(--spotify-light-gray);
+        .quick-card {
+            background: var(--spotify-card);
             border-radius: var(--radius-md);
             padding: 16px 8px;
             text-align: center;
             cursor: pointer;
-            transition: background 0.2s;
             border: none;
+            transition: background 0.2s;
         }
-        .quick-action-card:hover { background: var(--spotify-hover); }
-        .quick-action-card i { 
-            font-size: 1.2rem; 
-            margin-bottom: 6px; 
-            display: block; 
-        }
-        .quick-action-card h4 { 
-            font-size: 0.7rem; 
-            font-weight: var(--font-weight-bold); 
-            color: var(--spotify-white);
-            letter-spacing: -0.2px;
-        }
+        .quick-card:hover { background: var(--spotify-hover); }
+        .quick-card i { font-size: 1.2rem; display: block; margin-bottom: 6px; }
+        .quick-card span { font-size: 0.7rem; font-weight: 700; color: #fff; }
 
-        /* ============ TRACK ROW (SPOTIFY STYLE) ============ */
+        /* Feature Cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .feature-card {
+            background: var(--spotify-card);
+            border-radius: var(--radius-md);
+            padding: 20px 12px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+        }
+        .feature-card:hover { background: var(--spotify-hover); }
+        .feature-card i { font-size: 1.5rem; color: var(--spotify-green); display: block; margin-bottom: 8px; }
+        .feature-card h4 { font-size: 0.8rem; font-weight: 800; margin-bottom: 2px; }
+        .feature-card p { font-size: 0.65rem; color: var(--spotify-gray); }
+
+        /* Track Row */
         .track-row {
-            display: flex; 
-            align-items: center; 
-            padding: 8px 12px; 
-            cursor: pointer; 
-            border-radius: var(--radius-md); 
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: var(--radius-md);
             margin-bottom: 2px;
             transition: background 0.2s;
-            position: relative;
         }
         .track-row:hover { background: var(--spotify-hover); }
-        .track-row:active { background: #333; }
-        .track-row-left { 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            flex: 1; 
-            min-width: 0; 
-            overflow: hidden; 
+        .track-row-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
         }
-        .track-row-left img {
-            width: 48px; 
-            height: 48px; 
-            border-radius: var(--radius-sm); 
+        .track-row img {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
             object-fit: cover;
             flex-shrink: 0;
         }
-        .track-number {
+        .track-num {
             width: 16px;
             font-size: 0.8rem;
-            color: var(--spotify-text-gray);
+            color: var(--spotify-gray);
             text-align: center;
             flex-shrink: 0;
         }
-        .track-meta { flex: 1; min-width: 0; overflow: hidden; }
-        .track-meta h4 { 
-            font-size: 0.9rem; 
-            font-weight: var(--font-weight-medium); 
-            color: var(--spotify-white); 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis;
-            letter-spacing: -0.2px;
-        }
-        .track-meta p { 
-            font-size: 0.75rem; 
-            color: var(--spotify-text-gray); 
-            white-space: nowrap; 
-            overflow: hidden; 
+        .track-meta { flex: 1; min-width: 0; }
+        .track-meta h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
             text-overflow: ellipsis;
         }
-        .track-actions { 
-            display: flex; 
-            align-items: center; 
-            gap: 16px; 
-            color: var(--spotify-text-gray); 
-            font-size: 0.9rem; 
-            flex-shrink: 0;
+        .track-meta p {
+            font-size: 0.75rem;
+            color: var(--spotify-gray);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .track-actions {
+            display: flex;
+            gap: 14px;
+            color: var(--spotify-gray);
+            font-size: 0.9rem;
             opacity: 0;
             transition: opacity 0.2s;
         }
         .track-row:hover .track-actions { opacity: 1; }
-        .track-actions i { cursor: pointer; transition: color 0.2s; }
-        .track-actions i:hover { color: var(--spotify-white); }
+        .track-actions i { cursor: pointer; }
+        .track-actions i:hover { color: #fff; }
 
-        /* ============ SEARCH BOX (SPOTIFY STYLE) ============ */
+        /* Search */
         .search-box {
-            background: var(--spotify-white);
-            border-radius: var(--radius-full); 
+            background: #fff;
+            border-radius: var(--radius-full);
             padding: 10px 16px;
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
             margin-bottom: 16px;
-            transition: all 0.2s;
         }
-        .search-box:focus-within {
-            box-shadow: 0 0 0 2px var(--spotify-white);
-        }
-        .search-box i {
-            color: var(--spotify-black);
-            font-size: 1rem;
-        }
-        .search-box input { 
-            background: transparent; 
-            border: none; 
-            color: var(--spotify-black); 
-            width: 100%; 
-            outline: none; 
+        .search-box i { color: #000; }
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: #000;
+            width: 100%;
+            outline: none;
             font-size: 0.9rem;
-            font-weight: var(--font-weight-medium);
         }
-        .search-box input::placeholder { color: #666; }
 
-        /* ============ GENRE CARDS (SPOTIFY STYLE) ============ */
-        .genre-search-grid {
+        /* Genre Grid */
+        .genre-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 16px;
         }
-        .genre-search-card {
+        .genre-card {
             border-radius: var(--radius-md);
             padding: 20px;
             cursor: pointer;
-            transition: transform 0.2s;
-            position: relative;
-            overflow: hidden;
             min-height: 80px;
             display: flex;
             align-items: flex-end;
             border: none;
+            transition: transform 0.2s;
         }
-        .genre-search-card:hover { transform: scale(1.02); }
-        .genre-search-card h3 {
-            font-size: 1rem;
-            font-weight: var(--font-weight-black);
-            color: var(--spotify-white);
-            letter-spacing: -0.3px;
-        }
+        .genre-card:hover { transform: scale(1.02); }
+        .genre-card h3 { font-size: 1rem; font-weight: 900; }
 
-        .genre-pop { background: #e13300; }
-        .genre-rap { background: #7358ff; }
-        .genre-rock { background: #e91429; }
-        .genre-techno { background: #0d72ea; }
-        .genre-phonk { background: #503750; }
-        .genre-trap { background: #1e3264; }
-        .genre-drill { background: #ba5d07; }
-        .genre-indie { background: #608108; }
-        .genre-metal { background: #777777; }
-        .genre-lofi { background: #8d67ab; }
-        .genre-dance { background: #af2896; }
-        .genre-jazz { background: #8c1932; }
-
-        /* ============ ARTIST CARD ============ */
+        /* Artist Card */
         .artist-card {
             display: flex;
             align-items: center;
@@ -425,7 +326,6 @@
             padding: 12px;
             border-radius: var(--radius-md);
             cursor: pointer;
-            transition: background 0.2s;
         }
         .artist-card:hover { background: var(--spotify-hover); }
         .artist-card img {
@@ -434,114 +334,142 @@
             border-radius: 50%;
             object-fit: cover;
         }
-        .artist-card-info h3 {
-            font-size: 0.95rem;
-            font-weight: var(--font-weight-bold);
-            color: var(--spotify-white);
-        }
-        .artist-card-info p {
-            font-size: 0.75rem;
-            color: var(--spotify-text-gray);
-        }
+        .artist-card h3 { font-size: 0.95rem; font-weight: 700; }
+        .artist-card p { font-size: 0.75rem; color: var(--spotify-gray); }
 
-        /* ============ PLAYER BAR (SPOTIFY STYLE) ============ */
+        /* Player Bar */
         .player-bar {
-            position: fixed; 
-            bottom: 70px; 
-            left: 8px; 
+            position: fixed;
+            bottom: 70px;
+            left: 8px;
             right: 8px;
             background: #181818;
-            border-radius: var(--radius-md); 
-            padding: 8px 12px; 
-            display: none; 
-            align-items: center; 
-            gap: 10px; 
+            border-radius: var(--radius-md);
+            padding: 8px 12px;
+            display: none;
+            align-items: center;
+            gap: 10px;
             z-index: 100;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-        .player-bar img { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; }
+        .player-bar img { width: 40px; height: 40px; border-radius: 4px; }
         .player-meta { flex: 1; min-width: 0; }
-        .p-title { 
-            font-size: 0.8rem; 
-            font-weight: var(--font-weight-medium); 
-            color: var(--spotify-white); 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis;
-        }
-        .p-artist { 
-            font-size: 0.7rem; 
-            color: var(--spotify-text-gray); 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis;
-        }
-        .player-icons { display: flex; align-items: center; gap: 14px; font-size: 1.1rem; color: var(--spotify-white); }
-        .player-icons i { cursor: pointer; }
+        .p-title { font-size: 0.8rem; font-weight: 600; }
+        .p-artist { font-size: 0.7rem; color: var(--spotify-gray); }
+        .player-icons { display: flex; gap: 14px; font-size: 1.1rem; }
 
-        /* ============ NAVIGATION BAR (SPOTIFY STYLE) ============ */
+        /* Nav */
         nav {
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
             height: 60px;
             background: #000;
-            display: flex; 
-            justify-content: space-around; 
+            display: flex;
+            justify-content: space-around;
             align-items: center;
             z-index: 90;
             border-top: 1px solid #181818;
-            padding-bottom: var(--safe-area-bottom);
+            padding-bottom: var(--safe-bottom);
         }
         .nav-item {
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             gap: 2px;
-            color: var(--spotify-text-gray); 
-            font-size: 0.6rem; 
-            font-weight: var(--font-weight-bold);
-            cursor: pointer; 
-            background: none; 
-            border: none; 
+            color: var(--spotify-gray);
+            font-size: 0.6rem;
+            font-weight: 700;
+            background: none;
+            border: none;
+            cursor: pointer;
             padding: 4px 16px;
-            transition: color 0.2s;
-            letter-spacing: 0.3px;
         }
-        .nav-item:hover { color: var(--spotify-white); }
-        .nav-item.active { color: var(--spotify-white); }
+        .nav-item.active { color: #fff; }
         .nav-item i { font-size: 1.2rem; }
 
-        /* ============ SETTINGS ============ */
-        .settings-page {
-            padding: 16px;
-            padding-bottom: 170px;
-            max-width: 600px;
-            margin: 0 auto;
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: rgba(0,0,0,0.8);
+            z-index: 3000;
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
         }
-        .settings-page h2 { 
-            font-size: 1.3rem; 
-            font-weight: var(--font-weight-black); 
-            margin-bottom: 16px; 
+        .modal-overlay.active { display: flex; }
+        .modal-card {
+            background: #181818;
+            border-radius: 16px 16px 0 0;
+            padding: 24px;
+            width: 100%;
+            max-height: 75vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
         }
-        .settings-group {
-            background: var(--spotify-light-gray);
-            border-radius: var(--radius-md);
-            padding: 8px 16px;
-            margin-bottom: 16px;
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
-        .settings-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #222;
+        .modal-card h2 { font-size: 1.2rem; font-weight: 900; margin-bottom: 16px; }
+        .modal-input { margin-bottom: 12px; }
+        .modal-input label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--spotify-gray);
+            margin-bottom: 4px;
         }
-        .settings-item:last-child { border-bottom: none; }
-        .settings-item-label { font-size: 0.85rem; font-weight: var(--font-weight-medium); }
+        .modal-input input, .modal-input select {
+            width: 100%;
+            background: #282828;
+            border: 1px solid #333;
+            padding: 10px 12px;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .btn-primary {
+            width: 100%;
+            background: var(--spotify-green);
+            color: #000;
+            font-weight: 900;
+            padding: 12px;
+            border-radius: 24px;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .btn-primary:hover { background: var(--spotify-green-hover); }
+        .btn-secondary {
+            width: 100%;
+            background: transparent;
+            color: #fff;
+            font-weight: 700;
+            padding: 12px;
+            border-radius: 24px;
+            border: 1px solid #444;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .btn-danger {
+            width: 100%;
+            background: transparent;
+            color: #f15e6c;
+            font-weight: 700;
+            padding: 12px;
+            border-radius: 24px;
+            border: 1px solid #f15e6c;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 8px;
+        }
 
+        /* Toggle */
         .toggle-switch {
             width: 40px;
             height: 22px;
@@ -560,15 +488,31 @@
             left: 2px;
             width: 18px;
             height: 18px;
-            background: white;
+            background: #fff;
             border-radius: 50%;
             transition: left 0.3s;
         }
         .toggle-switch.active::after { left: 20px; }
 
-        /* ============ PROFILE ============ */
+        /* Settings */
+        .settings-group {
+            background: var(--spotify-card);
+            border-radius: var(--radius-md);
+            padding: 8px 16px;
+            margin-bottom: 16px;
+        }
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #222;
+        }
+        .settings-item:last-child { border-bottom: none; }
+
+        /* Profile */
         .profile-header {
-            background: linear-gradient(180deg, #1db954 0%, #121212 100%);
+            background: linear-gradient(180deg, #1db954, #121212);
             padding: 40px 20px 20px;
             text-align: center;
         }
@@ -581,20 +525,15 @@
             align-items: center;
             justify-content: center;
             font-size: 2rem;
-            font-weight: var(--font-weight-black);
+            font-weight: 900;
             color: #000;
-            margin: 0 auto 12px auto;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-        .profile-name {
-            font-size: 1.3rem;
-            font-weight: var(--font-weight-black);
-            letter-spacing: -0.5px;
+            margin: 0 auto 12px;
         }
 
         .loading-spinner {
             display: inline-block;
-            width: 16px; height: 16px;
+            width: 16px;
+            height: 16px;
             border: 2px solid rgba(255,255,255,0.2);
             border-radius: 50%;
             border-top-color: var(--spotify-green);
@@ -611,130 +550,110 @@
             opacity: 0;
             pointer-events: none;
             z-index: -9999;
-            visibility: hidden;
-        }
-
-        /* ============ MODALS ============ */
-        .modal-overlay {
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.8); 
-            z-index: 3000; 
-            display: none; 
-            justify-content: center; 
-            align-items: flex-end;
-        }
-        .modal-overlay.active { display: flex; }
-        .modal-card {
-            background: #181818;
-            border-radius: 16px 16px 0 0;
-            padding: 24px;
-            width: 100%;
-            max-height: 70vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease;
-        }
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        .modal-card h2 { font-size: 1.2rem; font-weight: var(--font-weight-black); margin-bottom: 16px; }
-        .modal-input-group { margin-bottom: 12px; }
-        .modal-input-group label { display: block; font-size: 0.75rem; font-weight: var(--font-weight-bold); color: var(--spotify-text-gray); margin-bottom: 4px; }
-        .modal-input-group input, .modal-input-group select {
-            width: 100%;
-            background: #282828;
-            border: 1px solid #333;
-            padding: 10px 12px;
-            border-radius: 4px;
-            color: white;
-            font-size: 0.9rem;
-            outline: none;
-        }
-        .btn-primary {
-            width: 100%;
-            background: var(--spotify-green);
-            color: #000;
-            font-weight: var(--font-weight-black);
-            padding: 12px;
-            border-radius: 24px;
-            border: none;
-            font-size: 0.9rem;
-            cursor: pointer;
-            letter-spacing: 0.5px;
-            transition: background 0.2s;
-        }
-        .btn-primary:hover { background: var(--spotify-green-hover); }
-        .btn-secondary {
-            width: 100%;
-            background: transparent;
-            color: white;
-            font-weight: var(--font-weight-bold);
-            padding: 12px;
-            border-radius: 24px;
-            border: 1px solid #444;
-            font-size: 0.9rem;
-            cursor: pointer;
-            margin-top: 8px;
         }
     </style>
 </head>
 <body>
 
     <div id="splash-screen">
-        <div class="splash-logo">
-            <i class="fab fa-spotify"></i>
-            DarkSound Pro
-        </div>
+        <div class="splash-logo"><i class="fab fa-spotify"></i> DarkSound Pro</div>
         <div class="splash-by">by DarkSW</div>
         <div class="splash-loading"><div class="splash-loading-bar"></div></div>
     </div>
 
-    <div id="profileDrawer" style="position:fixed; top:0; right:-100%; width:100%; max-width:350px; height:100vh; background:#121212; z-index:4000; transition:right 0.3s ease; display:flex; flex-direction:column; padding:20px; overflow-y:auto;">
+    <div id="profileDrawer" style="position:fixed; top:0; right:-100%; width:100%; max-width:350px; height:100vh; background:#121212; z-index:4000; transition:right 0.3s; display:flex; flex-direction:column; padding:20px; overflow-y:auto;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <div style="display:flex; align-items:center; gap:12px;">
-                <div id="drawerAvatarInitial" style="width:45px;height:45px;border-radius:50%;background:var(--spotify-green);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;">S</div>
+                <div id="drawerAvatarInitial" style="width:45px;height:45px;border-radius:50%;background:#1db954;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;">O</div>
                 <div>
-                    <h3 id="drawerUserName" style="font-size:1rem;font-weight:900;">Ospite</h3>
-                    <p style="font-size:0.75rem;color:var(--spotify-text-gray);" onclick="openProfileView()">Visualizza profilo</p>
+                    <h3 id="drawerUserName" style="font-weight:900;">Ospite</h3>
+                    <p style="font-size:0.75rem;color:#b3b3b3;cursor:pointer;" onclick="openProfileView()">Visualizza profilo</p>
                 </div>
             </div>
-            <i class="fas fa-xmark" style="cursor:pointer;color:var(--spotify-text-gray);" onclick="toggleProfileDrawer()"></i>
+            <i class="fas fa-xmark" style="cursor:pointer;color:#b3b3b3;" onclick="toggleProfileDrawer()"></i>
         </div>
-        <div style="display:flex;flex-direction:column;gap:4px;">
-            <button onclick="openHistoryView()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:var(--spotify-white);font-size:0.9rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-clock" style="width:20px;"></i> Cronologia Ascolti</button>
-            <button onclick="openDownloadsView()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:var(--spotify-white);font-size:0.9rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-download" style="width:20px;"></i> Brani Scaricati</button>
-            <button onclick="openStatsView()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:var(--spotify-white);font-size:0.9rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-chart-bar" style="width:20px;"></i> Statistiche</button>
-            <button onclick="openSettingsView()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:var(--spotify-white);font-size:0.9rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-gear" style="width:20px;"></i> Impostazioni</button>
-            <button onclick="openHelpView()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:var(--spotify-white);font-size:0.9rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-question-circle" style="width:20px;"></i> Aiuto</button>
-            <button onclick="openAboutView()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:var(--spotify-white);font-size:0.9rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-info-circle" style="width:20px;"></i> Info</button>
-            <button onclick="openImportPlaylistModal()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:var(--spotify-white);font-size:0.9rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-link" style="width:20px;"></i> Importa Playlist</button>
+        
+        <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:20px;">
+            <button onclick="openAuthModal()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:#fff;font-size:0.85rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-user-plus" style="width:20px;"></i> Aggiungi account</button>
+            <button onclick="openProfileView()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:#fff;font-size:0.85rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-user-edit" style="width:20px;"></i> Modifica Profilo</button>
+            <button onclick="openFollowedArtistsModal()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:#fff;font-size:0.85rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-users" style="width:20px;"></i> Artisti che Segui</button>
+            <button onclick="openHistoryView()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:#fff;font-size:0.85rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-clock" style="width:20px;"></i> Cronologia Ascolti</button>
+            <button onclick="openDownloadsView()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:#fff;font-size:0.85rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-download" style="width:20px;"></i> Brani Scaricati</button>
+            <button onclick="openStatsView()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:#fff;font-size:0.85rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-chart-bar" style="width:20px;"></i> Statistiche</button>
+            <button onclick="openSettingsView()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:#fff;font-size:0.85rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-gear" style="width:20px;"></i> Impostazioni</button>
+            <button onclick="openHelpView()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:#fff;font-size:0.85rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-question-circle" style="width:20px;"></i> Aiuto e Supporto</button>
+            <button onclick="openAboutView()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:#fff;font-size:0.85rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-info-circle" style="width:20px;"></i> Info su DarkSound</button>
+            <button onclick="openImportPlaylistModal()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:#fff;font-size:0.85rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-link" style="width:20px;"></i> Importa Playlist</button>
+            <button onclick="openWrappedModal()" style="display:flex;align-items:center;gap:12px;padding:12px;background:none;border:none;color:#fff;font-size:0.85rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-chart-line" style="width:20px;"></i> DarkSound Stats</button>
         </div>
-        <div style="margin-top:auto;">
-            <button onclick="logoutUser()" style="width:100%;padding:12px;background:none;border:1px solid #f15e6c;color:#f15e6c;border-radius:24px;font-weight:700;cursor:pointer;">Esci</button>
+        
+        <div style="font-size:0.8rem;font-weight:700;color:#b3b3b3;margin-bottom:8px;">I tuoi Amici</div>
+        <div id="drawerFriendsList"></div>
+        <button class="btn-secondary" onclick="openAddFriendModal()"><i class="fas fa-user-plus"></i> Aggiungi Amico</button>
+        
+        <div style="margin-top:auto;padding-top:16px;">
+            <button class="btn-danger" onclick="logoutUser()">Esci dall'account</button>
         </div>
     </div>
 
-    <!-- Modali -->
+    <!-- MODALI -->
+    <div id="ai-dj-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>AI DJ</h2>
+            <p style="color:#b3b3b3;font-size:0.85rem;margin-bottom:16px;">"Ciao! Sono il tuo DJ virtuale..."</p>
+            <button class="btn-primary" onclick="runAiDjSelection()">Avvia Mix Intelligente</button>
+            <button class="btn-secondary" onclick="closeModal('ai-dj-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="ai-playlist-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Crea Playlist con IA</h2>
+            <div class="modal-input"><label>Descrivi l'atmosfera</label><input type="text" id="aiPromptInput" placeholder="Es. Notte elettronica chill..."></div>
+            <button class="btn-primary" onclick="generateAiPromptPlaylist()">Genera con IA</button>
+            <button class="btn-secondary" onclick="closeModal('ai-playlist-modal')">Annulla</button>
+        </div>
+    </div>
+
+    <div id="blend-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Crea Blend con un Amico</h2>
+            <div class="modal-input"><label>Seleziona amico</label><select id="blendFriendSelect"></select></div>
+            <button class="btn-primary" onclick="createBlendPlaylist()">Crea Playlist Blend</button>
+            <button class="btn-secondary" onclick="closeModal('blend-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="wrapped-modal" class="modal-overlay">
+        <div class="modal-card" style="text-align:center;">
+            <h2>Il tuo DarkSound Stats</h2>
+            <div style="background:#282828;border-radius:8px;padding:16px;margin-bottom:16px;text-align:left;">
+                <p>🎧 Minuti di ascolto: 1,420</p>
+                <p>👑 Genere Top: Elettronica</p>
+                <p>🔥 Brano più riprodotto: Chlorine</p>
+                <p>📊 Brani ascoltati: <span id="statsHistoryModal">0</span></p>
+            </div>
+            <button class="btn-primary" onclick="closeModal('wrapped-modal')">Fantastico!</button>
+        </div>
+    </div>
+
     <div id="import-playlist-modal" class="modal-overlay">
         <div class="modal-card">
             <h2>Importa Playlist</h2>
-            <p style="font-size:0.8rem;color:var(--spotify-text-gray);margin-bottom:16px;">Incolla un link Spotify, YouTube, SoundCloud o Deezer.</p>
-            <div class="modal-input-group"><label>Link Playlist</label><input type="text" id="playlistLinkInput" placeholder="https://open.spotify.com/playlist/..."></div>
-            <div class="modal-input-group"><label>Nome (opzionale)</label><input type="text" id="playlistNameInput"></div>
+            <p style="color:#b3b3b3;font-size:0.8rem;margin-bottom:16px;">Incolla un link Spotify, YouTube, SoundCloud o Deezer.</p>
+            <div class="modal-input"><label>Link Playlist</label><input type="text" id="playlistLinkInput" placeholder="https://open.spotify.com/playlist/..."></div>
+            <div class="modal-input"><label>Nome (opzionale)</label><input type="text" id="playlistNameInput"></div>
             <button class="btn-primary" onclick="importPlaylistFromLink()">Importa</button>
             <button class="btn-secondary" onclick="closeModal('import-playlist-modal')">Annulla</button>
-            <div id="importProgress" style="margin-top:12px;text-align:center;font-size:0.8rem;color:var(--spotify-text-gray);"></div>
+            <div id="importProgress" style="margin-top:12px;text-align:center;font-size:0.8rem;color:#b3b3b3;"></div>
         </div>
     </div>
 
     <div id="auth-modal" class="modal-overlay">
         <div class="modal-card">
             <h2>Benvenuto su DarkSound</h2>
-            <div class="modal-input-group"><label>Nome Utente</label><input type="text" id="authEmail"></div>
+            <div class="modal-input"><label>Nome Utente</label><input type="text" id="authEmail" onkeydown="if(event.key==='Enter') proceedToOnboarding()"></div>
+            <div class="modal-input"><label>Password (opzionale)</label><input type="password" id="authPassword"></div>
             <button class="btn-primary" onclick="proceedToOnboarding()">Accedi</button>
             <button class="btn-secondary" onclick="closeModal('auth-modal')">Continua come Ospite</button>
         </div>
@@ -743,51 +662,131 @@
     <div id="onboarding-modal" class="modal-overlay">
         <div class="modal-card">
             <h2>I tuoi gusti</h2>
-            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;">
-                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:4px;color:#fff;cursor:pointer;">🔥 Pop</button>
-                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:4px;color:#fff;cursor:pointer;">🎤 Rap</button>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;" id="genreGrid">
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:4px;color:#fff;cursor:pointer;">🔥 Pop & Hit</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:4px;color:#fff;cursor:pointer;">🎤 Rap & Trap</button>
                 <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:4px;color:#fff;cursor:pointer;">🎸 Rock</button>
                 <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:4px;color:#fff;cursor:pointer;">🎧 Techno</button>
                 <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:4px;color:#fff;cursor:pointer;">🎷 Jazz</button>
                 <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:4px;color:#fff;cursor:pointer;">🌴 Latin</button>
             </div>
-            <div class="modal-input-group"><label>Artista preferito</label><input type="text" id="favArtistInput"></div>
+            <div class="modal-input"><label>Artista preferito</label><input type="text" id="favArtistInput" placeholder="Es. Travis Scott..."></div>
             <button class="btn-primary" onclick="completeOnboarding()">Crea la mia Radio</button>
         </div>
     </div>
 
-    <!-- Viste -->
+    <div id="followed-artists-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Artisti che Segui</h2>
+            <div id="followedArtistsList" style="max-height:300px;overflow-y:auto;"></div>
+            <button class="btn-secondary" onclick="closeModal('followed-artists-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="profile-edit-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Modifica Profilo</h2>
+            <div class="modal-input"><label>Nome Utente</label><input type="text" id="editProfileName"></div>
+            <div class="modal-input"><label>Bio</label><input type="text" id="editProfileBio"></div>
+            <div class="modal-input"><label>Avatar (emoji)</label><input type="text" id="editProfileAvatar" maxlength="2"></div>
+            <div class="modal-input"><label>Genere</label><select id="editProfileGenre"><option>Pop</option><option>Rap</option><option>Rock</option><option>Techno</option><option>Jazz</option></select></div>
+            <button class="btn-primary" onclick="saveProfileChanges()">Salva</button>
+            <button class="btn-secondary" onclick="closeModal('profile-edit-modal')">Annulla</button>
+        </div>
+    </div>
+
+    <div id="add-friend-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Aggiungi Amico</h2>
+            <div class="modal-input"><label>Nome Utente</label><input type="text" id="addFriendInput"></div>
+            <div id="addFriendResults"></div>
+            <button class="btn-primary" onclick="searchFriend()">Cerca</button>
+            <button class="btn-secondary" onclick="closeModal('add-friend-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="share-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-weight:800;margin-bottom:8px;">Condividi brano</h3>
+            <p id="shareTrackSubtitle" style="color:#b3b3b3;font-size:0.85rem;margin-bottom:16px;"></p>
+            <button class="btn-primary" onclick="shareViaWhatsApp()" style="background:#25D366;color:#fff;"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+            <button class="btn-secondary" onclick="copyTrackLink()"><i class="fas fa-link"></i> Copia Link</button>
+            <button class="btn-secondary" onclick="closeModal('share-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="playlist-select-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-weight:800;margin-bottom:12px;">Aggiungi a playlist</h3>
+            <div id="playlistSelectList" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;"></div>
+            <button class="btn-secondary" onclick="closeModal('playlist-select-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="new-playlist-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-weight:800;margin-bottom:12px;">Crea Nuova Playlist</h3>
+            <div class="modal-input"><label>Nome</label><input type="text" id="newPlaylistName"></div>
+            <div class="modal-input"><label>Visibilità</label><select id="newPlaylistVisibility"><option value="private">Privata</option><option value="public">Pubblica</option></select></div>
+            <button class="btn-primary" onclick="submitNewPlaylist()">Crea</button>
+            <button class="btn-secondary" onclick="closeModal('new-playlist-modal')">Annulla</button>
+        </div>
+    </div>
+
+    <!-- VISTE -->
     <div id="view-home" class="view active">
         <div class="top-bar">
-            <div class="top-bar-left">
-                <span class="top-bar-title">Esplora</span>
-            </div>
-            <button class="user-avatar-btn" onclick="toggleProfileDrawer()" id="pillUserNameBtn">O</button>
+            <span class="top-bar-title" id="homeWelcomeTitle">Esplora</span>
+            <button class="user-btn" onclick="toggleProfileDrawer()" id="pillUserNameBtn">O</button>
         </div>
         
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px;">
-            <button onclick="openLikedSongs()" style="background:#181818;border:none;border-radius:8px;padding:16px 8px;cursor:pointer;"><i class="fas fa-heart" style="color:#f15e6c;font-size:1.2rem;display:block;margin-bottom:6px;"></i><span style="font-size:0.7rem;font-weight:700;color:#fff;">Preferiti</span></button>
-            <button onclick="openDownloadsView()" style="background:#181818;border:none;border-radius:8px;padding:16px 8px;cursor:pointer;"><i class="fas fa-download" style="color:#3d91f4;font-size:1.2rem;display:block;margin-bottom:6px;"></i><span style="font-size:0.7rem;font-weight:700;color:#fff;">Download</span></button>
-            <button onclick="openHistoryView()" style="background:#181818;border:none;border-radius:8px;padding:16px 8px;cursor:pointer;"><i class="fas fa-history" style="color:#ff9f0a;font-size:1.2rem;display:block;margin-bottom:6px;"></i><span style="font-size:0.7rem;font-weight:700;color:#fff;">Cronologia</span></button>
-            <button onclick="openStatsView()" style="background:#181818;border:none;border-radius:8px;padding:16px 8px;cursor:pointer;"><i class="fas fa-chart-bar" style="color:#1ed760;font-size:1.2rem;display:block;margin-bottom:6px;"></i><span style="font-size:0.7rem;font-weight:700;color:#fff;">Stats</span></button>
+        <div class="quick-grid">
+            <button class="quick-card" onclick="openLikedSongs()"><i class="fas fa-heart" style="color:#f15e6c;"></i><span>Preferiti</span></button>
+            <button class="quick-card" onclick="openDownloadsView()"><i class="fas fa-download" style="color:#3d91f4;"></i><span>Download</span></button>
+            <button class="quick-card" onclick="openHistoryView()"><i class="fas fa-history" style="color:#ff9f0a;"></i><span>Cronologia</span></button>
+            <button class="quick-card" onclick="openStatsView()"><i class="fas fa-chart-bar" style="color:#1db954;"></i><span>Stats</span></button>
+        </div>
+        
+        <div class="feature-grid">
+            <button class="feature-card" onclick="openAiDjModal()"><i class="fas fa-robot"></i><h4>AI DJ</h4><p>Mix automatico</p></button>
+            <button class="feature-card" onclick="openAiPlaylistModal()"><i class="fas fa-wand-magic-sparkles"></i><h4>AI Playlist</h4><p>Crea da prompt</p></button>
+            <button class="feature-card" onclick="openBlendModal()"><i class="fas fa-users-viewfinder"></i><h4>Blend</h4><p>Unisci gusti</p></button>
         </div>
         
         <div class="section-title">La tua Radio Personale</div>
-        <div id="radioTracksContainer"><p style="color:var(--spotify-text-gray);font-size:0.85rem;">Caricamento...</p></div>
+        <div id="radioTracksContainer"><p style="color:#b3b3b3;font-size:0.85rem;">Caricamento...</p></div>
     </div>
 
     <div id="view-search" class="view">
         <div class="top-bar"><span class="top-bar-title">Cerca</span></div>
         <div class="search-box"><i class="fas fa-search"></i><input type="text" id="spotifySearchInput" placeholder="Cerca artisti o brani..." oninput="handleSearchInput(this.value)"></div>
+        <div id="genreSearchSection">
+            <div class="section-title">Sfoglia per genere</div>
+            <div class="genre-grid">
+                <div class="genre-card" style="background:#e13300;" onclick="searchByGenre('Pop')"><h3>Pop</h3></div>
+                <div class="genre-card" style="background:#7358ff;" onclick="searchByGenre('Rap')"><h3>Rap</h3></div>
+                <div class="genre-card" style="background:#e91429;" onclick="searchByGenre('Rock')"><h3>Rock</h3></div>
+                <div class="genre-card" style="background:#0d72ea;" onclick="searchByGenre('Techno')"><h3>Techno</h3></div>
+                <div class="genre-card" style="background:#503750;" onclick="searchByGenre('Phonk')"><h3>Phonk</h3></div>
+                <div class="genre-card" style="background:#1e3264;" onclick="searchByGenre('Trap')"><h3>Trap</h3></div>
+                <div class="genre-card" style="background:#ba5d07;" onclick="searchByGenre('Drill')"><h3>Drill</h3></div>
+                <div class="genre-card" style="background:#608108;" onclick="searchByGenre('Indie')"><h3>Indie</h3></div>
+                <div class="genre-card" style="background:#8d67ab;" onclick="searchByGenre('Lo-fi')"><h3>Lo-fi</h3></div>
+                <div class="genre-card" style="background:#af2896;" onclick="searchByGenre('Dance')"><h3>Dance</h3></div>
+            </div>
+        </div>
         <div id="searchResultsContainer"></div>
     </div>
 
     <div id="view-library" class="view">
-        <div class="top-bar"><span class="top-bar-title">La tua Libreria</span></div>
-        <div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;">
-            <button class="chip active" id="btnTabLiked" onclick="switchLibraryTab('liked')" style="padding:8px 16px;border-radius:24px;background:#fff;border:none;color:#000;font-weight:700;cursor:pointer;">Preferiti</button>
-            <button class="chip" id="btnTabDownloads" onclick="switchLibraryTab('downloads')" style="padding:8px 16px;border-radius:24px;background:#181818;border:1px solid #333;color:#fff;font-weight:700;cursor:pointer;">Scaricati</button>
-            <button class="chip" id="btnTabPlaylists" onclick="switchLibraryTab('playlists')" style="padding:8px 16px;border-radius:24px;background:#181818;border:1px solid #333;color:#fff;font-weight:700;cursor:pointer;">Playlist</button>
+        <div class="top-bar">
+            <span class="top-bar-title">La tua Libreria</span>
+            <button class="btn-primary" style="width:auto;padding:8px 16px;" onclick="openNewPlaylistModal()"><i class="fas fa-plus"></i> Nuova</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+            <button id="btnTabLiked" onclick="switchLibraryTab('liked')" style="padding:8px 16px;border-radius:24px;background:#fff;border:none;color:#000;font-weight:700;cursor:pointer;">Preferiti</button>
+            <button id="btnTabDownloads" onclick="switchLibraryTab('downloads')" style="padding:8px 16px;border-radius:24px;background:#181818;border:1px solid #333;color:#fff;font-weight:700;cursor:pointer;">Scaricati</button>
+            <button id="btnTabPlaylists" onclick="switchLibraryTab('playlists')" style="padding:8px 16px;border-radius:24px;background:#181818;border:1px solid #333;color:#fff;font-weight:700;cursor:pointer;">Playlist</button>
         </div>
         <div id="libContentList"></div>
     </div>
@@ -795,11 +794,15 @@
     <div id="view-profile" class="view">
         <div class="profile-header">
             <div class="profile-avatar" id="profileAvatarLarge">O</div>
-            <div class="profile-name" id="profileNameLarge">Ospite</div>
-            <p style="color:#1ed760;font-weight:600;font-size:0.85rem;" id="profileGenreLarge">Pop</p>
+            <div style="font-size:1.3rem;font-weight:900;" id="profileNameLarge">Ospite</div>
+            <p style="color:#1db954;font-weight:600;" id="profileGenreLarge">Pop</p>
+            <p style="color:#b3b3b3;font-size:0.85rem;" id="profileBioLarge">Nessuna bio ancora.</p>
+            <button class="btn-primary" style="width:auto;padding:8px 20px;margin-top:12px;" onclick="openProfileEditModal()">Modifica Profilo</button>
         </div>
         <div style="padding:16px;">
-            <div class="section-title">Playlist Pubbliche</div>
+            <div class="section-title">I miei Amici</div>
+            <div id="profileFriendsList"></div>
+            <div class="section-title" style="margin-top:20px;">Playlist Pubbliche</div>
             <div id="profilePublicPlaylists"></div>
         </div>
     </div>
@@ -807,10 +810,16 @@
     <div id="view-stats" class="view">
         <div class="top-bar"><span class="top-bar-title">Statistiche</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
-            <div style="background:#181818;border-radius:8px;padding:20px;text-align:center;"><h3 style="font-size:1.8rem;font-weight:900;color:#1ed760;" id="statsLikedSongs">0</h3><p style="font-size:0.75rem;color:#b3b3b3;">Preferiti</p></div>
+            <div style="background:#181818;border-radius:8px;padding:20px;text-align:center;"><h3 style="font-size:1.8rem;font-weight:900;color:#1db954;" id="statsLikedSongs">0</h3><p style="font-size:0.75rem;color:#b3b3b3;">Preferiti</p></div>
             <div style="background:#181818;border-radius:8px;padding:20px;text-align:center;"><h3 style="font-size:1.8rem;font-weight:900;color:#3d91f4;" id="statsPlaylists">0</h3><p style="font-size:0.75rem;color:#b3b3b3;">Playlist</p></div>
             <div style="background:#181818;border-radius:8px;padding:20px;text-align:center;"><h3 style="font-size:1.8rem;font-weight:900;color:#a855f7;" id="statsFriends">0</h3><p style="font-size:0.75rem;color:#b3b3b3;">Amici</p></div>
             <div style="background:#181818;border-radius:8px;padding:20px;text-align:center;"><h3 style="font-size:1.8rem;font-weight:900;color:#ff9f0a;" id="statsHistory">0</h3><p style="font-size:0.75rem;color:#b3b3b3;">Ascoltati</p></div>
+            <div style="background:#181818;border-radius:8px;padding:20px;text-align:center;"><h3 style="font-size:1.8rem;font-weight:900;color:#f15e6c;" id="statsDownloads">0</h3><p style="font-size:0.75rem;color:#b3b3b3;">Scaricati</p></div>
+            <div style="background:#181818;border-radius:8px;padding:20px;text-align:center;"><h3 style="font-size:1.8rem;font-weight:900;color:#1db954;" id="statsArtistsFollowed">0</h3><p style="font-size:0.75rem;color:#b3b3b3;">Artisti Seguiti</p></div>
+        </div>
+        <div class="settings-group" style="margin-top:20px;">
+            <div class="section-title">Top Artisti</div>
+            <div id="topArtistsList"></div>
         </div>
     </div>
 
@@ -825,29 +834,60 @@
     </div>
 
     <div id="view-settings" class="view">
-        <div class="settings-page">
-            <div class="top-bar"><span class="top-bar-title">Impostazioni</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
-            <div class="settings-group">
-                <div class="settings-item"><span class="settings-item-label">Riproduzione automatica</span><div class="toggle-switch active" id="toggleAutoplay" onclick="toggleSetting('autoplay')"></div></div>
-                <div class="settings-item"><span class="settings-item-label">Riproduzione in background</span><div class="toggle-switch active" id="toggleBackgroundPlay" onclick="toggleSetting('backgroundPlay')"></div></div>
-            </div>
+        <div class="top-bar"><span class="top-bar-title">Impostazioni</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
+        
+        <div class="settings-group">
+            <div class="section-title">Riproduzione</div>
+            <div class="settings-item"><span style="font-size:0.85rem;">Riproduzione automatica</span><div class="toggle-switch active" id="toggleAutoplay" onclick="toggleSetting('autoplay')"></div></div>
+            <div class="settings-item"><span style="font-size:0.85rem;">Riproduzione in background</span><div class="toggle-switch active" id="toggleBackgroundPlay" onclick="toggleSetting('backgroundPlay')"></div></div>
+            <div class="settings-item"><span style="font-size:0.85rem;">Qualità audio</span><select id="audioQuality" onchange="saveAudioQuality()" style="background:#282828;border:1px solid #333;color:#fff;padding:6px 10px;border-radius:4px;"><option value="auto">Automatica</option><option value="low">Bassa</option><option value="normal">Normale</option><option value="high">Alta</option></select></div>
+            <div class="settings-item"><span style="font-size:0.85rem;">Crossfade</span><select id="crossfade" onchange="saveCrossfade()" style="background:#282828;border:1px solid #333;color:#fff;padding:6px 10px;border-radius:4px;"><option value="0">Disattivato</option><option value="3">3 sec</option><option value="5">5 sec</option><option value="8">8 sec</option></select></div>
+        </div>
+        
+        <div class="settings-group">
+            <div class="section-title">Privacy</div>
+            <div class="settings-item"><span style="font-size:0.85rem;">Profilo pubblico</span><div class="toggle-switch active" id="togglePublicProfile" onclick="toggleSetting('publicProfile')"></div></div>
+            <div class="settings-item"><span style="font-size:0.85rem;">Mostra attività</span><div class="toggle-switch active" id="toggleShowActivity" onclick="toggleSetting('showActivity')"></div></div>
+            <div class="settings-item"><span style="font-size:0.85rem;">Raccolta dati</span><div class="toggle-switch active" id="toggleDataCollection" onclick="toggleSetting('dataCollection')"></div></div>
+        </div>
+        
+        <div class="settings-group">
+            <div class="section-title">Account</div>
+            <div class="settings-item" onclick="openProfileEditModal()"><span style="font-size:0.85rem;">Modifica profilo</span><i class="fas fa-chevron-right" style="color:#b3b3b3;"></i></div>
+            <div class="settings-item" onclick="clearAllData()"><span style="font-size:0.85rem;color:#f15e6c;">Cancella tutti i dati</span><i class="fas fa-trash" style="color:#f15e6c;"></i></div>
         </div>
     </div>
 
     <div id="view-help" class="view">
         <div class="top-bar"><span class="top-bar-title">Aiuto</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
-        <p style="color:#b3b3b3;font-size:0.9rem;">Come importo una playlist? Apri il menu profilo e seleziona "Importa Playlist".</p>
+        <div class="settings-group">
+            <div class="section-title">FAQ</div>
+            <div class="settings-item" onclick="toggleFaq('faq1')"><span style="font-size:0.85rem;">Come importo una playlist?</span><i class="fas fa-chevron-down" style="color:#b3b3b3;"></i></div>
+            <div id="faq1" style="display:none;padding:10px;color:#b3b3b3;font-size:0.8rem;">Apri il menu profilo e seleziona "Importa Playlist".</div>
+            <div class="settings-item" onclick="toggleFaq('faq2')"><span style="font-size:0.85rem;">Come scarico i brani?</span><i class="fas fa-chevron-down" style="color:#b3b3b3;"></i></div>
+            <div id="faq2" style="display:none;padding:10px;color:#b3b3b3;font-size:0.8rem;">Clicca sull'icona download accanto al brano.</div>
+        </div>
+        <div class="settings-group">
+            <div class="section-title">Contattaci</div>
+            <div class="settings-item" onclick="sendFeedback()"><span style="font-size:0.85rem;">Invia feedback</span><i class="fas fa-envelope" style="color:#3d91f4;"></i></div>
+            <div class="settings-item" onclick="reportBug()"><span style="font-size:0.85rem;">Segnala problema</span><i class="fas fa-bug" style="color:#ff9f0a;"></i></div>
+        </div>
     </div>
 
     <div id="view-about" class="view">
         <div class="top-bar"><span class="top-bar-title">Info</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
-        <p style="color:#b3b3b3;">DarkSound Pro v3.0 - by DarkSW</p>
+        <div style="text-align:center;padding:20px;">
+            <div style="width:70px;height:70px;background:#1db954;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:2rem;color:#000;"><i class="fab fa-spotify"></i></div>
+            <h3 style="font-weight:900;">DarkSound Pro</h3>
+            <p style="color:#b3b3b3;">Versione 3.0.0</p>
+            <p style="color:#b3b3b3;margin-top:8px;">by DarkSW</p>
+        </div>
     </div>
 
     <div id="view-artist" class="view">
         <div style="position:relative;height:250px;border-radius:0 0 16px 16px;overflow:hidden;">
             <img id="artistHeroImg" src="" style="width:100%;height:100%;object-fit:cover;">
-            <div style="position:absolute;bottom:0;left:0;right:0;padding:20px;background:linear-gradient(transparent, #000);">
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:20px;background:linear-gradient(transparent,#000);">
                 <h1 id="artistNameTitle" style="font-size:2rem;font-weight:900;"></h1>
                 <button class="btn-primary" id="followArtistBtn" onclick="toggleFollowArtist()" style="width:auto;padding:8px 24px;margin-top:8px;">Segui</button>
             </div>
@@ -855,6 +895,8 @@
         <div style="padding:16px;">
             <div class="section-title">Brani</div>
             <div id="artistTracksContainer"></div>
+            <div class="section-title" style="margin-top:20px;">Brani Simili</div>
+            <div id="similarTracksContainer"></div>
         </div>
     </div>
 
@@ -862,7 +904,10 @@
         <div style="padding:20px;background:linear-gradient(180deg,#5038a0,#121212);">
             <h1 style="font-size:1.5rem;font-weight:900;">Brani che ti piacciono</h1>
             <p id="likedSongsCountSub" style="color:#b3b3b3;font-size:0.85rem;">0 brani</p>
-            <button class="btn-primary" onclick="playLikedFirst()" style="width:auto;padding:10px 24px;margin-top:12px;">Riproduci</button>
+            <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="btn-primary" onclick="playLikedFirst()" style="width:auto;padding:8px 20px;"><i class="fas fa-play"></i> Riproduci</button>
+                <button class="btn-primary" onclick="downloadAllLikedSongs()" style="width:auto;padding:8px 20px;"><i class="fas fa-download"></i> Scarica</button>
+            </div>
         </div>
         <div style="padding:12px;"><div id="likedSongsFullContainer"></div></div>
     </div>
@@ -870,13 +915,18 @@
     <div id="fullscreen-player" style="position:fixed;top:0;left:0;width:100%;height:100vh;background:#000;z-index:2500;display:none;flex-direction:column;padding:20px;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
             <i class="fas fa-chevron-down" onclick="toggleFullscreen()" style="color:#fff;cursor:pointer;font-size:1.2rem;"></i>
-            <span style="color:#fff;font-weight:700;font-size:0.85rem;">IN RIPRODUZIONE</span>
+            <span style="color:#fff;font-weight:700;font-size:0.8rem;">IN RIPRODUZIONE</span>
             <i class="fas fa-ellipsis-h" onclick="openShareModal()" style="color:#fff;cursor:pointer;"></i>
         </div>
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-            <img id="fsCover" src="" style="width:100%;max-width:280px;aspect-ratio:1;border-radius:8px;object-fit:cover;margin-bottom:20px;box-shadow:0 8px 30px rgba(0,0,0,0.5);">
+            <img id="fsCover" src="" style="width:100%;max-width:280px;aspect-ratio:1;border-radius:8px;object-fit:cover;margin-bottom:20px;">
             <h3 id="fsTitle" style="font-size:1.3rem;font-weight:900;color:#fff;text-align:center;"></h3>
             <p id="fsArtist" style="font-size:0.9rem;color:#b3b3b3;margin-top:4px;"></p>
+            <div style="display:flex;gap:16px;margin-top:12px;">
+                <i class="fas fa-heart" id="fsLikeBtn" onclick="toggleLikeCurrent()" style="color:#b3b3b3;cursor:pointer;"></i>
+                <i class="fas fa-download" id="fsDownloadDirectBtn" onclick="toggleDownloadCurrent()" style="color:#b3b3b3;cursor:pointer;"></i>
+                <i class="fas fa-folder-plus" onclick="openPlaylistSelectorForCurrent()" style="color:#b3b3b3;cursor:pointer;"></i>
+            </div>
         </div>
         <div style="width:100%;">
             <div style="width:100%;height:4px;background:#333;border-radius:2px;cursor:pointer;" id="progressBarBg" onclick="seekTrack(event)">
@@ -887,13 +937,11 @@
             </div>
         </div>
         <div style="display:flex;justify-content:center;align-items:center;gap:32px;margin-top:16px;">
-            <i class="fas fa-random" onclick="toggleShuffle()" style="color:#b3b3b3;cursor:pointer;font-size:1.1rem;"></i>
+            <i class="fas fa-random" onclick="toggleShuffle()" style="color:#b3b3b3;cursor:pointer;"></i>
             <i class="fas fa-step-backward" onclick="prevTrack()" style="color:#fff;cursor:pointer;font-size:1.5rem;"></i>
-            <button onclick="togglePlay()" style="width:56px;height:56px;background:#fff;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
-                <i class="fas fa-play" id="fsPlayIcon" style="font-size:1.3rem;color:#000;"></i>
-            </button>
+            <button onclick="togglePlay()" style="width:56px;height:56px;background:#fff;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;"><i class="fas fa-play" id="fsPlayIcon" style="font-size:1.3rem;color:#000;"></i></button>
             <i class="fas fa-step-forward" onclick="nextTrack()" style="color:#fff;cursor:pointer;font-size:1.5rem;"></i>
-            <i class="fas fa-redo" onclick="toggleRepeat()" style="color:#b3b3b3;cursor:pointer;font-size:1.1rem;"></i>
+            <i class="fas fa-redo" onclick="toggleRepeat()" style="color:#b3b3b3;cursor:pointer;"></i>
         </div>
     </div>
 
@@ -912,8 +960,8 @@
             <div class="p-artist" id="playerArtist">-</div>
         </div>
         <div class="player-icons" onclick="event.stopPropagation()">
-            <i class="fas fa-heart" id="miniLikeBtn" onclick="toggleLikeCurrent()" style="font-size:0.9rem;"></i>
-            <i class="fas fa-play" id="playPauseIcon" onclick="togglePlay()" style="font-size:0.9rem;"></i>
+            <i class="fas fa-heart" id="miniLikeBtn" onclick="toggleLikeCurrent()"></i>
+            <i class="fas fa-play" id="playPauseIcon" onclick="togglePlay()"></i>
         </div>
     </div>
 
@@ -938,7 +986,12 @@
             repeat: false,
             settings: {
                 autoplay: true,
-                backgroundPlay: true
+                backgroundPlay: true,
+                publicProfile: true,
+                showActivity: true,
+                dataCollection: true,
+                audioQuality: 'auto',
+                crossfade: '0'
             },
             
             init() {
@@ -948,20 +1001,25 @@
             },
             
             loadSettings() {
-                const saved = localStorage.getItem('darksound_settings');
+                const key = currentUser ? `settings_${currentUser}` : 'darksound_settings';
+                const saved = localStorage.getItem(key);
                 if (saved) this.settings = {...this.settings, ...JSON.parse(saved)};
             },
             
             saveSettings() {
-                localStorage.setItem('darksound_settings', JSON.stringify(this.settings));
+                const key = currentUser ? `settings_${currentUser}` : 'darksound_settings';
+                localStorage.setItem(key, JSON.stringify(this.settings));
             },
             
             setupMediaSession() {
                 if ('mediaSession' in navigator) {
-                    navigator.mediaSession.setActionHandler('play', () => this.togglePlay());
-                    navigator.mediaSession.setActionHandler('pause', () => this.togglePlay());
+                    navigator.mediaSession.setActionHandler('play', () => togglePlay());
+                    navigator.mediaSession.setActionHandler('pause', () => togglePlay());
                     navigator.mediaSession.setActionHandler('previoustrack', () => prevTrack());
                     navigator.mediaSession.setActionHandler('nexttrack', () => nextTrack());
+                    navigator.mediaSession.setActionHandler('seekto', (d) => {
+                        if (this.player?.seekTo) this.player.seekTo(d.seekTime, true);
+                    });
                 }
             },
             
@@ -974,19 +1032,6 @@
                         console.log('[Background] Riproduzione continua');
                     }
                 });
-            },
-            
-            togglePlay() {
-                if (!this.player) return;
-                if (this.isPlaying) {
-                    this.player.pauseVideo();
-                    this.isPlaying = false;
-                } else {
-                    this.player.playVideo();
-                    this.isPlaying = true;
-                }
-                updatePlayIcons(this.isPlaying);
-                updateEqualizer(this.isPlaying);
             }
         };
 
@@ -997,75 +1042,44 @@
         let likedSongs = JSON.parse(localStorage.getItem(currentUser ? `liked_${currentUser}` : 'darksound_liked') || '[]');
         let downloadedTracks = JSON.parse(localStorage.getItem(currentUser ? `downloads_${currentUser}` : 'darksound_downloads') || '[]');
         let userPlaylists = JSON.parse(localStorage.getItem(currentUser ? `playlists_${currentUser}` : 'darksound_playlists') || '[]');
+        let autoPlaylists = JSON.parse(localStorage.getItem(currentUser ? `auto_playlists_${currentUser}` : 'darksound_auto_playlists') || '[]');
         let historyTracks = JSON.parse(localStorage.getItem(currentUser ? `history_${currentUser}` : 'darksound_history') || '[]');
         let followedArtists = JSON.parse(localStorage.getItem(currentUser ? `followed_artists_${currentUser}` : 'darksound_followed_artists') || '[]');
+        let friendsList = JSON.parse(localStorage.getItem(currentUser ? `friends_${currentUser}` : 'darksound_friends') || '[]');
+        let allUsers = JSON.parse(localStorage.getItem('darksound_all_users') || '[]');
+        let globalPublicPlaylists = JSON.parse(localStorage.getItem('darksound_global_public_playlists') || '[]');
         let currentLibTab = 'liked';
         let selectedTrackForPlaylist = null;
         let currentArtistPage = '';
         let progressInterval = null;
         let searchTimer = null;
-        let isShuffleActive = false;
-        let isRepeatActive = false;
         let tempAuthName = '';
+        let selectedArtistsTemp = [];
+        let selectedSubgenresTemp = [];
+        let selectedSubgenres = JSON.parse(localStorage.getItem(currentUser ? `subgenres_${currentUser}` : 'darksound_subgenres') || '[]');
         const API_BASE = window.location.origin;
 
         // ============ FILTRO ANTI-MIX ============
-        /**
-         * Filtra i brani per rimuovere mix, versioni alternative, remix, ecc.
-         * Mantiene solo brani originali di artisti reali
-         */
         const MIX_PATTERNS = [
-            /\bmix\b/i,
-            /\bremix\b/i,
-            /\bmashup\b/i,
-            /\bremaster(ed)?\b/i,
-            /\blive\b/i,
-            /\bacoustic\b/i,
-            /\bcover\b/i,
-            /\bkaraoke\b/i,
-            /\binstrumental\b/i,
-            /\bedit\b/i,
-            /\bextended\b/i,
-            /\bradio edit\b/i,
-            /\bbootleg\b/i,
-            /\bvip\b/i,
-            /\bflip\b/i,
-            /\bbest of\b/i,
-            /\bgreatest hits\b/i,
-            /\bcompilation\b/i,
-            /\bplaylist\b/i,
-            /\btop 10\b/i,
-            /\btop 50\b/i,
-            /\btop 100\b/i,
-            /\bbest pop\b/i,
-            /\bbest rap\b/i,
-            /\bbest rock\b/i,
-            /\bnow that's what\b/i,
-            /\babsolute\b/i,
-            /\bessential\b/i,
-            /\bultimate\b/i
+            /\bmix\b/i, /\bremix\b/i, /\bmashup\b/i, /\bremaster(ed)?\b/i,
+            /\blive\b/i, /\bacoustic\b/i, /\bcover\b/i, /\bkaraoke\b/i,
+            /\binstrumental\b/i, /\bedit\b/i, /\bextended\b/i,
+            /\bradio edit\b/i, /\bbootleg\b/i, /\bvip\b/i, /\bflip\b/i,
+            /\bbest of\b/i, /\bgreatest hits\b/i, /\bcompilation\b/i,
+            /\bplaylist\b/i, /\btop 10\b/i, /\btop 50\b/i, /\btop 100\b/i,
+            /\bbest pop\b/i, /\bbest rap\b/i, /\bbest rock\b/i
         ];
 
         function isMixOrCompilation(track) {
             const title = (track.name || '').toLowerCase();
             const artist = (track.artist || '').toLowerCase();
-            
-            // Controlla se il titolo contiene pattern di mix
             for (const pattern of MIX_PATTERNS) {
                 if (pattern.test(title)) return true;
             }
-            
-            // Controlla se l'artista è un'etichetta o canale di mix
-            const compilationArtists = [
-                'various artists', 'va', 'best of', 'top hits', 'top 50',
-                'now that', 'absolute', 'essential', 'ultimate', 'hits',
-                'mix', 'remix', 'dj', 'music', 'official', 'records'
-            ];
-            
-            for (const comp of compilationArtists) {
+            const compArtists = ['various artists', 'va', 'best of', 'top hits', 'mix', 'remix', 'dj', 'official', 'records'];
+            for (const comp of compArtists) {
                 if (artist.includes(comp)) return true;
             }
-            
             return false;
         }
 
@@ -1073,7 +1087,7 @@
             return tracks.filter(track => !isMixOrCompilation(track));
         }
 
-        // ============ RICERCA ESATTA ARTISTA ============
+        // ============ RICERCA ESATTA ============
         function normalizeString(str) {
             return (str || '').toLowerCase().trim().replace(/\s+/g, ' ');
         }
@@ -1083,7 +1097,7 @@
             return tracks.filter(track => normalizeString(track.artist) === normalizedSearch);
         }
 
-        // ============ FUNZIONI MODALI ============
+        // ============ MODALI ============
         function openModal(modalId) {
             document.getElementById(modalId).classList.add('active');
             document.body.classList.add('modal-open');
@@ -1114,7 +1128,7 @@
             if (viewName === 'downloads') renderDownloads();
             if (viewName === 'stats') renderStats();
             if (viewName === 'settings') loadSettings();
-            if (viewName === 'profile') updateUserUI();
+            if (viewName === 'profile') { updateUserUI(); renderProfileFriends(); renderProfilePublicPlaylists(); }
         }
 
         function toggleProfileDrawer() {
@@ -1127,71 +1141,97 @@
             switchView('profile');
         }
 
-        function openHistoryView() {
+        function openHistoryView() { toggleProfileDrawer(); switchView('history'); renderHistory(); }
+        function openDownloadsView() { toggleProfileDrawer(); switchView('downloads'); renderDownloads(); }
+        function openStatsView() { toggleProfileDrawer(); switchView('stats'); renderStats(); }
+        function openSettingsView() { toggleProfileDrawer(); switchView('settings'); loadSettings(); }
+        function openHelpView() { toggleProfileDrawer(); switchView('help'); }
+        function openAboutView() { toggleProfileDrawer(); switchView('about'); }
+        function openLikedSongs() { switchView('liked-songs'); renderLikedSongsView(); }
+        function openFollowedArtistsModal() {
             toggleProfileDrawer();
-            switchView('history');
-            renderHistory();
+            const container = document.getElementById('followedArtistsList');
+            if (followedArtists.length === 0) {
+                container.innerHTML = '<p style="color:#b3b3b3;">Non segui nessun artista.</p>';
+            } else {
+                container.innerHTML = followedArtists.map(a => 
+                    `<div class="artist-card" onclick="openArtistPage('${a.replace(/'/g, "\\'")}')">
+                        <img src="https://picsum.photos/seed/${encodeURIComponent(a)}/100">
+                        <div><h3>${a}</h3><p>Artista seguito</p></div>
+                    </div>`
+                ).join('');
+            }
+            openModal('followed-artists-modal');
         }
-
-        function openDownloadsView() {
+        function openWrappedModal() {
             toggleProfileDrawer();
-            switchView('downloads');
-            renderDownloads();
-        }
-
-        function openStatsView() {
-            toggleProfileDrawer();
-            switchView('stats');
-            renderStats();
-        }
-
-        function openSettingsView() {
-            toggleProfileDrawer();
-            switchView('settings');
-            loadSettings();
-        }
-
-        function openHelpView() {
-            toggleProfileDrawer();
-            switchView('help');
-        }
-
-        function openAboutView() {
-            toggleProfileDrawer();
-            switchView('about');
-        }
-
-        function openLikedSongs() {
-            switchView('liked-songs');
-            renderLikedSongsView();
+            document.getElementById('statsHistoryModal').innerText = historyTracks.length;
+            openModal('wrapped-modal');
         }
 
         // ============ SETTINGS ============
         function loadSettings() {
-            const autoplayToggle = document.getElementById('toggleAutoplay');
-            const backgroundPlayToggle = document.getElementById('toggleBackgroundPlay');
-            if (autoplayToggle) autoplayToggle.className = AppState.settings.autoplay ? 'toggle-switch active' : 'toggle-switch';
-            if (backgroundPlayToggle) backgroundPlayToggle.className = AppState.settings.backgroundPlay ? 'toggle-switch active' : 'toggle-switch';
+            const s = AppState.settings;
+            document.getElementById('toggleAutoplay').className = s.autoplay ? 'toggle-switch active' : 'toggle-switch';
+            document.getElementById('toggleBackgroundPlay').className = s.backgroundPlay ? 'toggle-switch active' : 'toggle-switch';
+            document.getElementById('togglePublicProfile').className = s.publicProfile ? 'toggle-switch active' : 'toggle-switch';
+            document.getElementById('toggleShowActivity').className = s.showActivity ? 'toggle-switch active' : 'toggle-switch';
+            document.getElementById('toggleDataCollection').className = s.dataCollection ? 'toggle-switch active' : 'toggle-switch';
+            document.getElementById('audioQuality').value = s.audioQuality;
+            document.getElementById('crossfade').value = s.crossfade;
         }
 
-        function toggleSetting(settingName) {
-            AppState.settings[settingName] = !AppState.settings[settingName];
+        function toggleSetting(name) {
+            AppState.settings[name] = !AppState.settings[name];
             AppState.saveSettings();
             loadSettings();
         }
 
+        function saveAudioQuality() {
+            AppState.settings.audioQuality = document.getElementById('audioQuality').value;
+            AppState.saveSettings();
+        }
+
+        function saveCrossfade() {
+            AppState.settings.crossfade = document.getElementById('crossfade').value;
+            AppState.saveSettings();
+        }
+
+        function clearAllData() {
+            if (confirm('Cancellare tutti i dati?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function toggleFaq(id) {
+            const el = document.getElementById(id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function sendFeedback() { alert('Grazie per il feedback!'); }
+        function reportBug() { alert('Grazie per la segnalazione!'); }
+
         // ============ STATS ============
         function renderStats() {
             document.getElementById('statsLikedSongs').innerText = likedSongs.length;
-            document.getElementById('statsPlaylists').innerText = userPlaylists.length;
-            const friends = JSON.parse(localStorage.getItem(currentUser ? `friends_${currentUser}` : 'darksound_friends') || '[]');
-            document.getElementById('statsFriends').innerText = friends.length;
+            document.getElementById('statsPlaylists').innerText = userPlaylists.length + autoPlaylists.length;
+            document.getElementById('statsFriends').innerText = friendsList.length;
             document.getElementById('statsHistory').innerText = historyTracks.length;
+            document.getElementById('statsDownloads').innerText = downloadedTracks.length;
+            document.getElementById('statsArtistsFollowed').innerText = followedArtists.length;
+            
+            const artistCount = {};
+            historyTracks.forEach(t => { artistCount[t.artist] = (artistCount[t.artist] || 0) + 1; });
+            const sorted = Object.entries(artistCount).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            const topList = document.getElementById('topArtistsList');
+            topList.innerHTML = sorted.length === 0 ? '<p style="color:#b3b3b3;">Nessun dato.</p>' : 
+                sorted.map(([artist, count], i) => `<div class="track-row"><div class="track-row-left"><span class="track-num">${i+1}</span><div class="track-meta"><h4>${artist}</h4><p>${count} ascolti</p></div></div></div>`).join('');
         }
 
         // ============ STORIA E DOWNLOAD ============
         function addToHistory(track) {
-            if (!track || !track.id) return;
+            if (!track?.id) return;
             historyTracks = historyTracks.filter(t => t.id !== track.id);
             historyTracks.unshift({...track, listenedAt: Date.now()});
             historyTracks = historyTracks.slice(0, 50);
@@ -1200,74 +1240,87 @@
         }
 
         function renderHistory() {
-            const container = document.getElementById('historyList');
-            if (!container) return;
+            const c = document.getElementById('historyList');
             if (historyTracks.length === 0) {
-                container.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Nessun brano ascoltato.</p>';
+                c.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Nessun brano ascoltato.</p>';
                 return;
             }
-            container.innerHTML = historyTracks.map((t, idx) => `
-                <div class="track-row" onclick="playFromHistory(${idx})">
+            c.innerHTML = historyTracks.map((t, i) => `
+                <div class="track-row" onclick="playFromHistory(${i})">
                     <div class="track-row-left">
-                        <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${idx}/200'">
+                        <span class="track-num">${i+1}</span>
+                        <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${i}/100'">
                         <div class="track-meta"><h4>${t.name}</h4><p>${t.artist}</p></div>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
         function renderDownloads() {
-            const container = document.getElementById('downloadsList');
-            if (!container) return;
+            const c = document.getElementById('downloadsList');
             if (downloadedTracks.length === 0) {
-                container.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Nessun brano scaricato.</p>';
+                c.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Nessun brano scaricato.</p>';
                 return;
             }
             renderTracksList(downloadedTracks, 'downloadsList', downloadedTracks);
         }
 
-        function playFromHistory(index) {
-            if (index >= 0 && index < historyTracks.length) {
+        function playFromHistory(i) {
+            if (i >= 0 && i < historyTracks.length) {
                 playSelectedTrack(
-                    btoa(unescape(encodeURIComponent(JSON.stringify(historyTracks[index])))),
+                    btoa(unescape(encodeURIComponent(JSON.stringify(historyTracks[i])))),
                     btoa(unescape(encodeURIComponent(JSON.stringify(historyTracks)))),
-                    index
+                    i
                 );
             }
         }
 
         // ============ FUNZIONI PRINCIPALI ============
         function hideSplashScreen() {
-            const splash = document.getElementById('splash-screen');
-            if (splash) { splash.classList.add('hidden'); setTimeout(() => splash.style.display = 'none', 600); }
+            const s = document.getElementById('splash-screen');
+            if (s) { s.classList.add('hidden'); setTimeout(() => s.style.display = 'none', 600); }
         }
 
         window.onload = function() {
             AppState.init();
             updateUserUI();
             loadHomeTracks();
+            loadFriendsList();
+            loadAllUsers();
+            loadSettings();
             setTimeout(hideSplashScreen, 2000);
             if (!currentUser) setTimeout(() => openModal('auth-modal'), 2100);
         };
 
         function updateUserUI() {
-            const dispName = currentUser || 'Ospite';
-            const avatarChar = userProfile?.avatar || dispName.charAt(0).toUpperCase();
-            document.getElementById('pillUserNameBtn').innerText = avatarChar;
-            document.getElementById('drawerUserName').innerText = dispName;
-            document.getElementById('drawerAvatarInitial').innerText = avatarChar;
-            document.getElementById('profileAvatarLarge').innerText = avatarChar;
-            document.getElementById('profileNameLarge').innerText = dispName;
+            const name = currentUser || 'Ospite';
+            const avatar = userProfile?.avatar || name.charAt(0).toUpperCase();
+            document.getElementById('pillUserNameBtn').innerText = avatar;
+            document.getElementById('drawerUserName').innerText = name;
+            document.getElementById('drawerAvatarInitial').innerText = avatar;
+            document.getElementById('profileAvatarLarge').innerText = avatar;
+            document.getElementById('profileNameLarge').innerText = name;
             document.getElementById('profileGenreLarge').innerText = userProfile?.genre || 'Pop';
+            document.getElementById('profileBioLarge').innerText = userProfile?.bio || 'Nessuna bio ancora.';
+            if (currentUser) document.getElementById('homeWelcomeTitle').innerText = `Ciao, ${currentUser}`;
         }
 
         function saveUserData() {
-            const prefix = currentUser ? currentUser : 'darksound';
-            localStorage.setItem(`${currentUser ? `liked_${currentUser}` : 'darksound_liked'}`, JSON.stringify(likedSongs));
-            localStorage.setItem(`${currentUser ? `downloads_${currentUser}` : 'darksound_downloads'}`, JSON.stringify(downloadedTracks));
-            localStorage.setItem(`${currentUser ? `playlists_${currentUser}` : 'darksound_playlists'}`, JSON.stringify(userPlaylists));
-            localStorage.setItem(`${currentUser ? `history_${currentUser}` : 'darksound_history'}`, JSON.stringify(historyTracks));
-            localStorage.setItem(`${currentUser ? `followed_artists_${currentUser}` : 'darksound_followed_artists'}`, JSON.stringify(followedArtists));
+            if (!currentUser) return;
+            localStorage.setItem(`liked_${currentUser}`, JSON.stringify(likedSongs));
+            localStorage.setItem(`downloads_${currentUser}`, JSON.stringify(downloadedTracks));
+            localStorage.setItem(`playlists_${currentUser}`, JSON.stringify(userPlaylists));
+            localStorage.setItem(`auto_playlists_${currentUser}`, JSON.stringify(autoPlaylists));
+            localStorage.setItem(`history_${currentUser}`, JSON.stringify(historyTracks));
+            localStorage.setItem(`followed_artists_${currentUser}`, JSON.stringify(followedArtists));
+            localStorage.setItem(`friends_${currentUser}`, JSON.stringify(friendsList));
+            if (userProfile) localStorage.setItem(`profile_${currentUser}`, JSON.stringify(userProfile));
+        }
+
+        function syncGlobalPublicPlaylists() {
+            const others = globalPublicPlaylists.filter(p => p.owner !== currentUser);
+            const mine = userPlaylists.filter(p => p.visibility === 'public').map(p => ({...p, owner: currentUser}));
+            globalPublicPlaylists = [...others, ...mine];
+            localStorage.setItem('darksound_global_public_playlists', JSON.stringify(globalPublicPlaylists));
         }
 
         function logoutUser() {
@@ -1278,18 +1331,12 @@
             openModal('auth-modal');
         }
 
-        function openAuthModal() {
-            toggleProfileDrawer();
-            openModal('auth-modal');
-        }
+        function openAuthModal() { toggleProfileDrawer(); openModal('auth-modal'); }
 
         function proceedToOnboarding() {
             const name = document.getElementById('authEmail').value.trim();
             if (!name) return;
             tempAuthName = name;
-            currentUser = name;
-            localStorage.setItem('darksound_current_user', name);
-            const allUsers = JSON.parse(localStorage.getItem('darksound_all_users') || '[]');
             if (!allUsers.includes(name)) { allUsers.push(name); localStorage.setItem('darksound_all_users', JSON.stringify(allUsers)); }
             closeModal('auth-modal');
             openModal('onboarding-modal');
@@ -1303,10 +1350,11 @@
 
         function completeOnboarding() {
             currentUser = tempAuthName;
-            const selectedGenres = Array.from(document.querySelectorAll('.genre-tag.selected')).map(el => el.innerText.replace(/^[^\w\s]+\s*/, ''));
+            localStorage.setItem('darksound_current_user', currentUser);
+            const genres = Array.from(document.querySelectorAll('.genre-tag.selected')).map(el => el.innerText.replace(/^[^\w\s]+\s*/, ''));
             const favArtist = document.getElementById('favArtistInput').value.trim();
-            userPreferences = { genres: selectedGenres.length > 0 ? selectedGenres : ['Pop'], artist: favArtist || 'Hit Italia' };
-            userProfile = { name: currentUser, bio: '', avatar: currentUser.charAt(0).toUpperCase(), genre: selectedGenres[0] || 'Pop' };
+            userPreferences = { genres: genres.length > 0 ? genres : ['Pop'], artist: favArtist || 'Hit Italia' };
+            userProfile = { name: currentUser, bio: '', avatar: currentUser.charAt(0).toUpperCase(), genre: genres[0] || 'Pop' };
             localStorage.setItem(`prefs_${currentUser}`, JSON.stringify(userPreferences));
             localStorage.setItem(`profile_${currentUser}`, JSON.stringify(userProfile));
             likedSongs = JSON.parse(localStorage.getItem(`liked_${currentUser}`) || '[]');
@@ -1319,103 +1367,91 @@
         }
 
         async function loadHomeTracks() {
-            const container = document.getElementById('radioTracksContainer');
-            const genre = userPreferences?.genres?.[0] || 'Hit Italia';
+            const c = document.getElementById('radioTracksContainer');
+            const query = userPreferences?.artist !== 'Hit Italia' ? userPreferences?.artist : (userPreferences?.genres?.[0] || 'Hit Italia');
             try {
-                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(genre)}`);
+                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
                 let tracks = await res.json();
-                // Filtra per rimuovere mix e compilation
                 tracks = filterOriginalTracks(tracks);
-                if (tracks.length === 0) {
-                    container.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Nessun brano trovato.</p>';
-                    return;
-                }
+                if (tracks.length === 0) { c.innerHTML = '<p style="color:#b3b3b3;">Nessun brano.</p>'; return; }
                 renderTracksList(tracks.slice(0, 10), 'radioTracksContainer', tracks.slice(0, 10));
-            } catch(e) {
-                container.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Errore di caricamento.</p>';
-            }
+            } catch(e) { c.innerHTML = '<p style="color:#b3b3b3;">Errore.</p>'; }
         }
 
         // ============ SEARCH ============
+        function searchByGenre(genre) {
+            document.getElementById('spotifySearchInput').value = genre;
+            handleSearchInput(genre);
+        }
+
         function handleSearchInput(val) {
             clearTimeout(searchTimer);
+            const genreSection = document.getElementById('genreSearchSection');
+            const results = document.getElementById('searchResultsContainer');
             if (val.trim().length < 2) {
-                document.getElementById('searchResultsContainer').innerHTML = '';
+                genreSection.style.display = 'block';
+                results.innerHTML = '';
                 return;
             }
+            genreSection.style.display = 'none';
             searchTimer = setTimeout(() => executeSearch(val), 300);
         }
 
         async function executeSearch(query) {
             const container = document.getElementById('searchResultsContainer');
-            container.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Ricerca...</p>';
-            
+            container.innerHTML = '<p style="color:#b3b3b3;">Ricerca...</p>';
             try {
                 const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
                 let tracks = await res.json();
-                
-                // Filtra per rimuovere mix
                 tracks = filterOriginalTracks(tracks);
                 
-                // Filtra per artista esatto
                 const exactArtistTracks = filterTracksByExactArtist(tracks, query);
-                
                 let html = '';
                 
-                // Trova artisti unici dai brani originali
-                const artists = [...new Set(tracks.map(t => t.artist))].slice(0, 8);
-                
-                // Se c'è corrispondenza esatta artista, mostra prima l'artista
                 if (exactArtistTracks.length > 0) {
                     const artistName = exactArtistTracks[0].artist;
                     html += `<div class="section-title">Artista</div>`;
                     html += `<div class="artist-card" onclick="openArtistPage('${artistName.replace(/'/g, "\\'")}', '${exactArtistTracks[0].image}')">
                         <img src="${exactArtistTracks[0].image}" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(artistName)}/100'">
-                        <div class="artist-card-info"><h3>${artistName}</h3><p>Artista</p></div>
+                        <div><h3>${artistName}</h3><p>Artista</p></div>
                     </div>`;
-                    
-                    // Mostra i brani dell'artista
                     html += `<div class="section-title">Brani di ${artistName}</div>`;
                     html += exactArtistTracks.slice(0, 10).map((t, i) => renderSingleTrackRow(t, i, exactArtistTracks)).join('');
-                } else if (artists.length > 0) {
-                    // Mostra artisti trovati
-                    html += `<div class="section-title">Artisti</div>`;
-                    html += artists.map(artist => {
-                        const img = tracks.find(t => t.artist === artist)?.image || '';
-                        return `<div class="artist-card" onclick="openArtistPage('${artist.replace(/'/g, "\\'")}', '${img}')">
-                            <img src="${img || 'https://picsum.photos/seed/' + encodeURIComponent(artist) + '/100'}" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(artist)}/100'">
-                            <div class="artist-card-info"><h3>${artist}</h3><p>Artista</p></div>
-                        </div>`;
-                    }).join('');
-                    
-                    // Mostra brani pertinenti
-                    html += `<div class="section-title">Brani</div>`;
-                    html += tracks.slice(0, 10).map((t, i) => renderSingleTrackRow(t, i, tracks)).join('');
+                } else {
+                    const artists = [...new Set(tracks.map(t => t.artist))].slice(0, 8);
+                    if (artists.length > 0) {
+                        html += `<div class="section-title">Artisti</div>`;
+                        html += artists.map(a => {
+                            const img = tracks.find(t => t.artist === a)?.image || '';
+                            return `<div class="artist-card" onclick="openArtistPage('${a.replace(/'/g, "\\'")}', '${img}')">
+                                <img src="${img || 'https://picsum.photos/seed/' + encodeURIComponent(a) + '/100'}" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(a)}/100'">
+                                <div><h3>${a}</h3><p>Artista</p></div>
+                            </div>`;
+                        }).join('');
+                    }
+                    if (tracks.length > 0) {
+                        html += `<div class="section-title">Brani</div>`;
+                        html += tracks.slice(0, 10).map((t, i) => renderSingleTrackRow(t, i, tracks)).join('');
+                    }
                 }
                 
-                if (html === '') {
-                    html = '<p style="color:#b3b3b3;font-size:0.85rem;">Nessun risultato trovato.</p>';
-                }
-                
-                container.innerHTML = html;
+                container.innerHTML = html || '<p style="color:#b3b3b3;">Nessun risultato.</p>';
             } catch(e) {
-                container.innerHTML = '<p style="color:#f15e6c;font-size:0.85rem;">Errore di ricerca.</p>';
+                container.innerHTML = '<p style="color:#f15e6c;">Errore.</p>';
             }
         }
 
         // ============ TRACK RENDERING ============
         function renderSingleTrackRow(t, idx, sectionTracks) {
             const isLiked = likedSongs.some(s => s.id === t.id);
+            const isDownloaded = downloadedTracks.some(s => s.id === t.id);
             const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
             const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(sectionTracks || []))));
             return `<div class="track-row" onclick="playSelectedTrack('${trackJson}', '${queueJson}', ${idx})">
                 <div class="track-row-left">
-                    <span class="track-number">${idx + 1}</span>
+                    <span class="track-num">${idx + 1}</span>
                     <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${idx}/100'">
-                    <div class="track-meta">
-                        <h4>${t.name}</h4>
-                        <p>${t.artist}</p>
-                    </div>
+                    <div class="track-meta"><h4>${t.name}</h4><p>${t.artist}</p></div>
                 </div>
                 <div class="track-actions" onclick="event.stopPropagation()">
                     <i class="fas fa-folder-plus" onclick="openPlaylistSelectorForTrackObj('${trackJson}')"></i>
@@ -1426,13 +1462,11 @@
         }
 
         function renderTracksList(tracks, containerId, sectionTracks) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            if (!tracks || tracks.length === 0) {
-                container.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Nessun elemento.</p>';
-                return;
-            }
-            container.innerHTML = tracks.map((t, i) => renderSingleTrackRow(t, i, sectionTracks)).join('');
+            const c = document.getElementById(containerId);
+            if (!c) return;
+            c.innerHTML = (!tracks || tracks.length === 0) 
+                ? '<p style="color:#b3b3b3;font-size:0.85rem;">Nessun elemento.</p>'
+                : tracks.map((t, i) => renderSingleTrackRow(t, i, sectionTracks)).join('');
         }
 
         // ============ ARTIST PAGE ============
@@ -1441,14 +1475,14 @@
             currentArtistPage = artistName;
             document.getElementById('artistNameTitle').innerText = artistName;
             updateFollowButtonState(artistName);
-            
             const container = document.getElementById('artistTracksContainer');
-            container.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Caricamento...</p>';
+            const similarContainer = document.getElementById('similarTracksContainer');
+            container.innerHTML = '<p style="color:#b3b3b3;">Caricamento...</p>';
+            similarContainer.innerHTML = '<p style="color:#b3b3b3;">Caricamento...</p>';
             
             try {
                 const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artistName)}`);
                 let tracks = await res.json();
-                // Filtra mix e poi per artista esatto
                 tracks = filterOriginalTracks(tracks);
                 tracks = filterTracksByExactArtist(tracks, artistName);
                 
@@ -1456,10 +1490,33 @@
                     document.getElementById('artistHeroImg').src = tracks[0].image;
                     renderTracksList(tracks, 'artistTracksContainer', tracks);
                 } else {
-                    container.innerHTML = `<p style="color:#b3b3b3;font-size:0.85rem;">Nessun brano trovato per ${artistName}.</p>`;
+                    container.innerHTML = `<p style="color:#b3b3b3;">Nessun brano trovato per ${artistName}.</p>`;
+                }
+                
+                // Brani simili
+                const correlations = {
+                    'sfera ebbasta': ['Lazza', 'Capo Plaza'],
+                    'lazza': ['Sfera Ebbasta', 'Capo Plaza'],
+                    'travis scott': ['Drake', 'Future'],
+                    'drake': ['Travis Scott', 'Future']
+                };
+                const related = correlations[artistName.toLowerCase()] || [];
+                let similarTracks = [];
+                for (const rel of related) {
+                    try {
+                        const sRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(rel)}`);
+                        const sTracks = await sRes.json();
+                        similarTracks.push(...filterTracksByExactArtist(filterOriginalTracks(sTracks), rel).slice(0, 2));
+                    } catch(e) {}
+                }
+                similarTracks = similarTracks.filter((t, i, self) => self.findIndex(x => x.id === t.id) === i);
+                if (similarTracks.length > 0) {
+                    renderTracksList(similarTracks.slice(0, 6), 'similarTracksContainer', similarTracks);
+                } else {
+                    similarContainer.innerHTML = '<p style="color:#b3b3b3;">Nessun brano simile.</p>';
                 }
             } catch(e) {
-                container.innerHTML = '<p style="color:#f15e6c;font-size:0.85rem;">Errore.</p>';
+                container.innerHTML = '<p style="color:#f15e6c;">Errore.</p>';
             }
         }
 
@@ -1485,12 +1542,11 @@
             updateFollowButtonState(currentArtistPage);
         }
 
-        // ============ PLAYER FUNCTIONS ============
+        // ============ PLAYER ============
         function playSelectedTrack(encodedTrack, encodedQueue, index) {
             try {
                 const t = JSON.parse(decodeURIComponent(escape(atob(encodedTrack))));
                 const queue = JSON.parse(decodeURIComponent(escape(atob(encodedQueue))));
-                
                 AppState.queue = queue;
                 AppState.queueIndex = index;
                 AppState.currentTrack = t;
@@ -1510,30 +1566,19 @@
                 
                 if (AppState.player && AppState.playerReady) {
                     AppState.player.loadVideoById(t.id);
-                    setTimeout(() => {
-                        AppState.player.playVideo();
-                        AppState.isPlaying = true;
-                        updatePlayIcons(true);
-                        updateEqualizer(true);
-                    }, 300);
+                    setTimeout(() => { AppState.player.playVideo(); AppState.isPlaying = true; updatePlayIcons(true); }, 300);
                 } else {
                     document.getElementById('youtube-player').innerHTML = 
                         `<iframe width="1" height="1" src="https://www.youtube.com/embed/${t.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}&playsinline=1&controls=0&rel=0"></iframe>`;
                     AppState.isPlaying = true;
                     updatePlayIcons(true);
-                    updateEqualizer(true);
                 }
-            } catch(err) {
-                console.error('[Player] Errore:', err);
-            }
+            } catch(err) { console.error('[Player] Errore:', err); }
         }
 
         function updateEqualizer(playing) {
             const eq = document.getElementById('playerEqualizer');
-            if (eq) {
-                if (playing) eq.classList.remove('paused');
-                else eq.classList.add('paused');
-            }
+            if (eq) { if (playing) eq.classList.remove('paused'); else eq.classList.add('paused'); }
         }
 
         function onYouTubeIframeAPIReady() {
@@ -1556,12 +1601,8 @@
                             clearInterval(progressInterval);
                         }
                         if (e.data === YT.PlayerState.ENDED) {
-                            if (isRepeatActive) {
-                                AppState.player.seekTo(0);
-                                AppState.player.playVideo();
-                            } else {
-                                nextTrack();
-                            }
+                            if (AppState.repeat) { AppState.player.seekTo(0); AppState.player.playVideo(); }
+                            else { nextTrack(); }
                         }
                     }
                 }
@@ -1569,41 +1610,44 @@
         }
 
         function togglePlay() {
-            AppState.togglePlay();
+            if (!AppState.player) return;
+            if (AppState.isPlaying) {
+                AppState.player.pauseVideo();
+                AppState.isPlaying = false;
+            } else {
+                AppState.player.playVideo();
+                AppState.isPlaying = true;
+            }
+            updatePlayIcons(AppState.isPlaying);
+            updateEqualizer(AppState.isPlaying);
         }
 
         function updatePlayIcons(playing) {
-            const ppIcon = document.getElementById('playPauseIcon');
-            const fsIcon = document.getElementById('fsPlayIcon');
-            if (ppIcon) ppIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
-            if (fsIcon) fsIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
+            document.getElementById('playPauseIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
+            document.getElementById('fsPlayIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
         }
 
         function nextTrack() {
-            const queue = AppState.queue;
-            const index = AppState.queueIndex;
-            if (queue.length === 0) return;
-            
-            if (isShuffleActive) {
-                let r = Math.floor(Math.random() * queue.length);
-                if (r === index && queue.length > 1) r = (r + 1) % queue.length;
+            const q = AppState.queue;
+            const i = AppState.queueIndex;
+            if (q.length === 0) return;
+            if (AppState.shuffle) {
+                let r = Math.floor(Math.random() * q.length);
+                if (r === i && q.length > 1) r = (r + 1) % q.length;
                 playQueueIndex(r);
-            } else if (index < queue.length - 1) {
-                playQueueIndex(index + 1);
-            } else if (isRepeatActive) {
-                playQueueIndex(0);
+            } else if (i < q.length - 1) {
+                playQueueIndex(i + 1);
             }
         }
 
         function prevTrack() {
-            const index = AppState.queueIndex;
-            if (index > 0) playQueueIndex(index - 1);
+            if (AppState.queueIndex > 0) playQueueIndex(AppState.queueIndex - 1);
         }
 
         function playQueueIndex(index) {
-            const queue = AppState.queue;
-            if (index >= 0 && index < queue.length) {
-                const t = queue[index];
+            const q = AppState.queue;
+            if (index >= 0 && index < q.length) {
+                const t = q[index];
                 AppState.queueIndex = index;
                 AppState.currentTrack = t;
                 document.getElementById('playerBar').style.display = 'flex';
@@ -1623,18 +1667,13 @@
             }
         }
 
-        function toggleShuffle() {
-            isShuffleActive = !isShuffleActive;
-        }
-
-        function toggleRepeat() {
-            isRepeatActive = !isRepeatActive;
-        }
+        function toggleShuffle() { AppState.shuffle = !AppState.shuffle; }
+        function toggleRepeat() { AppState.repeat = !AppState.repeat; }
 
         function startProgressTracker() {
             clearInterval(progressInterval);
             progressInterval = setInterval(() => {
-                if (AppState.player && AppState.player.getCurrentTime && AppState.player.getDuration) {
+                if (AppState.player?.getCurrentTime && AppState.player?.getDuration) {
                     const cur = AppState.player.getCurrentTime();
                     const dur = AppState.player.getDuration();
                     if (dur) {
@@ -1650,9 +1689,7 @@
             const bg = document.getElementById('progressBarBg');
             const rect = bg.getBoundingClientRect();
             const ratio = (event.clientX - rect.left) / rect.width;
-            if (AppState.player && AppState.player.getDuration) {
-                AppState.player.seekTo(AppState.player.getDuration() * ratio, true);
-            }
+            if (AppState.player?.getDuration) AppState.player.seekTo(AppState.player.getDuration() * ratio, true);
         }
 
         function formatTime(s) {
@@ -1692,11 +1729,10 @@
 
         function updateLikeButtonUI() {
             const isLiked = likedSongs.some(s => s.id === AppState.currentTrack?.id);
-            const miniLike = document.getElementById('miniLikeBtn');
-            if (miniLike) {
-                miniLike.className = isLiked ? 'fas fa-heart' : 'far fa-heart';
-                miniLike.style.color = isLiked ? '#1db954' : '';
-            }
+            const mini = document.getElementById('miniLikeBtn');
+            const fs = document.getElementById('fsLikeBtn');
+            if (mini) { mini.className = isLiked ? 'fas fa-heart' : 'far fa-heart'; mini.style.color = isLiked ? '#1db954' : ''; }
+            if (fs) fs.style.color = isLiked ? '#1db954' : '#b3b3b3';
         }
 
         function toggleDownloadTrackObj(trackJson) {
@@ -1707,42 +1743,40 @@
             saveUserData();
         }
 
+        function toggleDownloadCurrent() {
+            if (!AppState.currentTrack?.id) return;
+            const exists = downloadedTracks.findIndex(s => s.id === AppState.currentTrack.id);
+            if (exists > -1) downloadedTracks.splice(exists, 1);
+            else downloadedTracks.push(AppState.currentTrack);
+            saveUserData();
+        }
+
         function downloadAllLikedSongs() {
-            likedSongs.forEach(t => {
-                if (!downloadedTracks.some(s => s.id === t.id)) downloadedTracks.push(t);
-            });
+            likedSongs.forEach(t => { if (!downloadedTracks.some(s => s.id === t.id)) downloadedTracks.push(t); });
             saveUserData();
             alert(`${likedSongs.length} brani aggiunti ai download!`);
         }
 
         // ============ LIBRARY ============
         function renderLibraryContent() {
-            const container = document.getElementById('libContentList');
+            const c = document.getElementById('libContentList');
             if (currentLibTab === 'downloads') {
                 renderTracksList(downloadedTracks, 'libContentList', downloadedTracks);
             } else if (currentLibTab === 'playlists') {
-                if (userPlaylists.length === 0) {
-                    container.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Nessuna playlist.</p>';
-                    return;
-                }
-                container.innerHTML = userPlaylists.map(pl => `
+                const all = [...userPlaylists, ...autoPlaylists];
+                c.innerHTML = all.length === 0 ? '<p style="color:#b3b3b3;">Nessuna playlist.</p>' : all.map(pl => `
                     <div class="track-row" onclick="openUserPlaylistDetails('${pl.id}')">
                         <div class="track-row-left">
-                            <div style="width:48px;height:48px;background:linear-gradient(135deg,#1db954,#3d91f4);border-radius:4px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:#fff;"></i></div>
+                            <div style="width:48px;height:48px;background:${pl.autoGenerated ? 'linear-gradient(135deg,#a855f7,#ec4899)' : 'linear-gradient(135deg,#1db954,#3d91f4)'};border-radius:4px;display:flex;align-items:center;justify-content:center;"><i class="fas ${pl.autoGenerated ? 'fa-wand-magic-sparkles' : 'fa-list'}" style="color:#fff;"></i></div>
                             <div class="track-meta"><h4>${pl.name}</h4><p>${pl.tracks.length} brani</p></div>
                         </div>
-                    </div>
-                `).join('');
+                    </div>`).join('');
             }
         }
 
         function switchLibraryTab(tab) {
             currentLibTab = tab;
-            if (tab === 'liked') {
-                switchView('liked-songs');
-                renderLikedSongsView();
-                return;
-            }
+            if (tab === 'liked') { switchView('liked-songs'); renderLikedSongsView(); return; }
             switchView('library');
             document.getElementById('btnTabLiked').style.background = tab === 'liked' ? '#fff' : '#181818';
             document.getElementById('btnTabLiked').style.color = tab === 'liked' ? '#000' : '#fff';
@@ -1773,11 +1807,18 @@
 
         function submitNewPlaylist() {
             const name = document.getElementById('newPlaylistName').value.trim();
+            const visibility = document.getElementById('newPlaylistVisibility').value;
             if (!name) return;
-            userPlaylists.push({ id: 'pl_' + Date.now(), name, visibility: 'private', owner: currentUser, tracks: [] });
+            userPlaylists.push({ id: 'pl_' + Date.now(), name, visibility, owner: currentUser, tracks: [] });
             saveUserData();
+            syncGlobalPublicPlaylists();
             closeModal('new-playlist-modal');
             renderLibraryContent();
+        }
+
+        function openPlaylistSelectorForCurrent() {
+            selectedTrackForPlaylist = AppState.currentTrack;
+            showPlaylistSelectorModal();
         }
 
         function openPlaylistSelectorForTrackObj(trackJson) {
@@ -1786,16 +1827,16 @@
         }
 
         function showPlaylistSelectorModal() {
-            const listEl = document.getElementById('playlistSelectList');
-            if (!listEl) return;
-            listEl.innerHTML = userPlaylists.length === 0
-                ? '<p style="color:#b3b3b3;">Nessuna playlist.</p>'
-                : userPlaylists.map(pl => `<div class="track-row" onclick="addTrackToPlaylist('${pl.id}')"><div class="track-meta"><h4>${pl.name}</h4></div></div>`).join('');
+            const list = document.getElementById('playlistSelectList');
+            const all = [...userPlaylists, ...autoPlaylists];
+            list.innerHTML = all.length === 0 ? '<p style="color:#b3b3b3;">Nessuna playlist.</p>' : all.map(pl => 
+                `<div class="track-row" onclick="addTrackToPlaylist('${pl.id}')"><div class="track-meta"><h4>${pl.name}</h4><p>${pl.tracks.length} brani</p></div><i class="fas fa-plus" style="color:#1db954;"></i></div>`
+            ).join('');
             openModal('playlist-select-modal');
         }
 
         function addTrackToPlaylist(pid) {
-            const pl = userPlaylists.find(p => p.id === pid);
+            const pl = userPlaylists.find(p => p.id === pid) || autoPlaylists.find(p => p.id === pid);
             if (pl && selectedTrackForPlaylist) {
                 if (!pl.tracks.some(t => t.id === selectedTrackForPlaylist.id)) {
                     pl.tracks.push(selectedTrackForPlaylist);
@@ -1807,15 +1848,13 @@
         }
 
         function openUserPlaylistDetails(pid) {
-            const pl = userPlaylists.find(p => p.id === pid);
+            const pl = userPlaylists.find(p => p.id === pid) || autoPlaylists.find(p => p.id === pid);
             if (!pl) return;
             switchView('library', document.querySelectorAll('.nav-item')[2]);
             const c = document.getElementById('libContentList');
-            c.innerHTML = `<div style="margin-bottom:12px;"><button class="btn-secondary" onclick="renderLibraryContent()">Indietro</button></div><h3 style="margin-bottom:12px;">${pl.name}</h3>`;
+            c.innerHTML = `<div style="margin-bottom:12px;"><button class="btn-secondary" onclick="renderLibraryContent()">Indietro</button></div><h3 style="margin-bottom:12px;font-weight:800;">${pl.name}</h3>`;
             const div = document.createElement('div');
-            div.innerHTML = pl.tracks.length === 0
-                ? '<p style="color:#b3b3b3;">Nessun brano.</p>'
-                : pl.tracks.map((t, i) => renderSingleTrackRow(t, i, pl.tracks)).join('');
+            div.innerHTML = pl.tracks.length === 0 ? '<p style="color:#b3b3b3;">Nessun brano.</p>' : pl.tracks.map((t, i) => renderSingleTrackRow(t, i, pl.tracks)).join('');
             c.appendChild(div);
         }
 
@@ -1833,57 +1872,145 @@
             const customName = document.getElementById('playlistNameInput').value.trim();
             const progressEl = document.getElementById('importProgress');
             if (!link) return;
-
             progressEl.innerHTML = 'Analisi link...';
 
             try {
-                let playlistType = '';
-                let playlistId = '';
-                
-                if (link.includes('spotify.com/playlist/')) {
-                    playlistType = 'Spotify';
-                    playlistId = link.split('/playlist/')[1]?.split('?')[0] || '';
-                } else if (link.includes('youtube.com/playlist?list=')) {
-                    playlistType = 'YouTube';
-                    playlistId = link.split('list=')[1]?.split('&')[0] || '';
-                } else if (link.includes('soundcloud.com')) {
-                    playlistType = 'SoundCloud';
-                    playlistId = link.split('/').pop();
-                } else if (link.includes('deezer.com')) {
-                    playlistType = 'Deezer';
-                    playlistId = link.split('/').pop();
-                }
+                let type = '';
+                let id = '';
+                if (link.includes('spotify.com/playlist/')) { type = 'Spotify'; id = link.split('/playlist/')[1]?.split('?')[0] || ''; }
+                else if (link.includes('youtube.com/playlist?list=')) { type = 'YouTube'; id = link.split('list=')[1]?.split('&')[0] || ''; }
+                else if (link.includes('soundcloud.com')) { type = 'SoundCloud'; id = link.split('/').pop(); }
+                else if (link.includes('deezer.com')) { type = 'Deezer'; id = link.split('/').pop(); }
                 
                 progressEl.innerHTML = 'Ricerca brani...';
-                const searchQuery = playlistId || `Top Hits ${playlistType}`;
-                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(searchQuery)}`);
+                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(id || 'Top Hits')}`);
                 let tracks = await res.json();
-                
-                // Filtra mix
                 tracks = filterOriginalTracks(tracks);
                 
-                const playlistName = customName || `Playlist da ${playlistType}`;
-                
+                const name = customName || `Playlist da ${type}`;
                 if (tracks.length > 0) {
-                    userPlaylists.push({
-                        id: 'pl_import_' + Date.now(),
-                        name: playlistName,
-                        visibility: 'private',
-                        owner: currentUser,
-                        tracks: tracks.slice(0, 20),
-                        importedFrom: playlistType
-                    });
+                    userPlaylists.push({ id: 'pl_import_' + Date.now(), name, visibility: 'private', owner: currentUser, tracks: tracks.slice(0, 20), importedFrom: type });
                     saveUserData();
                     progressEl.innerHTML = '';
                     closeModal('import-playlist-modal');
-                    alert(`Playlist "${playlistName}" importata! ${tracks.length} brani.`);
+                    alert(`"${name}" importata! ${tracks.length} brani.`);
                 } else {
                     progressEl.innerHTML = 'Nessun brano trovato.';
                 }
-            } catch(e) {
-                progressEl.innerHTML = 'Errore durante l\'importazione.';
+            } catch(e) { progressEl.innerHTML = 'Errore.'; }
+        }
+
+        // ============ AI FUNCTIONS ============
+        function openAiDjModal() { openModal('ai-dj-modal'); }
+        function openAiPlaylistModal() { openModal('ai-playlist-modal'); }
+        function openBlendModal() {
+            const select = document.getElementById('blendFriendSelect');
+            select.innerHTML = friendsList.map(f => `<option value="${f}">${f}</option>`).join('') || '<option>Nessun amico</option>';
+            openModal('blend-modal');
+        }
+
+        async function runAiDjSelection() {
+            try {
+                const res = await fetch(`${API_BASE}/api/search?q=Top Hit`);
+                const tracks = await res.json();
+                if (tracks.length > 0) {
+                    playSelectedTrack(btoa(unescape(encodeURIComponent(JSON.stringify(tracks[0])))), btoa(unescape(encodeURIComponent(JSON.stringify(tracks)))), 0);
+                    closeModal('ai-dj-modal');
+                }
+            } catch(e) {}
+        }
+
+        async function generateAiPromptPlaylist() {
+            const prompt = document.getElementById('aiPromptInput').value.trim();
+            if (!prompt) return;
+            try {
+                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(prompt)}`);
+                const tracks = await res.json();
+                if (tracks.length > 0) {
+                    autoPlaylists.push({ id: 'pl_ai_' + Date.now(), name: `AI: ${prompt.slice(0,20)}...`, visibility: 'private', owner: currentUser, tracks: tracks.slice(0,10), autoGenerated: true });
+                    saveUserData();
+                    closeModal('ai-playlist-modal');
+                }
+            } catch(e) {}
+        }
+
+        async function createBlendPlaylist() {
+            const friend = document.getElementById('blendFriendSelect').value;
+            if (!friend) return;
+            try {
+                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(friend)}`);
+                const tracks = await res.json();
+                if (tracks.length > 0) {
+                    userPlaylists.push({ id: 'pl_blend_' + Date.now(), name: `Blend: Tu & ${friend}`, visibility: 'public', owner: currentUser, tracks: tracks.slice(0,8) });
+                    saveUserData();
+                    closeModal('blend-modal');
+                }
+            } catch(e) {}
+        }
+
+        // ============ PROFILE ============
+        function openProfileEditModal() {
+            if (!userProfile) userProfile = { name: currentUser || '', bio: '', avatar: (currentUser||'O').charAt(0).toUpperCase(), genre: 'Pop' };
+            document.getElementById('editProfileName').value = userProfile.name || '';
+            document.getElementById('editProfileBio').value = userProfile.bio || '';
+            document.getElementById('editProfileAvatar').value = userProfile.avatar || '';
+            document.getElementById('editProfileGenre').value = userProfile.genre || 'Pop';
+            openModal('profile-edit-modal');
+        }
+
+        function saveProfileChanges() {
+            const name = document.getElementById('editProfileName').value.trim();
+            const bio = document.getElementById('editProfileBio').value.trim();
+            const avatar = document.getElementById('editProfileAvatar').value.trim() || name.charAt(0).toUpperCase();
+            const genre = document.getElementById('editProfileGenre').value;
+            if (!name) return;
+            if (name !== currentUser) {
+                const keys = ['liked','downloads','playlists','auto_playlists','friends','prefs','profile','followed_artists','subgenres','settings','history'];
+                keys.forEach(k => { const old = localStorage.getItem(`${k}_${currentUser}`); if (old) { localStorage.setItem(`${k}_${name}`, old); localStorage.removeItem(`${k}_${currentUser}`); } });
+                currentUser = name;
+                localStorage.setItem('darksound_current_user', currentUser);
+            }
+            userProfile = { name, bio, avatar, genre };
+            localStorage.setItem(`profile_${currentUser}`, JSON.stringify(userProfile));
+            closeModal('profile-edit-modal');
+            updateUserUI();
+        }
+
+        function renderProfileFriends() {
+            const c = document.getElementById('profileFriendsList');
+            c.innerHTML = friendsList.length === 0 ? '<p style="color:#b3b3b3;">Nessun amico.</p>' : friendsList.map(f => `<div class="track-row"><div class="track-meta"><h4>${f}</h4></div></div>`).join('');
+        }
+
+        function renderProfilePublicPlaylists() {
+            const c = document.getElementById('profilePublicPlaylists');
+            const pubs = userPlaylists.filter(p => p.visibility === 'public');
+            c.innerHTML = pubs.length === 0 ? '<p style="color:#b3b3b3;">Nessuna playlist pubblica.</p>' : pubs.map(pl => `<div class="track-row"><div class="track-meta"><h4>${pl.name}</h4><p>${pl.tracks.length} brani</p></div></div>`).join('');
+        }
+
+        // ============ FRIENDS ============
+        function loadFriendsList() { if (currentUser) friendsList = JSON.parse(localStorage.getItem(`friends_${currentUser}`) || '[]'); renderDrawerFriends(); }
+        function renderDrawerFriends() {
+            const c = document.getElementById('drawerFriendsList');
+            c.innerHTML = friendsList.length === 0 ? '<p style="color:#b3b3b3;font-size:0.8rem;">Nessun amico.</p>' : friendsList.map(f => `<div class="track-row"><div class="track-meta"><h4>${f}</h4></div></div>`).join('');
+        }
+        function openAddFriendModal() { toggleProfileDrawer(); document.getElementById('addFriendInput').value = ''; document.getElementById('addFriendResults').innerHTML = ''; openModal('add-friend-modal'); }
+        function searchFriend() {
+            const q = document.getElementById('addFriendInput').value.trim().toLowerCase();
+            const c = document.getElementById('addFriendResults');
+            if (!q) { c.innerHTML = ''; return; }
+            const matches = allUsers.filter(u => u.toLowerCase().includes(q) && u !== currentUser && !friendsList.includes(u));
+            c.innerHTML = matches.length === 0 ? '<p style="color:#b3b3b3;">Nessun utente.</p>' : matches.map(u => `<div class="track-row" onclick="addFriend('${u}')"><div class="track-meta"><h4>${u}</h4></div><button class="btn-primary" style="width:auto;padding:6px 12px;">Aggiungi</button></div>`).join('');
+        }
+        function addFriend(f) {
+            if (!friendsList.includes(f)) {
+                friendsList.push(f);
+                localStorage.setItem(`friends_${currentUser}`, JSON.stringify(friendsList));
+                closeModal('add-friend-modal');
+                loadFriendsList();
+                alert(`${f} è ora tuo amico!`);
             }
         }
+        function loadAllUsers() { allUsers = JSON.parse(localStorage.getItem('darksound_all_users') || '[]'); if (allUsers.length === 0) { allUsers = ['Giancarlo','Claudio','Martina']; localStorage.setItem('darksound_all_users', JSON.stringify(allUsers)); } }
 
         // ============ SHARE ============
         function openShareModal() {
@@ -1891,18 +2018,8 @@
             document.getElementById('shareTrackSubtitle').innerText = `${AppState.currentTrack.name} - ${AppState.currentTrack.artist}`;
             openModal('share-modal');
         }
-
-        function copyTrackLink() {
-            navigator.clipboard.writeText(`https://www.youtube.com/watch?v=${AppState.currentTrack.id}`).then(() => {
-                closeModal('share-modal');
-                alert('Link copiato!');
-            });
-        }
-
-        function shareViaWhatsApp() {
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`Ascolta "${AppState.currentTrack.name}" su DarkSound Pro!`)}`, '_blank');
-            closeModal('share-modal');
-        }
+        function copyTrackLink() { navigator.clipboard.writeText(`https://www.youtube.com/watch?v=${AppState.currentTrack.id}`).then(() => { closeModal('share-modal'); alert('Link copiato!'); }); }
+        function shareViaWhatsApp() { window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`Ascolta "${AppState.currentTrack.name}" su DarkSound Pro!`)}`, '_blank'); closeModal('share-modal'); }
 
         function toggleFullscreen() {
             const fs = document.getElementById('fullscreen-player');
