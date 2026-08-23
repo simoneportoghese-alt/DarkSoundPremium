@@ -2309,7 +2309,8 @@
         <button class="nav-item" onclick="switchView('profile', this)"><i class="fas fa-user"></i><span>Profilo</span></button>
     </nav>
 
-       <script src="https://www.youtube.com/iframe_api"></script>
+    
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         // ============ VARIABILI GLOBALI ============
         let player = null;
@@ -2515,7 +2516,6 @@
             if (statsDownloads) statsDownloads.innerText = downloadedTracks.length;
             if (statsArtistsFollowed) statsArtistsFollowed.innerText = followedArtists.length;
             
-            // Top artists
             const topArtistsList = document.getElementById('topArtistsList');
             if (topArtistsList) {
                 const artistCount = {};
@@ -3594,35 +3594,56 @@
             const importBtn = event.target;
             importBtn.disabled = true;
             importBtn.innerText = 'Importazione...';
-            progressEl.innerHTML = '<span class="loading-spinner"></span> Analisi link...';
+            progressEl.innerHTML = '<span class="loading-spinner"></span> Analisi link Spotify...';
 
             try {
                 let playlistType = '';
                 let playlistId = '';
                 
-                if(link.includes('spotify.com')) {
+                if(link.includes('spotify.com/playlist/')) {
                     playlistType = 'Spotify';
                     playlistId = link.split('/playlist/')[1]?.split('?')[0] || '';
-                } else if(link.includes('youtube.com') || link.includes('youtu.be')) {
+                } else if(link.includes('youtube.com/playlist?list=') || link.includes('youtu.be/')) {
                     playlistType = 'YouTube';
                     playlistId = link.includes('list=') ? link.split('list=')[1].split('&')[0] : '';
                 }
                 
                 progressEl.innerHTML = `<span class="loading-spinner"></span> Ricerca brani reali da ${playlistType}...`;
                 
-                // Try to search for real tracks based on playlist
-                let searchQuery = playlistId || playlistType;
-                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(searchQuery)}`);
-                let realTracks = await res.json();
+                // Utilizza l'API di Spotify per ottenere i metadati della playlist
+                let tracks = [];
                 
-                // If no real tracks found, use clone tracks
-                if (!realTracks || realTracks.length === 0) {
-                    progressEl.innerHTML = '<span class="loading-spinner"></span> Brani non trovati, creo brani cloni...';
-                    const cloneRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent('Top Hits ' + playlistType)}`);
-                    realTracks = await cloneRes.json();
+                if (playlistType === 'Spotify' && playlistId) {
+                    // Tentativo di chiamata API Spotify (richiede token)
+                    try {
+                        const spotifyRes = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
+                            headers: {
+                                'Authorization': 'Bearer YOUR_SPOTIFY_TOKEN' // In produzione, usa OAuth
+                            }
+                        });
+                        const spotifyData = await spotifyRes.json();
+                        
+                        if (spotifyData.tracks && spotifyData.tracks.items) {
+                            tracks = spotifyData.tracks.items.map(item => ({
+                                id: 'spotify_' + item.track.id,
+                                name: item.track.name,
+                                artist: item.track.artists.map(a => a.name).join(', '),
+                                image: item.track.album.images[0]?.url || `https://picsum.photos/seed/${item.track.id}/200`
+                            }));
+                        }
+                    } catch(spotifyError) {
+                        console.log('API Spotify non accessibile, uso ricerca alternativa');
+                    }
                 }
                 
-                const tracks = realTracks.slice(0, 20);
+                // Se non ci sono brani reali, usa la ricerca interna
+                if (tracks.length === 0) {
+                    progressEl.innerHTML = '<span class="loading-spinner"></span> Ricerca brani alternativi...';
+                    const searchQuery = playlistId || `Top Hits ${playlistType}`;
+                    const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(searchQuery)}`);
+                    tracks = await res.json();
+                }
+                
                 const playlistName = customName || `Playlist da ${playlistType}`;
 
                 if(tracks.length > 0) {
@@ -3631,9 +3652,9 @@
                         name: playlistName,
                         visibility: 'private',
                         owner: currentUser,
-                        tracks: tracks,
+                        tracks: tracks.slice(0, 20),
                         importedFrom: playlistType,
-                        isClone: realTracks.length === 0
+                        isClone: tracks[0]?.id?.startsWith('spotify_') === false
                     });
                     saveUserData();
                     progressEl.innerHTML = '';
@@ -3939,8 +3960,6 @@
         
         function openAddToPlaylistSearch() {
             if (!currentPlaylistId) return;
-            const searchInput = document.getElementById('spotifySearchInput');
-            searchInput.value = '';
             switchView('search', document.querySelectorAll('.nav-item')[1]);
             document.getElementById('genreSearchSection').style.display = 'none';
             document.getElementById('searchResultsContainer').innerHTML = `
@@ -4062,10 +4081,10 @@
             if (!document.hidden && isPlaying) {
                 if (player && player.playVideo) { player.playVideo(); }
             }
-            // eSound logic for background play
+            // eSound logic for background play - NON disattiva l'audio
             if (document.hidden && isPlaying && userSettings.backgroundPlay) {
-                // Keep playing in background
-                console.log('Continuing playback in background');
+                // L'audio continua a riprodursi in background
+                console.log('Riproduzione in background attiva');
             }
         });
 
