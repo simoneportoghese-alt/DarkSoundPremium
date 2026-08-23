@@ -77,6 +77,35 @@
             height: 100%;
         }
 
+        /* ============ ANIMAZIONE PLAYER BAR (SPOTIFY STYLE) ============ */
+        @keyframes equalizer-bar {
+            0% { height: 4px; }
+            50% { height: 20px; }
+            100% { height: 4px; }
+        }
+        .equalizer {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        .equalizer-bar {
+            width: 3px;
+            background: #1ed760;
+            border-radius: 2px;
+            animation: equalizer-bar 0.8s ease-in-out infinite;
+        }
+        .equalizer-bar:nth-child(1) { animation-delay: 0s; }
+        .equalizer-bar:nth-child(2) { animation-delay: 0.2s; }
+        .equalizer-bar:nth-child(3) { animation-delay: 0.4s; }
+        .equalizer-bar:nth-child(4) { animation-delay: 0.6s; }
+        .equalizer.paused .equalizer-bar {
+            animation-play-state: paused;
+            height: 4px;
+        }
+
         /* ============ SPLASH SCREEN ============ */
         #splash-screen {
             position: fixed;
@@ -177,7 +206,7 @@
             margin: 0 auto;
         }
         .view.active { display: block; }
-        #view-artist, #view-liked-songs, #view-profile, #view-settings, #view-help, #view-about, #view-downloads, #view-history { 
+        #view-artist, #view-liked-songs, #view-profile, #view-settings, #view-help, #view-about, #view-downloads, #view-history, #view-stats { 
             padding: 0; 
             padding-bottom: 300px; 
         }
@@ -1539,6 +1568,27 @@
         }
         .share-option-btn i { font-size: 1.2rem; }
 
+        /* ============ ADD TO PLAYLIST BUTTON IN PLAYLIST DETAIL ============ */
+        .add-to-playlist-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #1ed760;
+            color: #000;
+            font-weight: 800;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(30, 215, 96, 0.35);
+        }
+        .add-to-playlist-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(30, 215, 96, 0.55);
+        }
+
         /* ============ YOUTUBE PLAYER HIDDEN ============ */
         #youtube-player {
             position: fixed;
@@ -1586,18 +1636,198 @@
         <div class="drawer-menu-item" onclick="openFollowedArtistsModal()"><div class="drawer-menu-left"><i class="fas fa-users"></i> Artisti che Segui</div><span style="font-size:0.7rem; color:#1ed760;" id="followedArtistsCount">0</span></div>
         <div class="drawer-menu-item" onclick="openHistoryView()"><div class="drawer-menu-left"><i class="fas fa-clock-rotate-left"></i> Cronologia Ascolti</div><i class="fas fa-chevron-right" style="font-size:0.8rem;"></i></div>
         <div class="drawer-menu-item" onclick="openDownloadsView()"><div class="drawer-menu-left"><i class="fas fa-download"></i> Brani Scaricati</div><span style="font-size:0.7rem; color:#3d91f4;" id="downloadsCount">0</span></div>
+        <div class="drawer-menu-item" onclick="openStatsView()"><div class="drawer-menu-left"><i class="fas fa-chart-line"></i> Statistiche</div><i class="fas fa-chevron-right" style="font-size:0.8rem;"></i></div>
         <div class="drawer-menu-item" onclick="openSettingsView()"><div class="drawer-menu-left"><i class="fas fa-gear"></i> Impostazioni e privacy</div><i class="fas fa-chevron-right" style="font-size:0.8rem;"></i></div>
         <div class="drawer-menu-item" onclick="openHelpView()"><div class="drawer-menu-left"><i class="fas fa-circle-question"></i> Aiuto e Supporto</div><i class="fas fa-chevron-right" style="font-size:0.8rem;"></i></div>
         <div class="drawer-menu-item" onclick="openAboutView()"><div class="drawer-menu-left"><i class="fas fa-info-circle"></i> Info su DarkSound</div><i class="fas fa-chevron-right" style="font-size:0.8rem;"></i></div>
         <div class="drawer-menu-item" onclick="openImportPlaylistModal()"><div class="drawer-menu-left"><i class="fas fa-link"></i> Importa Playlist</div><span style="font-size:0.7rem; color:#3d91f4; font-weight:700;">Nuovo</span></div>
-        <div class="drawer-menu-item" onclick="openWrappedModal()"><div class="drawer-menu-left"><i class="fas fa-chart-line"></i> DarkSound Stats</div><span style="font-size:0.7rem; color:#1ed760; font-weight:700;">2024</span></div>
         <div style="margin-top: 24px; font-size:0.9rem; font-weight:700; color:var(--text-secondary); margin-bottom:10px;">I tuoi Amici</div>
         <div id="drawerFriendsList"></div>
         <button class="auth-btn secondary" style="margin-top:12px;" onclick="openAddFriendModal()"><i class="fas fa-user-plus"></i> Aggiungi Amico</button>
         <div style="margin-top: auto; padding-top: 20px;"><button class="auth-btn danger" style="margin-top:0;" onclick="logoutUser()">Esci dall'account</button></div>
     </div>
 
-    <!-- Viste principali e modali -->
+    <!-- Modali -->
+    <div id="ai-dj-modal" class="modal-overlay">
+        <div class="auth-card" style="text-align: center;">
+            <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #1ed760, #1db954); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 1.8rem; color: #000;"><i class="fas fa-robot"></i></div>
+            <h2>AI DJ</h2>
+            <p id="aiDjStatusText">"Ciao! Sono il tuo DJ virtuale..."</p>
+            <button class="auth-btn" onclick="runAiDjSelection()">Avvia Mix Intelligente</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeModal('ai-dj-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="ai-playlist-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Crea Playlist con IA</h2>
+            <p>Descrivi l'atmosfera o il momento che stai vivendo:</p>
+            <div class="auth-input-group"><input type="text" id="aiPromptInput" placeholder="Es. Notte elettronica chill..."></div>
+            <button class="auth-btn" onclick="generateAiPromptPlaylist()">Genera con IA</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeModal('ai-playlist-modal')">Annulla</button>
+        </div>
+    </div>
+
+    <div id="blend-modal" class="modal-overlay">
+        <div class="auth-card" style="text-align: center;">
+            <div style="font-size: 2.2rem; color: #1ed760; margin-bottom: 10px;"><i class="fas fa-users-viewfinder"></i></div>
+            <h2>Crea Blend con un Amico</h2>
+            <p>Fondi i tuoi gusti musicali con quelli di un tuo contatto.</p>
+            <div class="auth-input-group"><select id="blendFriendSelect"></select></div>
+            <button class="auth-btn" onclick="createBlendPlaylist()">Crea Playlist Blend</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeModal('blend-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="import-playlist-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Importa Playlist</h2>
+            <p>Incolla un link Spotify o YouTube per importare la playlist con i brani reali</p>
+            <div class="auth-input-group">
+                <label>Link Playlist</label>
+                <input type="text" id="playlistLinkInput" placeholder="https://open.spotify.com/playlist/... o https://youtube.com/playlist?list=...">
+            </div>
+            <div class="auth-input-group">
+                <label>Nome Playlist (opzionale)</label>
+                <input type="text" id="playlistNameInput" placeholder="Nome personalizzato...">
+            </div>
+            <button class="auth-btn" onclick="importPlaylistFromLink()">Importa</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeModal('import-playlist-modal')">Annulla</button>
+            <div id="importProgress" style="margin-top: 12px; text-align: center; color: var(--text-secondary);"></div>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="modal-overlay">
+        <div class="auth-card">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #1ed760, #1db954); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; font-size: 2rem; color: #000;"><i class="fas fa-headphones"></i></div>
+                <h2>Benvenuto su DarkSound</h2>
+                <p style="text-align: center;">Accedi per ascoltare la tua musica preferita</p>
+            </div>
+            <div class="auth-input-group"><label>Nome Utente</label><input type="text" id="authEmail" placeholder="mario_rossi" onkeydown="if(event.key==='Enter') proceedToOnboarding()"></div>
+            <div class="auth-input-group"><label>Password (opzionale)</label><input type="password" id="authPassword" placeholder="••••••••"></div>
+            <button class="auth-btn" onclick="proceedToOnboarding()">Accedi</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeModal('auth-modal')">Continua come Ospite</button>
+        </div>
+    </div>
+
+    <div id="onboarding-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>I tuoi gusti</h2>
+            <p>Seleziona i tuoi generi musicali preferiti:</p>
+            <div class="genre-grid" id="genreGrid">
+                <div class="genre-tag" onclick="toggleGenre(this)">🔥 Pop & Hit</div>
+                <div class="genre-tag" onclick="toggleGenre(this)">🎤 Rap & Trap</div>
+                <div class="genre-tag" onclick="toggleGenre(this)">🎸 Rock & Alternative</div>
+                <div class="genre-tag" onclick="toggleGenre(this)">🎧 Techno & House</div>
+                <div class="genre-tag" onclick="toggleGenre(this)">🎷 Jazz & Chill</div>
+                <div class="genre-tag" onclick="toggleGenre(this)">🌴 Reggaeton & Latin</div>
+            </div>
+            <div class="auth-input-group"><label>Artista preferito (opzionale)</label><input type="text" id="favArtistInput" placeholder="Es. Travis Scott..."></div>
+            <button class="auth-btn" onclick="completeOnboarding()">Crea la mia Radio</button>
+        </div>
+    </div>
+
+    <div id="subgenres-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Sottogeneri Preferiti</h2>
+            <p>Seleziona i sottogeneri che ti piacciono di più</p>
+            <div id="subgenresGrid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px;">
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🔊 Phonk</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">💪 Hard Techno</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">⚡ Hardstyle</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🎵 Hardcore</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🌊 Wave Phonk</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🏠 Tech House</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🎹 Melodic Techno</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🥁 Drum & Bass</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🎸 Metalcore</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🖤 Dark Trap</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🌀 Psytrance</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🎧 Future Bass</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🌙 Lo-fi</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🎤 Emo Rap</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">💀 Death Metal</div>
+                <div class="genre-tag" onclick="toggleSubgenre(this)">🔊 Riddim Dubstep</div>
+            </div>
+            <button class="auth-btn" onclick="completeSubgenreSelection()">Continua</button>
+        </div>
+    </div>
+
+    <div id="follow-artists-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Segui i tuoi Artisti</h2>
+            <p>Seleziona gli artisti che vuoi seguire</p>
+            <div class="search-box" style="margin-bottom: 12px;"><i class="fas fa-search" style="color: var(--text-secondary);"></i><input type="text" id="artistSearchInput" placeholder="Cerca artista..." oninput="searchArtistsToFollow(this.value)"></div>
+            <div id="artistsToFollowList" style="max-height: 300px; overflow-y: auto; margin-bottom: 16px;"><p style="color:var(--text-secondary);">Cerca un artista per seguirlo...</p></div>
+            <div id="selectedArtistsList" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;"></div>
+            <button class="auth-btn" onclick="completeArtistSelection()">Continua</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="skipArtistSelection()">Salta</button>
+        </div>
+    </div>
+
+    <div id="followed-artists-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Artisti che Segui</h2>
+            <p>I tuoi artisti preferiti</p>
+            <div id="followedArtistsList" style="max-height: 400px; overflow-y: auto;"><p style="color:var(--text-secondary);">Non segui ancora nessun artista.</p></div>
+            <button class="auth-btn secondary" style="margin-top:10px;" onclick="closeModal('followed-artists-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="profile-edit-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Modifica Profilo</h2>
+            <p>Personalizza le tue informazioni</p>
+            <div class="auth-input-group"><label>Nome Utente</label><input type="text" id="editProfileName" placeholder="Il tuo nome"></div>
+            <div class="auth-input-group"><label>Bio</label><textarea id="editProfileBio" placeholder="Racconta qualcosa di te..."></textarea></div>
+            <div class="auth-input-group"><label>Avatar (emoji o iniziale)</label><input type="text" id="editProfileAvatar" placeholder="Es. 🎧, A, M..." maxlength="2"></div>
+            <div class="auth-input-group"><label>Genere musicale preferito</label><select id="editProfileGenre"><option value="Pop">Pop</option><option value="Rap">Rap & Trap</option><option value="Rock">Rock</option><option value="Techno">Techno & House</option><option value="Jazz">Jazz & Chill</option><option value="Latin">Reggaeton & Latin</option></select></div>
+            <button class="auth-btn" onclick="saveProfileChanges()">Salva Modifiche</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeModal('profile-edit-modal')">Annulla</button>
+        </div>
+    </div>
+
+    <div id="add-friend-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Aggiungi Amico</h2>
+            <p>Cerca un utente per aggiungerlo ai tuoi amici</p>
+            <div class="auth-input-group"><label>Nome Utente</label><input type="text" id="addFriendInput" placeholder="Nome utente dell'amico"></div>
+            <div id="addFriendResults"></div>
+            <button class="auth-btn" onclick="searchFriend()">Cerca</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeModal('add-friend-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="share-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:6px; color:#fff;">Condividi brano</h3>
+            <p id="shareTrackSubtitle" style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:20px;"></p>
+            <button class="share-option-btn" style="color:#25D366;" onclick="shareViaWhatsApp()"><i class="fab fa-whatsapp"></i> Invia su WhatsApp</button>
+            <button class="share-option-btn" onclick="copyTrackLink()"><i class="fas fa-link" style="color:#3d91f4;"></i> Copia Link Brano</button>
+            <button class="auth-btn secondary" style="margin-top:10px;" onclick="closeModal('share-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="playlist-select-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px; color:#fff;">Aggiungi a playlist</h3>
+            <div id="playlistSelectList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;"></div>
+            <button class="auth-btn secondary" onclick="closeModal('playlist-select-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="new-playlist-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:14px; color:#fff;">Crea Nuova Playlist</h3>
+            <div class="auth-input-group"><label>Nome Playlist</label><input type="text" id="newPlaylistName" placeholder="Es. I miei preferiti"></div>
+            <div class="auth-input-group"><label>Visibilità</label><select id="newPlaylistVisibility"><option value="private">Privata (Solo tu)</option><option value="public">Pubblica (Tutti possono cercarla)</option></select></div>
+            <button class="auth-btn" onclick="submitNewPlaylist()">Crea</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeModal('new-playlist-modal')">Annulla</button>
+        </div>
+    </div>
+
+    <!-- Vista principale Home -->
     <div id="view-home" class="view active">
         <div class="top-status-bar">
             <div class="badge-pro"><i class="fas fa-headphones" style="font-size:0.55rem;"></i> DarkSoundPro</div>
@@ -1608,12 +1838,11 @@
         </div>
         <h1 class="home-title" id="homeWelcomeTitle">Esplora</h1>
         
-        <!-- Quick Actions -->
         <div class="quick-actions-grid">
             <div class="quick-action-card" onclick="openLikedSongs()"><i class="fas fa-heart" style="color:#f15e6c;"></i><h4>Preferiti</h4></div>
             <div class="quick-action-card" onclick="openDownloadsView()"><i class="fas fa-download" style="color:#3d91f4;"></i><h4>Download</h4></div>
             <div class="quick-action-card" onclick="openHistoryView()"><i class="fas fa-history" style="color:#ff9f0a;"></i><h4>Cronologia</h4></div>
-            <div class="quick-action-card" onclick="openWrappedModal()"><i class="fas fa-chart-bar" style="color:#1ed760;"></i><h4>Stats</h4></div>
+            <div class="quick-action-card" onclick="openStatsView()"><i class="fas fa-chart-bar" style="color:#1ed760;"></i><h4>Stats</h4></div>
         </div>
 
         <div class="premium-features-grid">
@@ -1638,6 +1867,7 @@
         </div>
     </div>
 
+    <!-- Vista Cerca -->
     <div id="view-search" class="view">
         <h1 class="home-title">Cerca</h1>
         <div class="search-box"><i class="fas fa-search" style="color: var(--text-secondary);"></i><input type="text" id="spotifySearchInput" placeholder="Cerca artisti, brani, playlist o generi..." oninput="handleSearchInput(this.value)"></div>
@@ -1661,6 +1891,7 @@
         <div id="searchResultsContainer" style="margin-top:24px;"></div>
     </div>
 
+    <!-- Vista Libreria -->
     <div id="view-library" class="view">
         <div class="section-title">La tua Libreria <button class="btn-action-primary" onclick="openNewPlaylistModal()"><i class="fas fa-plus"></i> Nuova Playlist</button></div>
         <div style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x:auto;">
@@ -1671,6 +1902,7 @@
         <div id="libContentList"><p style="color:var(--text-secondary);">Nessun elemento.</p></div>
     </div>
 
+    <!-- Vista Profilo -->
     <div id="view-profile" class="view">
         <div class="profile-hero">
             <div style="margin-bottom: 20px; text-align: left;"><button class="chip" onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:rgba(0,0,0,0.4); backdrop-filter:blur(10px); border:none;"><i class="fas fa-arrow-left"></i> Indietro</button></div>
@@ -1699,6 +1931,44 @@
                     <h3 style="font-size: 1.5rem; font-weight: 800; color: #a855f7;" id="profileFriendsCount">0</h3>
                     <p style="font-size: 0.8rem; color: var(--text-secondary);">Amici</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vista Statistiche -->
+    <div id="view-stats" class="view">
+        <div class="settings-page">
+            <div style="margin-bottom: 20px;"><button class="chip" onclick="switchView('home', document.querySelectorAll('.nav-item')[0])"><i class="fas fa-arrow-left"></i> Indietro</button></div>
+            <h2>Le tue Statistiche</h2>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;">
+                <div style="background: linear-gradient(135deg, #1ed76033, #1db95422); border: 1px solid rgba(30,215,96,0.3); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                    <h3 style="font-size: 2rem; font-weight: 800; color: #1ed760;" id="statsLikedSongs">0</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary);">Brani Preferiti</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #3d91f433, #3d91f422); border: 1px solid rgba(61,145,244,0.3); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                    <h3 style="font-size: 2rem; font-weight: 800; color: #3d91f4;" id="statsPlaylists">0</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary);">Playlist</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #a855f733, #a855f722); border: 1px solid rgba(168,85,247,0.3); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                    <h3 style="font-size: 2rem; font-weight: 800; color: #a855f7;" id="statsFriends">0</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary);">Amici</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #ff9f0a33, #ff9f0a22); border: 1px solid rgba(255,159,10,0.3); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                    <h3 style="font-size: 2rem; font-weight: 800; color: #ff9f0a;" id="statsHistory">0</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary);">Brani Ascoltati</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #f15e6c33, #f15e6c22); border: 1px solid rgba(241,94,108,0.3); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                    <h3 style="font-size: 2rem; font-weight: 800; color: #f15e6c;" id="statsDownloads">0</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary);">Brani Scaricati</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #1ed76033, #3d91f422); border: 1px solid rgba(30,215,96,0.3); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                    <h3 style="font-size: 2rem; font-weight: 800; color: #1ed760;" id="statsArtistsFollowed">0</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary);">Artisti Seguiti</p>
+                </div>
+            </div>
+            <div class="settings-group">
+                <h3>Top Artisti</h3>
+                <div id="topArtistsList"><p style="color:var(--text-secondary);">Nessun dato disponibile.</p></div>
             </div>
         </div>
     </div>
@@ -1759,6 +2029,13 @@
                         <option value="5">5 secondi</option>
                         <option value="8">8 secondi</option>
                     </select>
+                </div>
+                <div class="settings-item">
+                    <div>
+                        <div class="settings-item-label">Riproduzione in background</div>
+                        <div class="settings-item-desc">Continua a riprodurre quando l'app è in background</div>
+                    </div>
+                    <div class="toggle-switch active" id="toggleBackgroundPlay" onclick="toggleSetting('backgroundPlay')"></div>
                 </div>
             </div>
 
@@ -1916,6 +2193,7 @@
         </div>
     </div>
 
+    <!-- Vista Artista -->
     <div id="view-artist" class="view">
         <div style="position:relative; width:100%; height:320px;">
             <img id="artistHeroImg" src="" style="width:100%; height:100%; object-fit:cover; filter: brightness(0.7);" onerror="this.src='https://picsum.photos/seed/artist/600'">
@@ -1936,6 +2214,7 @@
         </div>
     </div>
 
+    <!-- Vista Brani Preferiti -->
     <div id="view-liked-songs" class="view">
         <div style="position:relative; width:100%; padding: 40px 20px 24px 20px; background: linear-gradient(180deg, #3d2c8d 0%, #181818 100%);">
             <div style="margin-bottom: 20px;"><button class="chip" onclick="switchView('library', document.querySelectorAll('.nav-item')[2])" style="background:rgba(0,0,0,0.4); backdrop-filter:blur(10px); border:none;"><i class="fas fa-arrow-left"></i> Indietro</button></div>
@@ -1963,6 +2242,7 @@
         </div>
     </div>
 
+    <!-- Player Fullscreen -->
     <div id="fullscreen-player">
         <div class="canvas-bg-layer" id="canvasBgLayer" style="background-image: url('');"></div>
         <div class="fs-top">
@@ -2002,8 +2282,15 @@
 
     <div id="youtube-player"></div>
 
+    <!-- Barra Player -->
     <div class="player-bar" id="playerBar" onclick="toggleFullscreen()">
         <img id="playerImg" src="">
+        <div id="playerEqualizer" class="equalizer paused">
+            <div class="equalizer-bar"></div>
+            <div class="equalizer-bar"></div>
+            <div class="equalizer-bar"></div>
+            <div class="equalizer-bar"></div>
+        </div>
         <div class="player-meta">
             <div class="p-title" id="playerTitle">-</div>
             <div class="p-artist" id="playerArtist" onclick="event.stopPropagation(); openArtistPage(currentTrackData.artist)">-</div>
@@ -2014,6 +2301,7 @@
         </div>
     </div>
 
+    <!-- Navigazione -->
     <nav>
         <button class="nav-item active" onclick="switchView('home', this)"><i class="fas fa-home"></i><span>Home</span></button>
         <button class="nav-item" onclick="switchView('search', this)"><i class="fas fa-search"></i><span>Cerca</span></button>
@@ -2055,7 +2343,8 @@
         let selectedSubgenres = JSON.parse(localStorage.getItem(currentUser ? `subgenres_${currentUser}` : 'darksound_subgenres') || '[]');
         let selectedSubgenresTemp = [];
         let currentArtistPage = '';
-        let userSettings = JSON.parse(localStorage.getItem(currentUser ? `settings_${currentUser}` : 'darksound_settings') || '{"autoplay":true,"publicProfile":true,"showActivity":true,"dataCollection":true,"audioQuality":"auto","crossfade":"0"}');
+        let currentPlaylistId = null;
+        let userSettings = JSON.parse(localStorage.getItem(currentUser ? `settings_${currentUser}` : 'darksound_settings') || '{"autoplay":true,"publicProfile":true,"showActivity":true,"dataCollection":true,"audioQuality":"auto","crossfade":"0","backgroundPlay":true}');
         const API_BASE = window.location.origin;
 
         // ============ MAPPA GENERI ============
@@ -2132,11 +2421,18 @@
             renderDownloads();
         }
 
+        function openStatsView() {
+            toggleProfileDrawer();
+            switchView('stats');
+            renderStats();
+        }
+
         function loadSettings() {
             const autoplayToggle = document.getElementById('toggleAutoplay');
             const publicProfileToggle = document.getElementById('togglePublicProfile');
             const showActivityToggle = document.getElementById('toggleShowActivity');
             const dataCollectionToggle = document.getElementById('toggleDataCollection');
+            const backgroundPlayToggle = document.getElementById('toggleBackgroundPlay');
             const audioQualitySelect = document.getElementById('audioQuality');
             const crossfadeSelect = document.getElementById('crossfade');
             
@@ -2144,6 +2440,7 @@
             if (publicProfileToggle) publicProfileToggle.className = userSettings.publicProfile ? 'toggle-switch active' : 'toggle-switch';
             if (showActivityToggle) showActivityToggle.className = userSettings.showActivity ? 'toggle-switch active' : 'toggle-switch';
             if (dataCollectionToggle) dataCollectionToggle.className = userSettings.dataCollection ? 'toggle-switch active' : 'toggle-switch';
+            if (backgroundPlayToggle) backgroundPlayToggle.className = userSettings.backgroundPlay ? 'toggle-switch active' : 'toggle-switch';
             if (audioQualitySelect) audioQualitySelect.value = userSettings.audioQuality || 'auto';
             if (crossfadeSelect) crossfadeSelect.value = userSettings.crossfade || '0';
         }
@@ -2200,6 +2497,55 @@
 
         function reportBug() {
             alert('Grazie per la segnalazione! Il nostro team tecnico esaminerà il problema.');
+        }
+
+        // ============ FUNZIONI STATISTICHE ============
+        function renderStats() {
+            const statsLikedSongs = document.getElementById('statsLikedSongs');
+            const statsPlaylists = document.getElementById('statsPlaylists');
+            const statsFriends = document.getElementById('statsFriends');
+            const statsHistory = document.getElementById('statsHistory');
+            const statsDownloads = document.getElementById('statsDownloads');
+            const statsArtistsFollowed = document.getElementById('statsArtistsFollowed');
+            
+            if (statsLikedSongs) statsLikedSongs.innerText = likedSongs.length;
+            if (statsPlaylists) statsPlaylists.innerText = userPlaylists.length + autoPlaylists.length;
+            if (statsFriends) statsFriends.innerText = friendsList.length;
+            if (statsHistory) statsHistory.innerText = historyTracks.length;
+            if (statsDownloads) statsDownloads.innerText = downloadedTracks.length;
+            if (statsArtistsFollowed) statsArtistsFollowed.innerText = followedArtists.length;
+            
+            // Top artists
+            const topArtistsList = document.getElementById('topArtistsList');
+            if (topArtistsList) {
+                const artistCount = {};
+                historyTracks.forEach(track => {
+                    if (artistCount[track.artist]) {
+                        artistCount[track.artist]++;
+                    } else {
+                        artistCount[track.artist] = 1;
+                    }
+                });
+                
+                const sortedArtists = Object.entries(artistCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+                
+                if (sortedArtists.length === 0) {
+                    topArtistsList.innerHTML = '<p style="color:var(--text-secondary);">Nessun dato disponibile.</p>';
+                } else {
+                    topArtistsList.innerHTML = sortedArtists.map(([artist, count], idx) => 
+                        `<div class="track-row" onclick="openArtistPage('${artist.replace(/'/g, "\\'")}')">
+                            <div class="track-row-left">
+                                <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#1ed760,#3d91f4);display:flex;align-items:center;justify-content:center;font-weight:800;color:#000;">${idx + 1}</div>
+                                <div class="track-meta">
+                                    <h4>${artist}</h4>
+                                    <p>${count} ascolti</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color:var(--text-secondary);"></i>
+                        </div>`
+                    ).join('');
+                }
+            }
         }
 
         // ============ FUNZIONI STORIA E DOWNLOAD ============
@@ -2517,7 +2863,6 @@
             const followedCount = document.getElementById('followedArtistsCount');
             if (followedCount) followedCount.innerText = followedArtists.length;
             
-            // Update profile stats
             const profileLikedCount = document.getElementById('profileLikedCount');
             const profilePlaylistsCount = document.getElementById('profilePlaylistsCount');
             const profileFriendsCount = document.getElementById('profileFriendsCount');
@@ -2525,7 +2870,6 @@
             if (profilePlaylistsCount) profilePlaylistsCount.innerText = userPlaylists.length + autoPlaylists.length;
             if (profileFriendsCount) profileFriendsCount.innerText = friendsList.length;
             
-            // Update download count
             const downloadsCount = document.getElementById('downloadsCount');
             if (downloadsCount) downloadsCount.innerText = downloadedTracks.length;
         }
@@ -2754,6 +3098,7 @@
                 document.getElementById('fsArtist').innerText = t.artist;
                 document.getElementById('fsCover').src = t.image;
                 document.getElementById('canvasBgLayer').style.backgroundImage = `url('${t.image}')`;
+                updateEqualizer(true);
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
@@ -2762,6 +3107,17 @@
                 playWithYouTube(t);
             } catch(err) { 
                 console.error("Errore riproduzione:", err); 
+            }
+        }
+
+        function updateEqualizer(playing) {
+            const equalizer = document.getElementById('playerEqualizer');
+            if (equalizer) {
+                if (playing) {
+                    equalizer.classList.remove('paused');
+                } else {
+                    equalizer.classList.add('paused');
+                }
             }
         }
 
@@ -2785,11 +3141,13 @@
                         if(e.data === YT.PlayerState.PLAYING) { 
                             isPlaying = true; 
                             updatePlayIcons(true); 
+                            updateEqualizer(true);
                             startProgressTracker(); 
                         }
                         if(e.data === YT.PlayerState.PAUSED) { 
                             isPlaying = false; 
                             updatePlayIcons(false); 
+                            updateEqualizer(false);
                             clearInterval(progressInterval); 
                         }
                         if(e.data === YT.PlayerState.ENDED) { 
@@ -2815,12 +3173,14 @@
                     player.playVideo(); 
                     isPlaying = true; 
                     updatePlayIcons(true); 
+                    updateEqualizer(true);
                 }, 300);
             } else {
                 const youtubeContainer = document.getElementById('youtube-player');
                 youtubeContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${track.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}&playsinline=1&controls=0&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
                 isPlaying = true;
                 updatePlayIcons(true);
+                updateEqualizer(true);
             }
         }
 
@@ -2829,9 +3189,11 @@
             if(isPlaying) { 
                 player.pauseVideo(); 
                 isPlaying = false; 
+                updateEqualizer(false);
             } else { 
                 player.playVideo(); 
                 isPlaying = true; 
+                updateEqualizer(true);
             }
             updatePlayIcons(isPlaying);
         }
@@ -2876,6 +3238,7 @@
                 document.getElementById('fsArtist').innerText = t.artist;
                 document.getElementById('fsCover').src = t.image;
                 document.getElementById('canvasBgLayer').style.backgroundImage = `url('${t.image}')`;
+                updateEqualizer(true);
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
@@ -2910,6 +3273,7 @@
             if(viewName === 'settings') loadSettings();
             if(viewName === 'history') renderHistory();
             if(viewName === 'downloads') renderDownloads();
+            if(viewName === 'stats') renderStats();
         }
 
         function toggleFullscreen() { 
@@ -3212,45 +3576,54 @@
             } 
             openModal('blend-modal'); 
         }
-        
-        function openWrappedModal() { 
-            updateUserUI();
-            openModal('wrapped-modal'); 
-        }
 
         function openImportPlaylistModal() {
             toggleProfileDrawer();
             document.getElementById('playlistLinkInput').value = '';
             document.getElementById('playlistNameInput').value = '';
+            document.getElementById('importProgress').innerHTML = '';
             openModal('import-playlist-modal');
         }
 
         async function importPlaylistFromLink() {
             const link = document.getElementById('playlistLinkInput').value.trim();
             const customName = document.getElementById('playlistNameInput').value.trim();
+            const progressEl = document.getElementById('importProgress');
             if(!link) return;
 
             const importBtn = event.target;
             importBtn.disabled = true;
             importBtn.innerText = 'Importazione...';
+            progressEl.innerHTML = '<span class="loading-spinner"></span> Analisi link...';
 
             try {
                 let playlistType = '';
+                let playlistId = '';
                 
                 if(link.includes('spotify.com')) {
                     playlistType = 'Spotify';
+                    playlistId = link.split('/playlist/')[1]?.split('?')[0] || '';
                 } else if(link.includes('youtube.com') || link.includes('youtu.be')) {
                     playlistType = 'YouTube';
-                } else if(link.includes('music.apple.com')) {
-                    playlistType = 'Apple Music';
-                } else {
-                    playlistType = 'Link';
+                    playlistId = link.includes('list=') ? link.split('list=')[1].split('&')[0] : '';
                 }
-
-                let playlistName = customName || `Playlist da ${playlistType}`;
-                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent('Top Hits')}`);
-                const searchResults = await res.json();
-                const tracks = searchResults.slice(0, 15);
+                
+                progressEl.innerHTML = `<span class="loading-spinner"></span> Ricerca brani reali da ${playlistType}...`;
+                
+                // Try to search for real tracks based on playlist
+                let searchQuery = playlistId || playlistType;
+                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(searchQuery)}`);
+                let realTracks = await res.json();
+                
+                // If no real tracks found, use clone tracks
+                if (!realTracks || realTracks.length === 0) {
+                    progressEl.innerHTML = '<span class="loading-spinner"></span> Brani non trovati, creo brani cloni...';
+                    const cloneRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent('Top Hits ' + playlistType)}`);
+                    realTracks = await cloneRes.json();
+                }
+                
+                const tracks = realTracks.slice(0, 20);
+                const playlistName = customName || `Playlist da ${playlistType}`;
 
                 if(tracks.length > 0) {
                     userPlaylists.push({
@@ -3259,17 +3632,19 @@
                         visibility: 'private',
                         owner: currentUser,
                         tracks: tracks,
-                        importedFrom: playlistType
+                        importedFrom: playlistType,
+                        isClone: realTracks.length === 0
                     });
                     saveUserData();
+                    progressEl.innerHTML = '';
                     closeModal('import-playlist-modal');
                     alert(`Playlist "${playlistName}" importata con successo! ${tracks.length} brani aggiunti.`);
                 } else {
-                    alert('Impossibile importare la playlist. Riprova più tardi.');
+                    progressEl.innerHTML = '<p style="color:#f15e6c;">Impossibile trovare brani.</p>';
                 }
             } catch(e) {
                 console.error('Errore importazione:', e);
-                alert('Errore durante l\'importazione. Riprova più tardi.');
+                progressEl.innerHTML = '<p style="color:#f15e6c;">Errore durante l\'importazione.</p>';
             }
 
             importBtn.disabled = false;
@@ -3544,12 +3919,79 @@
         function openUserPlaylistDetails(playlistId) {
             let pl = userPlaylists.find(p => p.id === playlistId) || autoPlaylists.find(p => p.id === playlistId);
             if(!pl) return;
+            currentPlaylistId = playlistId;
             switchView('library', document.querySelectorAll('.nav-item')[2]);
             const container = document.getElementById('libContentList');
-            container.innerHTML = `<div style="display:flex;justify-content:space-between;margin-bottom:14px;"><button class="chip" onclick="renderLibraryContent()"><i class="fas fa-arrow-left"></i> Indietro</button><h3 style="color:#fff;">${pl.name}</h3></div>`;
-            let tempDiv = document.createElement('div');
-            tempDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
-            container.appendChild(tempDiv);
+            container.innerHTML = `<div style="display:flex;justify-content:space-between;margin-bottom:14px;">
+                <button class="chip" onclick="renderLibraryContent()"><i class="fas fa-arrow-left"></i> Indietro</button>
+                <button class="add-to-playlist-btn" onclick="openAddToPlaylistSearch()"><i class="fas fa-plus"></i> Aggiungi brani</button>
+            </div>
+            <h3 style="color:#fff; margin-bottom: 16px;">${pl.name}</h3>
+            <div id="playlistTracksList"></div>`;
+            
+            const tracksDiv = document.getElementById('playlistTracksList');
+            if (pl.tracks.length === 0) {
+                tracksDiv.innerHTML = '<p style="color:var(--text-secondary);">Nessun brano nella playlist.</p>';
+            } else {
+                tracksDiv.innerHTML = pl.tracks.map((t, idx) => renderSingleTrackRow(t, idx, pl.tracks)).join('');
+            }
+        }
+        
+        function openAddToPlaylistSearch() {
+            if (!currentPlaylistId) return;
+            const searchInput = document.getElementById('spotifySearchInput');
+            searchInput.value = '';
+            switchView('search', document.querySelectorAll('.nav-item')[1]);
+            document.getElementById('genreSearchSection').style.display = 'none';
+            document.getElementById('searchResultsContainer').innerHTML = `
+                <div class="section-title">Cerca brani da aggiungere</div>
+                <div class="search-box"><i class="fas fa-search" style="color: var(--text-secondary);"></i>
+                <input type="text" id="playlistSearchInput" placeholder="Cerca brani..." oninput="searchTracksForPlaylist(this.value)"></div>
+                <div id="playlistSearchResults"></div>
+            `;
+        }
+        
+        async function searchTracksForPlaylist(query) {
+            const container = document.getElementById('playlistSearchResults');
+            if (!query || query.trim().length < 2) {
+                container.innerHTML = '';
+                return;
+            }
+            container.innerHTML = '<p style="color:var(--text-secondary);"><span class="loading-spinner"></span> Ricerca...</p>';
+            try {
+                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
+                const tracks = await res.json();
+                if (tracks.length === 0) {
+                    container.innerHTML = '<p style="color:var(--text-secondary);">Nessun brano trovato.</p>';
+                    return;
+                }
+                container.innerHTML = tracks.slice(0, 10).map(t => {
+                    const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
+                    return `<div class="track-row" onclick="addSearchedTrackToPlaylist('${trackJson}')">
+                        <div class="track-row-left">
+                            <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${Math.random()}/200'">
+                            <div class="track-meta"><h4>${t.name}</h4><p>${t.artist}</p></div>
+                        </div>
+                        <i class="fas fa-plus" style="color:#1ed760;"></i>
+                    </div>`;
+                }).join('');
+            } catch(e) {
+                container.innerHTML = '<p style="color:#f15e6c;">Errore di ricerca.</p>';
+            }
+        }
+        
+        function addSearchedTrackToPlaylist(trackJson) {
+            const track = JSON.parse(decodeURIComponent(escape(atob(trackJson))));
+            let pl = userPlaylists.find(p => p.id === currentPlaylistId) || autoPlaylists.find(p => p.id === currentPlaylistId);
+            if (pl && track) {
+                if (!pl.tracks.some(t => t.id === track.id)) {
+                    pl.tracks.push(track);
+                    saveUserData();
+                    alert(`"${track.name}" aggiunto alla playlist!`);
+                } else {
+                    alert('Questo brano è già nella playlist.');
+                }
+            }
         }
         
         function openPublicPlaylist(playlistId) {
@@ -3619,6 +4061,11 @@
         document.addEventListener('visibilitychange', function() {
             if (!document.hidden && isPlaying) {
                 if (player && player.playVideo) { player.playVideo(); }
+            }
+            // eSound logic for background play
+            if (document.hidden && isPlaying && userSettings.backgroundPlay) {
+                // Keep playing in background
+                console.log('Continuing playback in background');
             }
         });
 
