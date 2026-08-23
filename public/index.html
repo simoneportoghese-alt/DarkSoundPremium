@@ -149,9 +149,12 @@
             display: flex; align-items: center; padding: 8px 12px;
             cursor: pointer; border-radius: var(--radius-md); margin-bottom: 2px;
             transition: background 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         .track-row:hover { background: var(--spotify-hover); }
-        .track-row-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; overflow: hidden; }
+        .track-row:active { background: #333; }
+        .track-row-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; overflow: hidden; pointer-events: none; }
         .track-row img { width: 48px; height: 48px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; }
         .track-num { width: 16px; font-size: 0.8rem; color: var(--spotify-gray); text-align: center; flex-shrink: 0; }
         .track-meta { flex: 1; min-width: 0; }
@@ -159,7 +162,7 @@
         .track-meta p { font-size: 0.75rem; color: var(--spotify-gray); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .track-actions { display: flex; gap: 14px; color: var(--spotify-gray); font-size: 0.9rem; opacity: 0; transition: opacity 0.2s; }
         .track-row:hover .track-actions { opacity: 1; }
-        .track-actions i { cursor: pointer; }
+        .track-actions i { cursor: pointer; pointer-events: auto; }
         .track-actions i:hover { color: #fff; }
 
         .search-box {
@@ -182,8 +185,11 @@
         .artist-card {
             display: flex; align-items: center; gap: 12px;
             padding: 12px; border-radius: var(--radius-md); cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         .artist-card:hover { background: var(--spotify-hover); }
+        .artist-card:active { background: #333; }
         .artist-card img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
         .artist-card h3 { font-size: 0.95rem; font-weight: 700; }
         .artist-card p { font-size: 0.75rem; color: var(--spotify-gray); }
@@ -331,9 +337,35 @@
             padding: 8px 14px; border-radius: 24px; background: #181818;
             border: 1px solid #333; color: #fff; font-size: 0.8rem;
             font-weight: 600; cursor: pointer; transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         .artist-chip:hover { background: #282828; border-color: #555; }
         .artist-chip:active { background: #1db954; color: #000; border-color: #1db954; }
+
+        /* Country Hub Cards */
+        .country-hub-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .country-hub-card {
+            border-radius: var(--radius-md);
+            padding: 20px;
+            cursor: pointer;
+            min-height: 80px;
+            display: flex;
+            align-items: flex-end;
+            border: none;
+            transition: transform 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        .country-hub-card:hover { transform: scale(1.02); }
+        .country-hub-card:active { transform: scale(0.98); }
+        .country-hub-card h3 { font-size: 0.9rem; font-weight: 900; }
+        .country-hub-card .flag { font-size: 1.5rem; position: absolute; top: 12px; right: 12px; }
     </style>
 </head>
 <body>
@@ -548,20 +580,20 @@
         <div class="top-bar"><span class="top-bar-title">Cerca</span></div>
         <div class="search-box"><i class="fas fa-search"></i><input type="text" id="spotifySearchInput" placeholder="Cerca artisti o brani..." oninput="handleSearchInput(this.value)"></div>
         <div id="genreSearchSection">
-            <div class="section-title">Sfoglia per genere</div>
-            <div class="genre-grid">
-                <div class="genre-card" style="background:#e13300;" onclick="openGenreBrowser('Pop')"><h3>Pop</h3></div>
-                <div class="genre-card" style="background:#7358ff;" onclick="openGenreBrowser('HipHop')"><h3>Hip-Hop</h3></div>
-                <div class="genre-card" style="background:#e91429;" onclick="openGenreBrowser('Rock')"><h3>Rock</h3></div>
-                <div class="genre-card" style="background:#0d72ea;" onclick="openGenreBrowser('Electronic')"><h3>Elettronica</h3></div>
-                <div class="genre-card" style="background:#503750;" onclick="openGenreBrowser('Phonk')"><h3>Phonk</h3></div>
-                <div class="genre-card" style="background:#1e3264;" onclick="openGenreBrowser('Trap')"><h3>Trap</h3></div>
-                <div class="genre-card" style="background:#ba5d07;" onclick="openGenreBrowser('Drill')"><h3>Drill</h3></div>
-                <div class="genre-card" style="background:#608108;" onclick="openGenreBrowser('Indie')"><h3>Indie</h3></div>
-                <div class="genre-card" style="background:#8d67ab;" onclick="openGenreBrowser('RB')"><h3>R&B</h3></div>
-                <div class="genre-card" style="background:#af2896;" onclick="openGenreBrowser('Latin')"><h3>Latin</h3></div>
-                <div class="genre-card" style="background:#8c1932;" onclick="openGenreBrowser('Jazz')"><h3>Jazz</h3></div>
-                <div class="genre-card" style="background:#006450;" onclick="openGenreBrowser('KPop')"><h3>K-Pop</h3></div>
+            <div class="section-title">Hub Musicali Globali</div>
+            <div class="country-hub-grid" style="position:relative;">
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#009246,#ce2b37);position:relative;" onclick="openCountryHub('Italia')"><span class="flag">🇮🇹</span><h3>Italia</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#3c3b6e,#b22234);position:relative;" onclick="openCountryHub('USA')"><span class="flag">🇺🇸</span><h3>USA</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#012169,#c8102e);position:relative;" onclick="openCountryHub('UK')"><span class="flag">🇬🇧</span><h3>Regno Unito</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#cd2e3a,#0047a0);position:relative;" onclick="openCountryHub('Corea')"><span class="flag">🇰🇷</span><h3>Corea del Sud</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#bc002d,#ffffff);position:relative;" onclick="openCountryHub('Giappone')"><span class="flag">🇯🇵</span><h3>Giappone</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#006847,#ce1126);position:relative;" onclick="openCountryHub('Latin')"><span class="flag">🌎</span><h3>America Latina</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#009c3b,#ffdf00);position:relative;" onclick="openCountryHub('Brasile')"><span class="flag">🇧🇷</span><h3>Brasile</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#0055a4,#ef4135);position:relative;" onclick="openCountryHub('Francia')"><span class="flag">🇫🇷</span><h3>Francia</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#000000,#dd0000);position:relative;" onclick="openCountryHub('Germania')"><span class="flag">🇩🇪</span><h3>Germania</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#008751,#ffffff);position:relative;" onclick="openCountryHub('Africa')"><span class="flag">🌍</span><h3>Nigeria & Sudafrica</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#ff0000,#ffffff);position:relative;" onclick="openCountryHub('Canada')"><span class="flag">🇨🇦</span><h3>Canada</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#00008b,#ff0000);position:relative;" onclick="openCountryHub('Oceania')"><span class="flag">🇦🇺</span><h3>Australia</h3></div>
             </div>
         </div>
         <div id="searchResultsContainer"></div>
@@ -769,135 +801,131 @@
 
         <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        // ============ ENCICLOPEDIA MUSICALE COMPLETA ============
+        // ============ ENCICLOPEDIA MUSICALE GLOBALE AGGIORNATA ============
         const MUSIC_ENCYCLOPEDIA = {
-            'Pop': {
-                title: 'Pop & Viral Singer-Songwriter',
-                color: '#e13300',
+            'Italia': {
+                title: '🇮🇹 Italia - Mercato Italia & Mediterraneo',
+                color: '#009246',
                 subgenres: {
-                    'Mainstream Pop': ['Taylor Swift', 'Ariana Grande', 'Bruno Mars', 'Ed Sheeran', 'Justin Bieber', 'Katy Perry', 'Shawn Mendes', 'Charlie Puth', 'Miley Cyrus', 'Dua Lipa'],
-                    'Dance-Pop & Viral': ['Sabrina Carpenter', 'Chappell Roan', 'Lady Gaga', 'The Weeknd', 'Tate McRae', 'Kylie Minogue', 'Zara Larsson', 'Ava Max', 'Doja Cat', 'Benson Boone'],
-                    'Electro-Pop & Art Pop': ['Billie Eilish', 'Lorde', 'Charli XCX', 'Lana Del Rey', 'Troye Sivan', 'Rina Sawayama', 'Caroline Polachek', 'Grimes', 'FKA twigs'],
-                    'Indie Pop & Bedroom Pop': ['Clairo', 'Boygenius', 'Beabadoobee', 'Mitski', 'Phoebe Bridgers', 'Arlo Parks', 'Omar Apollo', 'Weyes Blood'],
-                    'Emotional Pop': ['Alex Warren', 'sombr', 'Gracie Abrams', 'Djo', 'Mark Ambor', 'Hozier', 'David Kushner', 'Noah Kahan', 'Teddy Swims', 'Stephen Sanchez', 'Laufey', 'Lewis Capaldi']
+                    'Mainstream Pop & Sanremo Icons': ['Tiziano Ferro', 'Laura Pausini', 'Marco Mengoni', 'Annalisa', 'Giorgia', 'Emma', 'Elisa', 'Mahmood'],
+                    'Contemporary Indie Pop': ['Cesare Cremonini', 'Calcutta', 'Gazzelle', 'Brunori Sas', 'Tommaso Paradiso', 'Coez', 'Frah Quintale', 'Diodato', 'Madame', 'Rose Villain'],
+                    'Commercial & Mega-Trap': ['Sfera Ebbasta', 'Geolier', 'Lazza', 'Shiva', 'Tony Effe', 'Capo Plaza', 'Guè', 'Marracash', 'Tedua', 'Tony Boy'],
+                    'Melodic Trap & New Wave': ['Artie 5ive', 'Bresh', 'Rkomi', 'Pyrex', 'Rhove', 'Diss Gacha', 'Anna', 'Low Kidd', 'Night Skinny'],
+                    'Conscious & Street Rap': ['Kid Yugi', 'Nayt', 'Noyz Narcos', 'Ernia', 'Fabri Fibra', 'Salmo', 'Massimo Pericolo', 'Emis Killa', 'Gemitaiz', 'MadMan', 'Nitro'],
+                    'Italian Drill & Street Sound': ['Rondodasosa', 'Vale Pain', 'Neima Ezza', 'Baby Gang', 'Sacky', 'Naska'],
+                    'Melodic Techno & Progressive': ['Tale Of Us', 'Anyma', 'Giorgia Angiuli', 'Mathame', 'Meduza', 'Gabry Ponte', 'Gigi D\'Agostino'],
+                    'Rock & Alternative': ['Måneskin', 'Verdena', 'Afterhours', 'Baustelle', 'Subsonica', 'Zen Circus', 'Ministri', 'Fast Animals and Slow Kids']
                 }
             },
-            'HipHop': {
-                title: 'Hip-Hop, Urban & Rap',
-                color: '#7358ff',
+            'USA': {
+                title: '🇺🇸 Stati Uniti - Mainstream & Underground',
+                color: '#3c3b6e',
                 subgenres: {
-                    'Commercial Trap': ['Drake', 'Kanye West', 'Travis Scott', 'Kendrick Lamar', 'Future', 'Post Malone', 'Playboi Carti', 'Lil Baby', 'Gunna', 'Lil Uzi Vert', '21 Savage', 'Metro Boomin', 'Juice WRLD', 'A$AP Rocky'],
-                    'Melodic Trap': ['Tony Boy', 'Artie 5ive', 'Yeat', 'Don Toliver', 'Rod Wave', 'YoungBoy Never Broke Again', 'Lil Durk', 'Roddy Ricch', 'Ken Carson', 'Destroy Lonely'],
-                    'Conscious & Jazz Rap': ['J. Cole', 'Nas', 'Tyler, The Creator', 'Kid Yugi', '$uicideboy$', 'Vince Staples', 'Denzel Curry', 'Joey Bada$$', 'Earl Sweatshirt', 'JID', 'Mac Miller', 'Lupe Fiasco', 'Common'],
-                    'Drill (UK/US/IT)': ['Central Cee', 'Dave', 'Pop Smoke', 'Rondodasosa', 'Shiva', 'Sfera Ebbasta', 'NLE Choppa', 'D-Block Europe', 'Headie One', 'Ice Spice', 'Chief Keef', 'Fivio Foreign'],
-                    'Grime & Cloud Rap': ['Stormzy', 'Skepta', 'Yung Lean', 'Bladee', 'Joji', 'Nujabes', 'Knxwledge', 'Loyle Carner']
+                    'Global Pop Megastars': ['Taylor Swift', 'Ariana Grande', 'Bruno Mars', 'Katy Perry', 'Lady Gaga', 'Miley Cyrus', 'Shawn Mendes', 'Charlie Puth'],
+                    'Gen-Z Viral & Dance-Pop': ['Sabrina Carpenter', 'Chappell Roan', 'Olivia Rodrigo', 'Tate McRae', 'Doja Cat', 'Benson Boone'],
+                    'Commercial Mega-Rap & Trap': ['Drake', 'Travis Scott', 'Kanye West', 'Kendrick Lamar', 'Future', 'Post Malone', 'Playboi Carti', 'Lil Baby', 'Gunna', 'Lil Uzi Vert', '21 Savage', 'Metro Boomin'],
+                    'Melodic Trap & Soundcloud Era': ['Juice WRLD', 'Lil Durk', 'Rod Wave', 'Don Toliver', 'Yeat', 'Ken Carson', 'Destroy Lonely', 'Lil Tecca', 'Baby Keem', 'Polo G'],
+                    'Conscious, Jazz & Alternative Rap': ['J. Cole', 'Nas', 'Tyler The Creator', 'JID', 'Denzel Curry', 'Joey Bada$$', 'Mac Miller', 'Vince Staples', 'Wu-Tang Clan', 'OutKast'],
+                    'Stadium Rock & Hard Rock': ['Foo Fighters', 'Metallica', 'Red Hot Chili Peppers', 'Guns N\' Roses', 'Nirvana', 'Pearl Jam', 'Green Day', 'Blink-182'],
+                    'Nu Metal & Pop-Punk Revival': ['Linkin Park', 'Slipknot', 'Korn', 'Paramore', 'My Chemical Romance', 'Fall Out Boy', 'Machine Gun Kelly'],
+                    'Metalcore, Deathcore & Modern Rock': ['Bad Omens', 'Lorna Shore', 'Spiritbox', 'Falling In Reverse', 'Architects', 'Deftones', 'Tool', 'Mastodon'],
+                    'Modern Country Rock & Americana': ['Zach Bryan', 'Morgan Wallen', 'Luke Combs', 'Shaboozey', 'Jelly Roll', 'Chris Stapleton', 'Lainey Wilson', 'Johnny Cash'],
+                    'Contemporary R&B & Alt-Soul': ['SZA', 'Frank Ocean', 'Beyoncé', 'H.E.R.', 'Bryson Tiller', 'Rihanna', 'Usher', 'Brent Faiyaz', 'Summer Walker'],
+                    'Neo-Soul, Funk & Legacy': ['Anderson .Paak', 'Leon Bridges', 'Silk Sonic', 'Thundercat', 'Erykah Badu', 'D\'Angelo', 'Stevie Wonder', 'Marvin Gaye', 'Prince'],
+                    'Bass, Dubstep & Festival EDM': ['Skrillex', 'Diplo', 'Marshmello', 'Illenium', 'Excision', 'Fisher', 'John Summit', 'Dom Dolla', 'Sara Landry', 'REZZ', 'Zeds Dead']
                 }
             },
-            'Rock': {
-                title: 'Rock, Metal, Punk & Alternative',
-                color: '#e91429',
+            'UK': {
+                title: '🇬🇧 Regno Unito - British Invasion & Underground',
+                color: '#012169',
                 subgenres: {
-                    'Stadium & Indie Rock': ['Coldplay', 'Imagine Dragons', 'Arctic Monkeys', 'The Strokes', 'Tame Impala', 'Måneskin', 'Good Neighbours', 'Florence + The Machine', 'Fontaines D.C.', 'The 1975', 'Greta Van Fleet', 'Cage The Elephant', 'Weezer'],
-                    'Classic & Hard Rock': ['Queen', 'AC/DC', 'Metallica', 'Guns N\' Roses', 'Linkin Park', 'Pearl Jam', 'Red Hot Chili Peppers', 'Nirvana', 'Foo Fighters', 'Black Sabbath', 'Iron Maiden', 'Judas Priest'],
-                    'Pop-Punk & Emo': ['Machine Gun Kelly', 'Yungblud', 'Bring Me The Horizon', 'Slipknot', 'Blink-182', 'Limp Bizkit', 'Green Day', 'Avril Lavigne', 'Paramore', 'My Chemical Romance', 'Fall Out Boy'],
-                    'Metalcore & Progressive': ['Architects', 'Bad Omens', 'Lorna Shore', 'Sleep Token', 'Spiritbox', 'Falling In Reverse', 'Electric Callboy', 'Parkway Drive', 'Gojira', 'Periphery', 'Tool'],
-                    'Grunge & Shoegaze': ['Soundgarden', 'Alice in Chains', 'Pearl Jam', 'Explosions in the Sky', 'Mogwai', 'My Bloody Valentine', 'Slowdive', 'Deftones'],
-                    'Country Rock': ['Zach Bryan', 'Morgan Wallen', 'Treaty Oak Revival', 'Ole 60', 'Luke Combs', 'Shaboozey', 'Jelly Roll', 'Lainey Wilson', 'Chris Stapleton', 'Tyler Childers']
+                    'UK Pop & Chart-Toppers': ['Ed Sheeran', 'Dua Lipa', 'Harry Styles', 'Adele', 'Coldplay', 'Sam Smith', 'Charli XCX', 'Ellie Goulding', 'Lewis Capaldi'],
+                    'UK Rap, Grime & Afroswing': ['Central Cee', 'Dave', 'Stormzy', 'Skepta', 'Headie One', 'D-Block Europe', 'AJ Tracey', 'Wiley', 'Jme'],
+                    'Drill & Underground Hip-Hop': ['Digga D', 'Knucks', 'Little Simz', 'Fredo', 'Ice Spice'],
+                    'Indie & Britpop Legacy': ['Arctic Monkeys', 'The 1975', 'Oasis', 'Blur', 'Radiohead', 'Florence + The Machine', 'The Smiths', 'Joy Division'],
+                    'Post-Punk Revival & Alternative': ['Fontaines D.C.', 'Idles', 'Shame', 'Bring Me The Horizon', 'Muse', 'Greta Van Fleet'],
+                    'UK Garage, Dubstep & Ambient': ['Fred again..', 'Sub Focus', 'Sammy Virji', 'Chase & Status', 'Burial', 'Aphex Twin', 'Boards of Canada', 'Jon Hopkins'],
+                    'UK R&B & Alternative Soul': ['Jorja Smith', 'Mahalia', 'Cleo Sol', 'PinkPantheress', 'Arlo Parks', 'FKA twigs', 'Raye']
                 }
             },
-            'Electronic': {
-                title: 'Elettronica, Club Culture & Techno',
-                color: '#0d72ea',
+            'Corea': {
+                title: '🇰🇷 Corea del Sud - K-Pop Hub',
+                color: '#cd2e3a',
                 subgenres: {
-                    'Hard Techno & Industrial': ['Sara Landry', 'I Hate Models', '999999999', 'Paula Temple', 'Klangkuenstler', '6EJOU', 'SNTS', 'Alignment', 'Kobosil', '047'],
-                    'Melodic Techno & Organic House': ['Tale Of Us', 'ARTBAT', 'Anyma', 'Stephan Bodzin', 'Ben Böhmer', 'CamelPhat', 'Rufus Du Sol', 'Lane 8', 'Adriatique', 'Dixon'],
-                    'Techno & Tech-House': ['Charlotte de Witte', 'Amelie Lens', 'Carl Cox', 'Boris Brejcha', 'Richie Hawtin', 'Adam Beyer', 'Marco Carola', 'Nina Kraviz', 'Paco Osuna'],
-                    'House & Deep House': ['Fisher', 'Dom Dolla', 'Peggy Gou', 'John Summit', 'Chris Lake', 'Michael Bibi', 'Green Velvet', 'Sonny Fodera', 'Cloonee', 'Black Coffee', 'Keinemusik'],
-                    'EDM & Trance': ['David Guetta', 'Martin Garrix', 'Tiësto', 'Calvin Harris', 'Alan Walker', 'Swedish House Mafia', 'Alesso', 'Armin van Buuren', 'Marshmello', 'Hardwell', 'Paul van Dyk'],
-                    'Bass Music & Dubstep': ['Skrillex', 'ISOxo', 'Knock2', 'Sammy Virji', 'Sub Focus', 'Fred again..', 'REZZ', 'Illenium', 'Excision', 'Hedex', 'Zeds Dead', 'Marauda', 'Subtronics']
+                    'Global Icon Groups': ['BTS', 'BLACKPINK', 'TWICE', 'Stray Kids', 'SEVENTEEN', 'EXO', 'Red Velvet', 'NCT'],
+                    '4th & 5th Gen Powerhouses': ['NewJeans', 'LE SSERAFIM', 'aespa', 'ENHYPEN', 'ITZY', 'IVE', '(G)I-DLE', 'NMIXX', 'BOYNEXTDOOR', 'ILLIT', 'RIIZE'],
+                    'Solo Superstars Lineage': ['Jung Kook', 'Jimin', 'V', 'J-Hope', 'RM', 'Suga', 'Jennie', 'Rosé', 'Lisa', 'Jisoo', 'Zico', 'Taemin'],
+                    'K-R&B, Indie & Soloists': ['IU', 'Taeyeon', 'Dean', 'BIBI', 'Crush', 'DPR Live', 'Jackson Wang', 'Sunmi', 'Colde', 'DPR Ian']
                 }
             },
-            'Phonk': {
-                title: 'Phonk, Brazilian Funk & Bass',
-                color: '#503750',
+            'Giappone': {
+                title: '🇯🇵 Giappone - J-Pop & Rock',
+                color: '#bc002d',
                 subgenres: {
-                    'Brazilian Phonk': ['MXZI', 'Ogryzek', 'MC Ryan SP', 'Anitta', 'Kevin o Chris', 'DJ GBR', 'Ludmilla', 'MC Tuto', 'Dennis DJ'],
-                    'Chill Phonk & Wave': ['LONOWN', 'DVRST', 'LXST CXNTURY', 'Skeler', 'd4vd', 'Kordhell', 'Interworld', 'Pharmacist', 'Carpenter Brut', 'Perturbator'],
-                    'Drift Phonk': ['DJ Smokey', 'Ghostface Playa', 'Sadfriendd', 'Roland Jones', 'Soudiere', 'Baker Ya Maker', 'Purple Posse'],
-                    'Trapstyle & Glitch': ['TroyBoi', 'Baauer', 'RL Grime', 'TOKiMONSTA', 'GRiZ']
-                }
-            },
-            'Trap': {
-                title: 'Trap & Urban',
-                color: '#1e3264',
-                subgenres: {
-                    'Trap Moderno': ['Travis Scott', 'Future', 'Playboi Carti', 'Lil Baby', 'Gunna', 'Young Thug', 'Migos', 'Quavo', 'Takeoff', 'Offset'],
-                    'Dark Trap': ['$uicideboy$', 'Ghostemane', 'Night Lovell', 'Pouya', 'Bones', 'Xavier Wulf', 'City Morgue'],
-                    'Latin Trap': ['Duki', 'Paulo Londra', 'Bizarrap', 'Yandel', 'El Alfa', 'Young Miko', 'Nicki Nicole', 'Tiago PZK', 'Quevedo', 'Morad']
-                }
-            },
-            'Drill': {
-                title: 'Drill Music',
-                color: '#ba5d07',
-                subgenres: {
-                    'UK Drill': ['Central Cee', 'Dave', 'Headie One', 'Digga D', 'Unknown T', 'M24', 'ArrDee'],
-                    'US Drill': ['Pop Smoke', 'Fivio Foreign', 'Sheff G', 'Sleepy Hallow', 'Coach Da Ghost'],
-                    'Italian Drill': ['Rondodasosa', 'Shiva', 'Sfera Ebbasta', 'Capo Plaza', 'Baby Gang', 'Simba La Rue'],
-                    'Brooklyn Drill': ['Bizzy Banks', '22Gz', 'Kay Flock', 'B-Lovee', 'Dthang']
-                }
-            },
-            'Indie': {
-                title: 'Indie & Alternative',
-                color: '#608108',
-                subgenres: {
-                    'Indie Rock': ['Arctic Monkeys', 'The Strokes', 'Tame Impala', 'Fontaines D.C.', 'The 1975', 'Cage The Elephant'],
-                    'Bedroom Pop': ['Clairo', 'Beabadoobee', 'Gus Dapperton', 'Still Woozy', 'Rex Orange County'],
-                    'Indie Folk': ['Bon Iver', 'Fleet Foxes', 'Iron & Wine', 'Sufjan Stevens', 'The Paper Kites'],
-                    'Dream Pop': ['Beach House', 'Cocteau Twins', 'Mazzy Star', 'Cigarettes After Sex', 'Men I Trust']
-                }
-            },
-            'RB': {
-                title: 'R&B, Soul & Funk',
-                color: '#8d67ab',
-                subgenres: {
-                    'Contemporary R&B': ['SZA', 'Frank Ocean', 'Tyla', 'H.E.R.', 'Beyoncé', 'Bryson Tiller', 'Rihanna', 'Ravyn Lenae', '6lack', 'Brent Faiyaz', 'Summer Walker', 'Victoria Monét', 'Khalid', 'Kehlani'],
-                    'Neo-Soul & Funk': ['Erykah Badu', 'D\'Angelo', 'Anderson .Paak', 'Leon Bridges', 'Silk Sonic', 'Thundercat', 'Robert Glasper', 'Jill Scott', 'Earth, Wind & Fire'],
-                    'Afrobeats & Amapiano': ['Burna Boy', 'Wizkid', 'Tems', 'Rema', 'Ayra Starr', 'Ruger', 'Asake', 'Omah Lay', 'Kabza De Small', 'DJ Maphorisa', 'Davido', 'CKay', 'Tiwa Savage', 'Focalistic'],
-                    'Reggae & Dancehall': ['Bob Marley', 'Sean Paul', 'Damian Marley', 'Shaggy', 'Buju Banton', 'Koffee', 'Protoje', 'Jimmy Cliff']
+                    'J-Pop, City Pop & Anime Hits': ['Yoasobi', 'Kenshi Yonezu', 'Fujii Kaze', 'Ado', 'Aimyon', 'Radwimps', 'Tatsuro Yamashita', 'Mariya Takeuchi', 'LiSA', 'Eve'],
+                    'Visual Kei & Heavy Metal': ['X Japan', 'Dir en grey', 'Babymetal', 'L\'Arc-en-Ciel', 'Band-Maid']
                 }
             },
             'Latin': {
-                title: 'Musica Latina & Reggaeton',
-                color: '#af2896',
+                title: '🌎 America Latina & Caraibi',
+                color: '#006847',
                 subgenres: {
-                    'Reggaeton': ['Bad Bunny', 'Karol G', 'Shakira', 'J Balvin', 'Daddy Yankee', 'Ozuna', 'Feid', 'Rosalía', 'Myke Towers', 'Maluma', 'Rauw Alejandro', 'Anuel AA', 'Sech'],
-                    'Regional Mexicano': ['Peso Pluma', 'Fuerza Regida', 'Junior H', 'Natanael Cano', 'Netón Vega', 'DannyLux', 'Grupo Frontera', 'Carin León', 'Eslabon Armado'],
-                    'Salsa & Bachata': ['Marc Anthony', 'Romeo Santos', 'Prince Royce', 'Juan Luis Guerra', 'Carlos Vives', 'Gilberto Santa Rosa']
+                    'Reggaeton & Global Latin Pop': ['Bad Bunny', 'Karol G', 'Shakira', 'J Balvin', 'Daddy Yankee', 'Ozuna', 'Feid', 'Rauw Alejandro', 'Maluma', 'Anuel AA', 'Myke Towers'],
+                    'Latin Trap & Urbano Alternativo': ['Duki', 'Bizarrap', 'Young Miko', 'Quevedo', 'Morad', 'Trueno', 'Nicki Nicole', 'Tiago PZK', 'Paulo Londra', 'Dillom', 'El Alfa'],
+                    'Regional Mexicano & Corridos': ['Peso Pluma', 'Fuerza Regida', 'Junior H', 'Natanael Cano', 'Netón Vega', 'DannyLux', 'Grupo Frontera', 'Carin León', 'Eslabon Armado'],
+                    'Tropical, Salsa & Bachata': ['Marc Anthony', 'Romeo Santos', 'Prince Royce', 'Juan Luis Guerra', 'Carlos Vives', 'Gilberto Santa Rosa', 'Celia Cruz', 'Héctor Lavoe', 'Buena Vista Social Club']
                 }
             },
-            'Jazz': {
-                title: 'Jazz, Blues & Classical',
-                color: '#8c1932',
+            'Brasile': {
+                title: '🇧🇷 Brasile - Brazilian Hub',
+                color: '#009c3b',
                 subgenres: {
-                    'Bebop & Fusion': ['Miles Davis', 'John Coltrane', 'Louis Armstrong', 'Duke Ellington', 'Herbie Hancock', 'Norah Jones', 'Kamasi Washington', 'Robert Glasper'],
-                    'Blues': ['B.B. King', 'Muddy Waters', 'Stevie Ray Vaughan', 'Eric Clapton', 'Robert Johnson', 'Buddy Guy'],
-                    'Classical': ['Johann Sebastian Bach', 'Wolfgang Amadeus Mozart', 'Ludwig van Beethoven', 'Frédéric Chopin', 'Pyotr Ilyich Tchaikovsky', 'Ludovico Einaudi', 'Max Richter', 'Philip Glass']
+                    'MTG, Montagem & Brazilian Phonk': ['MXZI', 'Ogryzek', 'DJ Samir', 'Rushex', 'MC Ryan SP', 'DJ GBR', 'MC Tuto'],
+                    'Funk Carioca & Baile Funk': ['Anitta', 'Kevin o Chris', 'Ludmilla', 'MC Livinho', 'Lexa', 'Dennis DJ'],
+                    'Samba, Bossa Nova & MPB': ['Tom Jobim', 'João Gilberto', 'Caetano Veloso', 'Gilberto Gil', 'Vinícius de Moraes', 'Marisa Monte']
                 }
             },
-            'KPop': {
-                title: 'K-Pop & Asian Pop',
-                color: '#006450',
+            'Francia': {
+                title: '🇫🇷 Francia - Scène Française',
+                color: '#0055a4',
                 subgenres: {
-                    'Global Groups': ['BTS', 'BLACKPINK', 'TWICE', 'Stray Kids', 'SEVENTEEN', 'EXO', 'Red Velvet'],
-                    '4th/5th Gen': ['NewJeans', 'LE SSERAFIM', 'aespa', 'ENHYPEN', 'ITZY', 'IVE', '(G)I-DLE', 'NMIXX', 'BOYNEXTDOOR', 'ILLIT', 'RIIZE'],
-                    'Solisti': ['Jung Kook', 'Jimin', 'V', 'J-Hope', 'RM', 'Suga', 'Jennie', 'Rosé', 'Lisa', 'Jisoo', 'Zico'],
-                    'R&B K-Pop': ['IU', 'Taeyeon', 'Dean', 'BIBI', 'Crush', 'DPR Live', 'Jackson Wang', 'Sunmi', 'Colde'],
-                    'J-Pop & Anime': ['Yoasobi', 'Kenshi Yonezu', 'Fujii Kaze', 'Ado', 'Aimyon', 'Radwimps', 'X Japan', 'Dir en grey']
+                    'French Rap, Trap & Drill': ['PNL', 'Damso', 'Ninho', 'Booba', 'SCH', 'Gazo', 'Niska', 'Jul', 'Tiakola', 'SDM'],
+                    'French Touch & Electro': ['Daft Punk', 'Gesaffelstein', 'Justice', 'DJ Snake', 'Bob Sinclar', 'Vladimir Cauchemar']
+                }
+            },
+            'Germania': {
+                title: '🇩🇪 Germania - Germany Hub',
+                color: '#000000',
+                subgenres: {
+                    'Hard Techno, Industrial & Gabber': ['I Hate Models', '999999999', 'Paula Temple', 'Klangkuenstler', '6EJOU', 'SNTS', 'Alignment', 'Kobosil', 'Brutalismus 3000', 'Angerfist'],
+                    'Deutschrap & Elettronica': ['Apache 207', 'Bonez MC', 'Ufo361', 'Luciano', 'Shirin David', 'Kraftwerk', 'Paul Kalkbrenner']
+                }
+            },
+            'Africa': {
+                title: '🌍 Nigeria & Sudafrica - African Waves',
+                color: '#008751',
+                subgenres: {
+                    'Afrobeats & Afro-Fusion': ['Burna Boy', 'Wizkid', 'Tems', 'Rema', 'Ayra Starr', 'Ruger', 'Asake', 'Omah Lay', 'Davido', 'CKay', 'Tiwa Savage', 'Fireboy DML', 'Oxlade'],
+                    'Amapiano & African House': ['Tyla', 'Kabza De Small', 'DJ Maphorisa', 'Focalistic', 'Major League DJz']
+                }
+            },
+            'Canada': {
+                title: '🇨🇦 Canada - Canada Hub',
+                color: '#ff0000',
+                subgenres: {
+                    'Canadian Pop, R&B & Hip-Hop': ['The Weeknd', 'Justin Bieber', 'Drake', 'Shawn Mendes', 'Tate McRae', 'Michael Bublé', 'Arcade Fire', 'Sum 41']
+                }
+            },
+            'Oceania': {
+                title: '🇦🇺 Australia & Oceania',
+                color: '#00008b',
+                subgenres: {
+                    'Indie, Alternative & Electronic': ['Tame Impala', 'Lorde', 'Troye Sivan', 'Rüfüs Du Sol', 'The Kid LAROI', 'Flume', 'King Gizzard & the Lizard Wizard', 'Amyl and the Sniffers']
                 }
             }
         };
 
-        // ============ STATE MANAGER (FIX: musica non si interrompe) ============
+        // ============ STATE MANAGER (FIX: click singolo e musica non si interrompe) ============
         const AppState = {
             player: null,
             isPlaying: false,
@@ -1056,7 +1084,6 @@
 
         // ============ NAVIGAZIONE (FIX: la musica non si interrompe) ============
         function switchView(viewName, btnElement) {
-            // Il player è fuori dalle viste, quindi non si interrompe mai
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             const target = document.getElementById('view-' + viewName);
             if (target) target.classList.add('active');
@@ -1109,15 +1136,15 @@
             openModal('wrapped-modal');
         }
 
-        // ============ GENRE BROWSER ============
-        function openGenreBrowser(genreKey) {
+        // ============ COUNTRY HUB ============
+        function openCountryHub(countryKey) {
             switchView('genre-browser');
-            document.getElementById('genreBrowserTitle').innerText = MUSIC_ENCYCLOPEDIA[genreKey]?.title || genreKey;
+            const genreData = MUSIC_ENCYCLOPEDIA[countryKey];
+            document.getElementById('genreBrowserTitle').innerText = genreData?.title || countryKey;
             const container = document.getElementById('genreBrowserContent');
-            const genreData = MUSIC_ENCYCLOPEDIA[genreKey];
             
             if (!genreData) {
-                container.innerHTML = '<p style="color:#b3b3b3;">Genere non trovato.</p>';
+                container.innerHTML = '<p style="color:#b3b3b3;">Hub non trovato.</p>';
                 return;
             }
             
@@ -1132,6 +1159,10 @@
                 html += `</div></div>`;
             }
             container.innerHTML = html;
+        }
+
+        function openGenreBrowser(genreKey) {
+            openCountryHub(genreKey);
         }
 
         function searchArtistFromChip(artistName) {
@@ -1410,13 +1441,14 @@
             }
         }
 
-        // ============ TRACK RENDERING ============
+        // ============ TRACK RENDERING (FIX: click singolo) ============
         function renderSingleTrackRow(t, idx, sectionTracks) {
             const isLiked = likedSongs.some(s => s.id === t.id);
             const isDownloaded = downloadedTracks.some(s => s.id === t.id);
             const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
             const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(sectionTracks || []))));
-            return `<div class="track-row" onclick="playSelectedTrack('${trackJson}', '${queueJson}', ${idx})">
+            // FIX: onclick diretto sul div, un solo click per riprodurre
+            return `<div class="track-row" onclick="playSelectedTrack('${trackJson}', '${queueJson}', ${idx})" style="cursor:pointer;">
                 <div class="track-row-left">
                     <span class="track-num">${idx + 1}</span>
                     <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${idx}/100'">
@@ -1510,7 +1542,7 @@
             updateFollowButtonState(currentArtistPage);
         }
 
-        // ============ PLAYER (FIX: parte subito senza delay) ============
+        // ============ PLAYER (FIX: click singolo, parte subito) ============
         function playSelectedTrack(encodedTrack, encodedQueue, index) {
             try {
                 const t = JSON.parse(decodeURIComponent(escape(atob(encodedTrack))));
@@ -1538,7 +1570,6 @@
                 // FIX: Riproduzione immediata senza delay
                 if (AppState.player && AppState.playerReady) {
                     AppState.player.loadVideoById(t.id);
-                    // Prova a riprodurre subito
                     AppState.player.playVideo();
                     AppState.isPlaying = true;
                     updatePlayIcons(true);
@@ -1977,7 +2008,7 @@
             } catch(e) { progressEl.innerHTML = 'Errore.'; }
         }
 
-        // ============ AI FUNCTIONS (FIX: genera mix dal genere dell'enciclopedia) ============
+        // ============ AI FUNCTIONS ============
         function openAiDjModal() { openModal('ai-dj-modal'); }
         function openAiPlaylistModal() { openModal('ai-playlist-modal'); }
         function openBlendModal() {
@@ -2006,52 +2037,47 @@
             progressEl.innerHTML = '<span class="loading-spinner"></span> Generazione mix...';
             
             try {
-                // Cerca il genere nell'enciclopedia
-                let genreKey = null;
+                let countryKey = null;
                 for (const key of Object.keys(MUSIC_ENCYCLOPEDIA)) {
                     if (prompt.includes(key.toLowerCase())) {
-                        genreKey = key;
+                        countryKey = key;
                         break;
                     }
                 }
                 
-                // Se non trova il genere esatto, cerca nei sottogeneri
-                if (!genreKey) {
+                if (!countryKey) {
                     for (const [key, data] of Object.entries(MUSIC_ENCYCLOPEDIA)) {
                         for (const subgenre of Object.keys(data.subgenres)) {
                             if (prompt.includes(subgenre.toLowerCase())) {
-                                genreKey = key;
+                                countryKey = key;
                                 break;
                             }
                         }
-                        if (genreKey) break;
+                        if (countryKey) break;
                     }
                 }
                 
-                // Se ancora non trova, cerca negli artisti
-                if (!genreKey) {
+                if (!countryKey) {
                     for (const [key, data] of Object.entries(MUSIC_ENCYCLOPEDIA)) {
                         for (const artists of Object.values(data.subgenres)) {
                             if (artists.some(a => prompt.includes(a.toLowerCase()))) {
-                                genreKey = key;
+                                countryKey = key;
                                 break;
                             }
                         }
-                        if (genreKey) break;
+                        if (countryKey) break;
                     }
                 }
                 
                 let allTracks = [];
                 
-                if (genreKey) {
-                    // Prendi tutti gli artisti del genere
-                    const genreData = MUSIC_ENCYCLOPEDIA[genreKey];
+                if (countryKey) {
+                    const genreData = MUSIC_ENCYCLOPEDIA[countryKey];
                     const allArtists = [];
                     for (const artists of Object.values(genreData.subgenres)) {
                         allArtists.push(...artists);
                     }
                     
-                    // Cerca brani per ogni artista (limitato a 5 artisti per non sovraccaricare)
                     const selectedArtists = allArtists.slice(0, 5);
                     for (const artist of selectedArtists) {
                         try {
@@ -2063,17 +2089,15 @@
                         } catch(e) {}
                     }
                 } else {
-                    // Fallback: cerca il prompt direttamente
                     const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(prompt)}`);
                     const tracks = await res.json();
                     allTracks = filterOriginalTracks(tracks).slice(0, 10);
                 }
                 
-                // Rimuovi duplicati
                 allTracks = allTracks.filter((t, i, self) => self.findIndex(x => x.id === t.id) === i);
                 
                 if (allTracks.length > 0) {
-                    const playlistName = `AI Mix: ${genreKey || prompt.slice(0, 20)}`;
+                    const playlistName = `AI Mix: ${countryKey || prompt.slice(0, 20)}`;
                     autoPlaylists.push({
                         id: 'pl_ai_' + Date.now(),
                         name: playlistName,
