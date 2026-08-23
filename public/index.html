@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DarkSound Pro">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0a0a0f">
+    <meta name="theme-color" content="#121212">
     <style>
         :root {
             --bg-base: #121212;
@@ -670,6 +670,47 @@
         }
         .search-box input::placeholder { color: var(--text-subdued); }
 
+        /* ============ GENRE CARDS FOR SEARCH ============ */
+        .genre-search-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .genre-search-card {
+            background: var(--background-tinted-base);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            min-height: 100px;
+            display: flex;
+            align-items: flex-end;
+        }
+        .genre-search-card:hover {
+            background: var(--background-tinted-highlight);
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .genre-search-card:active { transform: scale(0.97); }
+        .genre-search-card h3 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #fff;
+            position: relative;
+            z-index: 2;
+        }
+        .genre-search-card .genre-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2rem;
+            opacity: 0.7;
+        }
+
         /* ============ BUTTONS ============ */
         .btn-action-primary {
             background: #1ed760; 
@@ -1266,43 +1307,6 @@
             color: #000; 
         }
 
-        .genre-box {
-            background: var(--background-tinted-base);
-            backdrop-filter: blur(var(--backdrop-blur));
-            -webkit-backdrop-filter: blur(var(--backdrop-blur));
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            margin-bottom: 24px;
-        }
-        .genre-chips { 
-            display: flex; 
-            gap: 8px; 
-            flex-wrap: wrap; 
-            margin-top: 12px; 
-        }
-        .genre-chip {
-            background: var(--background-tinted-highlight); 
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 14px; 
-            border-radius: 24px;
-            font-size: 0.85rem; 
-            font-weight: 600; 
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); 
-            color: #fff;
-        }
-        .genre-chip:hover { 
-            background: var(--background-tinted-press); 
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-        .genre-chip.active { 
-            background: #1ed760; 
-            color: #000; 
-            border-color: transparent; 
-            font-weight: 800;
-        }
-
         .download-all-btn {
             background: #1ed760; 
             color: #000; 
@@ -1378,6 +1382,24 @@
             border-color: rgba(255, 255, 255, 0.2);
         }
         .share-option-btn i { font-size: 1.2rem; }
+
+        /* ============ YOUTUBE PLAYER HIDDEN ============ */
+        #youtube-player {
+            position: fixed;
+            bottom: -200px;
+            right: -200px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -9999;
+            visibility: hidden;
+        }
+        #youtube-player iframe {
+            width: 1px;
+            height: 1px;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -1408,6 +1430,7 @@
         <div class="drawer-menu-item" onclick="openFollowedArtistsModal()"><div class="drawer-menu-left"><i class="fas fa-users"></i> Artisti che Segui</div><span style="font-size:0.7rem; color:#1ed760;" id="followedArtistsCount">0</span></div>
         <div class="drawer-menu-item"><div class="drawer-menu-left"><i class="fab fa-spotify" style="color:#1ed760;"></i> Piano DarkSound</div><span style="background:rgba(30,215,96,0.2); color:#1ed760; font-size:0.75rem; padding:3px 8px; border-radius:6px; font-weight:800;">PRO</span></div>
         <div class="drawer-menu-item" onclick="openWrappedModal()"><div class="drawer-menu-left"><i class="fas fa-chart-line"></i> DarkSound Wrapped / Stats</div><span style="font-size:0.7rem; color:#1ed760; font-weight:700;">Novità</span></div>
+        <div class="drawer-menu-item" onclick="openImportPlaylistModal()"><div class="drawer-menu-left"><i class="fas fa-link"></i> Importa Playlist</div><span style="font-size:0.7rem; color:#3d91f4; font-weight:700;">Nuovo</span></div>
         <div class="drawer-menu-item" onclick="switchView('library', document.querySelectorAll('.nav-item')[2]); toggleProfileDrawer();"><div class="drawer-menu-left"><i class="fas fa-clock-rotate-left"></i> Recenti e Salvati</div><i class="fas fa-chevron-right" style="font-size:0.8rem;"></i></div>
         <div class="drawer-menu-item" onclick="toggleProfileDrawer()"><div class="drawer-menu-left"><i class="fas fa-gear"></i> Impostazioni e privacy</div><i class="fas fa-chevron-right" style="font-size:0.8rem;"></i></div>
         <div style="margin-top: 24px; font-size:0.9rem; font-weight:700; color:var(--text-secondary); margin-bottom:10px;">I tuoi Amici</div>
@@ -1458,6 +1481,23 @@
                 <p style="margin-top:6px;">🔥 <b>Brano più riprodotto:</b> Chlorine</p>
             </div>
             <button class="auth-btn" onclick="document.getElementById('wrapped-modal').classList.remove('active')">Fantastico!</button>
+        </div>
+    </div>
+
+    <div id="import-playlist-modal" class="modal-overlay">
+        <div class="auth-card">
+            <h2>Importa Playlist</h2>
+            <p>Incolla un link Spotify, YouTube Music, o Apple Music per importare la playlist</p>
+            <div class="auth-input-group">
+                <label>Link Playlist</label>
+                <input type="text" id="playlistLinkInput" placeholder="https://open.spotify.com/playlist/...">
+            </div>
+            <div class="auth-input-group">
+                <label>Nome Playlist (opzionale)</label>
+                <input type="text" id="playlistNameInput" placeholder="Nome personalizzato...">
+            </div>
+            <button class="auth-btn" onclick="importPlaylistFromLink()">Importa</button>
+            <button class="auth-btn secondary" style="margin-top:8px;" onclick="document.getElementById('import-playlist-modal').classList.remove('active')">Annulla</button>
         </div>
     </div>
 
@@ -1613,30 +1653,28 @@
             <div class="section-title">La tua Radio Personale <span style="font-size:0.75rem; color:#1ed760; background:rgba(30,215,96,0.15); padding:3px 10px; border-radius:16px; font-weight:700;">Basata sui tuoi gusti</span></div>
             <div id="radioTracksContainer"><p style="color:var(--text-secondary);">Generazione radio in corso...</p></div>
         </div>
-        <div class="section-title" style="margin-top:28px;">Top Hit Nazionali</div>
-        <div class="genre-box">
-            <div class="section-title" style="font-size:1rem; margin-bottom:8px;">Scegli un genere</div>
-            <div class="genre-chips" id="genreChips">
-                <button class="genre-chip active" onclick="filterByGenre(this, '')">Tutti</button>
-                <button class="genre-chip" onclick="filterByGenre(this, 'Pop')">Pop</button>
-                <button class="genre-chip" onclick="filterByGenre(this, 'Rap')">Rap</button>
-                <button class="genre-chip" onclick="filterByGenre(this, 'Rock')">Rock</button>
-                <button class="genre-chip" onclick="filterByGenre(this, 'Techno')">Techno</button>
-                <button class="genre-chip" onclick="filterByGenre(this, 'Phonk')">Phonk</button>
-                <button class="genre-chip" onclick="filterByGenre(this, 'Trap')">Trap</button>
-                <button class="genre-chip" onclick="filterByGenre(this, 'Drill')">Drill</button>
-                <button class="genre-chip" onclick="filterByGenre(this, 'Indie')">Indie</button>
-                <button class="genre-chip" onclick="filterByGenre(this, 'Metal')">Metal</button>
-                <button class="genre-chip" onclick="filterByGenre(this, 'Lo-fi')">Lo-fi</button>
-                <button class="genre-chip" onclick="filterByGenre(this, 'Dance')">Dance</button>
-            </div>
-        </div>
-        <div id="homeTracksContainer"><p style="color:var(--text-secondary);">Caricamento...</p></div>
     </div>
 
     <div id="view-search" class="view">
         <h1 class="home-title">Cerca</h1>
         <div class="search-box"><i class="fas fa-search" style="color: var(--text-secondary);"></i><input type="text" id="spotifySearchInput" placeholder="Cerca artisti, brani, playlist o generi..." oninput="handleSearchInput(this.value)"></div>
+        <div id="genreSearchSection" style="margin-bottom: 24px;">
+            <div class="section-title">Sfoglia per genere</div>
+            <div class="genre-search-grid" id="genreSearchGrid">
+                <div class="genre-search-card" onclick="searchByGenre('Pop')"><span class="genre-icon">🎤</span><h3>Pop</h3></div>
+                <div class="genre-search-card" onclick="searchByGenre('Rap')"><span class="genre-icon">🎵</span><h3>Rap</h3></div>
+                <div class="genre-search-card" onclick="searchByGenre('Rock')"><span class="genre-icon">🎸</span><h3>Rock</h3></div>
+                <div class="genre-search-card" onclick="searchByGenre('Techno')"><span class="genre-icon">🔊</span><h3>Techno</h3></div>
+                <div class="genre-search-card" onclick="searchByGenre('Phonk')"><span class="genre-icon">🌊</span><h3>Phonk</h3></div>
+                <div class="genre-search-card" onclick="searchByGenre('Trap')"><span class="genre-icon">🔥</span><h3>Trap</h3></div>
+                <div class="genre-search-card" onclick="searchByGenre('Drill')"><span class="genre-icon">💀</span><h3>Drill</h3></div>
+                <div class="genre-search-card" onclick="searchByGenre('Indie')"><span class="genre-icon">🎨</span><h3>Indie</h3></div>
+                <div class="genre-search-card" onclick="searchByGenre('Metal')"><span class="genre-icon">🤘</span><h3>Metal</h3></div>
+                <div class="genre-search-card" onclick="searchByGenre('Lo-fi')"><span class="genre-icon">🌙</span><h3>Lo-fi</h3></div>
+                <div class="genre-search-card" onclick="searchByGenre('Dance')"><span class="genre-icon">💃</span><h3>Dance</h3></div>
+                <div class="genre-search-card" onclick="searchByGenre('Jazz')"><span class="genre-icon">🎷</span><h3>Jazz</h3></div>
+            </div>
+        </div>
         <div id="searchResultsContainer" style="margin-top:24px;"></div>
     </div>
 
@@ -2086,36 +2124,29 @@
                 let radioQuery = userPreferences ? (userPreferences.artist !== 'Hit Italia' ? userPreferences.artist : userPreferences.genres[0]) : 'Hit Italia';
                 let resRadio = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(radioQuery)}`);
                 let radioTracks = await resRadio.json();
-                renderTracksList(radioTracks.slice(0, 5), 'radioTracksContainer', radioTracks.slice(0, 5));
-                let res = await fetch(`${API_BASE}/api/search?q=Hit Italia`);
-                let homeTracks = await res.json();
-                renderTracksList(homeTracks, 'homeTracksContainer', homeTracks);
+                renderTracksList(radioTracks.slice(0, 10), 'radioTracksContainer', radioTracks.slice(0, 10));
             } catch(e) { 
                 console.error('Errore caricamento home:', e); 
             }
         }
 
-        async function filterByGenre(el, genre) {
-            const chips = document.querySelectorAll('.genre-chip');
-            chips.forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            try {
-                const container = document.getElementById('homeTracksContainer');
-                container.innerHTML = '<p style="color:var(--text-secondary);"><span class="loading-spinner"></span> Caricamento...</p>';
-                let res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(genre || 'Hit Italia')}`);
-                let tracks = await res.json();
-                renderTracksList(tracks, 'homeTracksContainer', tracks);
-            } catch(e) { 
-                console.error('Errore filtro genere:', e); 
-            }
+        function searchByGenre(genre) {
+            const searchInput = document.getElementById('spotifySearchInput');
+            searchInput.value = genre;
+            handleSearchInput(genre);
         }
 
         function handleSearchInput(val) {
             clearTimeout(searchTimer);
+            const genreSection = document.getElementById('genreSearchSection');
+            const resultsContainer = document.getElementById('searchResultsContainer');
+            
             if(val.trim().length < 2) { 
-                document.getElementById('searchResultsContainer').innerHTML = ''; 
+                genreSection.style.display = 'block';
+                resultsContainer.innerHTML = ''; 
                 return; 
             }
+            genreSection.style.display = 'none';
             searchTimer = setTimeout(() => executeSearch(val), 250);
         }
 
@@ -2158,7 +2189,7 @@
                 }
                 if (artistTracks.length > 0) {
                     html += `<div class="section-title" style="margin-top:20px;">Brani principali</div>`;
-                    html += artistTracks.slice(0, 8).map((t, idx) => renderSingleTrackRow(t, idx, artistTracks)).join('');
+                    html += artistTracks.slice(0, 10).map((t, idx) => renderSingleTrackRow(t, idx, artistTracks)).join('');
                 }
                 const similarArtists = [];
                 artistTracks.forEach(t => { 
@@ -2195,7 +2226,7 @@
             const isDownloaded = downloadedTracks.some(s => s.id === t.id);
             const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
             const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(sectionTracks || []))));
-            return `<div class="track-row" onclick="playSelectedTrack('${trackJson}', '${queueJson}', ${idx})"><div class="track-row-left"><img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${idx}/200'"><div class="track-meta"><h4>${t.name}</h4><p><span class="badge-full">LOSSLESS</span> <span style="cursor:pointer; text-decoration:underline;" onclick="event.stopPropagation(); openArtistPage('${t.artist.replace(/'/g, "\\'")}', '${t.image}')">${t.artist}</span></p></div></div><div class="track-actions" onclick="event.stopPropagation()"><i class="fas fa-folder-plus" onclick="openPlaylistSelectorForTrackObj('${trackJson}')"></i><i class="fas fa-download ${isDownloaded ? 'saved' : ''}" onclick="toggleDownloadTrackObj('${trackJson}')"></i><i class="${isLiked ? 'fas fa-heart' : 'far fa-heart'}" style="${isLiked ? 'color:#1ed760;' : ''}" onclick="toggleLikeTrackObj('${trackJson}')"></i></div></div>`;
+            return `<div class="track-row" onclick="playSelectedTrack('${trackJson}', '${queueJson}', ${idx})"><div class="track-row-left"><img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${idx}/200'"><div class="track-meta"><h4>${t.name}</h4><p><span class="badge-full">SPOTIFY</span> <span style="cursor:pointer; text-decoration:underline;" onclick="event.stopPropagation(); openArtistPage('${t.artist.replace(/'/g, "\\'")}', '${t.image}')">${t.artist}</span></p></div></div><div class="track-actions" onclick="event.stopPropagation()"><i class="fas fa-folder-plus" onclick="openPlaylistSelectorForTrackObj('${trackJson}')"></i><i class="fas fa-download ${isDownloaded ? 'saved' : ''}" onclick="toggleDownloadTrackObj('${trackJson}')"></i><i class="${isLiked ? 'fas fa-heart' : 'far fa-heart'}" style="${isLiked ? 'color:#1ed760;' : ''}" onclick="toggleLikeTrackObj('${trackJson}')"></i></div></div>`;
         }
 
         function renderTracksList(tracks, containerId, sectionTracks) {
@@ -2312,8 +2343,8 @@
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
-                height: '200', 
-                width: '200',
+                height: '1', 
+                width: '1',
                 playerVars: { 
                     'autoplay': 1, 
                     'controls': 0, 
@@ -2363,7 +2394,7 @@
                 }, 300);
             } else {
                 const youtubeContainer = document.getElementById('youtube-player');
-                youtubeContainer.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${track.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}&playsinline=1&controls=0&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                youtubeContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${track.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}&playsinline=1&controls=0&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
                 isPlaying = true;
                 updatePlayIcons(true);
             }
@@ -2439,6 +2470,13 @@
                 updateUserUI(); 
                 renderProfileFriends(); 
                 renderProfilePublicPlaylists(); 
+            }
+            if(viewName === 'search') {
+                const searchInput = document.getElementById('spotifySearchInput');
+                if(searchInput.value.trim().length < 2) {
+                    document.getElementById('genreSearchSection').style.display = 'block';
+                    document.getElementById('searchResultsContainer').innerHTML = '';
+                }
             }
         }
 
@@ -2745,6 +2783,86 @@
         function openWrappedModal() { 
             document.getElementById('wrapped-modal').classList.add('active'); 
             toggleProfileDrawer(); 
+        }
+
+        function openImportPlaylistModal() {
+            toggleProfileDrawer();
+            document.getElementById('playlistLinkInput').value = '';
+            document.getElementById('playlistNameInput').value = '';
+            document.getElementById('import-playlist-modal').classList.add('active');
+        }
+
+        async function importPlaylistFromLink() {
+            const link = document.getElementById('playlistLinkInput').value.trim();
+            const customName = document.getElementById('playlistNameInput').value.trim();
+            if(!link) return;
+
+            const importBtn = event.target;
+            importBtn.disabled = true;
+            importBtn.innerText = 'Importazione...';
+
+            try {
+                // Detect playlist type
+                let playlistId = '';
+                let playlistType = '';
+                
+                if(link.includes('spotify.com/playlist/')) {
+                    playlistId = link.split('/playlist/')[1].split('?')[0];
+                    playlistType = 'spotify';
+                } else if(link.includes('youtube.com/playlist?list=') || link.includes('youtu.be/')) {
+                    playlistId = link.includes('list=') ? link.split('list=')[1].split('&')[0] : link.split('/').pop();
+                    playlistType = 'youtube';
+                } else if(link.includes('music.apple.com')) {
+                    playlistId = link.split('/').pop().split('?')[0];
+                    playlistType = 'apple';
+                }
+
+                let playlistName = customName || `Playlist Importata (${playlistType})`;
+                let tracks = [];
+
+                if(playlistType === 'youtube') {
+                    // Fetch YouTube playlist info
+                    const response = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=YOUR_API_KEY`);
+                    const data = await response.json();
+                    if(data.items && data.items.length > 0) {
+                        tracks = data.items.map(item => ({
+                            id: item.snippet.resourceId.videoId,
+                            name: item.snippet.title,
+                            artist: item.snippet.videoOwnerChannelTitle,
+                            image: item.snippet.thumbnails?.default?.url || `https://picsum.photos/seed/${item.snippet.resourceId.videoId}/200`
+                        }));
+                        playlistName = customName || data.items[0].snippet.playlistTitle || playlistName;
+                    }
+                } else {
+                    // For Spotify and Apple Music, use search API
+                    const searchQuery = playlistType === 'spotify' ? `spotify playlist ${playlistId}` : `apple music playlist ${playlistId}`;
+                    const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(searchQuery)}`);
+                    const searchResults = await res.json();
+                    tracks = searchResults.slice(0, 20);
+                }
+
+                if(tracks.length > 0) {
+                    userPlaylists.push({
+                        id: 'pl_import_' + Date.now(),
+                        name: playlistName,
+                        visibility: 'private',
+                        owner: currentUser,
+                        tracks: tracks,
+                        importedFrom: playlistType
+                    });
+                    saveUserData();
+                    document.getElementById('import-playlist-modal').classList.remove('active');
+                    alert(`Playlist "${playlistName}" importata con successo! ${tracks.length} brani aggiunti.`);
+                } else {
+                    alert('Impossibile importare la playlist. Verifica il link e riprova.');
+                }
+            } catch(e) {
+                console.error('Errore importazione:', e);
+                alert('Errore durante l\'importazione. Riprova più tardi.');
+            }
+
+            importBtn.disabled = false;
+            importBtn.innerText = 'Importa';
         }
 
         async function runAiDjSelection() {
