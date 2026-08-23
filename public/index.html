@@ -48,12 +48,22 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            inset: 0;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
         body {
             background-color: var(--bg-base);
             color: var(--text-main);
-            min-height: 100vh;
             font-size: 16px;
-            overflow-x: hidden;
             background-image: 
                 radial-gradient(ellipse at 10% 20%, rgba(48, 209, 88, 0.08) 0%, transparent 50%),
                 radial-gradient(ellipse at 90% 80%, rgba(10, 132, 255, 0.08) 0%, transparent 50%),
@@ -61,19 +71,20 @@
             background-attachment: fixed;
         }
 
-        /* FIX 1: Splash screen copre tutto e blocca i click sotto */
+        /* FIX: Splash screen con z-index massimo */
         #splash-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100vh;
+            height: 100dvh;
             background: #0a0a0f;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
+            z-index: 10000;
             transition: opacity 0.6s ease, visibility 0.6s ease;
             pointer-events: auto;
             cursor: default;
@@ -158,6 +169,11 @@
             padding: 20px; 
             padding-bottom: 280px; 
             animation: iosFadeIn 0.5s var(--transition-smooth) forwards; 
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            height: 100%;
+            position: relative;
+            z-index: 1;
         }
         .view.active { display: block; }
         #view-artist, #view-liked-songs, #view-profile { padding: 0; padding-bottom: 280px; }
@@ -167,7 +183,7 @@
             to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
         }
 
-        /* FIX 4: Tutte le barre e banner bloccano i click al di sotto */
+        /* FIX: Barre con pointer-events e z-index corretti */
         .top-status-bar,
         .profile-drawer,
         .modal-overlay,
@@ -264,6 +280,7 @@
             width: 100%; 
             max-width: 400px; 
             height: 100vh;
+            height: 100dvh;
             background: rgba(15, 15, 22, 0.92); 
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
@@ -276,6 +293,7 @@
             border-left: 1px solid var(--border-glass); 
             overflow-y: auto;
             pointer-events: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .profile-drawer.active { right: 0; }
         .drawer-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
@@ -320,6 +338,7 @@
             left: 0; 
             width: 100%; 
             height: 100vh;
+            height: 100dvh;
             background: rgba(0,0,0,0.7); 
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
@@ -341,9 +360,11 @@
             width: 100%; 
             max-width: 420px;
             box-shadow: 0 25px 60px rgba(0,0,0,0.7);
-            max-height: 90vh; 
+            max-height: 90vh;
+            max-height: 90dvh;
             overflow-y: auto;
             pointer-events: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .auth-card h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
         .auth-card p { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 20px; }
@@ -408,6 +429,7 @@
             transition: all 0.3s ease; 
             color: var(--text-sub);
             backdrop-filter: blur(10px);
+            pointer-events: auto;
         }
         .genre-tag:hover { background: var(--bg-glass-hover); color: white; }
         .genre-tag.selected {
@@ -657,13 +679,13 @@
         .artist-card-info h3 { font-size: 1.1rem; font-weight: 700; color: white; margin-bottom: 4px; }
         .artist-card-info p { font-size: 0.85rem; color: var(--text-sub); }
 
-        /* FIX 3: Player bar con z-index alto e pointer-events */
+        /* FIX: Player bar con z-index alto */
         .player-bar {
             position: fixed; 
             bottom: 76px; 
             left: 12px; 
             right: 12px;
-            background: rgba(20, 20, 28, 0.8); 
+            background: rgba(20, 20, 28, 0.95); 
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
             border-radius: var(--radius-md); 
@@ -671,7 +693,7 @@
             display: none; 
             align-items: center; 
             gap: 14px; 
-            z-index: 100;
+            z-index: 500;
             box-shadow: 0 20px 60px rgba(0,0,0,0.6);
             border: 1px solid var(--border-glass);
             cursor: pointer; 
@@ -680,7 +702,7 @@
             touch-action: manipulation;
             pointer-events: auto;
         }
-        .player-bar:hover { background: rgba(30, 30, 38, 0.9); }
+        .player-bar:hover { background: rgba(30, 30, 38, 0.95); }
         .player-bar:active { transform: scale(0.98); }
         .player-bar img { width: 48px; height: 48px; border-radius: var(--radius-sm); object-fit: cover; }
         .player-meta { flex: 1; min-width: 0; }
@@ -707,15 +729,15 @@
             color: #fff; 
         }
 
+        /* FIX: Fullscreen player con sfondo opaco al 100% */
         #fullscreen-player {
             position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
             height: 100vh;
-            background: rgba(15, 15, 22, 0.95);
-            backdrop-filter: blur(50px);
-            -webkit-backdrop-filter: blur(50px);
+            height: 100dvh;
+            background: #0a0a0f;
             z-index: 2500; 
             display: none; 
             flex-direction: column; 
@@ -753,6 +775,7 @@
             font-size: 1.2rem; 
             z-index: 2; 
         }
+        .fs-top i { cursor: pointer; pointer-events: auto; padding: 8px; }
         .fs-content-container { 
             flex: 1; 
             display: flex; 
@@ -821,6 +844,7 @@
             padding: 20px 10px; 
             text-align: center; 
             scroll-behavior: smooth; 
+            -webkit-overflow-scrolling: touch;
         }
         .lyrics-view.active { display: flex; }
         .lyrics-view::-webkit-scrollbar { display: none; }
@@ -853,6 +877,7 @@
             gap: 6px;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
+            pointer-events: auto;
         }
         .lyrics-toggle-btn.active { 
             background: var(--accent); 
@@ -868,6 +893,7 @@
             border-radius: 3px; 
             position: relative; 
             cursor: pointer;
+            pointer-events: auto;
         }
         .progress-bar-fill {
             width: 0%; 
@@ -896,6 +922,7 @@
             max-width: 340px; 
             margin: 0 auto; 
             z-index: 2; 
+            pointer-events: auto;
         }
         .fs-play-btn {
             width: 64px; 
@@ -910,13 +937,14 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            pointer-events: auto;
         }
         .fs-play-btn:hover { 
             transform: scale(1.1); 
             box-shadow: 0 15px 50px rgba(0,0,0,0.6); 
         }
         .fs-play-btn:active { transform: scale(0.9); }
-        .fs-controls i { cursor: pointer; transition: all 0.3s ease; }
+        .fs-controls i { cursor: pointer; transition: all 0.3s ease; pointer-events: auto; padding: 8px; }
         .fs-controls i:hover { color: var(--accent); }
         .fs-controls i:active { transform: scale(0.8); }
 
@@ -926,7 +954,7 @@
             left: 16px; 
             right: 16px; 
             height: 64px;
-            background: rgba(20, 20, 28, 0.8); 
+            background: rgba(20, 20, 28, 0.95); 
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
             display: flex; 
@@ -934,7 +962,7 @@
             align-items: center;
             border-radius: var(--radius-lg);
             border: 1px solid var(--border-glass); 
-            z-index: 90;
+            z-index: 400;
             box-shadow: 0 20px 60px rgba(0,0,0,0.6);
             pointer-events: auto;
         }
@@ -1049,6 +1077,7 @@
             font-size: 0.8rem; 
             font-weight: 700; 
             cursor: pointer;
+            pointer-events: auto;
         }
         .selected-artist-chip i { font-size: 0.7rem; }
         .follow-artist-card {
@@ -1060,6 +1089,7 @@
             cursor: pointer; 
             transition: all 0.3s ease;
             border: 1px solid transparent;
+            pointer-events: auto;
         }
         .follow-artist-card:hover { 
             background: var(--bg-glass); 
@@ -1530,9 +1560,9 @@
     <div id="fullscreen-player">
         <div class="canvas-bg-layer" id="canvasBgLayer" style="background-image: url('');"></div>
         <div class="fs-top">
-            <i class="fas fa-chevron-down" onclick="toggleFullscreen()" style="cursor:pointer;"></i>
+            <i class="fas fa-chevron-down" onclick="toggleFullscreen()" style="cursor:pointer; font-size: 1.5rem; padding: 12px;"></i>
             <button class="lyrics-toggle-btn" id="lyricsToggleBtn" onclick="toggleLyricsView()"><i class="fas fa-microphone-lines"></i> Lyrics</button>
-            <i class="fas fa-ellipsis-vertical" style="cursor:pointer;" onclick="openShareModal()"></i>
+            <i class="fas fa-ellipsis-vertical" style="cursor:pointer; font-size: 1.5rem; padding: 12px;" onclick="openShareModal()"></i>
         </div>
         <div class="fs-content-container">
             <div class="standard-player-view" id="standardPlayerView">
@@ -1556,11 +1586,11 @@
             <div class="progress-times"><span id="currentTime">0:00</span><span id="totalDuration">0:00</span></div>
         </div>
         <div class="fs-controls">
-            <i class="fas fa-random" style="color:var(--text-sub); cursor:pointer;" onclick="toggleShuffle()"></i>
-            <i class="fas fa-step-backward" style="cursor:pointer;" onclick="prevTrack()"></i>
+            <i class="fas fa-random" style="color:var(--text-sub); cursor:pointer; padding: 8px;" onclick="toggleShuffle()"></i>
+            <i class="fas fa-step-backward" style="cursor:pointer; padding: 8px;" onclick="prevTrack()"></i>
             <div class="fs-play-btn" onclick="togglePlay()"><i class="fas fa-play" id="fsPlayIcon"></i></div>
-            <i class="fas fa-step-forward" style="cursor:pointer;" onclick="nextTrack()"></i>
-            <i class="fas fa-redo" style="color:var(--text-sub); cursor:pointer;" onclick="toggleRepeat()"></i>
+            <i class="fas fa-step-forward" style="cursor:pointer; padding: 8px;" onclick="nextTrack()"></i>
+            <i class="fas fa-redo" style="color:var(--text-sub); cursor:pointer; padding: 8px;" onclick="toggleRepeat()"></i>
         </div>
     </div>
 
@@ -1586,7 +1616,7 @@
     </nav>
 
     <audio id="html5-audio" playsinline webkit-playsinline preload="auto" crossorigin="anonymous"></audio>
-    <script src="https://www.youtube.com/iframe_api"></script>
+    
     <script>
         // ============ VARIABILI GLOBALI ============
         let player = null;
@@ -1621,9 +1651,11 @@
         let currentArtistPage = '';
         let html5Audio = null;
         let isHtml5Mode = false;
+        let isSeeking = false;
+        let audioCache = new Map();
         const API_BASE = window.location.origin;
 
-        // ============ INVIDIOUS API ============
+        // ============ INVIDIOUS API CON CACHE ============
         const INVIDIOUS_INSTANCES = [
             'https://inv.nadeko.net',
             'https://invidious.f5.si',
@@ -1635,15 +1667,19 @@
         let currentInvidiousInstance = INVIDIOUS_INSTANCES[0];
         let instanceIndex = 0;
 
-        // FIX 2: Inizializzazione HTML5 Audio con supporto iOS
+        // FIX: Audio HTML5 ottimizzato per iOS con background
         function initHtml5Audio() {
             if (!html5Audio) {
-                html5Audio = new Audio();
+                html5Audio = document.getElementById('html5-audio') || new Audio();
                 html5Audio.setAttribute('playsinline', 'true');
                 html5Audio.setAttribute('webkit-playsinline', 'true');
                 html5Audio.setAttribute('x-webkit-airplay', 'allow');
                 html5Audio.preload = 'auto';
                 html5Audio.crossOrigin = 'anonymous';
+                html5Audio.controls = false;
+                html5Audio.muted = false;
+                html5Audio.volume = 1.0;
+                html5Audio.setAttribute('autoplay', 'true');
                 
                 html5Audio.addEventListener('play', function() {
                     isPlaying = true;
@@ -1663,47 +1699,64 @@
                         nextTrack();
                     }
                 });
-                html5Audio.addEventListener('error', function() {
+                html5Audio.addEventListener('error', function(e) {
+                    console.error('Errore audio:', e);
                     isHtml5Mode = false;
-                    if (currentTrackData.id) {
+                    if (currentTrackData.id && !isSeeking) {
                         playWithInvidious(currentTrackData, true);
+                    }
+                });
+                html5Audio.addEventListener('loadedmetadata', function() {
+                    updateMediaSessionMetadata();
+                });
+                html5Audio.addEventListener('timeupdate', function() {
+                    if (!isSeeking && html5Audio.duration) {
+                        updateProgressBar(html5Audio.currentTime, html5Audio.duration);
                     }
                 });
             }
             return html5Audio;
         }
 
-        function startProgressTrackerHtml5() {
-            clearInterval(progressInterval);
-            progressInterval = setInterval(() => {
-                if(html5Audio && html5Audio.duration) {
-                    let cur = html5Audio.currentTime;
-                    let dur = html5Audio.duration;
-                    document.getElementById('progressBarFill').style.width = ((cur/dur)*100) + '%';
-                    document.getElementById('currentTime').innerText = formatTime(cur);
-                    document.getElementById('totalDuration').innerText = formatTime(dur);
-                    updateActiveLyric(cur);
-                }
-            }, 500);
+        function updateProgressBar(current, duration) {
+            if (duration > 0) {
+                document.getElementById('progressBarFill').style.width = ((current/duration)*100) + '%';
+                document.getElementById('currentTime').innerText = formatTime(current);
+                document.getElementById('totalDuration').innerText = formatTime(duration);
+                updateActiveLyric(current);
+            }
         }
 
+        function startProgressTrackerHtml5() {
+            clearInterval(progressInterval);
+        }
+
+        // FIX: Cache per gli URL audio
         async function getAudioUrlFromInvidious(videoId, tryNextInstance = false) {
+            if (audioCache.has(videoId)) {
+                return audioCache.get(videoId);
+            }
             if (tryNextInstance) {
                 instanceIndex = (instanceIndex + 1) % INVIDIOUS_INSTANCES.length;
                 currentInvidiousInstance = INVIDIOUS_INSTANCES[instanceIndex];
             }
             try {
-                const response = await fetch(`${currentInvidiousInstance}/api/v1/videos/${videoId}`);
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 10000);
+                const response = await fetch(`${currentInvidiousInstance}/api/v1/videos/${videoId}`, { signal: controller.signal });
+                clearTimeout(timeout);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 if (data.adaptiveFormats && data.adaptiveFormats.length > 0) {
                     const audioFormats = data.adaptiveFormats.filter(f => f.type && f.type.startsWith('audio/'));
                     if (audioFormats.length > 0) {
                         const bestAudio = audioFormats.sort((a, b) => (b.bitrate || 0) - (a.bitrate || 0))[0];
+                        audioCache.set(videoId, bestAudio.url);
                         return bestAudio.url;
                     }
                 }
                 if (data.formatStreams && data.formatStreams.length > 0) {
+                    audioCache.set(videoId, data.formatStreams[0].url);
                     return data.formatStreams[0].url;
                 }
                 return null;
@@ -1715,7 +1768,7 @@
             }
         }
 
-        // FIX 2: Riproduzione immediata con HTML5 Audio
+        // FIX: Riproduzione immediata e stabile
         async function playWithInvidious(track, tryNextInstance = false) {
             try {
                 initHtml5Audio();
@@ -1723,6 +1776,7 @@
                 if (audioUrl) {
                     isHtml5Mode = true;
                     html5Audio.src = audioUrl;
+                    html5Audio.currentTime = 0;
                     await html5Audio.play();
                     isPlaying = true;
                     updatePlayIcons(true);
@@ -1730,6 +1784,7 @@
                     playWithYouTube(track);
                 }
             } catch(e) {
+                console.error('Errore riproduzione:', e);
                 playWithYouTube(track);
             }
         }
@@ -1747,7 +1802,7 @@
             }
         }
 
-        // ============ MEDIA SESSION API (FIX 3: Supporto Dynamic Island iOS) ============
+        // ============ MEDIA SESSION API (FIX: Supporto completo iOS) ============
         if ('mediaSession' in navigator) {
             navigator.mediaSession.setActionHandler('play', function() {
                 if (isHtml5Mode && html5Audio) { 
@@ -2154,27 +2209,6 @@
                     html += `<div class="section-title" style="margin-top:20px;">Brani principali</div>`;
                     html += artistTracks.slice(0, 8).map((t, idx) => renderSingleTrackRow(t, idx, artistTracks)).join('');
                 }
-                const similarArtists = [];
-                artistTracks.forEach(t => { 
-                    const correlations = ARTIST_CORRELATIONS[t.artist?.toLowerCase()]; 
-                    if (correlations) { 
-                        correlations.forEach(c => { 
-                            if (!similarArtists.includes(c)) similarArtists.push(c); 
-                        }); 
-                    } 
-                });
-                if (similarArtists.length > 0) {
-                    html += `<div class="section-title" style="margin-top:20px;">Brani Simili</div>`;
-                    for (const artist of similarArtists.slice(0, 3)) {
-                        try {
-                            const similarRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artist)}`);
-                            const similarTracks = await similarRes.json();
-                            if (similarTracks.length > 0) { 
-                                html += similarTracks.slice(0, 3).map((t, idx) => renderSingleTrackRow(t, idx, similarTracks)).join(''); 
-                            }
-                        } catch(e) {}
-                    }
-                }
                 if (html === '') { 
                     html = '<p style="color:var(--text-sub);">Nessun risultato trovato.</p>'; 
                 }
@@ -2184,7 +2218,7 @@
             }
         }
 
-        // FIX 2: Render brani con click singolo
+        // FIX: Render brani con click singolo
         function renderSingleTrackRow(t, idx, sectionTracks) {
             const isLiked = likedSongs.some(s => s.id === t.id);
             const isDownloaded = downloadedTracks.some(s => s.id === t.id);
@@ -2223,27 +2257,6 @@
                     container.innerHTML = `<p style="color:var(--text-sub);">Nessun brano trovato per ${artistName}.</p>`; 
                 }
                 heroImgEl.style.opacity = '1';
-                if (similarContainer) {
-                    const correlations = ARTIST_CORRELATIONS[artistName.toLowerCase()];
-                    if (correlations && correlations.length > 0) {
-                        let similarTracks = [];
-                        for (const relatedArtist of correlations.slice(0, 3)) {
-                            try {
-                                const similarRes = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(relatedArtist)}`);
-                                const relatedTracks = await similarRes.json();
-                                similarTracks.push(...relatedTracks.slice(0, 3));
-                            } catch(e) {}
-                        }
-                        if (similarTracks.length > 0) { 
-                            renderTracksList(similarTracks, 'similarTracksContainer', similarTracks); 
-                        }
-                        else { 
-                            similarContainer.innerHTML = '<p style="color:var(--text-sub);">Nessun brano simile.</p>'; 
-                        }
-                    } else { 
-                        similarContainer.innerHTML = '<p style="color:var(--text-sub);">Nessun brano simile.</p>'; 
-                    }
-                }
             } catch(e) { 
                 container.innerHTML = `<p style="color:#ff4d4d;">Errore.</p>`; 
                 heroImgEl.style.opacity = '1'; 
@@ -2280,7 +2293,7 @@
             updateUserUI();
         }
 
-        // FIX 2: Riproduzione immediata al primo click
+        // FIX: Riproduzione immediata e stabile
         function playSelectedTrack(encodedTrack, encodedQueue, index) {
             try {
                 const t = JSON.parse(decodeURIComponent(escape(atob(encodedTrack))));
@@ -2288,6 +2301,7 @@
                 playQueue = queue;
                 queueIndex = index;
                 currentTrackData = t;
+                
                 document.getElementById('playerBar').style.display = 'flex';
                 document.getElementById('playerTitle').innerText = t.name;
                 document.getElementById('playerArtist').innerText = t.artist;
@@ -2296,6 +2310,7 @@
                 document.getElementById('fsArtist').innerText = t.artist;
                 document.getElementById('fsCover').src = t.image;
                 document.getElementById('canvasBgLayer').style.backgroundImage = `url('${t.image}')`;
+                
                 loadLyricsForCurrentTrack();
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
@@ -2304,49 +2319,6 @@
             } catch(err) { 
                 console.error("Errore riproduzione:", err); 
             }
-        }
-
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtube-player', {
-                height: '200', 
-                width: '200',
-                playerVars: { 
-                    'autoplay': 1, 
-                    'controls': 0, 
-                    'enablejsapi': 1, 
-                    'rel': 0, 
-                    'playsinline': 1, 
-                    'origin': window.location.origin 
-                },
-                events: {
-                    'onReady': () => { 
-                        playerReady = true; 
-                    },
-                    'onStateChange': (e) => {
-                        if(e.data === YT.PlayerState.PLAYING) { 
-                            isPlaying = true; 
-                            updatePlayIcons(true); 
-                            startProgressTracker(); 
-                        }
-                        if(e.data === YT.PlayerState.PAUSED) { 
-                            isPlaying = false; 
-                            updatePlayIcons(false); 
-                            clearInterval(progressInterval); 
-                        }
-                        if(e.data === YT.PlayerState.ENDED) { 
-                            if(isRepeatActive) { 
-                                player.seekTo(0); 
-                                player.playVideo(); 
-                            } else { 
-                                nextTrack(); 
-                            } 
-                        }
-                    },
-                    'onError': (e) => { 
-                        console.error('Errore YouTube:', e); 
-                    }
-                }
-            });
         }
 
         function togglePlay() {
@@ -2430,8 +2402,19 @@
             }
         }
 
+        // FIX: Toggle fullscreen con chiusura facile
         function toggleFullscreen() { 
-            document.getElementById('fullscreen-player').classList.toggle('active'); 
+            const fsPlayer = document.getElementById('fullscreen-player');
+            fsPlayer.classList.toggle('active');
+            if (!fsPlayer.classList.contains('active')) {
+                isLyricsActive = false;
+                const btn = document.getElementById('lyricsToggleBtn');
+                const standardView = document.getElementById('standardPlayerView');
+                const lyricsView = document.getElementById('lyricsView');
+                if (btn) btn.classList.remove('active');
+                if (standardView) standardView.classList.remove('hidden');
+                if (lyricsView) lyricsView.classList.remove('active');
+            }
         }
 
         function toggleLyricsView() {
@@ -2453,6 +2436,7 @@
 
         async function loadLyricsForCurrentTrack() {
             const container = document.getElementById('lyricsContainer');
+            if (!container) return;
             container.innerHTML = `<div class="lyric-line active">Ricerca testo...</div>`;
             parsedSyncedLyrics = [];
             try {
@@ -2534,7 +2518,6 @@
                 if (idx === activeIndex) { 
                     if (!line.classList.contains('active')) { 
                         line.classList.add('active'); 
-                        line.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
                     } 
                 }
                 else { 
@@ -2543,32 +2526,18 @@
             });
         }
 
-        function startProgressTracker() {
-            clearInterval(progressInterval);
-            progressInterval = setInterval(() => {
-                if(player && player.getCurrentTime && player.getDuration) {
-                    let cur = player.getCurrentTime();
-                    let dur = player.getDuration();
-                    if(dur) {
-                        document.getElementById('progressBarFill').style.width = ((cur/dur)*100) + '%';
-                        document.getElementById('currentTime').innerText = formatTime(cur);
-                        document.getElementById('totalDuration').innerText = formatTime(dur);
-                        updateActiveLyric(cur);
-                    }
-                }
-            }, 500);
-        }
-
         function seekTrack(event) {
             const bg = document.getElementById('progressBarBg');
             const rect = bg.getBoundingClientRect();
             const seekRatio = (event.clientX - rect.left) / rect.width;
+            isSeeking = true;
             if(isHtml5Mode && html5Audio && html5Audio.duration) { 
                 html5Audio.currentTime = html5Audio.duration * seekRatio; 
             }
             else if(player && player.getDuration) { 
                 player.seekTo(player.getDuration() * seekRatio, true); 
             }
+            setTimeout(() => { isSeeking = false; }, 500);
         }
 
         function formatTime(secs) { 
@@ -3042,6 +3011,5 @@
             if(repeatBtn) repeatBtn.style.color = isRepeatActive ? 'var(--accent)' : 'var(--text-sub)';
         }
     </script>
-    <audio id="html5-audio" playsinline webkit-playsinline preload="auto" crossorigin="anonymous"></audio>
 </body>
 </html>
