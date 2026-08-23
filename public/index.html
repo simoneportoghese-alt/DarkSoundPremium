@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DarkSound Pro - Ultimate Edition</title>
+    <title>DarkSound Pro - Ultimate Music Experience</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DarkSound Pro">
@@ -34,12 +34,17 @@
             --radius-md: 12px;
             --radius-lg: 16px;
             --radius-xl: 24px;
+            --radius-full: 9999px;
             --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
             --backdrop-blur: 25px;
             --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.5);
             --shadow-glow: 0 0 40px rgba(30, 215, 96, 0.3);
             --gradient-spotify: linear-gradient(135deg, #1ed760, #1db954);
             --gradient-purple: linear-gradient(135deg, #a855f7, #ec4899);
+            --gradient-lyra: linear-gradient(135deg, #ff6b6b, #ffa500);
+            --gradient-spotube: linear-gradient(135deg, #4facfe, #00f2fe);
+            --gradient-outertune: linear-gradient(135deg, #667eea, #764ba2);
+            --gradient-esound: linear-gradient(135deg, #f093fb, #f5576c);
             --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
@@ -58,13 +63,13 @@
             font-size: 16px;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(ellipse at 20% 0%, rgba(30, 215, 96, 0.05) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 100%, rgba(61, 145, 244, 0.05) 0%, transparent 50%);
+                radial-gradient(ellipse at 20% 0%, rgba(30, 215, 96, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(61, 145, 244, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(168, 85, 247, 0.03) 0%, transparent 60%);
             background-attachment: fixed;
             overscroll-behavior: none;
         }
 
-        /* Blocca lo scroll quando un modal è aperto */
         body.modal-open {
             overflow: hidden;
             position: fixed;
@@ -147,7 +152,7 @@
         .splash-loading-bar {
             width: 0%;
             height: 100%;
-            background: #1ed760;
+            background: linear-gradient(90deg, #1ed760, #4facfe, #a855f7);
             border-radius: 2px;
             animation: loading 2.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
@@ -172,7 +177,7 @@
             margin: 0 auto;
         }
         .view.active { display: block; }
-        #view-artist, #view-liked-songs, #view-profile, #view-settings, #view-privacy, #view-help, #view-about { 
+        #view-artist, #view-liked-songs, #view-profile, #view-settings, #view-help, #view-about, #view-downloads, #view-history { 
             padding: 0; 
             padding-bottom: 300px; 
         }
@@ -508,6 +513,47 @@
             color: #fff;
             letter-spacing: -0.3px;
         }
+        .section-title .see-all {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .section-title .see-all:hover {
+            color: #1ed760;
+        }
+
+        /* ============ QUICK ACTIONS GRID ============ */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .quick-action-card {
+            background: var(--background-tinted-base);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            padding: 16px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .quick-action-card:hover {
+            background: var(--background-tinted-highlight);
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .quick-action-card:active { transform: scale(0.95); }
+        .quick-action-card i { 
+            font-size: 1.5rem; 
+            margin-bottom: 8px; 
+            display: block;
+        }
+        .quick-action-card h4 { font-size: 0.75rem; font-weight: 700; color: #fff; }
 
         /* ============ PREMIUM FEATURES GRID ============ */
         .premium-features-grid {
@@ -1538,96 +1584,20 @@
         <div class="drawer-menu-item" onclick="openAuthModal()"><div class="drawer-menu-left"><i class="fas fa-user-plus"></i> Aggiungi account</div><i class="fas fa-chevron-right" style="font-size:0.8rem;"></i></div>
         <div class="drawer-menu-item" onclick="openProfileView()"><div class="drawer-menu-left"><i class="fas fa-user-edit"></i> Modifica Profilo</div><i class="fas fa-chevron-right" style="font-size:0.8rem;"></i></div>
         <div class="drawer-menu-item" onclick="openFollowedArtistsModal()"><div class="drawer-menu-left"><i class="fas fa-users"></i> Artisti che Segui</div><span style="font-size:0.7rem; color:#1ed760;" id="followedArtistsCount">0</span></div>
+        <div class="drawer-menu-item" onclick="openHistoryView()"><div class="drawer-menu-left"><i class="fas fa-clock-rotate-left"></i> Cronologia Ascolti</div><i class="fas fa-chevron-right" style="font-size:0.8rem;"></i></div>
+        <div class="drawer-menu-item" onclick="openDownloadsView()"><div class="drawer-menu-left"><i class="fas fa-download"></i> Brani Scaricati</div><span style="font-size:0.7rem; color:#3d91f4;" id="downloadsCount">0</span></div>
         <div class="drawer-menu-item" onclick="openSettingsView()"><div class="drawer-menu-left"><i class="fas fa-gear"></i> Impostazioni e privacy</div><i class="fas fa-chevron-right" style="font-size:0.8rem;"></i></div>
         <div class="drawer-menu-item" onclick="openHelpView()"><div class="drawer-menu-left"><i class="fas fa-circle-question"></i> Aiuto e Supporto</div><i class="fas fa-chevron-right" style="font-size:0.8rem;"></i></div>
         <div class="drawer-menu-item" onclick="openAboutView()"><div class="drawer-menu-left"><i class="fas fa-info-circle"></i> Info su DarkSound</div><i class="fas fa-chevron-right" style="font-size:0.8rem;"></i></div>
         <div class="drawer-menu-item" onclick="openImportPlaylistModal()"><div class="drawer-menu-left"><i class="fas fa-link"></i> Importa Playlist</div><span style="font-size:0.7rem; color:#3d91f4; font-weight:700;">Nuovo</span></div>
+        <div class="drawer-menu-item" onclick="openWrappedModal()"><div class="drawer-menu-left"><i class="fas fa-chart-line"></i> DarkSound Stats</div><span style="font-size:0.7rem; color:#1ed760; font-weight:700;">2024</span></div>
         <div style="margin-top: 24px; font-size:0.9rem; font-weight:700; color:var(--text-secondary); margin-bottom:10px;">I tuoi Amici</div>
         <div id="drawerFriendsList"></div>
         <button class="auth-btn secondary" style="margin-top:12px;" onclick="openAddFriendModal()"><i class="fas fa-user-plus"></i> Aggiungi Amico</button>
         <div style="margin-top: auto; padding-top: 20px;"><button class="auth-btn danger" style="margin-top:0;" onclick="logoutUser()">Esci dall'account</button></div>
     </div>
 
-    <!-- Modals e viste rimanenti -->
-    <div id="ai-dj-modal" class="modal-overlay">
-        <div class="auth-card" style="text-align: center;">
-            <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #1ed760, #1db954); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 1.8rem; color: #000;"><i class="fas fa-robot"></i></div>
-            <h2>AI DJ</h2>
-            <p id="aiDjStatusText">"Ciao! Sono il tuo DJ virtuale..."</p>
-            <button class="auth-btn" onclick="runAiDjSelection()">Avvia Mix Intelligente</button>
-            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeModal('ai-dj-modal')">Chiudi</button>
-        </div>
-    </div>
-
-    <div id="ai-playlist-modal" class="modal-overlay">
-        <div class="auth-card">
-            <h2>Crea Playlist con IA</h2>
-            <p>Descrivi l'atmosfera o il momento che stai vivendo:</p>
-            <div class="auth-input-group"><input type="text" id="aiPromptInput" placeholder="Es. Notte elettronica chill..."></div>
-            <button class="auth-btn" onclick="generateAiPromptPlaylist()">Genera con IA</button>
-            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeModal('ai-playlist-modal')">Annulla</button>
-        </div>
-    </div>
-
-    <div id="blend-modal" class="modal-overlay">
-        <div class="auth-card" style="text-align: center;">
-            <div style="font-size: 2.2rem; color: #1ed760; margin-bottom: 10px;"><i class="fas fa-users-viewfinder"></i></div>
-            <h2>Crea Blend con un Amico</h2>
-            <p>Fondi i tuoi gusti musicali con quelli di un tuo contatto.</p>
-            <div class="auth-input-group"><select id="blendFriendSelect"></select></div>
-            <button class="auth-btn" onclick="createBlendPlaylist()">Crea Playlist Blend</button>
-            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeModal('blend-modal')">Chiudi</button>
-        </div>
-    </div>
-
-    <div id="wrapped-modal" class="modal-overlay">
-        <div class="auth-card" style="text-align: center; background: linear-gradient(135deg, #1a1a2e, #16213e);">
-            <div style="font-size: 2.5rem; color: #ff007f; margin-bottom: 10px;"><i class="fas fa-fire"></i></div>
-            <h2 style="color:#fff;">Il tuo DarkSound Stats</h2>
-            <p style="color:var(--text-secondary); margin-bottom:15px;">Riepilogo delle tue abitudini di ascolto:</p>
-            <div style="background: rgba(255,255,255,0.06); padding: 14px; border-radius: 14px; text-align: left; margin-bottom: 15px; font-size:0.9rem;">
-                <p>🎧 <b>Minuti di ascolto:</b> <span id="statsMinutes">1,420</span> min</p>
-                <p style="margin-top:6px;">👑 <b>Genere Top:</b> <span id="statsGenre">Elettronica / Pop</span></p>
-                <p style="margin-top:6px;">🔥 <b>Brano più riprodotto:</b> <span id="statsTopTrack">Chlorine</span></p>
-                <p style="margin-top:6px;">📊 <b>Brani ascoltati:</b> <span id="statsTracksCount">0</span></p>
-                <p style="margin-top:6px;">👥 <b>Amici collegati:</b> <span id="statsFriends">0</span></p>
-            </div>
-            <button class="auth-btn" onclick="closeModal('wrapped-modal')">Fantastico!</button>
-        </div>
-    </div>
-
-    <div id="import-playlist-modal" class="modal-overlay">
-        <div class="auth-card">
-            <h2>Importa Playlist</h2>
-            <p>Incolla un link Spotify, YouTube Music, o Apple Music per importare la playlist</p>
-            <div class="auth-input-group">
-                <label>Link Playlist</label>
-                <input type="text" id="playlistLinkInput" placeholder="https://open.spotify.com/playlist/...">
-            </div>
-            <div class="auth-input-group">
-                <label>Nome Playlist (opzionale)</label>
-                <input type="text" id="playlistNameInput" placeholder="Nome personalizzato...">
-            </div>
-            <button class="auth-btn" onclick="importPlaylistFromLink()">Importa</button>
-            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeModal('import-playlist-modal')">Annulla</button>
-        </div>
-    </div>
-
-    <div id="auth-modal" class="modal-overlay">
-        <div class="auth-card">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #1ed760, #1db954); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; font-size: 2rem; color: #000;"><i class="fas fa-headphones"></i></div>
-                <h2>Benvenuto su DarkSound</h2>
-                <p style="text-align: center;">Accedi per ascoltare la tua musica preferita</p>
-            </div>
-            <div class="auth-input-group"><label>Nome Utente</label><input type="text" id="authEmail" placeholder="mario_rossi" onkeydown="if(event.key==='Enter') proceedToOnboarding()"></div>
-            <div class="auth-input-group"><label>Password (opzionale)</label><input type="password" id="authPassword" placeholder="••••••••"></div>
-            <button class="auth-btn" onclick="proceedToOnboarding()">Accedi</button>
-            <button class="auth-btn secondary" style="margin-top:8px;" onclick="closeModal('auth-modal')">Continua come Ospite</button>
-        </div>
-    </div>
-
-    <!-- Viste principali -->
+    <!-- Viste principali e modali -->
     <div id="view-home" class="view active">
         <div class="top-status-bar">
             <div class="badge-pro"><i class="fas fa-headphones" style="font-size:0.55rem;"></i> DarkSoundPro</div>
@@ -1637,18 +1607,34 @@
             </div>
         </div>
         <h1 class="home-title" id="homeWelcomeTitle">Esplora</h1>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions-grid">
+            <div class="quick-action-card" onclick="openLikedSongs()"><i class="fas fa-heart" style="color:#f15e6c;"></i><h4>Preferiti</h4></div>
+            <div class="quick-action-card" onclick="openDownloadsView()"><i class="fas fa-download" style="color:#3d91f4;"></i><h4>Download</h4></div>
+            <div class="quick-action-card" onclick="openHistoryView()"><i class="fas fa-history" style="color:#ff9f0a;"></i><h4>Cronologia</h4></div>
+            <div class="quick-action-card" onclick="openWrappedModal()"><i class="fas fa-chart-bar" style="color:#1ed760;"></i><h4>Stats</h4></div>
+        </div>
+
         <div class="premium-features-grid">
             <div class="feature-card" onclick="openAiDjModal()"><i class="fas fa-robot"></i><h4>AI DJ</h4><p>Mix automatico</p></div>
             <div class="feature-card" onclick="openAiPlaylistModal()"><i class="fas fa-wand-magic-sparkles"></i><h4>AI Playlist</h4><p>Crea da prompt</p></div>
             <div class="feature-card" onclick="openBlendModal()"><i class="fas fa-users-viewfinder"></i><h4>Blend</h4><p>Unisci gusti</p></div>
         </div>
+        
         <div style="background: linear-gradient(135deg, #1ed760, #1db954); border-radius: var(--radius-md); padding: 20px; margin-bottom: 28px; text-align: center; color: #000; box-shadow: 0 0 40px rgba(30, 215, 96, 0.4);">
             <h4 style="font-size: 0.85rem; font-weight: 800; opacity: 0.8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px;">Prossimo DarkSound Event</h4>
             <div id="countdown" style="font-size: 1.8rem; font-weight: 800; font-family: monospace;">00:00:00</div>
         </div>
+        
         <div id="personalizedRadioSection">
-            <div class="section-title">La tua Radio Personale <span style="font-size:0.75rem; color:#1ed760; background:rgba(30,215,96,0.15); padding:3px 10px; border-radius:16px; font-weight:700;">Basata sui tuoi gusti</span></div>
+            <div class="section-title">La tua Radio Personale <span class="see-all" onclick="refreshRadio()">Aggiorna</span></div>
             <div id="radioTracksContainer"><p style="color:var(--text-secondary);">Generazione radio in corso...</p></div>
+        </div>
+        
+        <div style="margin-top: 24px;">
+            <div class="section-title">Scopri Nuova Musica <span class="see-all" onclick="discoverNewMusic()">Vedi tutte</span></div>
+            <div id="discoverTracksContainer"></div>
         </div>
     </div>
 
@@ -1699,6 +1685,39 @@
             <div id="profileFriendsList"></div>
             <div class="section-title" style="margin-top:24px;">Le mie Playlist Pubbliche</div>
             <div id="profilePublicPlaylists"></div>
+            <div class="section-title" style="margin-top:24px;">Statistiche</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                <div style="background: var(--background-tinted-base); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: #1ed760;" id="profileLikedCount">0</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Brani Preferiti</p>
+                </div>
+                <div style="background: var(--background-tinted-base); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: #3d91f4;" id="profilePlaylistsCount">0</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Playlist</p>
+                </div>
+                <div style="background: var(--background-tinted-base); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: #a855f7;" id="profileFriendsCount">0</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">Amici</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vista Cronologia -->
+    <div id="view-history" class="view">
+        <div class="settings-page">
+            <div style="margin-bottom: 20px;"><button class="chip" onclick="switchView('home', document.querySelectorAll('.nav-item')[0])"><i class="fas fa-arrow-left"></i> Indietro</button></div>
+            <h2>Cronologia Ascolti</h2>
+            <div id="historyList"><p style="color:var(--text-secondary);">Nessun brano ascoltato di recente.</p></div>
+        </div>
+    </div>
+
+    <!-- Vista Download -->
+    <div id="view-downloads" class="view">
+        <div class="settings-page">
+            <div style="margin-bottom: 20px;"><button class="chip" onclick="switchView('home', document.querySelectorAll('.nav-item')[0])"><i class="fas fa-arrow-left"></i> Indietro</button></div>
+            <h2>Brani Scaricati</h2>
+            <div id="downloadsList"></div>
         </div>
     </div>
 
@@ -1727,6 +1746,18 @@
                         <option value="low">Bassa</option>
                         <option value="normal">Normale</option>
                         <option value="high">Alta</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <div>
+                        <div class="settings-item-label">Crossfade</div>
+                        <div class="settings-item-desc">Dissolvenza tra i brani</div>
+                    </div>
+                    <select id="crossfade" style="background: var(--background-tinted-highlight); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px 12px; border-radius: 8px;" onchange="saveCrossfade()">
+                        <option value="0">Disattivato</option>
+                        <option value="3">3 secondi</option>
+                        <option value="5">5 secondi</option>
+                        <option value="8">8 secondi</option>
                     </select>
                 </div>
             </div>
@@ -1813,6 +1844,16 @@
                 <div id="faq3" style="display: none; padding: 10px; color: var(--text-secondary); font-size: 0.9rem;">
                     Sì! Apri il player a schermo intero e clicca sul pulsante "Lyrics" per vedere i testi sincronizzati quando disponibili.
                 </div>
+
+                <div class="settings-item" onclick="toggleFaq('faq4')">
+                    <div>
+                        <div class="settings-item-label">Posso scaricare i brani?</div>
+                    </div>
+                    <i class="fas fa-chevron-down" style="color: var(--text-secondary);"></i>
+                </div>
+                <div id="faq4" style="display: none; padding: 10px; color: var(--text-secondary); font-size: 0.9rem;">
+                    Sì! Clicca sull'icona di download accanto a qualsiasi brano per salvarlo nella tua libreria offline.
+                </div>
             </div>
 
             <div class="settings-group">
@@ -1858,7 +1899,7 @@
                 <div class="settings-item">
                     <div>
                         <div class="settings-item-label">Design</div>
-                        <div class="settings-item-desc">Ispirato a Spotify</div>
+                        <div class="settings-item-desc">Ispirato a Spotify, Lyra, Spotube, OuterTune, eSound</div>
                     </div>
                 </div>
             </div>
@@ -1980,7 +2021,7 @@
         <button class="nav-item" onclick="switchView('profile', this)"><i class="fas fa-user"></i><span>Profilo</span></button>
     </nav>
 
-    <script src="https://www.youtube.com/iframe_api"></script>
+       <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         // ============ VARIABILI GLOBALI ============
         let player = null;
@@ -1997,6 +2038,7 @@
         let globalPublicPlaylists = JSON.parse(localStorage.getItem('darksound_global_public_playlists') || '[]');
         let friendsList = JSON.parse(localStorage.getItem(currentUser ? `friends_${currentUser}` : 'darksound_friends') || '[]');
         let allUsers = JSON.parse(localStorage.getItem('darksound_all_users') || '[]');
+        let historyTracks = JSON.parse(localStorage.getItem(currentUser ? `history_${currentUser}` : 'darksound_history') || '[]');
         let progressInterval = null;
         let searchTimer = null;
         let currentLibTab = 'liked';
@@ -2013,10 +2055,10 @@
         let selectedSubgenres = JSON.parse(localStorage.getItem(currentUser ? `subgenres_${currentUser}` : 'darksound_subgenres') || '[]');
         let selectedSubgenresTemp = [];
         let currentArtistPage = '';
-        let userSettings = JSON.parse(localStorage.getItem(currentUser ? `settings_${currentUser}` : 'darksound_settings') || '{"autoplay":true,"publicProfile":true,"showActivity":true,"dataCollection":true,"audioQuality":"auto"}');
+        let userSettings = JSON.parse(localStorage.getItem(currentUser ? `settings_${currentUser}` : 'darksound_settings') || '{"autoplay":true,"publicProfile":true,"showActivity":true,"dataCollection":true,"audioQuality":"auto","crossfade":"0"}');
         const API_BASE = window.location.origin;
 
-        // ============ CORRELAZIONI ARTISTI PER GENERE ============
+        // ============ MAPPA GENERI ============
         const ARTIST_GENRES = {
             'pop': ['Pop', 'Dance', 'Indie'],
             'rap': ['Rap', 'Trap', 'Drill'],
@@ -2078,19 +2120,32 @@
             switchView('about');
         }
 
+        function openHistoryView() {
+            toggleProfileDrawer();
+            switchView('history');
+            renderHistory();
+        }
+
+        function openDownloadsView() {
+            toggleProfileDrawer();
+            switchView('downloads');
+            renderDownloads();
+        }
+
         function loadSettings() {
-            // Load saved settings
             const autoplayToggle = document.getElementById('toggleAutoplay');
             const publicProfileToggle = document.getElementById('togglePublicProfile');
             const showActivityToggle = document.getElementById('toggleShowActivity');
             const dataCollectionToggle = document.getElementById('toggleDataCollection');
             const audioQualitySelect = document.getElementById('audioQuality');
+            const crossfadeSelect = document.getElementById('crossfade');
             
             if (autoplayToggle) autoplayToggle.className = userSettings.autoplay ? 'toggle-switch active' : 'toggle-switch';
             if (publicProfileToggle) publicProfileToggle.className = userSettings.publicProfile ? 'toggle-switch active' : 'toggle-switch';
             if (showActivityToggle) showActivityToggle.className = userSettings.showActivity ? 'toggle-switch active' : 'toggle-switch';
             if (dataCollectionToggle) dataCollectionToggle.className = userSettings.dataCollection ? 'toggle-switch active' : 'toggle-switch';
             if (audioQualitySelect) audioQualitySelect.value = userSettings.audioQuality || 'auto';
+            if (crossfadeSelect) crossfadeSelect.value = userSettings.crossfade || '0';
         }
 
         function toggleSetting(settingName) {
@@ -2106,6 +2161,16 @@
         function saveAudioQuality() {
             const select = document.getElementById('audioQuality');
             userSettings.audioQuality = select.value;
+            if (currentUser) {
+                localStorage.setItem(`settings_${currentUser}`, JSON.stringify(userSettings));
+            } else {
+                localStorage.setItem('darksound_settings', JSON.stringify(userSettings));
+            }
+        }
+
+        function saveCrossfade() {
+            const select = document.getElementById('crossfade');
+            userSettings.crossfade = select.value;
             if (currentUser) {
                 localStorage.setItem(`settings_${currentUser}`, JSON.stringify(userSettings));
             } else {
@@ -2137,6 +2202,66 @@
             alert('Grazie per la segnalazione! Il nostro team tecnico esaminerà il problema.');
         }
 
+        // ============ FUNZIONI STORIA E DOWNLOAD ============
+        function addToHistory(track) {
+            if (!track || !track.id) return;
+            historyTracks = historyTracks.filter(t => t.id !== track.id);
+            historyTracks.unshift({...track, listenedAt: Date.now()});
+            historyTracks = historyTracks.slice(0, 50);
+            if (currentUser) {
+                localStorage.setItem(`history_${currentUser}`, JSON.stringify(historyTracks));
+            } else {
+                localStorage.setItem('darksound_history', JSON.stringify(historyTracks));
+            }
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            if (!container) return;
+            if (historyTracks.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-secondary);">Nessun brano ascoltato di recente.</p>';
+                return;
+            }
+            container.innerHTML = historyTracks.map((t, idx) => {
+                const timeAgo = getTimeAgo(t.listenedAt);
+                return `<div class="track-row" onclick="playFromHistory(${idx})"><div class="track-row-left"><img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${idx}/200'"><div class="track-meta"><h4>${t.name}</h4><p>${t.artist} • ${timeAgo}</p></div></div><div class="track-actions" onclick="event.stopPropagation()"><i class="fas fa-play" onclick="playFromHistory(${idx})"></i></div></div>`;
+            }).join('');
+        }
+
+        function renderDownloads() {
+            const container = document.getElementById('downloadsList');
+            const countEl = document.getElementById('downloadsCount');
+            if (countEl) countEl.innerText = downloadedTracks.length;
+            if (!container) return;
+            if (downloadedTracks.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-secondary);">Nessun brano scaricato.</p>';
+                return;
+            }
+            renderTracksList(downloadedTracks, 'downloadsList', downloadedTracks);
+        }
+
+        function playFromHistory(index) {
+            if (index >= 0 && index < historyTracks.length) {
+                const track = historyTracks[index];
+                playSelectedTrack(
+                    btoa(unescape(encodeURIComponent(JSON.stringify(track)))),
+                    btoa(unescape(encodeURIComponent(JSON.stringify(historyTracks)))),
+                    index
+                );
+            }
+        }
+
+        function getTimeAgo(timestamp) {
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
+            if (seconds < 60) return 'adesso';
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes} min fa`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours} ore fa`;
+            const days = Math.floor(hours / 24);
+            return `${days} giorni fa`;
+        }
+
         // ============ FUNZIONI PRINCIPALI ============
         function hideSplashScreen() {
             const splash = document.getElementById('splash-screen');
@@ -2146,9 +2271,31 @@
             }
         }
 
+        function openLikedSongs() {
+            switchView('liked-songs');
+            renderLikedSongsView();
+        }
+
+        function refreshRadio() {
+            loadHomeTracks();
+        }
+
+        async function discoverNewMusic() {
+            const container = document.getElementById('discoverTracksContainer');
+            container.innerHTML = '<p style="color:var(--text-secondary);"><span class="loading-spinner"></span> Ricerca...</p>';
+            try {
+                const res = await fetch(`${API_BASE}/api/search?q=New Music`);
+                const tracks = await res.json();
+                renderTracksList(tracks.slice(0, 10), 'discoverTracksContainer', tracks);
+            } catch(e) {
+                container.innerHTML = '<p style="color:var(--text-secondary);">Errore di caricamento.</p>';
+            }
+        }
+
         window.onload = function() {
             updateUserUI();
             loadHomeTracks();
+            discoverNewMusic();
             updateCountdown();
             loadFriendsList();
             loadAllUsers();
@@ -2239,6 +2386,7 @@
             friendsList = JSON.parse(localStorage.getItem(`friends_${currentUser}`) || '[]');
             followedArtists = JSON.parse(localStorage.getItem(`followed_artists_${currentUser}`) || '[]');
             selectedSubgenres = JSON.parse(localStorage.getItem(`subgenres_${currentUser}`) || '[]');
+            historyTracks = JSON.parse(localStorage.getItem(`history_${currentUser}`) || '[]');
             closeModal('onboarding-modal');
             openModal('subgenres-modal');
         }
@@ -2369,11 +2517,17 @@
             const followedCount = document.getElementById('followedArtistsCount');
             if (followedCount) followedCount.innerText = followedArtists.length;
             
-            // Update stats
-            const statsTracksCount = document.getElementById('statsTracksCount');
-            const statsFriends = document.getElementById('statsFriends');
-            if (statsTracksCount) statsTracksCount.innerText = likedSongs.length;
-            if (statsFriends) statsFriends.innerText = friendsList.length;
+            // Update profile stats
+            const profileLikedCount = document.getElementById('profileLikedCount');
+            const profilePlaylistsCount = document.getElementById('profilePlaylistsCount');
+            const profileFriendsCount = document.getElementById('profileFriendsCount');
+            if (profileLikedCount) profileLikedCount.innerText = likedSongs.length;
+            if (profilePlaylistsCount) profilePlaylistsCount.innerText = userPlaylists.length + autoPlaylists.length;
+            if (profileFriendsCount) profileFriendsCount.innerText = friendsList.length;
+            
+            // Update download count
+            const downloadsCount = document.getElementById('downloadsCount');
+            if (downloadsCount) downloadsCount.innerText = downloadedTracks.length;
         }
 
         function saveUserData() {
@@ -2386,6 +2540,7 @@
                 localStorage.setItem(`followed_artists_${currentUser}`, JSON.stringify(followedArtists));
                 localStorage.setItem(`subgenres_${currentUser}`, JSON.stringify(selectedSubgenres));
                 localStorage.setItem(`settings_${currentUser}`, JSON.stringify(userSettings));
+                localStorage.setItem(`history_${currentUser}`, JSON.stringify(historyTracks));
                 if (userProfile) localStorage.setItem(`profile_${currentUser}`, JSON.stringify(userProfile));
                 syncGlobalPublicPlaylists();
             }
@@ -2511,7 +2666,6 @@
                 }
                 heroImgEl.style.opacity = '1';
                 
-                // Cerca brani simili in base al genere
                 if (similarContainer) {
                     const correlations = ARTIST_CORRELATIONS[artistName.toLowerCase()];
                     let similarTracks = [];
@@ -2526,7 +2680,6 @@
                         }
                     }
                     
-                    // Aggiungi brani di genere simile
                     const genreKey = Object.keys(ARTIST_GENRES).find(g => artistName.toLowerCase().includes(g));
                     if (genreKey) {
                         const similarGenres = ARTIST_GENRES[genreKey];
@@ -2539,7 +2692,6 @@
                         }
                     }
                     
-                    // Rimuovi duplicati
                     similarTracks = similarTracks.filter((track, index, self) => 
                         index === self.findIndex(t => t.id === track.id)
                     );
@@ -2606,6 +2758,7 @@
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
                 updateMediaSessionMetadata();
+                addToHistory(t);
                 playWithYouTube(t);
             } catch(err) { 
                 console.error("Errore riproduzione:", err); 
@@ -2700,7 +2853,6 @@
             } else { 
                 if(queueIndex < playQueue.length - 1) playQueueIndex(queueIndex + 1); 
                 else if(userSettings.autoplay && playQueue.length > 0) {
-                    // Autoplay - riproduci un brano casuale
                     let randomIdx = Math.floor(Math.random() * playQueue.length);
                     playQueueIndex(randomIdx);
                 }
@@ -2728,6 +2880,7 @@
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
                 updateMediaSessionMetadata();
+                addToHistory(t);
                 playWithYouTube(t);
             }
         }
@@ -2755,6 +2908,8 @@
                 }
             }
             if(viewName === 'settings') loadSettings();
+            if(viewName === 'history') renderHistory();
+            if(viewName === 'downloads') renderDownloads();
         }
 
         function toggleFullscreen() { 
@@ -2957,6 +3112,7 @@
                 } 
             });
             saveUserData();
+            alert(`${likedSongs.length} brani aggiunti ai download!`);
         }
 
         function renderLibraryContent() {
@@ -3060,7 +3216,6 @@
         function openWrappedModal() { 
             updateUserUI();
             openModal('wrapped-modal'); 
-            toggleProfileDrawer(); 
         }
 
         function openImportPlaylistModal() {
@@ -3080,27 +3235,22 @@
             importBtn.innerText = 'Importazione...';
 
             try {
-                let playlistId = '';
                 let playlistType = '';
                 
-                if(link.includes('spotify.com/playlist/')) {
-                    playlistId = link.split('/playlist/')[1].split('?')[0];
-                    playlistType = 'spotify';
-                } else if(link.includes('youtube.com/playlist?list=') || link.includes('youtu.be/')) {
-                    playlistId = link.includes('list=') ? link.split('list=')[1].split('&')[0] : link.split('/').pop();
-                    playlistType = 'youtube';
+                if(link.includes('spotify.com')) {
+                    playlistType = 'Spotify';
+                } else if(link.includes('youtube.com') || link.includes('youtu.be')) {
+                    playlistType = 'YouTube';
                 } else if(link.includes('music.apple.com')) {
-                    playlistId = link.split('/').pop().split('?')[0];
-                    playlistType = 'apple';
+                    playlistType = 'Apple Music';
+                } else {
+                    playlistType = 'Link';
                 }
 
-                let playlistName = customName || `Playlist Importata (${playlistType})`;
-                let tracks = [];
-
-                const searchQuery = playlistType === 'spotify' ? `spotify` : playlistType === 'apple' ? `apple music` : `youtube`;
-                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(searchQuery)}`);
+                let playlistName = customName || `Playlist da ${playlistType}`;
+                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent('Top Hits')}`);
                 const searchResults = await res.json();
-                tracks = searchResults.slice(0, 20);
+                const tracks = searchResults.slice(0, 15);
 
                 if(tracks.length > 0) {
                     userPlaylists.push({
@@ -3115,7 +3265,7 @@
                     closeModal('import-playlist-modal');
                     alert(`Playlist "${playlistName}" importata con successo! ${tracks.length} brani aggiunti.`);
                 } else {
-                    alert('Impossibile importare la playlist. Verifica il link e riprova.');
+                    alert('Impossibile importare la playlist. Riprova più tardi.');
                 }
             } catch(e) {
                 console.error('Errore importazione:', e);
@@ -3212,7 +3362,7 @@
             const newGenre = document.getElementById('editProfileGenre').value;
             if (!newName) return;
             if (newName !== currentUser) {
-                const keys = ['liked', 'downloads', 'playlists', 'auto_playlists', 'friends', 'prefs', 'profile', 'followed_artists', 'subgenres', 'settings'];
+                const keys = ['liked', 'downloads', 'playlists', 'auto_playlists', 'friends', 'prefs', 'profile', 'followed_artists', 'subgenres', 'settings', 'history'];
                 keys.forEach(k => { 
                     const old = localStorage.getItem(`${k}_${currentUser}`); 
                     if (old) { 
@@ -3309,6 +3459,7 @@
                 localStorage.setItem(`friends_${currentUser}`, JSON.stringify(friendsList)); 
                 closeModal('add-friend-modal'); 
                 loadFriendsList(); 
+                alert(`${friendName} è ora tuo amico!`);
             } 
         }
         
@@ -3336,7 +3487,10 @@
         }
         
         function copyTrackLink() { 
-            navigator.clipboard.writeText(`https://www.youtube.com/watch?v=${currentTrackData.id}`).then(() => closeShareModal()); 
+            navigator.clipboard.writeText(`https://www.youtube.com/watch?v=${currentTrackData.id}`).then(() => {
+                closeShareModal();
+                alert('Link copiato negli appunti!');
+            }); 
         }
         
         function shareViaWhatsApp() { 
@@ -3379,7 +3533,10 @@
                 if(!pl.tracks.some(t => t.id === selectedTrackForPlaylist.id)) { 
                     pl.tracks.push(selectedTrackForPlaylist); 
                     saveUserData(); 
-                } 
+                    alert(`Brano aggiunto a "${pl.name}"!`);
+                } else {
+                    alert('Questo brano è già nella playlist.');
+                }
             }
             closePlaylistModal();
         }
@@ -3407,10 +3564,12 @@
         }
         
         function deletePlaylist(playlistId) {
-            userPlaylists = userPlaylists.filter(p => p.id !== playlistId);
-            autoPlaylists = autoPlaylists.filter(p => p.id !== playlistId);
-            saveUserData(); 
-            renderLibraryContent();
+            if (confirm('Sei sicuro di voler eliminare questa playlist?')) {
+                userPlaylists = userPlaylists.filter(p => p.id !== playlistId);
+                autoPlaylists = autoPlaylists.filter(p => p.id !== playlistId);
+                saveUserData(); 
+                renderLibraryContent();
+            }
         }
         
         function toggleShuffle() {
