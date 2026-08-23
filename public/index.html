@@ -165,7 +165,7 @@
         .feature-card h4 { font-size: 0.8rem; font-weight: 800; margin-bottom: 2px; }
         .feature-card p { font-size: 0.65rem; color: var(--spotify-gray); }
 
-        /* Trend Live Section */
+        /* Trend Section */
         .trend-live-section {
             margin-bottom: 24px;
             background: linear-gradient(135deg, #1a0a0a, #0a0a1a);
@@ -228,7 +228,36 @@
             flex-shrink: 0;
         }
 
-        /* Track Row - FIX: click singolo */
+        /* Trend Artists Grid */
+        .trend-artists-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .trend-artist-card {
+            background: var(--spotify-card);
+            border-radius: var(--radius-md);
+            padding: 16px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        .trend-artist-card:hover { background: var(--spotify-hover); }
+        .trend-artist-card:active { background: #333; }
+        .trend-artist-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 8px;
+            pointer-events: none;
+        }
+        .trend-artist-card h4 { font-size: 0.75rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+        .trend-artist-card p { font-size: 0.65rem; color: var(--spotify-gray); pointer-events: none; }
+
         .track-row {
             display: flex; align-items: center; padding: 8px 12px;
             cursor: pointer; border-radius: var(--radius-md); margin-bottom: 2px;
@@ -347,7 +376,6 @@
         .fs-play-btn { width: 56px; height: 56px; background: #fff; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .fs-play-btn i { font-size: 1.3rem; color: #000; }
 
-        /* LYRICS SPOTIFY STYLE */
         .lyrics-view {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: none; flex-direction: column; align-items: center;
@@ -772,13 +800,19 @@
             <button class="user-btn" onclick="toggleProfileDrawer()" id="pillUserNameBtn">😈</button>
         </div>
         
-        <div class="trend-live-section" id="trendLiveSection">
+        <!-- TREND DEL MOMENTO -->
+        <div class="trend-live-section">
             <div class="section-title">
-                <span><i class="fas fa-fire" style="color:#f15e6c;"></i> Trend Live Deezer</span>
+                <span><i class="fas fa-fire" style="color:#f15e6c;"></i> Trend del momento</span>
                 <span class="live-badge">LIVE</span>
             </div>
+            <div class="section-title" style="font-size:0.9rem; color:#b3b3b3;">Top Artisti</div>
+            <div class="trend-artists-grid" id="trendArtistsContainer">
+                <p style="color:#b3b3b3;font-size:0.85rem;"><span class="loading-spinner"></span> Caricamento...</p>
+            </div>
+            <div class="section-title" style="font-size:0.9rem; color:#b3b3b3;">Top Brani</div>
             <div id="trendLiveContainer">
-                <p style="color:#b3b3b3;font-size:0.85rem;"><span class="loading-spinner"></span> Caricamento trend...</p>
+                <p style="color:#b3b3b3;font-size:0.85rem;"><span class="loading-spinner"></span> Caricamento...</p>
             </div>
         </div>
         
@@ -1181,28 +1215,56 @@
             }
         };
 
-        // ============ API INTEGRATION (SOLO VISUALE) ============
-        const APIIntegrations = {
-            async fetchDeezerTrends() {
+        // ============ API DEEZER (FETCH PULITA) ============
+        const DeezerAPI = {
+            // Chiamata diretta all'endpoint ufficiale Deezer
+            async fetchChart() {
                 try {
-                    const res = await fetch('https://api.deezer.com/chart');
-                    const data = await res.json();
-                    if (data.tracks && data.tracks.data && data.tracks.data.length > 0) {
-                        return data.tracks.data.slice(0, 10).map(track => ({
-                            id: track.id,
-                            name: track.title_short || track.title,
-                            artist: track.artist ? track.artist.name : 'Artista Sconosciuto',
-                            image: track.album ? (track.album.cover_medium || track.album.cover) : '',
-                            rank: track.position
-                        }));
+                    const response = await fetch('https://api.deezer.com/chart', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
                     }
-                    return [];
-                } catch(e) {
-                    console.error('[Deezer] Errore trend:', e);
-                    return [];
+                    
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error('[Deezer] Errore fetch chart:', error);
+                    return null;
                 }
             },
             
+            // Estrae i top artisti con immagini
+            getTopArtists(data) {
+                if (!data || !data.artists || !data.artists.data) return [];
+                return data.artists.data.slice(0, 6).map(artist => ({
+                    id: artist.id,
+                    name: artist.name,
+                    image: artist.picture_medium || artist.picture || '',
+                    fans: artist.nb_fan
+                }));
+            },
+            
+            // Estrae i top brani
+            getTopTracks(data) {
+                if (!data || !data.tracks || !data.tracks.data) return [];
+                return data.tracks.data.slice(0, 10).map(track => ({
+                    id: track.id,
+                    name: track.title_short || track.title,
+                    artist: track.artist ? track.artist.name : 'Artista Sconosciuto',
+                    image: track.album ? (track.album.cover_medium || track.album.cover) : '',
+                    rank: track.position
+                }));
+            }
+        };
+
+        // ============ API INFO ARTISTA (SOLO VISUALE) ============
+        const APIIntegrations = {
             async fetchTheAudioDB(artistName) {
                 try {
                     const res = await fetch(`https://www.theaudiodb.com/api/v1/json/2/search.php?s=${encodeURIComponent(artistName)}`);
@@ -1453,68 +1515,58 @@
             openModal('wrapped-modal');
         }
 
-        // ============ TREND LIVE DEEZER (FIX: fallback se API non disponibile) ============
+        // ============ TREND DEL MOMENTO (DEEZER FETCH PULITA) ============
         async function loadDeezerTrends() {
-            const container = document.getElementById('trendLiveContainer');
-            if (!container) return;
+            const artistsContainer = document.getElementById('trendArtistsContainer');
+            const tracksContainer = document.getElementById('trendLiveContainer');
             
-            const trends = await APIIntegrations.fetchDeezerTrends();
+            // Fetch pulita verso Deezer API
+            const chartData = await DeezerAPI.fetchChart();
             
-            if (trends.length === 0) {
-                // Fallback: usa la ricerca interna se Deezer non è disponibile
-                try {
-                    const res = await fetch(`${API_BASE}/api/search?q=Top Hits 2025`);
-                    const fallbackTracks = await res.json();
-                    const filtered = filterOriginalTracks(fallbackTracks).slice(0, 10);
-                    
-                    if (filtered.length > 0) {
-                        container.innerHTML = filtered.map((track, index) => {
-                            const positionClass = index === 0 ? 'top1' : index === 1 ? 'top2' : index === 2 ? 'top3' : '';
-                            const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(track))));
-                            
-                            return `<div class="trend-track-row" onclick="playTrendTrack('${trackJson}', ${index})">
-                                <div class="trend-position ${positionClass}">${index + 1}</div>
-                                <img src="${track.image}" onerror="this.src='https://picsum.photos/seed/${index}/100'">
-                                <div class="trend-track-info">
-                                    <h4>${track.name}</h4>
-                                    <p>${track.artist}</p>
-                                </div>
-                                <button class="trend-play-btn" onclick="event.stopPropagation(); playTrendTrack('${trackJson}', ${index})">
-                                    <i class="fas fa-play" style="font-size:0.8rem;"></i>
-                                </button>
-                            </div>`;
-                        }).join('');
-                        return;
-                    }
-                } catch(e) {}
-                
-                container.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Nessun trend disponibile al momento.</p>';
+            if (!chartData) {
+                if (artistsContainer) artistsContainer.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Nessun trend disponibile.</p>';
+                if (tracksContainer) tracksContainer.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Nessun trend disponibile.</p>';
                 return;
             }
             
-            container.innerHTML = trends.map((trend, index) => {
-                const positionClass = index === 0 ? 'top1' : index === 1 ? 'top2' : index === 2 ? 'top3' : '';
-                const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify({name: trend.name, artist: trend.artist, image: trend.image}))));
-                
-                return `<div class="trend-track-row" onclick="playTrendTrack('${trackJson}', ${index})">
-                    <div class="trend-position ${positionClass}">${index + 1}</div>
-                    <img src="${trend.image}" onerror="this.src='https://picsum.photos/seed/${index}/100'">
-                    <div class="trend-track-info">
-                        <h4>${trend.name}</h4>
-                        <p>${trend.artist}</p>
+            // Estrai top artisti con picture_medium
+            const topArtists = DeezerAPI.getTopArtists(chartData);
+            if (artistsContainer && topArtists.length > 0) {
+                artistsContainer.innerHTML = topArtists.map(artist => `
+                    <div class="trend-artist-card" onclick="searchArtistFromChip('${artist.name.replace(/'/g, "\\'")}')">
+                        <img src="${artist.image}" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(artist.name)}/100'">
+                        <h4>${artist.name}</h4>
+                        <p>${artist.fans ? artist.fans.toLocaleString() + ' fan' : ''}</p>
                     </div>
-                    <button class="trend-play-btn" onclick="event.stopPropagation(); playTrendTrack('${trackJson}', ${index})">
-                        <i class="fas fa-play" style="font-size:0.8rem;"></i>
-                    </button>
-                </div>`;
-            }).join('');
+                `).join('');
+            }
+            
+            // Estrai top brani
+            const topTracks = DeezerAPI.getTopTracks(chartData);
+            if (tracksContainer && topTracks.length > 0) {
+                tracksContainer.innerHTML = topTracks.map((track, index) => {
+                    const positionClass = index === 0 ? 'top1' : index === 1 ? 'top2' : index === 2 ? 'top3' : '';
+                    const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify({name: track.name, artist: track.artist, image: track.image}))));
+                    
+                    return `<div class="trend-track-row" onclick="playTrendTrack('${trackJson}', ${index})">
+                        <div class="trend-position ${positionClass}">${index + 1}</div>
+                        <img src="${track.image}" onerror="this.src='https://picsum.photos/seed/${index}/100'">
+                        <div class="trend-track-info">
+                            <h4>${track.name}</h4>
+                            <p>${track.artist}</p>
+                        </div>
+                        <button class="trend-play-btn" onclick="event.stopPropagation(); playTrendTrack('${trackJson}', ${index})">
+                            <i class="fas fa-play" style="font-size:0.8rem;"></i>
+                        </button>
+                    </div>`;
+                }).join('');
+            }
         }
 
         async function playTrendTrack(trackJson, index) {
             try {
                 const trendTrack = JSON.parse(decodeURIComponent(escape(atob(trackJson))));
                 
-                // Cerca il brano su YouTube
                 const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(trendTrack.name + ' ' + trendTrack.artist)}`);
                 const tracks = await res.json();
                 const filtered = filterOriginalTracks(tracks);
@@ -1953,14 +2005,13 @@
             } catch(e) { c.innerHTML = '<p style="color:#b3b3b3;">Errore.</p>'; }
         }
 
-        // ============ TRACK RENDERING (FIX: click singolo garantito) ============
+        // ============ TRACK RENDERING ============
         function renderSingleTrackRow(t, idx, sectionTracks) {
             const isLiked = likedSongs.some(s => s.id === t.id);
             const isDownloaded = downloadedTracks.some(s => s.id === t.id);
             const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
             const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(sectionTracks || []))));
             
-            // FIX: onclick diretto sul div, pointer-events:none su contenuto interno
             return `<div class="track-row" onclick="playSelectedTrack('${trackJson}', '${queueJson}', ${idx})" style="cursor:pointer;">
                 <div class="track-row-left" style="pointer-events:none;">
                     <span class="track-num">${idx + 1}</span>
