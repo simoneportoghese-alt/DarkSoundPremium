@@ -215,29 +215,25 @@
             width: 3px; 
             background: var(--spotify-green); 
             border-radius: 2px; 
-            animation: eq-bar 0.8s ease-in-out infinite; 
-            transition: height 0.1s ease;
+            transition: height 0.05s ease;
+            min-height: 3px;
         }
-        .equalizer-bar:nth-child(2) { animation-delay: 0.15s; }
-        .equalizer-bar:nth-child(3) { animation-delay: 0.3s; }
-        .equalizer-bar:nth-child(4) { animation-delay: 0.45s; }
-        .equalizer-bar:nth-child(5) { animation-delay: 0.6s; }
-        .equalizer.paused .equalizer-bar { animation-play-state: paused; height: 3px; }
+        .equalizer.paused .equalizer-bar { height: 3px !important; }
         
         /* Equalizer grande nel player */
         .player-equalizer-large {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 3px;
-            height: 30px;
-            margin: 8px 0;
+            gap: 4px;
+            height: 40px;
+            margin: 10px 0;
         }
         .player-equalizer-large .eq-large-bar {
-            width: 4px;
-            background: var(--spotify-green);
+            width: 5px;
+            background: linear-gradient(180deg, var(--spotify-green), var(--accent-tertiary));
             border-radius: 2px;
-            transition: height 0.1s ease;
+            transition: height 0.05s ease;
             min-height: 3px;
         }
 
@@ -1152,6 +1148,8 @@
                 <div class="eq-large-bar" style="height:12px;"></div>
                 <div class="eq-large-bar" style="height:8px;"></div>
                 <div class="eq-large-bar" style="height:5px;"></div>
+                <div class="eq-large-bar" style="height:8px;"></div>
+                <div class="eq-large-bar" style="height:12px;"></div>
             </div>
             <div class="fs-actions">
                 <i class="far fa-heart" id="fsLikeBtn" onclick="toggleLikeCurrent()"></i>
@@ -1384,6 +1382,7 @@
         let analyser = null;
         let frequencyData = null;
         let eqAnimationFrame = null;
+        let mediaElementSource = null;
         const API_BASE = window.location.origin;
 
         // ============ FUNZIONE CAMBIO TEMA ============
@@ -1409,15 +1408,17 @@
             changeTheme(savedTheme);
         }
 
-        // ============ WEB AUDIO API PER ONDA MUSICALE ============
+        // ============ WEB AUDIO API PER ONDA MUSICALE SINCRONIZZATA ============
         function initAudioVisualizer() {
             try {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 analyser = audioContext.createAnalyser();
-                analyser.fftSize = 64;
+                analyser.fftSize = 128;
+                analyser.smoothingTimeConstant = 0.3;
                 frequencyData = new Uint8Array(analyser.frequencyBinCount);
+                console.log('[Visualizer] Web Audio API inizializzata con successo');
             } catch(e) {
-                console.log('[Visualizer] Web Audio API non supportata');
+                console.log('[Visualizer] Web Audio API non supportata:', e);
             }
         }
         
@@ -1428,25 +1429,35 @@
             
             // Aggiorna le barre dell'equalizer piccolo
             const miniBars = document.querySelectorAll('#playerEqualizer .equalizer-bar');
-            if (miniBars.length > 0) {
+            if (miniBars.length > 0 && AppState.isPlaying) {
                 miniBars.forEach((bar, i) => {
-                    const freqIndex = i * 2 + 2;
+                    const freqIndex = Math.floor(i * (frequencyData.length / miniBars.length)) + 1;
                     if (freqIndex < frequencyData.length) {
-                        const height = Math.max(3, (frequencyData[freqIndex] / 255) * 18);
+                        const value = frequencyData[freqIndex];
+                        const height = Math.max(3, (value / 255) * 20);
                         bar.style.height = height + 'px';
                     }
+                });
+            } else if (miniBars.length > 0) {
+                miniBars.forEach(bar => {
+                    bar.style.height = '3px';
                 });
             }
             
             // Aggiorna le barre dell'equalizer grande
             const largeBars = document.querySelectorAll('#playerEqualizerLarge .eq-large-bar');
-            if (largeBars.length > 0) {
+            if (largeBars.length > 0 && AppState.isPlaying) {
                 largeBars.forEach((bar, i) => {
-                    const freqIndex = i * 3 + 1;
+                    const freqIndex = Math.floor(i * (frequencyData.length / largeBars.length)) + 2;
                     if (freqIndex < frequencyData.length) {
-                        const height = Math.max(3, (frequencyData[freqIndex] / 255) * 28);
+                        const value = frequencyData[freqIndex];
+                        const height = Math.max(3, (value / 255) * 38);
                         bar.style.height = height + 'px';
                     }
+                });
+            } else if (largeBars.length > 0) {
+                largeBars.forEach(bar => {
+                    bar.style.height = '3px';
                 });
             }
             
@@ -1464,7 +1475,6 @@
                 eqAnimationFrame = null;
             }
             
-            // Reset barre
             document.querySelectorAll('.equalizer-bar').forEach(bar => {
                 bar.style.height = '3px';
             });
@@ -1776,7 +1786,7 @@
                 
                 if (tracks.length > 0) {
                     html += `<div class="section-title">Brani</div>`;
-                    html += tracks.slice(0, 20).map((t, i) => renderSingleTrackRow(t, i, tracks)).join('');
+                    html += tracks.slice(0, 30).map((t, i) => renderSingleTrackRow(t, i, tracks)).join('');
                 }
                 
                 if (html === '') html = '<p style="color:#b3b3b3;">Nessun risultato trovato.</p>';
@@ -2005,7 +2015,7 @@
                     const tracks = await res.json();
                     const filtered = filterOriginalTracks(tracks);
                     const exactTracks = filterTracksByExactArtist(filtered, artist);
-                    allTracks.push(...exactTracks.slice(0, 2));
+                    allTracks.push(...exactTracks.slice(0, 3));
                 } catch(e) {}
             }
             
@@ -2017,7 +2027,7 @@
                     name: '🎵 Playlist di Benvenuto',
                     visibility: 'private',
                     owner: currentUser,
-                    tracks: allTracks.slice(0, 15),
+                    tracks: allTracks.slice(0, 20),
                     autoGenerated: true
                 });
                 saveUserData();
@@ -2032,7 +2042,7 @@
                 let tracks = await res.json();
                 tracks = filterOriginalTracks(tracks);
                 if (tracks.length === 0) { c.innerHTML = '<p style="color:#b3b3b3;">Nessun brano.</p>'; return; }
-                renderTracksList(tracks.slice(0, 10), 'radioTracksContainer', tracks.slice(0, 10));
+                renderTracksList(tracks.slice(0, 15), 'radioTracksContainer', tracks.slice(0, 15));
             } catch(e) { c.innerHTML = '<p style="color:#b3b3b3;">Errore.</p>'; }
         }
 
@@ -2078,29 +2088,50 @@
                 : tracks.map((t, i) => renderSingleTrackRow(t, i, sectionTracks)).join('');
         }
 
-        // ============ ARTIST PAGE ============
+        // ============ ARTIST PAGE CON RICERCA COMPLETA ============
         async function openArtistPage(artistName, artistImageOverride) {
             switchView('artist');
             currentArtistPage = artistName;
             document.getElementById('artistNameTitle').innerText = artistName;
             updateFollowButtonState(artistName);
             const container = document.getElementById('artistTracksContainer');
-            container.innerHTML = '<p style="color:#b3b3b3;">Caricamento...</p>';
+            container.innerHTML = '<p style="color:#b3b3b3;">Caricamento brani...</p>';
             
             try {
+                // Prima ricerca con il nome dell'artista
                 const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artistName)}`);
                 let tracks = await res.json();
                 tracks = filterOriginalTracks(tracks);
-                tracks = filterTracksByExactArtist(tracks, artistName);
                 
-                if (tracks.length > 0) {
-                    document.getElementById('artistHeroImg').src = tracks[0].image;
-                    renderTracksList(tracks, 'artistTracksContainer', tracks);
+                // Filtra per artista esatto o parziale
+                let artistTracks = filterTracksByExactArtist(tracks, artistName);
+                
+                // Se non ci sono abbastanza brani, fai una seconda ricerca
+                if (artistTracks.length < 5) {
+                    const res2 = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artistName + ' songs')}`);
+                    let moreTracks = await res2.json();
+                    moreTracks = filterOriginalTracks(moreTracks);
+                    const moreArtistTracks = filterTracksByExactArtist(moreTracks, artistName);
+                    
+                    // Unisci e rimuovi duplicati
+                    const allTracks = [...artistTracks, ...moreArtistTracks];
+                    artistTracks = allTracks.filter((t, i, self) => self.findIndex(x => x.id === t.id) === i);
+                }
+                
+                if (artistTracks.length > 0) {
+                    document.getElementById('artistHeroImg').src = artistTracks[0].image;
+                    renderTracksList(artistTracks, 'artistTracksContainer', artistTracks);
+                    
+                    // Mostra il numero di brani trovati
+                    const countElement = document.createElement('p');
+                    countElement.style.cssText = 'color:#b3b3b3;font-size:0.75rem;margin-bottom:8px;';
+                    countElement.innerText = `${artistTracks.length} brani trovati`;
+                    container.prepend(countElement);
                 } else {
                     container.innerHTML = `<p style="color:#b3b3b3;">Nessun brano trovato per ${artistName}.</p>`;
                 }
             } catch(e) {
-                container.innerHTML = '<p style="color:#f15e6c;">Errore.</p>';
+                container.innerHTML = '<p style="color:#f15e6c;">Errore nel caricamento.</p>';
             }
         }
 
@@ -2471,6 +2502,8 @@
         // ============ LIBRARY FIX ============
         function renderLibraryContent() {
             const c = document.getElementById('libContentList');
+            if (!c) return;
+            
             if (currentLibTab === 'liked') {
                 renderTracksList(likedSongs, 'libContentList', likedSongs);
             } else if (currentLibTab === 'downloads') {
@@ -2492,17 +2525,26 @@
         }
 
         function updateLibraryTabButtons() {
-            document.getElementById('btnTabLiked').style.background = currentLibTab === 'liked' ? '#fff' : 'var(--card-bg)';
-            document.getElementById('btnTabLiked').style.color = currentLibTab === 'liked' ? '#000' : '#fff';
-            document.getElementById('btnTabDownloads').style.background = currentLibTab === 'downloads' ? '#fff' : 'var(--card-bg)';
-            document.getElementById('btnTabDownloads').style.color = currentLibTab === 'downloads' ? '#000' : '#fff';
-            document.getElementById('btnTabPlaylists').style.background = currentLibTab === 'playlists' ? '#fff' : 'var(--card-bg)';
-            document.getElementById('btnTabPlaylists').style.color = currentLibTab === 'playlists' ? '#000' : '#fff';
+            const btnLiked = document.getElementById('btnTabLiked');
+            const btnDownloads = document.getElementById('btnTabDownloads');
+            const btnPlaylists = document.getElementById('btnTabPlaylists');
+            
+            if (btnLiked) {
+                btnLiked.style.background = currentLibTab === 'liked' ? '#fff' : 'var(--card-bg)';
+                btnLiked.style.color = currentLibTab === 'liked' ? '#000' : '#fff';
+            }
+            if (btnDownloads) {
+                btnDownloads.style.background = currentLibTab === 'downloads' ? '#fff' : 'var(--card-bg)';
+                btnDownloads.style.color = currentLibTab === 'downloads' ? '#000' : '#fff';
+            }
+            if (btnPlaylists) {
+                btnPlaylists.style.background = currentLibTab === 'playlists' ? '#fff' : 'var(--card-bg)';
+                btnPlaylists.style.color = currentLibTab === 'playlists' ? '#000' : '#fff';
+            }
         }
 
         function switchLibraryTab(tab) {
             currentLibTab = tab;
-            switchView('library');
             updateLibraryTabButtons();
             renderLibraryContent();
         }
@@ -2571,7 +2613,7 @@
             if (!pl) return;
             switchView('library', document.querySelectorAll('.nav-item')[2]);
             const c = document.getElementById('libContentList');
-            c.innerHTML = `<div style="margin-bottom:12px;display:flex;gap:8px;align-items:center;">
+            c.innerHTML = `<div style="margin-bottom:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                 <button class="btn-secondary" onclick="renderLibraryContent()" style="width:auto;padding:8px 16px;">Indietro</button>
                 <button class="btn-primary" onclick="openAddToPlaylistModal('${pl.id}')" style="width:auto;padding:8px 16px;"><i class="fas fa-plus"></i> Aggiungi</button>
                 <button class="btn-primary" onclick="sharePlaylistViaWhatsApp('${pl.id}')" style="width:auto;padding:8px 16px;background:#25D366;"><i class="fab fa-whatsapp"></i> Condividi</button>
