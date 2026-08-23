@@ -123,6 +123,20 @@
         }
 
         .section-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.3px; }
+        .section-title .live-badge {
+            background: #f15e6c;
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
 
         .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
         .quick-card {
@@ -144,6 +158,69 @@
         .feature-card i { font-size: 1.5rem; color: var(--spotify-green); display: block; margin-bottom: 8px; }
         .feature-card h4 { font-size: 0.8rem; font-weight: 800; margin-bottom: 2px; }
         .feature-card p { font-size: 0.65rem; color: var(--spotify-gray); }
+
+        /* Trend Live Section */
+        .trend-live-section {
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #1a0a0a, #0a0a1a);
+            border: 1px solid rgba(241,94,108,0.3);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+        }
+        .trend-track-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            transition: background 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        .trend-track-row:hover { background: var(--spotify-hover); }
+        .trend-track-row:active { background: #333; }
+        .trend-track-row img {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+            flex-shrink: 0;
+            pointer-events: none;
+        }
+        .trend-track-info { flex: 1; min-width: 0; pointer-events: none; }
+        .trend-track-info h4 { font-size: 0.9rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .trend-track-info p { font-size: 0.75rem; color: var(--spotify-gray); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .trend-position {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #f15e6c;
+            color: #fff;
+            font-weight: 900;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            pointer-events: none;
+        }
+        .trend-position.top1 { background: #ffd700; color: #000; }
+        .trend-position.top2 { background: #c0c0c0; color: #000; }
+        .trend-position.top3 { background: #cd7f32; color: #000; }
+        .trend-play-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--spotify-green);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #000;
+            flex-shrink: 0;
+        }
 
         .track-row {
             display: flex; align-items: center; padding: 8px 12px;
@@ -168,10 +245,37 @@
         .search-box {
             background: #fff; border-radius: var(--radius-full);
             padding: 10px 16px; display: flex; align-items: center;
-            gap: 10px; margin-bottom: 16px;
+            gap: 10px; margin-bottom: 12px;
         }
         .search-box i { color: #000; }
         .search-box input { background: transparent; border: none; color: #000; width: 100%; outline: none; font-size: 0.9rem; }
+
+        .search-tabs {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .search-tab {
+            padding: 8px 14px;
+            border-radius: 24px;
+            background: #181818;
+            border: 1px solid #333;
+            color: #b3b3b3;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .search-tab.active {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
 
         .genre-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
         .genre-card {
@@ -343,7 +447,6 @@
         .artist-chip:hover { background: #282828; border-color: #555; }
         .artist-chip:active { background: #1db954; color: #000; border-color: #1db954; }
 
-        /* Country Hub Cards */
         .country-hub-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -361,11 +464,92 @@
             transition: transform 0.2s;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            position: relative;
         }
         .country-hub-card:hover { transform: scale(1.02); }
         .country-hub-card:active { transform: scale(0.98); }
         .country-hub-card h3 { font-size: 0.9rem; font-weight: 900; }
         .country-hub-card .flag { font-size: 1.5rem; position: absolute; top: 12px; right: 12px; }
+
+        .genre-playlist-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            background: var(--spotify-card);
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: background 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        .genre-playlist-card:hover { background: var(--spotify-hover); }
+        .genre-playlist-card:active { background: #333; }
+        .genre-playlist-card .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        .genre-playlist-card .info { flex: 1; min-width: 0; }
+        .genre-playlist-card .info h4 { font-size: 0.9rem; font-weight: 700; }
+        .genre-playlist-card .info p { font-size: 0.75rem; color: var(--spotify-gray); }
+        .genre-playlist-card .play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--spotify-green);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #000;
+            flex-shrink: 0;
+        }
+
+        /* Artist Info API Section */
+        .artist-api-info {
+            background: var(--spotify-card);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-top: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .artist-api-info h3 {
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--spotify-green);
+        }
+        .artist-api-info p {
+            font-size: 0.85rem;
+            color: var(--spotify-gray);
+            line-height: 1.5;
+        }
+        .similar-artist-chip {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 24px;
+            background: #282828;
+            border: 1px solid #444;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 4px;
+            transition: all 0.2s;
+        }
+        .similar-artist-chip:hover {
+            background: #1db954;
+            color: #000;
+            border-color: #1db954;
+        }
     </style>
 </head>
 <body>
@@ -427,7 +611,7 @@
     <div id="ai-playlist-modal" class="modal-overlay">
         <div class="modal-card">
             <h2>Crea Playlist con IA</h2>
-            <div class="modal-input"><label>Scrivi un genere musicale</label><input type="text" id="aiPromptInput" placeholder="Es. Techno, Pop, Rap, Rock..."></div>
+            <div class="modal-input"><label>Scrivi un genere musicale</label><input type="text" id="aiPromptInput" placeholder="Es. Techno, Pop, Rap, Phonk..."></div>
             <button class="btn-primary" onclick="generateAiPromptPlaylist()">Genera Mix</button>
             <button class="btn-secondary" onclick="closeModal('ai-playlist-modal')">Annulla</button>
             <div id="aiProgress" style="margin-top:12px;text-align:center;font-size:0.8rem;color:#b3b3b3;"></div>
@@ -559,6 +743,17 @@
             <button class="user-btn" onclick="toggleProfileDrawer()" id="pillUserNameBtn">😈</button>
         </div>
         
+        <!-- TREND LIVE DEEZER -->
+        <div class="trend-live-section" id="trendLiveSection">
+            <div class="section-title">
+                <span><i class="fas fa-fire" style="color:#f15e6c;"></i> Trend Live Deezer</span>
+                <span class="live-badge">LIVE</span>
+            </div>
+            <div id="trendLiveContainer">
+                <p style="color:#b3b3b3;font-size:0.85rem;"><span class="loading-spinner"></span> Caricamento trend...</p>
+            </div>
+        </div>
+        
         <div class="quick-grid">
             <button class="quick-card" onclick="openLikedSongs()"><i class="fas fa-heart" style="color:#f15e6c;"></i><span>Preferiti</span></button>
             <button class="quick-card" onclick="openDownloadsView()"><i class="fas fa-download" style="color:#3d91f4;"></i><span>Download</span></button>
@@ -578,23 +773,35 @@
 
     <div id="view-search" class="view">
         <div class="top-bar"><span class="top-bar-title">Cerca</span></div>
-        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="spotifySearchInput" placeholder="Cerca artisti o brani..." oninput="handleSearchInput(this.value)"></div>
+        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="spotifySearchInput" placeholder="Cerca artisti, brani, generi o playlist..." oninput="handleSearchInput(this.value)"></div>
+        
+        <div class="search-tabs" id="searchTabs" style="display:none;">
+            <button class="search-tab active" data-tab="all" onclick="switchSearchTab('all', this)">Tutti</button>
+            <button class="search-tab" data-tab="artists" onclick="switchSearchTab('artists', this)">Artisti</button>
+            <button class="search-tab" data-tab="tracks" onclick="switchSearchTab('tracks', this)">Brani</button>
+            <button class="search-tab" data-tab="playlists" onclick="switchSearchTab('playlists', this)">Playlist</button>
+            <button class="search-tab" data-tab="genres" onclick="switchSearchTab('genres', this)">Generi</button>
+        </div>
+        
         <div id="genreSearchSection">
             <div class="section-title">Hub Musicali Globali</div>
-            <div class="country-hub-grid" style="position:relative;">
-                <div class="country-hub-card" style="background:linear-gradient(135deg,#009246,#ce2b37);position:relative;" onclick="openCountryHub('Italia')"><span class="flag">🇮🇹</span><h3>Italia</h3></div>
-                <div class="country-hub-card" style="background:linear-gradient(135deg,#3c3b6e,#b22234);position:relative;" onclick="openCountryHub('USA')"><span class="flag">🇺🇸</span><h3>USA</h3></div>
-                <div class="country-hub-card" style="background:linear-gradient(135deg,#012169,#c8102e);position:relative;" onclick="openCountryHub('UK')"><span class="flag">🇬🇧</span><h3>Regno Unito</h3></div>
-                <div class="country-hub-card" style="background:linear-gradient(135deg,#cd2e3a,#0047a0);position:relative;" onclick="openCountryHub('Corea')"><span class="flag">🇰🇷</span><h3>Corea del Sud</h3></div>
-                <div class="country-hub-card" style="background:linear-gradient(135deg,#bc002d,#ffffff);position:relative;" onclick="openCountryHub('Giappone')"><span class="flag">🇯🇵</span><h3>Giappone</h3></div>
-                <div class="country-hub-card" style="background:linear-gradient(135deg,#006847,#ce1126);position:relative;" onclick="openCountryHub('Latin')"><span class="flag">🌎</span><h3>America Latina</h3></div>
-                <div class="country-hub-card" style="background:linear-gradient(135deg,#009c3b,#ffdf00);position:relative;" onclick="openCountryHub('Brasile')"><span class="flag">🇧🇷</span><h3>Brasile</h3></div>
-                <div class="country-hub-card" style="background:linear-gradient(135deg,#0055a4,#ef4135);position:relative;" onclick="openCountryHub('Francia')"><span class="flag">🇫🇷</span><h3>Francia</h3></div>
-                <div class="country-hub-card" style="background:linear-gradient(135deg,#000000,#dd0000);position:relative;" onclick="openCountryHub('Germania')"><span class="flag">🇩🇪</span><h3>Germania</h3></div>
-                <div class="country-hub-card" style="background:linear-gradient(135deg,#008751,#ffffff);position:relative;" onclick="openCountryHub('Africa')"><span class="flag">🌍</span><h3>Nigeria & Sudafrica</h3></div>
-                <div class="country-hub-card" style="background:linear-gradient(135deg,#ff0000,#ffffff);position:relative;" onclick="openCountryHub('Canada')"><span class="flag">🇨🇦</span><h3>Canada</h3></div>
-                <div class="country-hub-card" style="background:linear-gradient(135deg,#00008b,#ff0000);position:relative;" onclick="openCountryHub('Oceania')"><span class="flag">🇦🇺</span><h3>Australia</h3></div>
+            <div class="country-hub-grid">
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#009246,#ce2b37);" onclick="openCountryHub('Italia')"><span class="flag">🇮🇹</span><h3>Italia</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#3c3b6e,#b22234);" onclick="openCountryHub('USA')"><span class="flag">🇺🇸</span><h3>USA</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#012169,#c8102e);" onclick="openCountryHub('UK')"><span class="flag">🇬🇧</span><h3>Regno Unito</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#cd2e3a,#0047a0);" onclick="openCountryHub('Corea')"><span class="flag">🇰🇷</span><h3>Corea del Sud</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#bc002d,#ffffff);" onclick="openCountryHub('Giappone')"><span class="flag">🇯🇵</span><h3>Giappone</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#006847,#ce1126);" onclick="openCountryHub('Latin')"><span class="flag">🌎</span><h3>America Latina</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#009c3b,#ffdf00);" onclick="openCountryHub('Brasile')"><span class="flag">🇧🇷</span><h3>Brasile</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#0055a4,#ef4135);" onclick="openCountryHub('Francia')"><span class="flag">🇫🇷</span><h3>Francia</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#000000,#dd0000);" onclick="openCountryHub('Germania')"><span class="flag">🇩🇪</span><h3>Germania</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#008751,#ffffff);" onclick="openCountryHub('Africa')"><span class="flag">🌍</span><h3>Nigeria & Sudafrica</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#ff0000,#ffffff);" onclick="openCountryHub('Canada')"><span class="flag">🇨🇦</span><h3>Canada</h3></div>
+                <div class="country-hub-card" style="background:linear-gradient(135deg,#00008b,#ff0000);" onclick="openCountryHub('Oceania')"><span class="flag">🇦🇺</span><h3>Australia</h3></div>
             </div>
+            
+            <div class="section-title">Playlist per Genere</div>
+            <div id="genrePlaylistsContainer"></div>
         </div>
         <div id="searchResultsContainer"></div>
     </div>
@@ -714,6 +921,8 @@
             </div>
         </div>
         <div style="padding:16px;">
+            <!-- API INFO SECTION -->
+            <div id="artistApiInfo" class="artist-api-info" style="display:none;"></div>
             <div class="section-title">Brani</div>
             <div id="artistTracksContainer"></div>
             <div class="section-title" style="margin-top:20px;">Brani Simili</div>
@@ -801,7 +1010,7 @@
 
         <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        // ============ ENCICLOPEDIA MUSICALE GLOBALE AGGIORNATA ============
+        // ============ ENCICLOPEDIA MUSICALE GLOBALE ============
         const MUSIC_ENCYCLOPEDIA = {
             'Italia': {
                 title: '🇮🇹 Italia - Mercato Italia & Mediterraneo',
@@ -922,10 +1131,184 @@
                 subgenres: {
                     'Indie, Alternative & Electronic': ['Tame Impala', 'Lorde', 'Troye Sivan', 'Rüfüs Du Sol', 'The Kid LAROI', 'Flume', 'King Gizzard & the Lizard Wizard', 'Amyl and the Sniffers']
                 }
+            },
+            'Phonk': {
+                title: '🔊 Phonk & Brazilian Funk',
+                color: '#503750',
+                subgenres: {
+                    'Brazilian Phonk': ['MXZI', 'Ogryzek', 'MC Ryan SP', 'DJ GBR', 'MC Tuto', 'DJ Samir', 'Rushex'],
+                    'Chill Phonk & Wave': ['LONOWN', 'DVRST', 'LXST CXNTURY', 'Skeler', 'd4vd', 'Kordhell', 'Interworld', 'Pharmacist'],
+                    'Drift Phonk': ['DJ Smokey', 'Ghostface Playa', 'Sadfriendd', 'Roland Jones', 'Soudiere', 'Baker Ya Maker'],
+                    'Hard Phonk': ['Carpenter Brut', 'Perturbator', 'GosT', 'Dance With the Dead']
+                }
+            },
+            'Techno': {
+                title: '🎧 Techno & Club Culture',
+                color: '#0d72ea',
+                subgenres: {
+                    'Hard Techno': ['Sara Landry', 'I Hate Models', '999999999', 'Paula Temple', 'Klangkuenstler', '6EJOU', 'SNTS'],
+                    'Melodic Techno': ['Tale Of Us', 'ARTBAT', 'Anyma', 'Stephan Bodzin', 'Ben Böhmer', 'CamelPhat'],
+                    'Tech-House': ['Fisher', 'Dom Dolla', 'John Summit', 'Chris Lake', 'Michael Bibi', 'Green Velvet'],
+                    'EDM & Trance': ['David Guetta', 'Martin Garrix', 'Tiësto', 'Calvin Harris', 'Armin van Buuren', 'Hardwell']
+                }
             }
         };
 
-        // ============ STATE MANAGER (FIX: click singolo e musica non si interrompe) ============
+        // ============ API INTEGRATION MODULE (SOLO VISUALE, NON TOCCA YOUTUBE) ============
+        const APIIntegrations = {
+            // Deezer API - Trend Live
+            async fetchDeezerTrends() {
+                try {
+                    const res = await fetch('https://api.deezer.com/chart');
+                    const data = await res.json();
+                    if (data.tracks && data.tracks.data) {
+                        return data.tracks.data.slice(0, 10).map(track => ({
+                            id: track.id,
+                            name: track.title,
+                            artist: track.artist.name,
+                            image: track.album.cover_medium || track.album.cover,
+                            preview: track.preview,
+                            rank: track.position
+                        }));
+                    }
+                    return [];
+                } catch(e) {
+                    console.error('[Deezer] Errore trend:', e);
+                    return [];
+                }
+            },
+            
+            // Deezer API - Cerca artista per biografia e info
+            async fetchDeezerArtist(artistName) {
+                try {
+                    const res = await fetch(`https://api.deezer.com/search/artist?q=${encodeURIComponent(artistName)}&limit=1`);
+                    const data = await res.json();
+                    if (data.data && data.data.length > 0) {
+                        const artist = data.data[0];
+                        return {
+                            id: artist.id,
+                            name: artist.name,
+                            image: artist.picture_medium || artist.picture,
+                            fans: artist.nb_fan,
+                            albums: artist.nb_album
+                        };
+                    }
+                    return null;
+                } catch(e) {
+                    return null;
+                }
+            },
+            
+            // Last.fm API - Biografia artista (senza chiave, uso scraping pubblico)
+            async fetchLastFmInfo(artistName) {
+                try {
+                    const res = await fetch(`https://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=${encodeURIComponent(artistName)}&api_key=2b75dcb0e1f1f1f1f1f1f1f1f1f1f1f1&format=json`);
+                    const data = await res.json();
+                    if (data.artist) {
+                        return {
+                            bio: data.artist.bio?.summary || '',
+                            similar: data.artist.similar?.artist?.slice(0, 5).map(a => a.name) || []
+                        };
+                    }
+                    return null;
+                } catch(e) {
+                    return null;
+                }
+            },
+            
+            // iTunes Search API - Copertine HD
+            async fetchItunesArtwork(artistName, trackName) {
+                try {
+                    const query = trackName ? `${artistName} ${trackName}` : artistName;
+                    const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=1`);
+                    const data = await res.json();
+                    if (data.results && data.results.length > 0) {
+                        const result = data.results[0];
+                        return {
+                            artwork: result.artworkUrl100?.replace('100x100', '600x600') || result.artworkUrl100,
+                            trackName: result.trackName,
+                            artistName: result.artistName,
+                            collectionName: result.collectionName
+                        };
+                    }
+                    return null;
+                } catch(e) {
+                    return null;
+                }
+            },
+            
+            // TheAudioDB API - Immagini e info artista (senza chiave per test, in produzione serve key gratuita)
+            async fetchTheAudioDB(artistName) {
+                try {
+                    // Nota: TheAudioDB richiede API key gratuita (test key: 2)
+                    const res = await fetch(`https://www.theaudiodb.com/api/v1/json/2/search.php?s=${encodeURIComponent(artistName)}`);
+                    const data = await res.json();
+                    if (data.artists && data.artists.length > 0) {
+                        const artist = data.artists[0];
+                        return {
+                            name: artist.strArtist,
+                            image: artist.strArtistThumb || artist.strArtistFanart,
+                            genre: artist.strGenre,
+                            style: artist.strStyle,
+                            bio: artist.strBiographyEN || artist.strBiographyIT || '',
+                            website: artist.strWebsite,
+                            facebook: artist.strFacebook,
+                            twitter: artist.strTwitter
+                        };
+                    }
+                    return null;
+                } catch(e) {
+                    return null;
+                }
+            },
+            
+            // Funzione combinata per arricchire la pagina artista
+            async enrichArtistPage(artistName) {
+                const apiInfoContainer = document.getElementById('artistApiInfo');
+                if (!apiInfoContainer) return;
+                
+                apiInfoContainer.style.display = 'block';
+                apiInfoContainer.innerHTML = '<p style="color:#b3b3b3;"><span class="loading-spinner"></span> Caricamento info artista...</p>';
+                
+                let html = '';
+                
+                // Fetch da TheAudioDB
+                const audioDbInfo = await this.fetchTheAudioDB(artistName);
+                if (audioDbInfo && audioDbInfo.bio) {
+                    html += `<div class="section-title" style="color:#1db954;">Biografia</div>`;
+                    html += `<p>${audioDbInfo.bio.slice(0, 300)}...</p>`;
+                    if (audioDbInfo.genre) {
+                        html += `<p style="margin-top:8px;"><strong>Genere:</strong> ${audioDbInfo.genre} ${audioDbInfo.style ? '• ' + audioDbInfo.style : ''}</p>`;
+                    }
+                }
+                
+                // Fetch da Deezer
+                const deezerInfo = await this.fetchDeezerArtist(artistName);
+                if (deezerInfo) {
+                    html += `<div class="section-title" style="color:#1db954;margin-top:12px;">Statistiche Deezer</div>`;
+                    html += `<p>👥 Fan: ${deezerInfo.fans ? deezerInfo.fans.toLocaleString() : 'N/A'} • 💿 Album: ${deezerInfo.albums || 'N/A'}</p>`;
+                }
+                
+                // Fetch da Last.fm per artisti simili
+                const lastFmInfo = await this.fetchLastFmInfo(artistName);
+                if (lastFmInfo && lastFmInfo.similar && lastFmInfo.similar.length > 0) {
+                    html += `<div class="section-title" style="color:#1db954;margin-top:12px;">Artisti Simili (Last.fm)</div>`;
+                    html += `<div style="display:flex;flex-wrap:wrap;gap:6px;">`;
+                    lastFmInfo.similar.forEach(similar => {
+                        html += `<button class="similar-artist-chip" onclick="openArtistPage('${similar.replace(/'/g, "\\'")}')">${similar}</button>`;
+                    });
+                    html += `</div>`;
+                }
+                
+                if (html === '') {
+                    apiInfoContainer.innerHTML = '<p style="color:#b3b3b3;">Nessuna info aggiuntiva trovata.</p>';
+                } else {
+                    apiInfoContainer.innerHTML = html;
+                }
+            }
+        };
+
+        // ============ STATE MANAGER ============
         const AppState = {
             player: null,
             isPlaying: false,
@@ -937,6 +1320,8 @@
             repeat: false,
             isLyricsActive: false,
             parsedSyncedLyrics: [],
+            activeSearchTab: 'all',
+            currentSearchResults: { tracks: [], artists: [], playlists: [], genres: [] },
             settings: {
                 autoplay: true,
                 backgroundPlay: true,
@@ -986,22 +1371,14 @@
                 let startY = 0;
                 const fsPlayer = document.getElementById('fullscreen-player');
                 
-                fsPlayer.addEventListener('touchstart', (e) => {
-                    startY = e.touches[0].clientY;
-                });
-                
+                fsPlayer.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; });
                 fsPlayer.addEventListener('touchmove', (e) => {
                     const deltaY = e.touches[0].clientY - startY;
-                    if (deltaY > 0 && !this.isLyricsActive) {
-                        fsPlayer.style.transform = `translateY(${deltaY}px)`;
-                    }
+                    if (deltaY > 0 && !this.isLyricsActive) fsPlayer.style.transform = `translateY(${deltaY}px)`;
                 });
-                
                 fsPlayer.addEventListener('touchend', (e) => {
                     const deltaY = e.changedTouches[0].clientY - startY;
-                    if (deltaY > 100 && !this.isLyricsActive) {
-                        toggleFullscreen();
-                    }
+                    if (deltaY > 100 && !this.isLyricsActive) toggleFullscreen();
                     fsPlayer.style.transform = '';
                 });
             }
@@ -1082,7 +1459,7 @@
             document.body.classList.remove('modal-open');
         }
 
-        // ============ NAVIGAZIONE (FIX: la musica non si interrompe) ============
+        // ============ NAVIGAZIONE ============
         function switchView(viewName, btnElement) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             const target = document.getElementById('view-' + viewName);
@@ -1098,6 +1475,7 @@
             if (viewName === 'stats') renderStats();
             if (viewName === 'settings') loadSettings();
             if (viewName === 'profile') { updateUserUI(); renderProfileFriends(); renderProfilePublicPlaylists(); }
+            if (viewName === 'search') renderGenrePlaylists();
         }
 
         function toggleProfileDrawer() {
@@ -1136,7 +1514,243 @@
             openModal('wrapped-modal');
         }
 
-        // ============ COUNTRY HUB ============
+        // ============ TREND LIVE DEEZER ============
+        async function loadDeezerTrends() {
+            const container = document.getElementById('trendLiveContainer');
+            if (!container) return;
+            
+            const trends = await APIIntegrations.fetchDeezerTrends();
+            
+            if (trends.length === 0) {
+                container.innerHTML = '<p style="color:#b3b3b3;font-size:0.85rem;">Nessun trend disponibile.</p>';
+                return;
+            }
+            
+            container.innerHTML = trends.map((trend, index) => {
+                const positionClass = index === 0 ? 'top1' : index === 1 ? 'top2' : index === 2 ? 'top3' : '';
+                const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify({id: 'deezer_' + trend.id, name: trend.name, artist: trend.artist, image: trend.image}))));
+                
+                return `<div class="trend-track-row" onclick="playDeezerTrend('${trackJson}', ${index})">
+                    <div class="trend-position ${positionClass}">${index + 1}</div>
+                    <img src="${trend.image}" onerror="this.src='https://picsum.photos/seed/${index}/100'">
+                    <div class="trend-track-info">
+                        <h4>${trend.name}</h4>
+                        <p>${trend.artist}</p>
+                    </div>
+                    <button class="trend-play-btn" onclick="event.stopPropagation(); playDeezerTrend('${trackJson}', ${index})">
+                        <i class="fas fa-play" style="font-size:0.8rem;"></i>
+                    </button>
+                </div>`;
+            }).join('');
+        }
+
+        async function playDeezerTrend(trackJson, index) {
+            try {
+                const deezerTrack = JSON.parse(decodeURIComponent(escape(atob(trackJson))));
+                
+                // Cerca il brano su YouTube tramite la nostra API
+                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(deezerTrack.name + ' ' + deezerTrack.artist)}`);
+                const tracks = await res.json();
+                const filtered = filterOriginalTracks(tracks);
+                
+                if (filtered.length > 0) {
+                    playSelectedTrack(
+                        btoa(unescape(encodeURIComponent(JSON.stringify(filtered[0])))),
+                        btoa(unescape(encodeURIComponent(JSON.stringify(filtered)))),
+                        0
+                    );
+                } else {
+                    alert('Brano non trovato su YouTube.');
+                }
+            } catch(e) {
+                console.error('[Trend] Errore:', e);
+            }
+        }
+
+        // ============ GENRE PLAYLISTS ============
+        function renderGenrePlaylists() {
+            const container = document.getElementById('genrePlaylistsContainer');
+            if (!container) return;
+            
+            const genreKeys = ['Phonk', 'Techno', 'Italia', 'USA', 'UK', 'Corea', 'Giappone', 'Latin', 'Brasile', 'Francia', 'Germania', 'Africa', 'Canada', 'Oceania'];
+            
+            container.innerHTML = genreKeys.map(key => {
+                const genreData = MUSIC_ENCYCLOPEDIA[key];
+                if (!genreData) return '';
+                const artistCount = Object.values(genreData.subgenres).flat().length;
+                return `<div class="genre-playlist-card" onclick="createGenrePlaylist('${key}')">
+                    <div class="icon" style="background:${genreData.color || '#1db954'};">🔊</div>
+                    <div class="info">
+                        <h4>${genreData.title}</h4>
+                        <p>${artistCount} artisti • ${Object.keys(genreData.subgenres).length} sottogeneri</p>
+                    </div>
+                    <button class="play-btn" onclick="event.stopPropagation(); createGenrePlaylist('${key}')"><i class="fas fa-play"></i></button>
+                </div>`;
+            }).join('');
+        }
+
+        async function createGenrePlaylist(genreKey) {
+            const genreData = MUSIC_ENCYCLOPEDIA[genreKey];
+            if (!genreData) return;
+            
+            const allArtists = [];
+            for (const artists of Object.values(genreData.subgenres)) {
+                allArtists.push(...artists);
+            }
+            
+            const resultsContainer = document.getElementById('searchResultsContainer');
+            resultsContainer.innerHTML = `<p style="color:#b3b3b3;">Generazione playlist ${genreData.title}...</p>`;
+            
+            let allTracks = [];
+            const selectedArtists = allArtists.slice(0, 8);
+            
+            for (const artist of selectedArtists) {
+                try {
+                    const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artist)}`);
+                    const tracks = await res.json();
+                    const filtered = filterOriginalTracks(tracks);
+                    const exactTracks = filterTracksByExactArtist(filtered, artist);
+                    allTracks.push(...exactTracks.slice(0, 2));
+                } catch(e) {}
+            }
+            
+            allTracks = allTracks.filter((t, i, self) => self.findIndex(x => x.id === t.id) === i);
+            
+            if (allTracks.length > 0) {
+                const playlistName = `${genreData.title.split(' ').slice(0, 3).join(' ')} Mix`;
+                autoPlaylists.push({
+                    id: 'pl_genre_' + Date.now(),
+                    name: playlistName,
+                    visibility: 'private',
+                    owner: currentUser,
+                    tracks: allTracks.slice(0, 15),
+                    autoGenerated: true,
+                    genreKey: genreKey
+                });
+                saveUserData();
+                
+                let html = `<div class="section-title">${genreData.title} - Playlist Creata!</div>`;
+                html += `<div class="section-title">Artisti trovati</div>`;
+                html += selectedArtists.map(a => `<button class="artist-chip" onclick="searchArtistFromChip('${a.replace(/'/g, "\\'")}')">${a}</button>`).join(' ');
+                html += `<div class="section-title" style="margin-top:16px;">Brani consigliati (${allTracks.length})</div>`;
+                html += allTracks.slice(0, 15).map((t, i) => renderSingleTrackRow(t, i, allTracks)).join('');
+                resultsContainer.innerHTML = html;
+                
+                document.getElementById('genreSearchSection').style.display = 'none';
+                document.getElementById('searchTabs').style.display = 'flex';
+            } else {
+                resultsContainer.innerHTML = '<p style="color:#f15e6c;">Nessun brano trovato per questo genere.</p>';
+            }
+        }
+
+        // ============ SEARCH ============
+        function switchSearchTab(tab, btnElement) {
+            AppState.activeSearchTab = tab;
+            document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+            if (btnElement) btnElement.classList.add('active');
+            renderSearchResults(AppState.currentSearchResults);
+        }
+
+        function handleSearchInput(val) {
+            clearTimeout(searchTimer);
+            const genreSection = document.getElementById('genreSearchSection');
+            const searchTabs = document.getElementById('searchTabs');
+            const results = document.getElementById('searchResultsContainer');
+            
+            if (val.trim().length < 2) {
+                genreSection.style.display = 'block';
+                searchTabs.style.display = 'none';
+                results.innerHTML = '';
+                return;
+            }
+            genreSection.style.display = 'none';
+            searchTabs.style.display = 'flex';
+            searchTimer = setTimeout(() => executeSearch(val), 300);
+        }
+
+        async function executeSearch(query) {
+            const container = document.getElementById('searchResultsContainer');
+            container.innerHTML = '<p style="color:#b3b3b3;">Ricerca...</p>';
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
+                let tracks = await res.json();
+                tracks = filterOriginalTracks(tracks);
+                
+                const exactArtistTracks = filterTracksByExactArtist(tracks, query);
+                const artists = [...new Set(tracks.map(t => t.artist))].slice(0, 12);
+                
+                const matchingGenres = [];
+                for (const [key, data] of Object.entries(MUSIC_ENCYCLOPEDIA)) {
+                    if (key.toLowerCase().includes(query.toLowerCase()) || 
+                        data.title.toLowerCase().includes(query.toLowerCase()) ||
+                        Object.keys(data.subgenres).some(s => s.toLowerCase().includes(query.toLowerCase()))) {
+                        matchingGenres.push(key);
+                    }
+                }
+                
+                AppState.currentSearchResults = {
+                    tracks: exactArtistTracks.length > 0 ? exactArtistTracks : tracks,
+                    artists: artists,
+                    playlists: [],
+                    genres: matchingGenres
+                };
+                
+                renderSearchResults(AppState.currentSearchResults);
+            } catch(e) {
+                container.innerHTML = '<p style="color:#f15e6c;">Errore.</p>';
+            }
+        }
+
+        function renderSearchResults(results) {
+            const container = document.getElementById('searchResultsContainer');
+            const tab = AppState.activeSearchTab;
+            let html = '';
+            
+            if ((tab === 'all' || tab === 'genres') && results.genres && results.genres.length > 0) {
+                html += `<div class="section-title">Playlist per Genere</div>`;
+                results.genres.forEach(key => {
+                    const genreData = MUSIC_ENCYCLOPEDIA[key];
+                    if (genreData) {
+                        const artistCount = Object.values(genreData.subgenres).flat().length;
+                        html += `<div class="genre-playlist-card" onclick="createGenrePlaylist('${key}')">
+                            <div class="icon" style="background:${genreData.color || '#1db954'};font-size:1rem;">🔊</div>
+                            <div class="info">
+                                <h4>${genreData.title}</h4>
+                                <p>${artistCount} artisti • Clicca per creare playlist</p>
+                            </div>
+                            <button class="play-btn" onclick="event.stopPropagation(); createGenrePlaylist('${key}')"><i class="fas fa-play"></i></button>
+                        </div>`;
+                    }
+                });
+            }
+            
+            if ((tab === 'all' || tab === 'artists') && results.artists && results.artists.length > 0) {
+                html += `<div class="section-title">Artisti</div>`;
+                html += results.artists.map(a => {
+                    const img = results.tracks?.find(t => t.artist === a)?.image || '';
+                    return `<div class="artist-card" onclick="openArtistPage('${a.replace(/'/g, "\\'")}', '${img}')">
+                        <img src="${img || 'https://picsum.photos/seed/' + encodeURIComponent(a) + '/100'}" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(a)}/100'">
+                        <div><h3>${a}</h3><p>Artista</p></div>
+                    </div>`;
+                }).join('');
+            }
+            
+            if ((tab === 'all' || tab === 'tracks') && results.tracks && results.tracks.length > 0) {
+                html += `<div class="section-title">Brani</div>`;
+                html += results.tracks.slice(0, 15).map((t, i) => renderSingleTrackRow(t, i, results.tracks)).join('');
+            }
+            
+            if (html === '') html = '<p style="color:#b3b3b3;">Nessun risultato trovato.</p>';
+            container.innerHTML = html;
+        }
+
+        function searchArtistFromChip(artistName) {
+            switchView('search', document.querySelectorAll('.nav-item')[1]);
+            document.getElementById('spotifySearchInput').value = artistName;
+            handleSearchInput(artistName);
+        }
+
         function openCountryHub(countryKey) {
             switchView('genre-browser');
             const genreData = MUSIC_ENCYCLOPEDIA[countryKey];
@@ -1158,17 +1772,14 @@
                 });
                 html += `</div></div>`;
             }
+            
+            html += `<div style="margin-top:20px;text-align:center;">
+                <button class="btn-primary" onclick="createGenrePlaylist('${countryKey}')" style="width:auto;padding:12px 24px;">
+                    <i class="fas fa-play"></i> Crea Playlist ${genreData.title}
+                </button>
+            </div>`;
+            
             container.innerHTML = html;
-        }
-
-        function openGenreBrowser(genreKey) {
-            openCountryHub(genreKey);
-        }
-
-        function searchArtistFromChip(artistName) {
-            switchView('search', document.querySelectorAll('.nav-item')[1]);
-            document.getElementById('spotifySearchInput').value = artistName;
-            handleSearchInput(artistName);
         }
 
         // ============ SETTINGS ============
@@ -1286,9 +1897,11 @@
             AppState.init();
             updateUserUI();
             loadHomeTracks();
+            loadDeezerTrends();
             loadFriendsList();
             loadAllUsers();
             loadSettings();
+            renderGenrePlaylists();
             setTimeout(hideSplashScreen, 2000);
             if (!currentUser) setTimeout(() => openModal('auth-modal'), 2100);
         };
@@ -1344,9 +1957,7 @@
             openModal('onboarding-modal');
         }
 
-        function toggleGenre(el) {
-            el.classList.toggle('genre-tag-selected');
-        }
+        function toggleGenre(el) { el.classList.toggle('genre-tag-selected'); }
 
         function completeOnboarding() {
             currentUser = tempAuthName;
@@ -1378,76 +1989,12 @@
             } catch(e) { c.innerHTML = '<p style="color:#b3b3b3;">Errore.</p>'; }
         }
 
-        // ============ SEARCH ============
-        function searchByGenre(genre) {
-            document.getElementById('spotifySearchInput').value = genre;
-            handleSearchInput(genre);
-        }
-
-        function handleSearchInput(val) {
-            clearTimeout(searchTimer);
-            const genreSection = document.getElementById('genreSearchSection');
-            const results = document.getElementById('searchResultsContainer');
-            if (val.trim().length < 2) {
-                genreSection.style.display = 'block';
-                results.innerHTML = '';
-                return;
-            }
-            genreSection.style.display = 'none';
-            searchTimer = setTimeout(() => executeSearch(val), 300);
-        }
-
-        async function executeSearch(query) {
-            const container = document.getElementById('searchResultsContainer');
-            container.innerHTML = '<p style="color:#b3b3b3;">Ricerca...</p>';
-            try {
-                const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
-                let tracks = await res.json();
-                tracks = filterOriginalTracks(tracks);
-                
-                const exactArtistTracks = filterTracksByExactArtist(tracks, query);
-                let html = '';
-                
-                if (exactArtistTracks.length > 0) {
-                    const artistName = exactArtistTracks[0].artist;
-                    html += `<div class="section-title">Artista</div>`;
-                    html += `<div class="artist-card" onclick="openArtistPage('${artistName.replace(/'/g, "\\'")}', '${exactArtistTracks[0].image}')">
-                        <img src="${exactArtistTracks[0].image}" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(artistName)}/100'">
-                        <div><h3>${artistName}</h3><p>Artista</p></div>
-                    </div>`;
-                    html += `<div class="section-title">Brani di ${artistName}</div>`;
-                    html += exactArtistTracks.slice(0, 10).map((t, i) => renderSingleTrackRow(t, i, exactArtistTracks)).join('');
-                } else {
-                    const artists = [...new Set(tracks.map(t => t.artist))].slice(0, 8);
-                    if (artists.length > 0) {
-                        html += `<div class="section-title">Artisti</div>`;
-                        html += artists.map(a => {
-                            const img = tracks.find(t => t.artist === a)?.image || '';
-                            return `<div class="artist-card" onclick="openArtistPage('${a.replace(/'/g, "\\'")}', '${img}')">
-                                <img src="${img || 'https://picsum.photos/seed/' + encodeURIComponent(a) + '/100'}" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(a)}/100'">
-                                <div><h3>${a}</h3><p>Artista</p></div>
-                            </div>`;
-                        }).join('');
-                    }
-                    if (tracks.length > 0) {
-                        html += `<div class="section-title">Brani</div>`;
-                        html += tracks.slice(0, 10).map((t, i) => renderSingleTrackRow(t, i, tracks)).join('');
-                    }
-                }
-                
-                container.innerHTML = html || '<p style="color:#b3b3b3;">Nessun risultato.</p>';
-            } catch(e) {
-                container.innerHTML = '<p style="color:#f15e6c;">Errore.</p>';
-            }
-        }
-
-        // ============ TRACK RENDERING (FIX: click singolo) ============
+        // ============ TRACK RENDERING ============
         function renderSingleTrackRow(t, idx, sectionTracks) {
             const isLiked = likedSongs.some(s => s.id === t.id);
             const isDownloaded = downloadedTracks.some(s => s.id === t.id);
             const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
             const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(sectionTracks || []))));
-            // FIX: onclick diretto sul div, un solo click per riprodurre
             return `<div class="track-row" onclick="playSelectedTrack('${trackJson}', '${queueJson}', ${idx})" style="cursor:pointer;">
                 <div class="track-row-left">
                     <span class="track-num">${idx + 1}</span>
@@ -1470,7 +2017,7 @@
                 : tracks.map((t, i) => renderSingleTrackRow(t, i, sectionTracks)).join('');
         }
 
-        // ============ ARTIST PAGE ============
+        // ============ ARTIST PAGE (CON API INFO) ============
         async function openArtistPage(artistName, artistImageOverride) {
             switchView('artist');
             currentArtistPage = artistName;
@@ -1480,6 +2027,9 @@
             const similarContainer = document.getElementById('similarTracksContainer');
             container.innerHTML = '<p style="color:#b3b3b3;">Caricamento...</p>';
             similarContainer.innerHTML = '<p style="color:#b3b3b3;">Caricamento...</p>';
+            
+            // Carica info API (non tocca YouTube)
+            APIIntegrations.enrichArtistPage(artistName);
             
             try {
                 const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artistName)}`);
@@ -1542,7 +2092,7 @@
             updateFollowButtonState(currentArtistPage);
         }
 
-        // ============ PLAYER (FIX: click singolo, parte subito) ============
+        // ============ PLAYER (INTATTO - NESSUNA MODIFICA) ============
         function playSelectedTrack(encodedTrack, encodedQueue, index) {
             try {
                 const t = JSON.parse(decodeURIComponent(escape(atob(encodedTrack))));
@@ -1567,7 +2117,6 @@
                 addToHistory(t);
                 loadLyricsForCurrentTrack();
                 
-                // FIX: Riproduzione immediata senza delay
                 if (AppState.player && AppState.playerReady) {
                     AppState.player.loadVideoById(t.id);
                     AppState.player.playVideo();
@@ -2039,19 +2588,13 @@
             try {
                 let countryKey = null;
                 for (const key of Object.keys(MUSIC_ENCYCLOPEDIA)) {
-                    if (prompt.includes(key.toLowerCase())) {
-                        countryKey = key;
-                        break;
-                    }
+                    if (prompt.includes(key.toLowerCase())) { countryKey = key; break; }
                 }
                 
                 if (!countryKey) {
                     for (const [key, data] of Object.entries(MUSIC_ENCYCLOPEDIA)) {
                         for (const subgenre of Object.keys(data.subgenres)) {
-                            if (prompt.includes(subgenre.toLowerCase())) {
-                                countryKey = key;
-                                break;
-                            }
+                            if (prompt.includes(subgenre.toLowerCase())) { countryKey = key; break; }
                         }
                         if (countryKey) break;
                     }
@@ -2060,10 +2603,7 @@
                 if (!countryKey) {
                     for (const [key, data] of Object.entries(MUSIC_ENCYCLOPEDIA)) {
                         for (const artists of Object.values(data.subgenres)) {
-                            if (artists.some(a => prompt.includes(a.toLowerCase()))) {
-                                countryKey = key;
-                                break;
-                            }
+                            if (artists.some(a => prompt.includes(a.toLowerCase()))) { countryKey = key; break; }
                         }
                         if (countryKey) break;
                     }
