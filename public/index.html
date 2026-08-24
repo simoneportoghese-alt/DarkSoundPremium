@@ -28,12 +28,18 @@
             --radius-lg: 16px;
             --radius-full: 9999px;
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --safe-top: env(safe-area-inset-top, 0px);
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-top: env(safe-area-inset-top, 47px);
+            --safe-bottom: env(safe-area-inset-bottom, 34px);
+            --safe-left: env(safe-area-inset-left, 0px);
+            --safe-right: env(safe-area-inset-right, 0px);
+            /* Offset extra per Dynamic Island iPhone 16 Pro Max */
+            --dynamic-island-offset: 59px;
+            --total-top-offset: calc(var(--safe-top) + 20px);
             --player-max-width: 400px;
-            --player-max-height: 90vh;
+            --player-max-height: 85vh;
         }
 
+        /* TEMI COMPLETI */
         [data-theme="verde"] {
             --spotify-green: #1db954;
             --spotify-green-hover: #1ed760;
@@ -183,20 +189,24 @@
             color: var(--spotify-white);
             font-size: 16px;
             overscroll-behavior: none;
-            padding-top: var(--safe-top);
             -webkit-overflow-scrolling: touch;
             position: fixed;
             width: 100%;
             height: 100%;
             overflow: hidden;
+            /* Padding per Dynamic Island e notch */
+            padding-top: var(--total-top-offset);
+            padding-bottom: var(--safe-bottom);
+            padding-left: var(--safe-left);
+            padding-right: var(--safe-right);
         }
 
         #app-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: var(--total-top-offset);
+            left: var(--safe-left);
+            right: var(--safe-right);
+            bottom: var(--safe-bottom);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -266,6 +276,7 @@
             justify-content: center;
             z-index: 9999;
             transition: opacity 0.6s ease, visibility 0.6s ease;
+            padding-top: var(--total-top-offset);
         }
         #splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         .splash-logo {
@@ -392,7 +403,7 @@
 
         .player-bar {
             position: fixed;
-            bottom: 55px;
+            bottom: calc(55px + var(--safe-bottom));
             left: 6px;
             right: 6px;
             background: var(--player-bg);
@@ -542,13 +553,14 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 50px;
+            height: calc(50px + var(--safe-bottom));
             background: var(--nav-bg);
             display: flex;
             justify-content: space-around;
-            align-items: center;
+            align-items: flex-start;
             z-index: 90;
             border-top: 1px solid var(--border-glow);
+            padding-top: 6px;
             padding-bottom: var(--safe-bottom);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -571,10 +583,10 @@
 
         .modal-overlay {
             position: fixed;
-            top: 0;
+            top: var(--total-top-offset);
             left: 0;
             width: 100%;
-            height: 100%;
+            height: calc(100% - var(--total-top-offset) - var(--safe-bottom));
             background: rgba(0,0,0,0.8);
             z-index: 3000;
             display: none;
@@ -746,6 +758,20 @@
         .theme-dot:active { transform: scale(1.2); }
         .theme-dot.active { border-color: #fff; box-shadow: 0 0 10px var(--border-glow); }
 
+        /* Media query specifica per iPhone 16 Pro Max */
+        @media (min-height: 900px) {
+            :root {
+                --dynamic-island-offset: 59px;
+                --total-top-offset: calc(var(--safe-top) + 25px);
+            }
+            .view {
+                padding-top: 16px;
+            }
+            .top-bar {
+                padding-top: 16px;
+            }
+        }
+
         @media (max-width: 380px) {
             .view { padding: 8px; padding-bottom: 140px; }
             .quick-card { padding: 10px 4px; }
@@ -756,7 +782,7 @@
         }
 
         @media (max-height: 600px) {
-            #fullscreen-player { max-height: 85vh; padding: 10px; }
+            #fullscreen-player { max-height: 80vh; padding: 10px; }
             .fs-cover { max-width: 140px; margin-bottom: 8px; }
             .fs-title { font-size: 0.95rem; }
             .player-equalizer-large { height: 25px; margin: 4px 0; }
@@ -778,7 +804,7 @@
 
     <div id="app-container">
         <div class="view-scroll-area" id="viewScrollArea">
-            <div id="profileDrawer" style="position:fixed; top:0; right:-100%; width:100%; max-width:300px; height:100%; background:var(--card-bg); z-index:4000; transition:right 0.3s; display:flex; flex-direction:column; padding:16px; overflow-y:auto; border-left: 1px solid var(--border-glow);">
+            <div id="profileDrawer" style="position:fixed; top:var(--total-top-offset); right:-100%; width:100%; max-width:300px; height:calc(100% - var(--total-top-offset) - var(--safe-bottom)); background:var(--card-bg); z-index:4000; transition:right 0.3s; display:flex; flex-direction:column; padding:16px; overflow-y:auto; border-left: 1px solid var(--border-glow);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                     <div style="display:flex; align-items:center; gap:10px;">
                         <div id="drawerAvatarInitial" style="width:40px;height:40px;border-radius:50%;background:var(--spotify-green);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;overflow:hidden;">S</div>
@@ -1722,7 +1748,7 @@
                 : tracks.map((t, i) => renderSingleTrackRow(t, i, sectionTracks)).join('');
         }
 
-        // ============ ARTIST PAGE - FIX CLICK ============
+        // ============ ARTIST PAGE ============
         async function openArtistPage(artistName, artistImageOverride) {
             switchView('artist');
             currentArtistPage = artistName;
@@ -1738,13 +1764,11 @@
             container.innerHTML = '<p style="color:#b3b3b3;">Caricamento brani di ' + artistName + '...</p>';
             
             try {
-                // Prima ricerca
                 const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artistName)}`);
                 let tracks = await res.json();
                 tracks = filterOriginalTracks(tracks);
                 let artistTracks = filterTracksByExactArtist(tracks, artistName);
                 
-                // Seconda ricerca se pochi risultati
                 if (artistTracks.length < 5) {
                     const res2 = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artistName + ' songs')}`);
                     let moreTracks = await res2.json();
