@@ -2597,6 +2597,110 @@
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         // ============================================================
+        // 0. LIBRERIA GENERI - MAPPA COMPLETA
+        // ============================================================
+        const GENRE_LIBRARY = {
+            'Phonk': { 
+                query: 'phonk music',
+                subgenres: ['drift phonk', 'brazilian phonk', 'slowed phonk', 'phonk bass'],
+                artists: ['LONOWN', 'KUTE', 'DVRST', 'HENS', 'NXVAMANE']
+            },
+            'Techno': { 
+                query: 'techno music',
+                subgenres: ['hard techno', 'melodic techno', 'acid techno', 'industrial techno'],
+                artists: ['Anyma', 'Charlotte de Witte', 'Amelie Lens', 'Rebūke', 'Maceo Plex']
+            },
+            'USA': { 
+                query: 'usa hip hop rap',
+                subgenres: ['trap', 'drill', 'east coast', 'west coast'],
+                artists: ['Drake', 'Kendrick Lamar', 'Travis Scott', '21 Savage', 'Playboi Carti']
+            },
+            'Italia': { 
+                query: 'italian rap trap',
+                subgenres: ['trap italia', 'rap italiano', 'drill italia'],
+                artists: ['Geolier', 'Lazza', 'Sfera Ebbasta', 'Shiva', 'Kid Yugi']
+            },
+            'Rock': { 
+                query: 'rock music',
+                subgenres: ['classic rock', 'alternative rock', 'indie rock', 'hard rock'],
+                artists: ['Imagine Dragons', 'Foo Fighters', 'Nirvana', 'Arctic Monkeys', 'Linkin Park']
+            },
+            'Latin': { 
+                query: 'reggaeton latin music',
+                subgenres: ['reggaeton', 'bachata', 'salsa', 'cumbia'],
+                artists: ['Bad Bunny', 'Karol G', 'Rauw Alejandro', 'Feid', 'Myke Towers']
+            },
+            'Corea': { 
+                query: 'kpop korean pop',
+                subgenres: ['kpop', 'k-rap', 'k-r&b'],
+                artists: ['BTS', 'BLACKPINK', 'Stray Kids', 'NewJeans', 'TWICE']
+            },
+            'UK': { 
+                query: 'uk rap drill grime',
+                subgenres: ['drill', 'grime', 'afroswing', 'uk garage'],
+                artists: ['Central Cee', 'Dave', 'Stormzy', 'AJ Tracey', 'M Huncho']
+            },
+            'Giappone': { 
+                query: 'jpop japanese music',
+                subgenres: ['jpop', 'j-rock', 'vocaloid', 'anime'],
+                artists: ['YOASOBI', 'Official HIGE DANdism', 'Ado', 'Kenshi Yonezu', 'Aimer']
+            },
+            'Brasile': { 
+                query: 'brazilian music funk',
+                subgenres: ['funk carioca', 'bossanova', 'samba', 'pagode'],
+                artists: ['Anitta', 'Ludmilla', 'MC Kevinho', 'João Gomes', 'Matuê']
+            },
+            'Francia': { 
+                query: 'french rap music',
+                subgenres: ['french hip hop', 'afrobeat', 'french electro'],
+                artists: ['Booba', 'Ninho', 'Jul', 'SCH', 'Zola']
+            },
+            'Germania': { 
+                query: 'german rap techno',
+                subgenres: ['german hip hop', 'techno', 'german pop'],
+                artists: ['Apache 207', 'Luciano', 'RAF Camora', 'Bonez MC', 'Marteria']
+            },
+            'Africa': { 
+                query: 'african music afrobeats',
+                subgenres: ['afrobeats', 'amapiano', 'afrobeat', 'south african'],
+                artists: ['Burna Boy', 'Wizkid', 'Davido', 'Tyla', 'Rema']
+            },
+            'Canada': { 
+                query: 'canadian music hip hop',
+                subgenres: ['canadian hip hop', 'indie pop', 'rock'],
+                artists: ['Drake', 'The Weeknd', 'Justin Bieber', 'Tate McRae', 'Shawn Mendes']
+            },
+            'Oceania': { 
+                query: 'australian music',
+                subgenres: ['australian rock', 'indie', 'electronic'],
+                artists: ['Tame Impala', 'Flume', 'Sia', 'Kylie Minogue', 'Rüfüs Du Sol']
+            }
+        };
+
+        // Funzione per ottenere i termini di ricerca da un genere
+        function getGenreSearchTerms(genreKey) {
+            const genreData = GENRE_LIBRARY[genreKey];
+            if (!genreData) return genreKey + ' music';
+            
+            // Crea una query combinata: genere + sottogeneri + artisti principali
+            let query = genreData.query;
+            
+            // Aggiungi sottogeneri
+            if (genreData.subgenres && genreData.subgenres.length > 0) {
+                const subGenres = genreData.subgenres.slice(0, 3).join(' ');
+                query += ' ' + subGenres;
+            }
+            
+            // Aggiungi artisti principali
+            if (genreData.artists && genreData.artists.length > 0) {
+                const artists = genreData.artists.slice(0, 4).join(' ');
+                query += ' ' + artists;
+            }
+            
+            return query;
+        }
+
+        // ============================================================
         // 1. FUNZIONE DEFINITIVA DI PULIZIA TITOLI - cleanSongTitle()
         // ============================================================
         function cleanSongTitle(title) {
@@ -2727,6 +2831,7 @@
                 }
             }
             
+            // Mantieni le versioni (Slowed), (Sped Up), ecc.
             const versionPatterns = [
                 /\(Slowed\s*\+\s*Reverb\)/gi,
                 /\(Slowed\)/gi,
@@ -2735,7 +2840,9 @@
                 /\(Nightcore\)/gi,
                 /\(Bass\s*Boosted\)/gi,
                 /\(8D\s*Audio\)/gi,
-                /\(Remix\)/gi
+                /\(Remix\)/gi,
+                /\(Extended\)/gi,
+                /\(VIP\)/gi
             ];
             
             const versions = [];
@@ -2769,7 +2876,7 @@
         const YOUTUBE_API_BASE = 'https://www.googleapis.com/youtube/v3';
 
         // ============================================================
-        // 5. FUNZIONE PER CERCARE VIDEO SU YOUTUBE - CORRETTA
+        // 5. FUNZIONE PER CERCARE VIDEO SU YOUTUBE - OTTIMIZZATA
         // ============================================================
         async function searchYoutubeVideos(query, maxResults = 20) {
             console.log('[YouTube] Ricerca:', query);
@@ -2779,6 +2886,7 @@
             }
             
             try {
+                // Usa la chiave API solo per la ricerca
                 const url = `${YOUTUBE_API_BASE}/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=${maxResults}&key=${YOUTUBE_API_KEY}`;
                 console.log('[YouTube] URL:', url);
                 
@@ -2794,6 +2902,61 @@
                 
                 if (!data.items || data.items.length === 0) {
                     return getMockTracks(query, maxResults);
+                }
+                
+                // Raccogli gli ID dei video per ottenere le statistiche in un'unica chiamata
+                const videoIds = data.items
+                    .map(item => item.id.videoId)
+                    .filter(id => id)
+                    .slice(0, maxResults);
+                
+                let statsData = {};
+                let channelData = {};
+                
+                // Ottieni le statistiche dei video e le informazioni sui canali
+                if (videoIds.length > 0) {
+                    try {
+                        // Chiamata per le statistiche dei video
+                        const statsUrl = `${YOUTUBE_API_BASE}/videos?part=statistics&id=${videoIds.join(',')}&key=${YOUTUBE_API_KEY}`;
+                        const statsResponse = await fetch(statsUrl);
+                        if (statsResponse.ok) {
+                            const statsJson = await statsResponse.json();
+                            if (statsJson.items) {
+                                statsJson.items.forEach(item => {
+                                    statsData[item.id] = {
+                                        viewCount: item.statistics?.viewCount || 0,
+                                        likeCount: item.statistics?.likeCount || 0,
+                                        commentCount: item.statistics?.commentCount || 0
+                                    };
+                                });
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('[YouTube] Errore recupero statistiche:', e);
+                    }
+                    
+                    // Ottieni le informazioni dei canali per verificare lo stato verificato
+                    try {
+                        const channelIds = [...new Set(data.items.map(item => item.snippet.channelId).filter(id => id))];
+                        if (channelIds.length > 0) {
+                            const channelUrl = `${YOUTUBE_API_BASE}/channels?part=snippet,statistics&id=${channelIds.join(',')}&key=${YOUTUBE_API_KEY}`;
+                            const channelResponse = await fetch(channelUrl);
+                            if (channelResponse.ok) {
+                                const channelJson = await channelResponse.json();
+                                if (channelJson.items) {
+                                    channelJson.items.forEach(item => {
+                                        channelData[item.id] = {
+                                            verified: item.snippet?.customUrl ? true : false,
+                                            subscriberCount: item.statistics?.subscriberCount || 0,
+                                            customUrl: item.snippet?.customUrl || ''
+                                        };
+                                    });
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('[YouTube] Errore recupero canali:', e);
+                    }
                 }
                 
                 const videos = [];
@@ -2831,10 +2994,23 @@
                         snippet.channelTitle || ''
                     );
                     
-                    const isOfficial = (snippet.channelTitle || '').includes('Topic') || 
+                    // Ottieni le statistiche
+                    const stats = statsData[videoId] || {};
+                    const channelInfo = channelData[snippet.channelId] || {};
+                    
+                    // Verifica se l'artista è verificato o il canale è ufficiale
+                    const isOfficial = channelInfo.verified || 
+                                      (snippet.channelTitle || '').includes('Topic') || 
                                       (snippet.channelTitle || '').includes('VEVO') ||
                                       (snippet.channelTitle || '').includes('Official') ||
                                       (snippet.channelTitle || '').includes('Music');
+                    
+                    // Usa l'URL standard di YouTube per le copertine
+                    const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                    
+                    // Formatta le visualizzazioni
+                    const views = stats.viewCount ? formatNumber(parseInt(stats.viewCount)) : 'N/A';
+                    const likes = stats.likeCount ? formatNumber(parseInt(stats.likeCount)) : 'N/A';
                     
                     videos.push({
                         id: videoId,
@@ -2842,8 +3018,12 @@
                         artist: artist,
                         channelTitle: snippet.channelTitle || '',
                         channelId: snippet.channelId || '',
-                        image: snippet.thumbnails?.medium?.url || snippet.thumbnails?.default?.url || 'https://picsum.photos/seed/' + videoId + '/100',
-                        stats: { views: Math.floor(Math.random() * 1000000) + 'K', likes: Math.floor(Math.random() * 100000) + 'K' },
+                        image: thumbnailUrl,
+                        stats: { 
+                            views: views, 
+                            likes: likes,
+                            subscriberCount: channelInfo.subscriberCount || 0
+                        },
                         rawTitle: snippet.title || '',
                         publishedAt: snippet.publishedAt || '',
                         verified: isOfficial,
@@ -2863,23 +3043,79 @@
         }
 
         // ============================================================
-        // 5b. DATI DI ESEMPIO PER TEST (FALLBACK)
+        // 5b. FUNZIONE PER ORDINARE I TRACK - VERIFICATI IN CIMA
+        // ============================================================
+        function sortTracksByVerified(tracks) {
+            if (!tracks || tracks.length === 0) return tracks;
+            
+            return [...tracks].sort((a, b) => {
+                // Prima i verificati
+                if (a.isOfficial && !b.isOfficial) return -1;
+                if (!a.isOfficial && b.isOfficial) return 1;
+                
+                // Poi quelli con 'Topic' o 'VEVO' nel channel
+                const aTopic = (a.channelTitle || '').includes('Topic') || (a.channelTitle || '').includes('VEVO');
+                const bTopic = (b.channelTitle || '').includes('Topic') || (b.channelTitle || '').includes('VEVO');
+                if (aTopic && !bTopic) return -1;
+                if (!aTopic && bTopic) return 1;
+                
+                // Infine per visualizzazioni (se disponibili)
+                const aViews = parseInt((a.stats?.views || '0').replace(/[KMB]/g, '')) || 0;
+                const bViews = parseInt((b.stats?.views || '0').replace(/[KMB]/g, '')) || 0;
+                return bViews - aViews;
+            });
+        }
+
+        // ============================================================
+        // 5c. DATI DI ESEMPIO PER TEST (FALLBACK)
         // ============================================================
         function getMockTracks(query, maxResults = 20) {
             console.log('[Mock] Generazione dati di esempio per:', query);
             
             const mockArtists = [
-                { name: 'Geolier', songs: ['I P\' ME, TU P\' TE', 'CHIAGNE', 'MONEY', 'CUORI SPEZZATI', 'COME TE'] },
-                { name: 'Lazza', songs: ['CENTRO', 'CENERE', 'ZONA', 'FUORI', '10 PIANI'] },
-                { name: 'Sfera Ebbasta', songs: ['CABRIOLET', 'HAPPY', 'BOTTEGA', 'PEPE', 'TIRANA'] },
-                { name: 'Taylor Swift', songs: ['Cruel Summer', 'Anti-Hero', 'Karma', 'Love Story', 'Shake It Off'] },
-                { name: 'Drake', songs: ['God\'s Plan', 'Hotline Bling', 'In My Feelings', 'One Dance', 'Started From The Bottom'] }
+                { name: 'Geolier', songs: ['I P\' ME, TU P\' TE', 'CHIAGNE', 'MONEY', 'CUORI SPEZZATI', 'COME TE'], verified: true },
+                { name: 'Lazza', songs: ['CENTRO', 'CENERE', 'ZONA', 'FUORI', '10 PIANI'], verified: true },
+                { name: 'Sfera Ebbasta', songs: ['CABRIOLET', 'HAPPY', 'BOTTEGA', 'PEPE', 'TIRANA'], verified: true },
+                { name: 'Taylor Swift', songs: ['Cruel Summer', 'Anti-Hero', 'Karma', 'Love Story', 'Shake It Off'], verified: true },
+                { name: 'Drake', songs: ['God\'s Plan', 'Hotline Bling', 'In My Feelings', 'One Dance', 'Started From The Bottom'], verified: true },
+                { name: 'Anyma', songs: ['The Answer', 'Consciousness', 'Eternal', 'Remembrance'], verified: true },
+                { name: 'LONOWN', songs: ['PHONK TRACK', 'DARK PHONK', 'NIGHT DRIFT'], verified: false },
+                { name: 'Burna Boy', songs: ['Last Last', 'Ye', 'On The Low', 'Kilometre'], verified: true }
             ];
+            
+            // Filtra gli artisti in base alla query
+            const queryLower = query.toLowerCase();
+            let filteredArtists = mockArtists;
+            
+            // Se la query contiene un genere specifico, filtra
+            if (queryLower.includes('phonk')) {
+                filteredArtists = mockArtists.filter(a => 
+                    a.name === 'LONOWN' || a.name === 'NXVAMANE' || a.name === 'KUTE'
+                );
+                if (filteredArtists.length === 0) filteredArtists = mockArtists.slice(5, 8);
+            } else if (queryLower.includes('techno')) {
+                filteredArtists = mockArtists.filter(a => 
+                    a.name === 'Anyma' || a.name === 'Charlotte de Witte' || a.name === 'Amelie Lens'
+                );
+                if (filteredArtists.length === 0) filteredArtists = mockArtists.slice(5, 7);
+            } else if (queryLower.includes('italia') || queryLower.includes('italian') || queryLower.includes('trap')) {
+                filteredArtists = mockArtists.filter(a => 
+                    a.name === 'Geolier' || a.name === 'Lazza' || a.name === 'Sfera Ebbasta' || a.name === 'Shiva'
+                );
+                if (filteredArtists.length === 0) filteredArtists = mockArtists.slice(0, 3);
+            } else if (queryLower.includes('usa') || queryLower.includes('hip hop') || queryLower.includes('rap')) {
+                filteredArtists = mockArtists.filter(a => 
+                    a.name === 'Drake' || a.name === 'Kendrick Lamar' || a.name === 'Travis Scott'
+                );
+                if (filteredArtists.length === 0) filteredArtists = mockArtists.slice(3, 5);
+            }
+            
+            if (filteredArtists.length === 0) filteredArtists = mockArtists.slice(0, 6);
             
             const tracks = [];
             let count = 0;
             
-            for (const artist of mockArtists) {
+            for (const artist of filteredArtists) {
                 for (const song of artist.songs) {
                     if (count >= maxResults) break;
                     const id = 'mock_' + count + '_' + Date.now();
@@ -2887,53 +3123,24 @@
                         id: id,
                         name: song,
                         artist: artist.name,
-                        channelTitle: artist.name + ' - Topic',
+                        channelTitle: artist.name + (artist.verified ? ' - Topic' : ''),
                         channelId: 'mock_channel_' + count,
-                        image: 'https://picsum.photos/seed/' + id + '/100',
-                        stats: { views: (Math.floor(Math.random() * 9000) + 1000) + 'K', likes: (Math.floor(Math.random() * 900) + 100) + 'K' },
+                        image: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+                        stats: { 
+                            views: (Math.floor(Math.random() * 9000) + 1000) + 'K', 
+                            likes: (Math.floor(Math.random() * 900) + 100) + 'K',
+                            subscriberCount: artist.verified ? Math.floor(Math.random() * 1000000) + 100000 : Math.floor(Math.random() * 5000)
+                        },
                         rawTitle: song + ' - ' + artist.name,
                         publishedAt: new Date().toISOString(),
-                        verified: count < 5,
-                        isOfficial: count < 5
+                        verified: artist.verified,
+                        isOfficial: artist.verified
                     });
                     count++;
                 }
             }
             
-            const queryLower = query.toLowerCase();
-            if (queryLower.includes('phonk')) {
-                tracks.push({
-                    id: 'mock_phonk_' + Date.now(),
-                    name: 'PHONK TRACK',
-                    artist: 'LONOWN',
-                    channelTitle: 'LONOWN - Topic',
-                    channelId: 'mock_phonk',
-                    image: 'https://picsum.photos/seed/phonk/100',
-                    stats: { views: '850K', likes: '45K' },
-                    rawTitle: 'PHONK TRACK - LONOWN',
-                    publishedAt: new Date().toISOString(),
-                    verified: true,
-                    isOfficial: true
-                });
-            }
-            
-            if (queryLower.includes('techno')) {
-                tracks.push({
-                    id: 'mock_techno_' + Date.now(),
-                    name: 'TECHNO BEAT',
-                    artist: 'Anyma',
-                    channelTitle: 'Anyma - Topic',
-                    channelId: 'mock_techno',
-                    image: 'https://picsum.photos/seed/techno/100',
-                    stats: { views: '1.2M', likes: '78K' },
-                    rawTitle: 'TECHNO BEAT - Anyma',
-                    publishedAt: new Date().toISOString(),
-                    verified: true,
-                    isOfficial: true
-                });
-            }
-            
-            return tracks.slice(0, maxResults);
+            return sortTracksByVerified(tracks.slice(0, maxResults));
         }
 
         // ============================================================
@@ -2948,9 +3155,8 @@
             if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
             return n.toString();
         }
-
-        // ============================================================
-        // 7. FUNZIONI PER LA RICERCA - CORRETTE
+                // ============================================================
+        // 7. FUNZIONI PER LA RICERCA - CORRETTE CON LIBRERIA GENERI
         // ============================================================
         let searchTimer = null;
 
@@ -2977,8 +3183,11 @@
                 const tracks = await searchYoutubeVideos(query, 25);
                 console.log('[Search] Trovati:', tracks.length, 'brani');
                 
+                // Ordina i risultati: verificati in cima
+                const sortedTracks = sortTracksByVerified(tracks);
+                
                 const artistMap = new Map();
-                for (const track of tracks) {
+                for (const track of sortedTracks) {
                     const key = (track.artist || '').toLowerCase();
                     if (!artistMap.has(key) && track.artist) {
                         artistMap.set(key, {
@@ -3018,9 +3227,9 @@
                     }).join('');
                 }
                 
-                if (tracks.length > 0) {
+                if (sortedTracks.length > 0) {
                     html += `<div class="section-title">Brani</div>`;
-                    html += tracks.slice(0, 25).map((t, i) => renderSingleTrackRow(t, i, tracks)).join('');
+                    html += sortedTracks.slice(0, 25).map((t, i) => renderSingleTrackRow(t, i, sortedTracks)).join('');
                 }
                 
                 if (html === '') {
@@ -3041,25 +3250,49 @@
             document.getElementById('btnCountriesView').classList.toggle('active', view === 'countries');
         }
 
-        function searchGenrePlaylist(genreKey) {
+        async function searchGenrePlaylist(genreKey) {
             switchView('search', document.querySelectorAll('.nav-item')[1]);
             document.getElementById('genresViewSection').style.display = 'none';
             document.getElementById('countriesViewSection').style.display = 'none';
             
             const container = document.getElementById('searchResultsContainer');
-            container.innerHTML = '<p style="color:var(--text-secondary);font-weight:500;">Ricerca playlist e artisti...</p>';
+            container.innerHTML = '<p style="color:var(--text-secondary);font-weight:500;">🔍 Ricerca playlist e artisti per ' + genreKey + '...</p>';
             
-            searchYoutubeVideos(genreKey + ' music', 20).then(tracks => {
-                let html = `<div class="section-title" style="margin-top:12px;">${genreKey} - Playlist</div>`;
-                if (tracks.length > 0) {
-                    html += tracks.slice(0, 15).map((t, i) => renderSingleTrackRow(t, i, tracks)).join('');
+            // Usa la libreria dei generi per ottenere i termini di ricerca
+            const searchTerms = getGenreSearchTerms(genreKey);
+            console.log('[Genre] Termini di ricerca per', genreKey, ':', searchTerms);
+            
+            try {
+                // Esegui più ricerche per ottenere varietà
+                const mainTracks = await searchYoutubeVideos(searchTerms, 15);
+                console.log('[Genre] Trovati', mainTracks.length, 'brani per', genreKey);
+                
+                // Ordina i risultati: verificati in cima
+                const sortedTracks = sortTracksByVerified(mainTracks);
+                
+                let html = `<div class="section-title" style="margin-top:12px;">🎵 ${genreKey} - Playlist</div>`;
+                
+                if (sortedTracks.length > 0) {
+                    html += sortedTracks.slice(0, 15).map((t, i) => renderSingleTrackRow(t, i, sortedTracks)).join('');
+                    
+                    // Aggiungi suggerimenti di artisti dalla libreria
+                    const genreData = GENRE_LIBRARY[genreKey];
+                    if (genreData && genreData.artists && genreData.artists.length > 0) {
+                        html += `<div class="section-title" style="margin-top:16px;">🎤 Artisti consigliati per ${genreKey}</div>`;
+                        html += `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">`;
+                        for (const artist of genreData.artists) {
+                            html += `<button class="artist-chip" onclick="openArtistPage('${artist}')">${artist}</button>`;
+                        }
+                        html += `</div>`;
+                    }
                 } else {
-                    html += '<p style="color:var(--text-secondary);font-weight:500;">Nessun brano trovato.</p>';
+                    html += '<p style="color:var(--text-secondary);font-weight:500;">Nessun brano trovato per questo genere.</p>';
                 }
                 container.innerHTML = html;
-            }).catch(() => {
-                container.innerHTML = '<p style="color:var(--text-secondary);font-weight:500;">Errore nella ricerca.</p>';
-            });
+            } catch(e) {
+                console.error('[Genre Search] Errore:', e);
+                container.innerHTML = '<p style="color:#f15e6c;font-weight:500;">❌ Errore nella ricerca. Riprova più tardi.</p>';
+            }
         }
 
         // ============================================================
@@ -3074,12 +3307,15 @@
             const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
             const queueJson = btoa(unescape(encodeURIComponent(JSON.stringify(sectionTracks || []))));
             
+            // Mostra badge verificato se l'artista è verificato
+            const verifiedBadge = t.isOfficial ? ' ⭐' : '';
+            
             return `<div class="track-row" onclick="playSelectedTrack('${trackJson}', '${queueJson}', ${idx})" style="cursor:pointer;">
                 <div class="track-row-left" style="pointer-events:none;">
                     <span class="track-num" style="pointer-events:none;">${idx + 1}</span>
-                    <img src="${t.image || 'https://picsum.photos/seed/' + t.id + '/100'}" onerror="this.src='https://picsum.photos/seed/${idx}/100'" style="pointer-events:none;">
+                    <img src="${t.image || 'https://img.youtube.com/vi/' + t.id + '/hqdefault.jpg'}" onerror="this.src='https://picsum.photos/seed/${idx}/100'" style="pointer-events:none;">
                     <div class="track-meta" style="pointer-events:none;">
-                        <h4>${displayName}</h4>
+                        <h4>${displayName}${verifiedBadge}</h4>
                         <p>${t.artist || 'Artista sconosciuto'}</p>
                     </div>
                 </div>
@@ -3094,9 +3330,13 @@
         function renderTracksList(tracks, containerId, sectionTracks) {
             const c = document.getElementById(containerId);
             if (!c) return;
-            c.innerHTML = (!tracks || tracks.length === 0) 
+            
+            // Ordina i tracks prima di renderizzarli
+            const sorted = sortTracksByVerified(tracks);
+            
+            c.innerHTML = (!sorted || sorted.length === 0) 
                 ? '<p style="color:var(--text-secondary);font-size:var(--font-size-small);font-weight:500;">Nessun elemento.</p>'
-                : tracks.map((t, i) => renderSingleTrackRow(t, i, sectionTracks)).join('');
+                : sorted.map((t, i) => renderSingleTrackRow(t, i, sectionTracks || sorted)).join('');
         }
 
         // ============================================================
@@ -3325,7 +3565,7 @@
                     } else if (tracks[0].image) {
                         heroImg.src = tracks[0].image;
                     } else {
-                        heroImg.src = `https://picsum.photos/seed/${encodeURIComponent(artistName)}/800/400`;
+                        heroImg.src = `https://img.youtube.com/vi/${tracks[0].id}/hqdefault.jpg`;
                     }
                     
                     currentArtistVerified = tracks.some(t => t.isOfficial);
@@ -3355,13 +3595,15 @@
                     );
                     document.getElementById('artistLikedCount').textContent = likedByArtist.length;
                     
-                    const topTracks = tracks.slice(0, 10);
+                    // Ordina i top tracks: verificati in cima
+                    const sortedTracks = sortTracksByVerified(tracks);
+                    const topTracks = sortedTracks.slice(0, 10);
                     document.getElementById('artistTopTracksContainer').innerHTML = topTracks.map((t, i) => renderArtistTrackRow(t, i)).join('');
                     
-                    const releases = tracks.slice(0, 6);
+                    const releases = sortedTracks.slice(0, 6);
                     document.getElementById('artistReleasesContainer').innerHTML = releases.map(t => `
                         <div style="min-width:120px;flex-shrink:0;cursor:pointer;" onclick="playSelectedTrackFromArtist('${t.id}')">
-                            <img src="${t.image || 'https://picsum.photos/seed/' + t.id + '/120'}" style="width:120px;height:120px;border-radius:var(--radius-md);object-fit:cover;margin-bottom:4px;">
+                            <img src="${t.image || 'https://img.youtube.com/vi/' + t.id + '/hqdefault.jpg'}" style="width:120px;height:120px;border-radius:var(--radius-md);object-fit:cover;margin-bottom:4px;">
                             <div style="font-size:var(--font-size-small);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanSongTitle(t.name)}</div>
                             <div style="font-size:calc(var(--font-size-small) - 2px);color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.artist}</div>
                         </div>
@@ -3382,13 +3624,14 @@
             const displayName = cleanSongTitle(t.name);
             const isLiked = likedSongs.some(s => s.id === t.id);
             const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
+            const verifiedBadge = t.isOfficial ? ' ⭐' : '';
             return `
                 <div class="track-row" onclick="playSelectedTrackFromArtist('${t.id}')">
                     <div class="track-row-left">
                         <span class="track-num">${i + 1}</span>
-                        <img src="${t.image || 'https://picsum.photos/seed/' + t.id + '/100'}" onerror="this.src='https://picsum.photos/seed/${i}/100'">
+                        <img src="${t.image || 'https://img.youtube.com/vi/' + t.id + '/hqdefault.jpg'}" onerror="this.src='https://picsum.photos/seed/${i}/100'">
                         <div class="track-meta">
-                            <h4>${displayName}</h4>
+                            <h4>${displayName}${verifiedBadge}</h4>
                             <p>${t.artist}</p>
                         </div>
                     </div>
@@ -3403,19 +3646,21 @@
         function playSelectedTrackFromArtist(trackId) {
             const track = currentArtistTracks.find(t => t.id === trackId);
             if (track) {
+                const sortedTracks = sortTracksByVerified(currentArtistTracks);
                 playSelectedTrack(
                     btoa(unescape(encodeURIComponent(JSON.stringify(track)))),
-                    btoa(unescape(encodeURIComponent(JSON.stringify(currentArtistTracks)))),
-                    currentArtistTracks.indexOf(track)
+                    btoa(unescape(encodeURIComponent(JSON.stringify(sortedTracks)))),
+                    sortedTracks.indexOf(track)
                 );
             }
         }
 
         function playArtistTopTrack() {
             if (currentArtistTracks.length > 0) {
+                const sortedTracks = sortTracksByVerified(currentArtistTracks);
                 playSelectedTrack(
-                    btoa(unescape(encodeURIComponent(JSON.stringify(currentArtistTracks[0])))),
-                    btoa(unescape(encodeURIComponent(JSON.stringify(currentArtistTracks)))),
+                    btoa(unescape(encodeURIComponent(JSON.stringify(sortedTracks[0])))),
+                    btoa(unescape(encodeURIComponent(JSON.stringify(sortedTracks)))),
                     0
                 );
             }
@@ -3423,7 +3668,8 @@
 
         function shuffleArtistTracks() {
             if (currentArtistTracks.length > 0) {
-                const shuffled = [...currentArtistTracks].sort(() => Math.random() - 0.5);
+                const sortedTracks = sortTracksByVerified(currentArtistTracks);
+                const shuffled = [...sortedTracks].sort(() => Math.random() - 0.5);
                 AppState.shuffle = true;
                 document.getElementById('shuffleBtn').style.color = 'var(--spotify-green)';
                 playSelectedTrack(
@@ -3534,8 +3780,12 @@
             try {
                 const t = JSON.parse(decodeURIComponent(escape(atob(encodedTrack))));
                 const queue = JSON.parse(decodeURIComponent(escape(atob(encodedQueue))));
-                AppState.queue = queue;
-                AppState.queueIndex = index;
+                // Ordina la coda: verificati in cima
+                const sortedQueue = sortTracksByVerified(queue);
+                // Trova l'indice del track nella coda ordinata
+                const sortedIndex = sortedQueue.findIndex(q => q.id === t.id);
+                AppState.queue = sortedQueue;
+                AppState.queueIndex = sortedIndex >= 0 ? sortedIndex : 0;
                 AppState.currentTrack = t;
                 AppState.isOffline = false;
                 
@@ -4097,13 +4347,14 @@
                 if (downloaded.length === 0) {
                     downloadsList.innerHTML = '<p style="color:var(--text-secondary);font-size:var(--font-size-small);font-weight:500;">Nessun brano scaricato.</p>';
                 } else {
-                    downloadsList.innerHTML = downloaded.map((t, i) => `
+                    const sortedDownloads = sortTracksByVerified(downloaded);
+                    downloadsList.innerHTML = sortedDownloads.map((t, i) => `
                         <div class="track-row" onclick="playOfflineTrackFromList('${t.id}')">
                             <div class="track-row-left">
                                 <span class="track-num">${i+1}</span>
-                                <img src="${t.image || 'https://picsum.photos/seed/' + i + '/100'}" onerror="this.src='https://picsum.photos/seed/${i}/100'">
+                                <img src="${t.image || 'https://img.youtube.com/vi/' + t.id + '/hqdefault.jpg'}" onerror="this.src='https://picsum.photos/seed/${i}/100'">
                                 <div class="track-meta">
-                                    <h4>${cleanSongTitle(t.name)}</h4>
+                                    <h4>${cleanSongTitle(t.name)}${t.verified ? ' ⭐' : ''}</h4>
                                     <p>${t.artist}</p>
                                 </div>
                             </div>
@@ -4285,9 +4536,10 @@
 
         function playLikedFirst() {
             if (likedSongs.length > 0) {
+                const sortedLiked = sortTracksByVerified(likedSongs);
                 playSelectedTrack(
-                    btoa(unescape(encodeURIComponent(JSON.stringify(likedSongs[0])))),
-                    btoa(unescape(encodeURIComponent(JSON.stringify(likedSongs)))),
+                    btoa(unescape(encodeURIComponent(JSON.stringify(sortedLiked[0])))),
+                    btoa(unescape(encodeURIComponent(JSON.stringify(sortedLiked)))),
                     0
                 );
             }
@@ -4341,6 +4593,7 @@
             if (!pl) return;
             switchView('library', document.querySelectorAll('.nav-item')[2]);
             const c = document.getElementById('libContentList');
+            const sortedTracks = sortTracksByVerified(pl.tracks);
             c.innerHTML = `<div style="margin-bottom:10px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
                 <button class="btn-secondary" onclick="renderLibraryContent()" style="width:auto;padding:6px 12px;font-size:var(--font-size-small);">← Indietro</button>
                 <button class="btn-primary" onclick="openAddToPlaylistModal('${pl.id}')" style="width:auto;padding:6px 12px;font-size:var(--font-size-small);"><i class="fas fa-plus"></i> Aggiungi</button>
@@ -4348,7 +4601,7 @@
                 <button class="btn-danger" onclick="deletePlaylist('${pl.id}')" style="width:auto;padding:6px 12px;font-size:var(--font-size-small);"><i class="fas fa-trash"></i> Elimina</button>
             </div><h3 style="margin-bottom:10px;font-weight:700;font-size:var(--font-size-medium);color:var(--text-primary);">${pl.name}</h3>`;
             const div = document.createElement('div');
-            div.innerHTML = pl.tracks.length === 0 ? '<p style="color:var(--text-secondary);font-weight:500;">Nessun brano.</p>' : pl.tracks.map((t, i) => renderSingleTrackRow(t, i, pl.tracks)).join('');
+            div.innerHTML = sortedTracks.length === 0 ? '<p style="color:var(--text-secondary);font-weight:500;">Nessun brano.</p>' : sortedTracks.map((t, i) => renderSingleTrackRow(t, i, sortedTracks)).join('');
             c.appendChild(div);
         }
 
@@ -4365,12 +4618,13 @@
             container.innerHTML = '<p style="color:var(--text-secondary);font-weight:500;">Ricerca...</p>';
             try {
                 const tracks = await searchYoutubeVideos(query, 10);
-                container.innerHTML = tracks.slice(0, 10).map((t, i) => {
+                const sortedTracks = sortTracksByVerified(tracks);
+                container.innerHTML = sortedTracks.slice(0, 10).map((t, i) => {
                     const trackJson = btoa(unescape(encodeURIComponent(JSON.stringify(t))));
                     return `<div class="track-row" onclick="addTrackToCurrentPlaylist('${trackJson}')">
                         <div class="track-row-left">
-                            <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${i}/100'">
-                            <div class="track-meta"><h4>${cleanSongTitle(t.name)}</h4><p>${t.artist}</p></div>
+                            <img src="${t.image || 'https://img.youtube.com/vi/' + t.id + '/hqdefault.jpg'}" onerror="this.src='https://picsum.photos/seed/${i}/100'">
+                            <div class="track-meta"><h4>${cleanSongTitle(t.name)}${t.isOfficial ? ' ⭐' : ''}</h4><p>${t.artist}</p></div>
                         </div>
                         <i class="fas fa-plus" style="color:var(--spotify-green);"></i>
                     </div>`;
@@ -4411,8 +4665,9 @@
             const pl = userPlaylists.find(p => p.id === playlistId) || autoPlaylists.find(p => p.id === playlistId);
             if (!pl) return;
             let message = `🎵 Ascolta la mia playlist "${pl.name}" su DarkSound Pro!\n\n📋 ${pl.tracks.length} brani:\n`;
-            pl.tracks.slice(0, 10).forEach((t, i) => { message += `${i+1}. ${cleanSongTitle(t.name)} - ${t.artist}\n`; });
-            if (pl.tracks.length > 10) message += `...e altri ${pl.tracks.length - 10} brani!\n`;
+            const sortedTracks = sortTracksByVerified(pl.tracks);
+            sortedTracks.slice(0, 10).forEach((t, i) => { message += `${i+1}. ${cleanSongTitle(t.name)} - ${t.artist}${t.isOfficial ? ' ⭐' : ''}\n`; });
+            if (sortedTracks.length > 10) message += `...e altri ${sortedTracks.length - 10} brani!\n`;
             message += `\nScarica DarkSound Pro per ascoltarla! 🎧`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
         }
@@ -4436,21 +4691,23 @@
                 c.innerHTML = '<p style="color:var(--text-secondary);font-size:var(--font-size-small);font-weight:500;">Nessun brano ascoltato.</p>';
                 return;
             }
-            c.innerHTML = historyTracks.map((t, i) => `
+            const sortedHistory = sortTracksByVerified(historyTracks);
+            c.innerHTML = sortedHistory.map((t, i) => `
                 <div class="track-row" onclick="playFromHistory(${i})">
                     <div class="track-row-left">
                         <span class="track-num">${i+1}</span>
-                        <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${i}/100'">
-                        <div class="track-meta"><h4>${cleanSongTitle(t.name)}</h4><p>${t.artist}</p></div>
+                        <img src="${t.image || 'https://img.youtube.com/vi/' + t.id + '/hqdefault.jpg'}" onerror="this.src='https://picsum.photos/seed/${i}/100'">
+                        <div class="track-meta"><h4>${cleanSongTitle(t.name)}${t.isOfficial ? ' ⭐' : ''}</h4><p>${t.artist}</p></div>
                     </div>
                 </div>`).join('');
         }
 
         function playFromHistory(i) {
-            if (i >= 0 && i < historyTracks.length) {
+            const sortedHistory = sortTracksByVerified(historyTracks);
+            if (i >= 0 && i < sortedHistory.length) {
                 playSelectedTrack(
-                    btoa(unescape(encodeURIComponent(JSON.stringify(historyTracks[i])))),
-                    btoa(unescape(encodeURIComponent(JSON.stringify(historyTracks)))),
+                    btoa(unescape(encodeURIComponent(JSON.stringify(sortedHistory[i])))),
+                    btoa(unescape(encodeURIComponent(JSON.stringify(sortedHistory)))),
                     i
                 );
             }
@@ -4636,9 +4893,10 @@
                 }
                 aiMixTracks = aiMixTracks.filter((t, i, self) => self.findIndex(x => x.id === t.id) === i);
                 aiMixTracks = aiMixTracks.slice(0, 15);
-                if (aiMixTracks.length > 0) {
-                    playSelectedTrack(btoa(unescape(encodeURIComponent(JSON.stringify(aiMixTracks[0])))), btoa(unescape(encodeURIComponent(JSON.stringify(aiMixTracks)))), 0);
-                    showSiriNotification(`🤖 AI DJ: Riproduco ${aiMixTracks.length} brani dalle tue hit!`);
+                const sortedMix = sortTracksByVerified(aiMixTracks);
+                if (sortedMix.length > 0) {
+                    playSelectedTrack(btoa(unescape(encodeURIComponent(JSON.stringify(sortedMix[0])))), btoa(unescape(encodeURIComponent(JSON.stringify(sortedMix)))), 0);
+                    showSiriNotification(`🤖 AI DJ: Riproduco ${sortedMix.length} brani dalle tue hit!`);
                 } else {
                     showSiriNotification('Nessun brano trovato per il mix');
                 }
@@ -4653,17 +4911,32 @@
             updateLoadingProgress(10);
             
             try {
-                const allTracks = await searchYoutubeVideos(prompt, 15);
+                // Usa la libreria dei generi se il prompt corrisponde a un genere
+                let searchTerms = prompt;
+                if (GENRE_LIBRARY[prompt]) {
+                    searchTerms = getGenreSearchTerms(prompt);
+                    console.log('[AI Playlist] Usando termini di ricerca da libreria:', searchTerms);
+                }
+                
+                const allTracks = await searchYoutubeVideos(searchTerms, 15);
                 updateLoadingProgress(70);
                 
                 if (allTracks.length > 0) {
-                    autoPlaylists.push({ id: 'pl_ai_' + Date.now(), name: `AI Mix: ${prompt.slice(0, 20)}`, visibility: 'private', owner: currentUser, tracks: allTracks, autoGenerated: true });
+                    const sortedTracks = sortTracksByVerified(allTracks);
+                    autoPlaylists.push({ 
+                        id: 'pl_ai_' + Date.now(), 
+                        name: `AI Mix: ${prompt.slice(0, 20)}`, 
+                        visibility: 'private', 
+                        owner: currentUser, 
+                        tracks: sortedTracks, 
+                        autoGenerated: true 
+                    });
                     saveUserData();
                     updateLoadingProgress(100);
                     setTimeout(() => {
                         hideLoading();
                         closeModal('ai-playlist-modal');
-                        alert(`Playlist creata con ${allTracks.length} brani!`);
+                        alert(`Playlist creata con ${sortedTracks.length} brani!`);
                     }, 500);
                 } else {
                     hideLoading();
@@ -4683,7 +4956,8 @@
             try {
                 const tracks = await searchYoutubeVideos(friend + ' music', 8);
                 if (tracks.length > 0) {
-                    userPlaylists.push({ id: 'pl_blend_' + Date.now(), name: `Blend: Tu & ${friend}`, visibility: 'public', owner: currentUser, tracks: tracks.slice(0,8) });
+                    const sortedTracks = sortTracksByVerified(tracks);
+                    userPlaylists.push({ id: 'pl_blend_' + Date.now(), name: `Blend: Tu & ${friend}`, visibility: 'public', owner: currentUser, tracks: sortedTracks.slice(0,8) });
                     saveUserData();
                     closeModal('blend-modal');
                 }
@@ -4778,11 +5052,21 @@
         // ============================================================
         async function loadHomeTracks() {
             const c = document.getElementById('radioTracksContainer');
-            const query = userPreferences?.artist !== 'Hit Italia' ? userPreferences?.artist : (userPreferences?.genres?.[0] || 'Hit Italia');
+            let query = userPreferences?.artist !== 'Hit Italia' ? userPreferences?.artist : (userPreferences?.genres?.[0] || 'Hit Italia');
+            
+            // Se il query corrisponde a un genere nella libreria, usa i termini di ricerca
+            if (GENRE_LIBRARY[query]) {
+                query = getGenreSearchTerms(query);
+                console.log('[Home] Usando termini di ricerca da libreria:', query);
+            } else {
+                query = query + ' music hits';
+            }
+            
             try {
-                const tracks = await searchYoutubeVideos(query + ' music hits', 15);
+                const tracks = await searchYoutubeVideos(query, 15);
                 if (tracks.length === 0) { c.innerHTML = '<p style="color:var(--text-secondary);font-weight:500;">Nessun brano.</p>'; return; }
-                renderTracksList(tracks.slice(0, 15), 'radioTracksContainer', tracks.slice(0, 15));
+                const sortedTracks = sortTracksByVerified(tracks);
+                renderTracksList(sortedTracks.slice(0, 15), 'radioTracksContainer', sortedTracks.slice(0, 15));
             } catch(e) { c.innerHTML = '<p style="color:var(--text-secondary);font-weight:500;">Errore nel caricamento.</p>'; }
         }
 
@@ -5060,12 +5344,13 @@
                 const playlistName = customName || playlistData.name || `Playlist da ${platform}`;
                 
                 if (importedTracks.length > 0) {
+                    const sortedTracks = sortTracksByVerified(importedTracks);
                     userPlaylists.push({
                         id: 'pl_import_' + Date.now(),
                         name: playlistName,
                         visibility: 'private',
                         owner: currentUser || 'Ospite',
-                        tracks: importedTracks,
+                        tracks: sortedTracks,
                         importedFrom: platform,
                         importDate: new Date().toISOString(),
                         sourceId: playlistId
@@ -5102,12 +5387,13 @@
             closeModal('import-playlist-modal');
             if (window._importedPlaylist && window._importedPlaylist.tracks.length > 0) {
                 const playlist = window._importedPlaylist;
+                const sortedTracks = sortTracksByVerified(playlist.tracks);
                 playSelectedTrack(
-                    btoa(unescape(encodeURIComponent(JSON.stringify(playlist.tracks[0])))),
-                    btoa(unescape(encodeURIComponent(JSON.stringify(playlist.tracks)))),
+                    btoa(unescape(encodeURIComponent(JSON.stringify(sortedTracks[0])))),
+                    btoa(unescape(encodeURIComponent(JSON.stringify(sortedTracks)))),
                     0
                 );
-                showSiriNotification(`▶️ Riproduco "${playlist.name}" - ${playlist.tracks.length} brani`);
+                showSiriNotification(`▶️ Riproduco "${playlist.name}" - ${sortedTracks.length} brani`);
             }
             window._importedPlaylist = null;
         }
@@ -5233,128 +5519,5 @@
 
         console.log('[DarkSound] Script caricato, in attesa del load...');
     </script>
-</body>
-</html>
-// ============================================================
-// 36. INIZIALIZZAZIONE APP - FIX SCHERMATA DI CARICAMENTO
-// ============================================================
-function initApp() {
-    console.log('[DarkSound] Inizializzazione app...');
-    
-    // Rileva dispositivo
-    detectDevice();
-    
-    // Inizializza AppState
-    AppState.init();
-    
-    // Carica tema salvato
-    loadTheme();
-    
-    // Aggiorna UI utente
-    updateUserUI();
-    
-    // Carica tracks home
-    loadHomeTracks();
-    
-    // Carica amici
-    loadFriendsList();
-    
-    // Carica tutti gli utenti
-    loadAllUsers();
-    
-    // Carica impostazioni
-    loadSettings();
-    
-    // Aggiorna lista download
-    updateDownloadedList();
-    
-    // Nascondi splash screen dopo 2 secondi
-    setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        if (splash) {
-            splash.classList.add('hidden');
-            setTimeout(() => {
-                splash.style.display = 'none';
-                console.log('[DarkSound] Splash screen nascosto');
-            }, 500);
-        }
-    }, 2000);
-    
-    // Se non c'è utente, mostra login dopo 2.5 secondi
-    if (!currentUser) {
-        setTimeout(() => {
-            console.log('[DarkSound] Mostro modal auth');
-            openModal('auth-modal');
-        }, 2500);
-    }
-    
-    console.log('[DarkSound] App inizializzata correttamente');
-}
-
-// ============================================================
-// 37. EVENT LISTENERS
-// ============================================================
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal-overlay')) {
-        e.target.classList.remove('active');
-        document.body.classList.remove('modal-open');
-        document.getElementById('viewScrollArea').style.overflow = 'auto';
-    }
-});
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        closeAllModals();
-        const drawer = document.getElementById('profileDrawer');
-        if (drawer.style.right === '0px') drawer.style.right = '-100%';
-        document.getElementById('fullscreen-player').classList.remove('active');
-        document.getElementById('fsOverlay').classList.remove('active');
-        AppState.isLyricsActive = false;
-        document.getElementById('lyricsView').classList.remove('active');
-        document.getElementById('standardPlayerView').style.display = 'flex';
-    }
-});
-
-document.addEventListener('touchmove', (e) => {
-    const fsPlayer = document.getElementById('fullscreen-player');
-    const modalOpen = document.querySelector('.modal-overlay.active');
-    if (fsPlayer.classList.contains('active') || modalOpen) {
-        const target = e.target;
-        if (!fsPlayer.contains(target) && !modalOpen?.contains(target)) {
-            e.preventDefault();
-        }
-    }
-}, { passive: false });
-
-// ============================================================
-// 38. CARICAMENTO PAGINA - DEFINITIVO
-// ============================================================
-window.addEventListener('load', function() {
-    console.log('[DarkSound] Window loaded, avvio initApp...');
-    initApp();
-});
-
-window.addEventListener('resize', function() {
-    detectDevice();
-});
-
-window.addEventListener('orientationchange', function() {
-    setTimeout(detectDevice, 300);
-});
-
-// Fallback: se dopo 5 secondi lo splash non è stato nascosto, nascondilo forzatamente
-setTimeout(() => {
-    const splash = document.getElementById('splash-screen');
-    if (splash && !splash.classList.contains('hidden')) {
-        console.log('[DarkSound] Fallback: nascondo splash screen forzatamente');
-        splash.classList.add('hidden');
-        setTimeout(() => {
-            splash.style.display = 'none';
-        }, 500);
-    }
-}, 5000);
-
-console.log('[DarkSound] Script caricato, in attesa del load...');
-</script>
 </body>
 </html>
