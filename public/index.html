@@ -32,14 +32,12 @@
             --safe-bottom: env(safe-area-inset-bottom, 34px);
             --safe-left: env(safe-area-inset-left, 0px);
             --safe-right: env(safe-area-inset-right, 0px);
-            /* Offset extra per Dynamic Island iPhone 16 Pro Max */
             --dynamic-island-offset: 59px;
             --total-top-offset: calc(var(--safe-top) + 20px);
             --player-max-width: 400px;
             --player-max-height: 85vh;
         }
 
-        /* TEMI COMPLETI */
         [data-theme="verde"] {
             --spotify-green: #1db954;
             --spotify-green-hover: #1ed760;
@@ -194,7 +192,6 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            /* Padding per Dynamic Island e notch */
             padding-top: var(--total-top-offset);
             padding-bottom: var(--safe-bottom);
             padding-left: var(--safe-left);
@@ -758,18 +755,13 @@
         .theme-dot:active { transform: scale(1.2); }
         .theme-dot.active { border-color: #fff; box-shadow: 0 0 10px var(--border-glow); }
 
-        /* Media query specifica per iPhone 16 Pro Max */
         @media (min-height: 900px) {
             :root {
                 --dynamic-island-offset: 59px;
                 --total-top-offset: calc(var(--safe-top) + 25px);
             }
-            .view {
-                padding-top: 16px;
-            }
-            .top-bar {
-                padding-top: 16px;
-            }
+            .view { padding-top: 16px; }
+            .top-bar { padding-top: 16px; }
         }
 
         @media (max-width: 380px) {
@@ -819,10 +811,13 @@
                 <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:16px;">
                     <button onclick="openAuthModal()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-user-plus" style="width:18px;"></i> Aggiungi account</button>
                     <button onclick="openProfileView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-user-edit" style="width:18px;"></i> Modifica Profilo</button>
+                    <button onclick="openFollowedArtistsModal()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-users" style="width:18px;"></i> Artisti che Segui</button>
                     <button onclick="openHistoryView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-clock" style="width:18px;"></i> Cronologia Ascolti</button>
                     <button onclick="openDownloadsView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-download" style="width:18px;"></i> Brani Scaricati</button>
                     <button onclick="openStatsView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-chart-bar" style="width:18px;"></i> Statistiche</button>
                     <button onclick="openSettingsView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-gear" style="width:18px;"></i> Impostazioni</button>
+                    <button onclick="openHelpView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-question-circle" style="width:18px;"></i> Aiuto e Supporto</button>
+                    <button onclick="openAboutView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-info-circle" style="width:18px;"></i> Info su DarkSound</button>
                     <button onclick="openImportPlaylistModal()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-link" style="width:18px;"></i> Importa Playlist</button>
                 </div>
                 
@@ -988,6 +983,26 @@
                 </div>
             </div>
 
+            <div id="view-help" class="view">
+                <div class="top-bar"><span class="top-bar-title">Aiuto</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
+                <div class="settings-group">
+                    <div class="section-title">FAQ</div>
+                    <div class="settings-item"><span style="font-size:0.8rem;">Come importo una playlist?</span><i class="fas fa-chevron-down" style="color:#b3b3b3;"></i></div>
+                    <div style="padding:8px;color:#b3b3b3;font-size:0.75rem;">Apri il menu profilo e seleziona "Importa Playlist".</div>
+                    <div class="settings-item" style="margin-top:8px;"><span style="font-size:0.8rem;">Come uso Siri?</span><i class="fas fa-chevron-down" style="color:#b3b3b3;"></i></div>
+                    <div style="padding:8px;color:#b3b3b3;font-size:0.75rem;">Apri il player e tocca il microfono. Poi parla.</div>
+                </div>
+            </div>
+
+            <div id="view-about" class="view">
+                <div class="top-bar"><span class="top-bar-title">Info</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
+                <div style="text-align:center;padding:16px;">
+                    <div style="width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,var(--spotify-green),var(--accent-tertiary));display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:1.3rem;color:#000;animation:float 3s ease-in-out infinite;"><i class="fas fa-music"></i></div>
+                    <h3 style="font-weight:900;">DarkSound Pro</h3>
+                    <p style="color:#b3b3b3;">Versione 3.0.0</p>
+                </div>
+            </div>
+
             <div id="view-liked-songs" class="view">
                 <div style="padding:16px;background:var(--gradient-bg);">
                     <h1 style="font-size:1.2rem;font-weight:900;">Brani che ti piacciono</h1>
@@ -1094,6 +1109,150 @@
         <button class="nav-item" onclick="switchView('profile', this)"><i class="fas fa-user"></i><span>Profilo</span></button>
     </nav>
 
+    <!-- MODALI -->
+    <div id="auth-modal" class="modal-overlay">
+        <div class="modal-card" style="text-align:center;">
+            <div style="width:50px;height:50px;border-radius:16px;background:linear-gradient(135deg,var(--spotify-green),var(--accent-tertiary));display:flex;align-items:center;justify-content:center;margin:0 auto 12px auto;font-size:1.3rem;color:#000;"><i class="fas fa-music"></i></div>
+            <h2>Accedi a DarkSound</h2>
+            <p style="color:#b3b3b3;font-size:0.75rem;margin-bottom:14px;">La tua musica, ovunque tu sia</p>
+            <button class="btn-google" onclick="loginWithGoogle()" style="margin-bottom:12px;"><i class="fab fa-google" style="color:#4285F4;"></i> Continua con Google</button>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div style="flex:1;height:1px;background:#333;"></div><span style="color:#777;font-size:0.7rem;">oppure</span><div style="flex:1;height:1px;background:#333;"></div></div>
+            <div class="modal-input"><label style="text-align:left;">Nome Utente</label><input type="text" id="authEmail" placeholder="mario_rossi"></div>
+            <div class="modal-input"><label style="text-align:left;">Password (opzionale)</label><input type="password" id="authPassword" placeholder="••••••••"></div>
+            <button class="btn-primary" onclick="proceedToOnboarding()">Accedi</button>
+            <button class="btn-secondary" onclick="closeModal('auth-modal')">Continua come Ospite</button>
+        </div>
+    </div>
+
+    <div id="onboarding-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>🎵 Benvenuto su DarkSound!</h2>
+            <p style="color:#b3b3b3;font-size:0.75rem;margin-bottom:12px;">Seleziona i tuoi generi preferiti e creeremo playlist personalizzate per te con l'IA.</p>
+            <div class="section-title" style="font-size:0.8rem;">Passo 1: Scegli i tuoi generi</div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px;" id="genreGrid">
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🎵 Pop</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🎤 Rap</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🎸 Rock</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🎧 Techno</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🔊 Phonk</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🎷 Jazz</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🌴 Latin</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🇰🇷 K-Pop</button>
+            </div>
+            <div class="section-title" style="font-size:0.8rem;">Passo 2: Artisti preferiti</div>
+            <div class="modal-input"><label>Artista preferito</label><input type="text" id="favArtistInput" placeholder="Es. Travis Scott, Geolier, Lazza..."></div>
+            <div class="modal-input"><label>Altri artisti (separati da virgola)</label><input type="text" id="moreArtistsInput" placeholder="Sfera Ebbasta, Shiva, Kid Yugi..."></div>
+            <button class="btn-primary" onclick="completeOnboarding()">Crea la mia Radio e Playlist IA</button>
+        </div>
+    </div>
+
+    <div id="followed-artists-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Artisti che Segui</h2>
+            <div id="followedArtistsList" style="max-height:300px;overflow-y:auto;"></div>
+            <button class="btn-secondary" onclick="closeModal('followed-artists-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="profile-edit-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Modifica Profilo</h2>
+            <div class="modal-input"><label>Nome Utente</label><input type="text" id="editProfileName"></div>
+            <div class="modal-input"><label>Bio</label><input type="text" id="editProfileBio"></div>
+            <div class="modal-input"><label>Foto Profilo</label><input type="file" id="editProfilePhoto" accept="image/*" onchange="previewProfilePhoto(this)"></div>
+            <div id="profilePhotoPreview" style="margin-top:6px;text-align:center;"></div>
+            <div class="modal-input"><label>Genere</label><select id="editProfileGenre"><option>Pop</option><option>Rap</option><option>Rock</option><option>Techno</option><option>Jazz</option></select></div>
+            <button class="btn-primary" onclick="saveProfileChanges()">Salva</button>
+            <button class="btn-secondary" onclick="closeModal('profile-edit-modal')">Annulla</button>
+        </div>
+    </div>
+
+    <div id="add-friend-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Aggiungi Amico</h2>
+            <div class="modal-input"><label>Nome Utente</label><input type="text" id="addFriendInput"></div>
+            <div id="addFriendResults"></div>
+            <button class="btn-primary" onclick="searchFriend()">Cerca</button>
+            <button class="btn-secondary" onclick="closeModal('add-friend-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="share-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-weight:800;margin-bottom:8px;">Condividi</h3>
+            <p id="shareTrackSubtitle" style="color:#b3b3b3;font-size:0.75rem;margin-bottom:12px;"></p>
+            <button class="btn-primary" onclick="shareViaWhatsApp()" style="background:#25D366;color:#fff;"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+            <button class="btn-secondary" onclick="copyTrackLink()"><i class="fas fa-link"></i> Copia Link</button>
+            <button class="btn-secondary" onclick="closeModal('share-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="playlist-select-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-weight:800;margin-bottom:10px;">Aggiungi a playlist</h3>
+            <div id="playlistSelectList" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;"></div>
+            <button class="btn-secondary" onclick="closeModal('playlist-select-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="new-playlist-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-weight:800;margin-bottom:10px;">Crea Nuova Playlist</h3>
+            <div class="modal-input"><label>Nome</label><input type="text" id="newPlaylistName"></div>
+            <div class="modal-input"><label>Visibilità</label><select id="newPlaylistVisibility"><option value="private">Privata</option><option value="public">Pubblica</option></select></div>
+            <button class="btn-primary" onclick="submitNewPlaylist()">Crea</button>
+            <button class="btn-secondary" onclick="closeModal('new-playlist-modal')">Annulla</button>
+        </div>
+    </div>
+
+    <div id="ai-dj-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>AI DJ</h2>
+            <p style="color:#b3b3b3;font-size:0.75rem;margin-bottom:12px;">"Ciao! Sono il tuo DJ virtuale. Creo un mix con le tue canzoni preferite!"</p>
+            <button class="btn-primary" onclick="runAiDjSelection()">Avvia Mix Automatico</button>
+            <button class="btn-secondary" onclick="closeModal('ai-dj-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="ai-playlist-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Crea Playlist con IA</h2>
+            <div class="modal-input"><label>Scrivi un genere musicale</label><input type="text" id="aiPromptInput" placeholder="Es. Techno, Pop, Rap, Phonk..."></div>
+            <button class="btn-primary" onclick="generateAiPromptPlaylist()">Genera Mix</button>
+            <button class="btn-secondary" onclick="closeModal('ai-playlist-modal')">Annulla</button>
+        </div>
+    </div>
+
+    <div id="blend-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Crea Blend con un Amico</h2>
+            <div class="modal-input"><label>Seleziona amico</label><select id="blendFriendSelect"></select></div>
+            <button class="btn-primary" onclick="createBlendPlaylist()">Crea Playlist Blend</button>
+            <button class="btn-secondary" onclick="closeModal('blend-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="import-playlist-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Importa Playlist</h2>
+            <p style="color:#b3b3b3;font-size:0.7rem;margin-bottom:12px;">Incolla un link Spotify, YouTube, SoundCloud o Deezer.</p>
+            <div class="modal-input"><label>Link Playlist</label><input type="text" id="playlistLinkInput" placeholder="https://open.spotify.com/playlist/..."></div>
+            <div class="modal-input"><label>Nome (opzionale)</label><input type="text" id="playlistNameInput"></div>
+            <button class="btn-primary" onclick="importPlaylistFromLink()">Importa</button>
+            <button class="btn-secondary" onclick="closeModal('import-playlist-modal')">Annulla</button>
+            <div id="importProgress" style="margin-top:10px;text-align:center;font-size:0.7rem;color:#b3b3b3;"></div>
+        </div>
+    </div>
+
+    <div id="add-to-playlist-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-weight:800;margin-bottom:10px;">Aggiungi brani</h3>
+            <div class="modal-input"><label>Cerca brano da aggiungere</label><input type="text" id="addToPlaylistSearch" placeholder="Cerca un brano..." oninput="searchForPlaylistAddition(this.value)"></div>
+            <div id="addToPlaylistResults" style="max-height:250px;overflow-y:auto;"></div>
+            <button class="btn-secondary" onclick="closeModal('add-to-playlist-modal')">Chiudi</button>
+        </div>
+    </div>
+
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         // ============ ENCICLOPEDIA MUSICALE ============
@@ -1113,97 +1272,97 @@
             'USA': {
                 title: '🇺🇸 USA',
                 subgenres: {
-                    'Pop': ['Taylor Swift', 'Ariana Grande', 'Bruno Mars', 'Billie Eilish', 'Olivia Rodrigo', 'Sabrina Carpenter', 'Lady Gaga', 'Miley Cyrus', 'Katy Perry', 'Charlie Puth'],
-                    'Hip-Hop': ['Drake', 'Travis Scott', 'Kendrick Lamar', 'Kanye West', 'Future', 'Post Malone', 'Tyler The Creator', 'J. Cole', 'Nas', 'A$AP Rocky'],
-                    'Trap': ['Lil Baby', 'Gunna', 'Lil Uzi Vert', '21 Savage', 'Metro Boomin', 'Playboi Carti', 'Young Thug', 'Lil Durk', 'Polo G', 'Lil Tjay'],
-                    'Rock': ['Foo Fighters', 'Metallica', 'Red Hot Chili Peppers', 'Nirvana', 'Pearl Jam', 'Green Day', 'Blink-182', 'Guns N\' Roses'],
-                    'Metal': ['Slipknot', 'Korn', 'Linkin Park', 'Bad Omens', 'Tool', 'Deftones', 'Lorna Shore', 'Spiritbox', 'Bring Me The Horizon'],
-                    'R&B': ['SZA', 'Frank Ocean', 'Beyoncé', 'Bryson Tiller', 'Summer Walker', 'Brent Faiyaz', 'H.E.R.', 'Jhené Aiko', 'Usher', 'Chris Brown'],
-                    'Country': ['Zach Bryan', 'Morgan Wallen', 'Luke Combs', 'Chris Stapleton', 'Jelly Roll', 'Lainey Wilson', 'Shaboozey', 'Johnny Cash'],
-                    'EDM': ['Skrillex', 'Marshmello', 'Illenium', 'Excision', 'Fisher', 'John Summit', 'Dom Dolla', 'Diplo', 'Zeds Dead', 'REZZ']
+                    'Pop': ['Taylor Swift', 'Ariana Grande', 'Bruno Mars', 'Billie Eilish', 'Olivia Rodrigo', 'Sabrina Carpenter', 'Lady Gaga', 'Miley Cyrus'],
+                    'Hip-Hop': ['Drake', 'Travis Scott', 'Kendrick Lamar', 'Kanye West', 'Future', 'Post Malone', 'Tyler The Creator', 'J. Cole'],
+                    'Trap': ['Lil Baby', 'Gunna', 'Lil Uzi Vert', '21 Savage', 'Metro Boomin', 'Playboi Carti', 'Young Thug', 'Lil Durk'],
+                    'Rock': ['Foo Fighters', 'Metallica', 'Red Hot Chili Peppers', 'Nirvana', 'Pearl Jam', 'Green Day', 'Blink-182'],
+                    'Metal': ['Slipknot', 'Korn', 'Linkin Park', 'Bad Omens', 'Tool', 'Deftones', 'Lorna Shore', 'Spiritbox'],
+                    'R&B': ['SZA', 'Frank Ocean', 'Beyoncé', 'Bryson Tiller', 'Summer Walker', 'Brent Faiyaz', 'H.E.R.', 'Jhené Aiko'],
+                    'Country': ['Zach Bryan', 'Morgan Wallen', 'Luke Combs', 'Chris Stapleton', 'Jelly Roll', 'Lainey Wilson'],
+                    'EDM': ['Skrillex', 'Marshmello', 'Illenium', 'Excision', 'Fisher', 'John Summit', 'Dom Dolla', 'Diplo']
                 }
             },
             'UK': {
                 title: '🇬🇧 Regno Unito',
                 subgenres: {
-                    'Pop': ['Ed Sheeran', 'Dua Lipa', 'Harry Styles', 'Adele', 'Sam Smith', 'Lewis Capaldi', 'Charli XCX', 'Ellie Goulding'],
-                    'Rap': ['Central Cee', 'Dave', 'Stormzy', 'Skepta', 'Headie One', 'AJ Tracey', 'Giggs', 'Kano', 'Aitch', 'Tion Wayne'],
-                    'Indie': ['Arctic Monkeys', 'Oasis', 'Radiohead', 'The Smiths', 'Blur', 'The 1975', 'Florence + The Machine', 'Joy Division'],
-                    'Garage': ['Fred again..', 'Sub Focus', 'Chase & Status', 'Disclosure', 'Sammy Virji', 'Skream', 'Benga', 'Burial']
+                    'Pop': ['Ed Sheeran', 'Dua Lipa', 'Harry Styles', 'Adele', 'Sam Smith', 'Lewis Capaldi', 'Charli XCX'],
+                    'Rap': ['Central Cee', 'Dave', 'Stormzy', 'Skepta', 'Headie One', 'AJ Tracey', 'Giggs', 'Kano'],
+                    'Indie': ['Arctic Monkeys', 'Oasis', 'Radiohead', 'The Smiths', 'Blur', 'The 1975'],
+                    'Garage': ['Fred again..', 'Sub Focus', 'Chase & Status', 'Disclosure', 'Sammy Virji', 'Skream']
                 }
             },
             'Phonk': {
                 title: '🔊 Phonk',
                 subgenres: {
-                    'Brazilian Phonk': ['MXZI', 'Ogryzek', 'MC Ryan SP', 'DJ GBR', 'MC Tuto', 'DJ Samir', 'Rushex', 'MC GW', 'MC Cabelinho', 'MC Kevin'],
-                    'Chill Phonk': ['LONOWN', 'DVRST', 'Kordhell', 'Interworld', 'Pharmacist', 'Skeler', 'LXST CXNTURY', 'd4vd', 'KSLV Noh', 'Dxrk ダーク'],
-                    'Drift Phonk': ['DJ Smokey', 'Ghostface Playa', 'Sadfriendd', 'Soudiere', 'Freddie Dredd', 'Soulzay', 'HAARPER', 'Ponsuda', 'Mupp', 'Sxmpra'],
-                    'Hard Phonk': ['Carpenter Brut', 'Perturbator', 'GosT', 'Dance With the Dead', 'Kavinsky', 'Mega Drive', 'Lazerhawk', 'Power Glove']
+                    'Brazilian Phonk': ['MXZI', 'Ogryzek', 'MC Ryan SP', 'DJ GBR', 'MC Tuto', 'DJ Samir', 'Rushex', 'MC GW'],
+                    'Chill Phonk': ['LONOWN', 'DVRST', 'Kordhell', 'Interworld', 'Pharmacist', 'Skeler', 'LXST CXNTURY', 'd4vd'],
+                    'Drift Phonk': ['DJ Smokey', 'Ghostface Playa', 'Sadfriendd', 'Soudiere', 'Freddie Dredd', 'Soulzay', 'HAARPER'],
+                    'Hard Phonk': ['Carpenter Brut', 'Perturbator', 'GosT', 'Dance With the Dead', 'Kavinsky', 'Mega Drive']
                 }
             },
             'Techno': {
                 title: '🎧 Techno',
                 subgenres: {
-                    'Hard Techno': ['Sara Landry', 'I Hate Models', 'Klangkuenstler', '999999999', 'Paula Temple', '6EJOU', 'SNTS', 'Kobosil', 'Brutalismus 3000', 'Alignment'],
-                    'Melodic': ['Tale Of Us', 'ARTBAT', 'Anyma', 'Stephan Bodzin', 'Ben Böhmer', 'CamelPhat', 'Mathame', 'Adriatique', 'Innellea'],
-                    'Tech-House': ['Fisher', 'John Summit', 'Chris Lake', 'Dom Dolla', 'Michael Bibi', 'Green Velvet', 'Patrick Topping', 'Solardo'],
-                    'EDM': ['David Guetta', 'Martin Garrix', 'Tiësto', 'Calvin Harris', 'Armin van Buuren', 'Hardwell', 'Afrojack', 'R3HAB']
+                    'Hard Techno': ['Sara Landry', 'I Hate Models', 'Klangkuenstler', '999999999', 'Paula Temple', '6EJOU', 'SNTS', 'Kobosil'],
+                    'Melodic': ['Tale Of Us', 'ARTBAT', 'Anyma', 'Stephan Bodzin', 'Ben Böhmer', 'CamelPhat', 'Mathame', 'Adriatique'],
+                    'Tech-House': ['Fisher', 'John Summit', 'Chris Lake', 'Dom Dolla', 'Michael Bibi', 'Green Velvet'],
+                    'EDM': ['David Guetta', 'Martin Garrix', 'Tiësto', 'Calvin Harris', 'Armin van Buuren', 'Hardwell']
                 }
             },
             'Latin': {
                 title: '🌎 Latin',
                 subgenres: {
-                    'Reggaeton': ['Bad Bunny', 'Karol G', 'J Balvin', 'Daddy Yankee', 'Ozuna', 'Feid', 'Rauw Alejandro', 'Maluma', 'Anuel AA', 'Myke Towers'],
-                    'Trap': ['Duki', 'Bizarrap', 'Young Miko', 'Quevedo', 'Trueno', 'Tiago PZK', 'Nicki Nicole', 'Paulo Londra', 'Dillom', 'El Alfa'],
-                    'Corridos': ['Peso Pluma', 'Fuerza Regida', 'Junior H', 'Natanael Cano', 'Grupo Frontera', 'Carin León', 'Eslabon Armado', 'DannyLux']
+                    'Reggaeton': ['Bad Bunny', 'Karol G', 'J Balvin', 'Daddy Yankee', 'Ozuna', 'Feid', 'Rauw Alejandro', 'Maluma'],
+                    'Trap': ['Duki', 'Bizarrap', 'Young Miko', 'Quevedo', 'Trueno', 'Tiago PZK', 'Nicki Nicole', 'Paulo Londra'],
+                    'Corridos': ['Peso Pluma', 'Fuerza Regida', 'Junior H', 'Natanael Cano', 'Grupo Frontera', 'Carin León']
                 }
             },
             'Corea': {
                 title: '🇰🇷 Corea',
                 subgenres: {
-                    'K-Pop': ['BTS', 'BLACKPINK', 'TWICE', 'Stray Kids', 'NewJeans', 'aespa', 'SEVENTEEN', 'EXO', 'LE SSERAFIM', 'IVE'],
-                    'Solo': ['Jung Kook', 'Jimin', 'Jennie', 'Rosé', 'Lisa', 'IU', 'Taeyeon', 'Dean', 'BIBI', 'Crush']
+                    'K-Pop': ['BTS', 'BLACKPINK', 'TWICE', 'Stray Kids', 'NewJeans', 'aespa', 'SEVENTEEN', 'EXO'],
+                    'Solo': ['Jung Kook', 'Jimin', 'Jennie', 'Rosé', 'Lisa', 'IU', 'Taeyeon', 'Dean']
                 }
             },
             'Brasile': {
                 title: '🇧🇷 Brasile',
                 subgenres: {
-                    'Funk': ['Anitta', 'Kevin o Chris', 'Ludmilla', 'MC Livinho', 'Dennis DJ', 'MC Kevinho', 'MC Rebecca', 'Lexa'],
-                    'Samba': ['Tom Jobim', 'João Gilberto', 'Caetano Veloso', 'Gilberto Gil', 'Marisa Monte', 'Elis Regina', 'Chico Buarque']
+                    'Funk': ['Anitta', 'Kevin o Chris', 'Ludmilla', 'MC Livinho', 'Dennis DJ', 'MC Kevinho'],
+                    'Samba': ['Tom Jobim', 'João Gilberto', 'Caetano Veloso', 'Gilberto Gil', 'Marisa Monte']
                 }
             },
             'Francia': {
                 title: '🇫🇷 Francia',
                 subgenres: {
-                    'Rap': ['PNL', 'Damso', 'Ninho', 'Booba', 'SCH', 'Gazo', 'Niska', 'Jul', 'Tiakola', 'SDM', 'Hamza', 'Kaaris'],
-                    'Electro': ['Daft Punk', 'Gesaffelstein', 'Justice', 'DJ Snake', 'Kavinsky', 'Madeon', 'M83', 'Air']
+                    'Rap': ['PNL', 'Damso', 'Ninho', 'Booba', 'SCH', 'Gazo', 'Niska', 'Jul'],
+                    'Electro': ['Daft Punk', 'Gesaffelstein', 'Justice', 'DJ Snake', 'Kavinsky', 'Madeon']
                 }
             },
             'Germania': {
                 title: '🇩🇪 Germania',
                 subgenres: {
-                    'Techno': ['I Hate Models', 'Klangkuenstler', 'Kobosil', '999999999', 'Paula Temple', 'Brutalismus 3000', 'Sara Landry'],
-                    'Rap': ['Apache 207', 'Bonez MC', 'Ufo361', 'Luciano', 'Shirin David', 'Kraftwerk', 'Paul Kalkbrenner']
+                    'Techno': ['I Hate Models', 'Klangkuenstler', 'Kobosil', '999999999', 'Paula Temple', 'Brutalismus 3000'],
+                    'Rap': ['Apache 207', 'Bonez MC', 'Ufo361', 'Luciano', 'Shirin David']
                 }
             },
             'Africa': {
                 title: '🌍 Africa',
                 subgenres: {
-                    'Afrobeats': ['Burna Boy', 'Wizkid', 'Tems', 'Rema', 'Ayra Starr', 'Asake', 'Omah Lay', 'Davido', 'CKay', 'Tiwa Savage'],
-                    'Amapiano': ['Tyla', 'Kabza De Small', 'DJ Maphorisa', 'Focalistic', 'Major League DJz', 'Uncle Waffles', 'DBN Gogo']
+                    'Afrobeats': ['Burna Boy', 'Wizkid', 'Tems', 'Rema', 'Ayra Starr', 'Asake', 'Omah Lay', 'Davido'],
+                    'Amapiano': ['Tyla', 'Kabza De Small', 'DJ Maphorisa', 'Focalistic', 'Major League DJz']
                 }
             },
             'Canada': {
                 title: '🇨🇦 Canada',
                 subgenres: {
-                    'Pop': ['The Weeknd', 'Justin Bieber', 'Shawn Mendes', 'Tate McRae', 'Alessia Cara', 'Céline Dion', 'Shania Twain', 'Bryan Adams'],
+                    'Pop': ['The Weeknd', 'Justin Bieber', 'Shawn Mendes', 'Tate McRae', 'Alessia Cara', 'Céline Dion'],
                     'Rock': ['Arcade Fire', 'Sum 41', 'Avril Lavigne', 'Nickelback', 'Three Days Grace']
                 }
             },
             'Oceania': {
                 title: '🇦🇺 Oceania',
                 subgenres: {
-                    'Indie': ['Tame Impala', 'Lorde', 'Rüfüs Du Sol', 'Vance Joy', 'Gotye', 'King Gizzard & the Lizard Wizard'],
+                    'Indie': ['Tame Impala', 'Lorde', 'Rüfüs Du Sol', 'Vance Joy', 'Gotye', 'King Gizzard'],
                     'Pop': ['Sia', 'Kylie Minogue', 'The Kid LAROI', '5 Seconds of Summer', 'Iggy Azalea', 'Troye Sivan']
                 }
             }
@@ -1297,6 +1456,23 @@
         function openHelpView() { toggleProfileDrawer(); switchView('help'); }
         function openAboutView() { toggleProfileDrawer(); switchView('about'); }
         function openLikedSongs() { switchView('liked-songs'); renderLikedSongsView(); }
+        function openFollowedArtistsModal() {
+            toggleProfileDrawer();
+            const container = document.getElementById('followedArtistsList');
+            if (container) {
+                if (followedArtists.length === 0) {
+                    container.innerHTML = '<p style="color:#b3b3b3;">Non segui nessun artista.</p>';
+                } else {
+                    container.innerHTML = followedArtists.map(a => 
+                        `<div class="artist-card" onclick="openArtistPage('${a.replace(/'/g, "\\'")}')">
+                            <img src="https://picsum.photos/seed/${encodeURIComponent(a)}/100">
+                            <div style="pointer-events:none;"><h3>${a}</h3><p>Artista seguito</p></div>
+                        </div>`
+                    ).join('');
+                }
+            }
+            openModal('followed-artists-modal');
+        }
 
         // ============ MODALI ============
         function openModal(modalId) {
@@ -1756,10 +1932,7 @@
             if (titleEl) titleEl.innerText = artistName;
             
             const container = document.getElementById('artistTracksContainer');
-            if (!container) {
-                console.error('[Artist] Container non trovato');
-                return;
-            }
+            if (!container) return;
             
             container.innerHTML = '<p style="color:#b3b3b3;">Caricamento brani di ' + artistName + '...</p>';
             
@@ -1786,7 +1959,6 @@
                     container.innerHTML = `<p style="color:#b3b3b3;">Nessun brano trovato per ${artistName}.</p>`;
                 }
             } catch(e) {
-                console.error('[Artist] Errore:', e);
                 container.innerHTML = '<p style="color:#f15e6c;">Errore nel caricamento.</p>';
             }
         }
