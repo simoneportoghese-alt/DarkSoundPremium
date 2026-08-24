@@ -211,7 +211,6 @@
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
@@ -382,6 +381,8 @@
         .artist-card {
             display: flex; align-items: center; gap: 10px;
             padding: 10px; border-radius: var(--radius-md); cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         .artist-card:active { background: #333; }
         .artist-card img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; pointer-events: none; }
@@ -792,13 +793,10 @@
                 <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:16px;">
                     <button onclick="openAuthModal()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-user-plus" style="width:18px;"></i> Aggiungi account</button>
                     <button onclick="openProfileView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-user-edit" style="width:18px;"></i> Modifica Profilo</button>
-                    <button onclick="openFollowedArtistsModal()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-users" style="width:18px;"></i> Artisti che Segui</button>
                     <button onclick="openHistoryView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-clock" style="width:18px;"></i> Cronologia Ascolti</button>
                     <button onclick="openDownloadsView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-download" style="width:18px;"></i> Brani Scaricati</button>
                     <button onclick="openStatsView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-chart-bar" style="width:18px;"></i> Statistiche</button>
                     <button onclick="openSettingsView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-gear" style="width:18px;"></i> Impostazioni</button>
-                    <button onclick="openHelpView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-question-circle" style="width:18px;"></i> Aiuto e Supporto</button>
-                    <button onclick="openAboutView()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-info-circle" style="width:18px;"></i> Info su DarkSound</button>
                     <button onclick="openImportPlaylistModal()" style="display:flex;align-items:center;gap:10px;padding:10px;background:none;border:none;color:#fff;font-size:0.8rem;cursor:pointer;border-radius:4px;text-align:left;"><i class="fas fa-link" style="width:18px;"></i> Importa Playlist</button>
                 </div>
                 
@@ -975,6 +973,22 @@
                 </div>
                 <div style="padding:10px;"><div id="likedSongsFullContainer"></div></div>
             </div>
+
+            <!-- VISTA ARTISTA -->
+            <div id="view-artist" class="view">
+                <div class="top-bar">
+                    <span class="top-bar-title" id="artistNameTitle">Artista</span>
+                    <button onclick="switchView('search', document.querySelectorAll('.nav-item')[1])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button>
+                </div>
+                <div style="position:relative;height:180px;border-radius:12px;overflow:hidden;margin-bottom:12px;">
+                    <img id="artistHeroImg" src="" style="width:100%;height:100%;object-fit:cover;">
+                    <div style="position:absolute;bottom:0;left:0;right:0;padding:12px;background:linear-gradient(transparent,#000);">
+                        <button class="btn-primary" id="followArtistBtn" onclick="toggleFollowArtist()" style="width:auto;padding:6px 14px;font-size:0.75rem;">Segui</button>
+                    </div>
+                </div>
+                <div class="section-title">Brani</div>
+                <div id="artistTracksContainer"><p style="color:#b3b3b3;font-size:0.75rem;">Caricamento brani...</p></div>
+            </div>
         </div>
     </div>
 
@@ -1061,110 +1075,110 @@
             'Italia': {
                 title: '🇮🇹 Italia',
                 subgenres: {
-                    'Pop': ['Tiziano Ferro', 'Marco Mengoni', 'Annalisa', 'Angelina Mango', 'Irama', 'Achille Lauro', 'Fedez'],
-                    'Trap': ['Sfera Ebbasta', 'Geolier', 'Lazza', 'Shiva', 'Tony Effe', 'Capo Plaza', 'Guè', 'Marracash'],
-                    'Rap': ['Kid Yugi', 'Nayt', 'Salmo', 'Fabri Fibra', 'Nitro', 'Emis Killa', 'Gemitaiz', 'MadMan'],
-                    'Drill': ['Rondodasosa', 'Vale Pain', 'Baby Gang', 'Sacky', 'Simba La Rue', 'Neima Ezza'],
-                    'Indie': ['Calcutta', 'Gazzelle', 'Brunori Sas', 'Cesare Cremonini', 'Diodato', 'Levante'],
-                    'Techno': ['Tale Of Us', 'Anyma', 'Mathame', 'Meduza', 'Gabry Ponte', 'Gigi D\'Agostino'],
-                    'Rock': ['Måneskin', 'Verdena', 'Afterhours', 'Subsonica', 'Zen Circus']
+                    'Pop': ['Tiziano Ferro', 'Marco Mengoni', 'Annalisa', 'Angelina Mango', 'Irama', 'Achille Lauro', 'Fedez', 'Giorgia', 'Elisa', 'Emma'],
+                    'Trap': ['Sfera Ebbasta', 'Geolier', 'Lazza', 'Shiva', 'Tony Effe', 'Capo Plaza', 'Guè', 'Marracash', 'Tedua', 'Tony Boy'],
+                    'Rap': ['Kid Yugi', 'Nayt', 'Salmo', 'Fabri Fibra', 'Nitro', 'Emis Killa', 'Gemitaiz', 'MadMan', 'Clementino', 'Ernia'],
+                    'Drill': ['Rondodasosa', 'Vale Pain', 'Baby Gang', 'Sacky', 'Simba La Rue', 'Neima Ezza', 'Nko', 'Kassimi'],
+                    'Indie': ['Calcutta', 'Gazzelle', 'Brunori Sas', 'Cesare Cremonini', 'Diodato', 'Levante', 'Coma_Cose', 'Pinguini Tattici Nucleari'],
+                    'Techno': ['Tale Of Us', 'Anyma', 'Mathame', 'Meduza', 'Gabry Ponte', 'Gigi D\'Agostino', 'Mace', 'Venerus'],
+                    'Rock': ['Måneskin', 'Verdena', 'Afterhours', 'Subsonica', 'Zen Circus', 'Ministri', 'Fast Animals and Slow Kids', 'Baustelle']
                 }
             },
             'USA': {
                 title: '🇺🇸 USA',
                 subgenres: {
-                    'Pop': ['Taylor Swift', 'Ariana Grande', 'Bruno Mars', 'Billie Eilish', 'Olivia Rodrigo', 'Sabrina Carpenter'],
-                    'Hip-Hop': ['Drake', 'Travis Scott', 'Kendrick Lamar', 'Kanye West', 'Future', 'Post Malone'],
-                    'Trap': ['Lil Baby', 'Gunna', 'Lil Uzi Vert', '21 Savage', 'Metro Boomin', 'Playboi Carti'],
-                    'Rock': ['Foo Fighters', 'Metallica', 'Red Hot Chili Peppers', 'Nirvana', 'Pearl Jam'],
-                    'Metal': ['Slipknot', 'Korn', 'Linkin Park', 'Bad Omens', 'Tool', 'Deftones'],
-                    'R&B': ['SZA', 'Frank Ocean', 'Beyoncé', 'Bryson Tiller', 'Summer Walker', 'Brent Faiyaz'],
-                    'Country': ['Zach Bryan', 'Morgan Wallen', 'Luke Combs', 'Chris Stapleton', 'Jelly Roll'],
-                    'EDM': ['Skrillex', 'Marshmello', 'Illenium', 'Excision', 'Fisher', 'John Summit']
+                    'Pop': ['Taylor Swift', 'Ariana Grande', 'Bruno Mars', 'Billie Eilish', 'Olivia Rodrigo', 'Sabrina Carpenter', 'Lady Gaga', 'Miley Cyrus', 'Katy Perry', 'Charlie Puth'],
+                    'Hip-Hop': ['Drake', 'Travis Scott', 'Kendrick Lamar', 'Kanye West', 'Future', 'Post Malone', 'Tyler The Creator', 'J. Cole', 'Nas', 'A$AP Rocky'],
+                    'Trap': ['Lil Baby', 'Gunna', 'Lil Uzi Vert', '21 Savage', 'Metro Boomin', 'Playboi Carti', 'Young Thug', 'Lil Durk', 'Polo G', 'Lil Tjay'],
+                    'Rock': ['Foo Fighters', 'Metallica', 'Red Hot Chili Peppers', 'Nirvana', 'Pearl Jam', 'Green Day', 'Blink-182', 'Guns N\' Roses'],
+                    'Metal': ['Slipknot', 'Korn', 'Linkin Park', 'Bad Omens', 'Tool', 'Deftones', 'Lorna Shore', 'Spiritbox', 'Bring Me The Horizon'],
+                    'R&B': ['SZA', 'Frank Ocean', 'Beyoncé', 'Bryson Tiller', 'Summer Walker', 'Brent Faiyaz', 'H.E.R.', 'Jhené Aiko', 'Usher', 'Chris Brown'],
+                    'Country': ['Zach Bryan', 'Morgan Wallen', 'Luke Combs', 'Chris Stapleton', 'Jelly Roll', 'Lainey Wilson', 'Shaboozey', 'Johnny Cash'],
+                    'EDM': ['Skrillex', 'Marshmello', 'Illenium', 'Excision', 'Fisher', 'John Summit', 'Dom Dolla', 'Diplo', 'Zeds Dead', 'REZZ']
                 }
             },
             'UK': {
                 title: '🇬🇧 Regno Unito',
                 subgenres: {
-                    'Pop': ['Ed Sheeran', 'Dua Lipa', 'Harry Styles', 'Adele', 'Sam Smith', 'Lewis Capaldi'],
-                    'Rap': ['Central Cee', 'Dave', 'Stormzy', 'Skepta', 'Headie One', 'AJ Tracey'],
-                    'Indie': ['Arctic Monkeys', 'Oasis', 'Radiohead', 'The Smiths', 'Blur'],
-                    'Garage': ['Fred again..', 'Sub Focus', 'Chase & Status', 'Disclosure']
+                    'Pop': ['Ed Sheeran', 'Dua Lipa', 'Harry Styles', 'Adele', 'Sam Smith', 'Lewis Capaldi', 'Charli XCX', 'Ellie Goulding'],
+                    'Rap': ['Central Cee', 'Dave', 'Stormzy', 'Skepta', 'Headie One', 'AJ Tracey', 'Giggs', 'Kano', 'Aitch', 'Tion Wayne'],
+                    'Indie': ['Arctic Monkeys', 'Oasis', 'Radiohead', 'The Smiths', 'Blur', 'The 1975', 'Florence + The Machine', 'Joy Division'],
+                    'Garage': ['Fred again..', 'Sub Focus', 'Chase & Status', 'Disclosure', 'Sammy Virji', 'Skream', 'Benga', 'Burial']
                 }
             },
             'Phonk': {
                 title: '🔊 Phonk',
                 subgenres: {
-                    'Brazilian Phonk': ['MXZI', 'Ogryzek', 'MC Ryan SP', 'DJ GBR', 'MC Tuto', 'DJ Samir'],
-                    'Chill Phonk': ['LONOWN', 'DVRST', 'Kordhell', 'Interworld', 'Pharmacist', 'Skeler'],
-                    'Drift Phonk': ['DJ Smokey', 'Ghostface Playa', 'Sadfriendd', 'Soudiere', 'Freddie Dredd'],
-                    'Hard Phonk': ['Carpenter Brut', 'Perturbator', 'GosT', 'Dance With the Dead']
+                    'Brazilian Phonk': ['MXZI', 'Ogryzek', 'MC Ryan SP', 'DJ GBR', 'MC Tuto', 'DJ Samir', 'Rushex', 'MC GW', 'MC Cabelinho', 'MC Kevin'],
+                    'Chill Phonk': ['LONOWN', 'DVRST', 'Kordhell', 'Interworld', 'Pharmacist', 'Skeler', 'LXST CXNTURY', 'd4vd', 'KSLV Noh', 'Dxrk ダーク'],
+                    'Drift Phonk': ['DJ Smokey', 'Ghostface Playa', 'Sadfriendd', 'Soudiere', 'Freddie Dredd', 'Soulzay', 'HAARPER', 'Ponsuda', 'Mupp', 'Sxmpra'],
+                    'Hard Phonk': ['Carpenter Brut', 'Perturbator', 'GosT', 'Dance With the Dead', 'Kavinsky', 'Mega Drive', 'Lazerhawk', 'Power Glove']
                 }
             },
             'Techno': {
                 title: '🎧 Techno',
                 subgenres: {
-                    'Hard Techno': ['Sara Landry', 'I Hate Models', 'Klangkuenstler', '999999999', 'Paula Temple'],
-                    'Melodic': ['Tale Of Us', 'ARTBAT', 'Anyma', 'Stephan Bodzin', 'Ben Böhmer'],
-                    'Tech-House': ['Fisher', 'John Summit', 'Chris Lake', 'Dom Dolla', 'Michael Bibi'],
-                    'EDM': ['David Guetta', 'Martin Garrix', 'Tiësto', 'Calvin Harris', 'Armin van Buuren']
+                    'Hard Techno': ['Sara Landry', 'I Hate Models', 'Klangkuenstler', '999999999', 'Paula Temple', '6EJOU', 'SNTS', 'Kobosil', 'Brutalismus 3000', 'Alignment'],
+                    'Melodic': ['Tale Of Us', 'ARTBAT', 'Anyma', 'Stephan Bodzin', 'Ben Böhmer', 'CamelPhat', 'Mathame', 'Adriatique', 'Innellea'],
+                    'Tech-House': ['Fisher', 'John Summit', 'Chris Lake', 'Dom Dolla', 'Michael Bibi', 'Green Velvet', 'Patrick Topping', 'Solardo'],
+                    'EDM': ['David Guetta', 'Martin Garrix', 'Tiësto', 'Calvin Harris', 'Armin van Buuren', 'Hardwell', 'Afrojack', 'R3HAB']
                 }
             },
             'Latin': {
                 title: '🌎 Latin',
                 subgenres: {
-                    'Reggaeton': ['Bad Bunny', 'Karol G', 'J Balvin', 'Daddy Yankee', 'Ozuna', 'Feid'],
-                    'Trap': ['Duki', 'Bizarrap', 'Young Miko', 'Quevedo', 'Trueno', 'Tiago PZK'],
-                    'Corridos': ['Peso Pluma', 'Fuerza Regida', 'Junior H', 'Natanael Cano', 'Grupo Frontera']
+                    'Reggaeton': ['Bad Bunny', 'Karol G', 'J Balvin', 'Daddy Yankee', 'Ozuna', 'Feid', 'Rauw Alejandro', 'Maluma', 'Anuel AA', 'Myke Towers'],
+                    'Trap': ['Duki', 'Bizarrap', 'Young Miko', 'Quevedo', 'Trueno', 'Tiago PZK', 'Nicki Nicole', 'Paulo Londra', 'Dillom', 'El Alfa'],
+                    'Corridos': ['Peso Pluma', 'Fuerza Regida', 'Junior H', 'Natanael Cano', 'Grupo Frontera', 'Carin León', 'Eslabon Armado', 'DannyLux']
                 }
             },
             'Corea': {
                 title: '🇰🇷 Corea',
                 subgenres: {
-                    'K-Pop': ['BTS', 'BLACKPINK', 'TWICE', 'Stray Kids', 'NewJeans', 'aespa'],
-                    'Solo': ['Jung Kook', 'Jimin', 'Jennie', 'Rosé', 'Lisa', 'IU']
+                    'K-Pop': ['BTS', 'BLACKPINK', 'TWICE', 'Stray Kids', 'NewJeans', 'aespa', 'SEVENTEEN', 'EXO', 'LE SSERAFIM', 'IVE'],
+                    'Solo': ['Jung Kook', 'Jimin', 'Jennie', 'Rosé', 'Lisa', 'IU', 'Taeyeon', 'Dean', 'BIBI', 'Crush']
                 }
             },
             'Brasile': {
                 title: '🇧🇷 Brasile',
                 subgenres: {
-                    'Funk': ['Anitta', 'Kevin o Chris', 'Ludmilla', 'MC Livinho', 'Dennis DJ'],
-                    'Samba': ['Tom Jobim', 'João Gilberto', 'Caetano Veloso', 'Gilberto Gil']
+                    'Funk': ['Anitta', 'Kevin o Chris', 'Ludmilla', 'MC Livinho', 'Dennis DJ', 'MC Kevinho', 'MC Rebecca', 'Lexa'],
+                    'Samba': ['Tom Jobim', 'João Gilberto', 'Caetano Veloso', 'Gilberto Gil', 'Marisa Monte', 'Elis Regina', 'Chico Buarque']
                 }
             },
             'Francia': {
                 title: '🇫🇷 Francia',
                 subgenres: {
-                    'Rap': ['PNL', 'Damso', 'Ninho', 'Booba', 'SCH', 'Gazo'],
-                    'Electro': ['Daft Punk', 'Gesaffelstein', 'Justice', 'DJ Snake', 'Kavinsky']
+                    'Rap': ['PNL', 'Damso', 'Ninho', 'Booba', 'SCH', 'Gazo', 'Niska', 'Jul', 'Tiakola', 'SDM', 'Hamza', 'Kaaris'],
+                    'Electro': ['Daft Punk', 'Gesaffelstein', 'Justice', 'DJ Snake', 'Kavinsky', 'Madeon', 'M83', 'Air']
                 }
             },
             'Germania': {
                 title: '🇩🇪 Germania',
                 subgenres: {
-                    'Techno': ['I Hate Models', 'Klangkuenstler', 'Kobosil', '999999999'],
-                    'Rap': ['Apache 207', 'Bonez MC', 'Ufo361', 'Luciano']
+                    'Techno': ['I Hate Models', 'Klangkuenstler', 'Kobosil', '999999999', 'Paula Temple', 'Brutalismus 3000', 'Sara Landry'],
+                    'Rap': ['Apache 207', 'Bonez MC', 'Ufo361', 'Luciano', 'Shirin David', 'Kraftwerk', 'Paul Kalkbrenner']
                 }
             },
             'Africa': {
                 title: '🌍 Africa',
                 subgenres: {
-                    'Afrobeats': ['Burna Boy', 'Wizkid', 'Tems', 'Rema', 'Ayra Starr', 'Asake'],
-                    'Amapiano': ['Tyla', 'Kabza De Small', 'DJ Maphorisa', 'Focalistic']
+                    'Afrobeats': ['Burna Boy', 'Wizkid', 'Tems', 'Rema', 'Ayra Starr', 'Asake', 'Omah Lay', 'Davido', 'CKay', 'Tiwa Savage'],
+                    'Amapiano': ['Tyla', 'Kabza De Small', 'DJ Maphorisa', 'Focalistic', 'Major League DJz', 'Uncle Waffles', 'DBN Gogo']
                 }
             },
             'Canada': {
                 title: '🇨🇦 Canada',
                 subgenres: {
-                    'Pop': ['The Weeknd', 'Justin Bieber', 'Shawn Mendes', 'Tate McRae', 'Alessia Cara'],
-                    'Rock': ['Arcade Fire', 'Sum 41', 'Avril Lavigne']
+                    'Pop': ['The Weeknd', 'Justin Bieber', 'Shawn Mendes', 'Tate McRae', 'Alessia Cara', 'Céline Dion', 'Shania Twain', 'Bryan Adams'],
+                    'Rock': ['Arcade Fire', 'Sum 41', 'Avril Lavigne', 'Nickelback', 'Three Days Grace']
                 }
             },
             'Oceania': {
                 title: '🇦🇺 Oceania',
                 subgenres: {
-                    'Indie': ['Tame Impala', 'Lorde', 'Rüfüs Du Sol', 'Vance Joy'],
-                    'Pop': ['Sia', 'Kylie Minogue', 'The Kid LAROI', '5 Seconds of Summer']
+                    'Indie': ['Tame Impala', 'Lorde', 'Rüfüs Du Sol', 'Vance Joy', 'Gotye', 'King Gizzard & the Lizard Wizard'],
+                    'Pop': ['Sia', 'Kylie Minogue', 'The Kid LAROI', '5 Seconds of Summer', 'Iggy Azalea', 'Troye Sivan']
                 }
             }
         };
@@ -1306,7 +1320,7 @@
             let html = `<div class="section-title" style="margin-top:12px;">${genreData.title} - Playlist</div>`;
             html += `<div class="track-row" style="cursor:pointer;" onclick="playGenrePlaylist('${genreKey}')">
                 <div class="track-row-left">
-                    <div style="width:42px;height:42px;background:${genreData.color || 'var(--spotify-green)'};border-radius:4px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:#fff;"></i></div>
+                    <div style="width:42px;height:42px;background:var(--spotify-green);border-radius:4px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:#fff;"></i></div>
                     <div class="track-meta"><h4>${genreData.title}</h4><p>${allArtists.length} artisti • Tocca per riprodurre</p></div>
                 </div>
                 <i class="fas fa-play" style="color:var(--spotify-green);"></i>
@@ -1317,7 +1331,8 @@
             const uniqueArtists = [...new Set(allArtists)].slice(0, 30);
             
             for (const artist of uniqueArtists) {
-                html += `<div class="artist-card" onclick="openArtistPage('${artist.replace(/'/g, "\\'")}')" style="cursor:pointer;">
+                const safeArtist = artist.replace(/'/g, "\\'");
+                html += `<div class="artist-card" onclick="openArtistPage('${safeArtist}')" style="cursor:pointer;">
                     <img src="https://picsum.photos/seed/${encodeURIComponent(artist)}/100" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(artist)}/100'">
                     <div style="pointer-events:none;"><h3>${artist}</h3><p>Artista • Tocca per vedere i brani</p></div>
                 </div>`;
@@ -1400,8 +1415,9 @@
                 if (artists.length > 0) {
                     html += `<div class="section-title">Artisti</div>`;
                     html += artists.map(a => {
+                        const safeArtist = a.replace(/'/g, "\\'");
                         const img = tracks.find(t => t.artist === a)?.image || '';
-                        return `<div class="artist-card" onclick="openArtistPage('${a.replace(/'/g, "\\'")}', '${img}')" style="cursor:pointer;">
+                        return `<div class="artist-card" onclick="openArtistPage('${safeArtist}', '${img}')" style="cursor:pointer;">
                             <img src="${img || 'https://picsum.photos/seed/' + encodeURIComponent(a) + '/100'}" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(a)}/100'">
                             <div style="pointer-events:none;"><h3>${a}</h3><p>Artista - Tocca per vedere i brani</p></div>
                         </div>`;
@@ -1706,27 +1722,68 @@
                 : tracks.map((t, i) => renderSingleTrackRow(t, i, sectionTracks)).join('');
         }
 
-        // ============ ARTIST PAGE ============
+        // ============ ARTIST PAGE - FIX CLICK ============
         async function openArtistPage(artistName, artistImageOverride) {
             switchView('artist');
             currentArtistPage = artistName;
-            if (document.getElementById('artistNameTitle')) document.getElementById('artistNameTitle').innerText = artistName;
+            const titleEl = document.getElementById('artistNameTitle');
+            if (titleEl) titleEl.innerText = artistName;
+            
             const container = document.getElementById('artistTracksContainer');
-            if (!container) return;
-            container.innerHTML = '<p style="color:#b3b3b3;">Caricamento brani...</p>';
+            if (!container) {
+                console.error('[Artist] Container non trovato');
+                return;
+            }
+            
+            container.innerHTML = '<p style="color:#b3b3b3;">Caricamento brani di ' + artistName + '...</p>';
+            
             try {
+                // Prima ricerca
                 const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artistName)}`);
                 let tracks = await res.json();
                 tracks = filterOriginalTracks(tracks);
                 let artistTracks = filterTracksByExactArtist(tracks, artistName);
+                
+                // Seconda ricerca se pochi risultati
+                if (artistTracks.length < 5) {
+                    const res2 = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artistName + ' songs')}`);
+                    let moreTracks = await res2.json();
+                    moreTracks = filterOriginalTracks(moreTracks);
+                    const moreArtistTracks = filterTracksByExactArtist(moreTracks, artistName);
+                    const allTracks = [...artistTracks, ...moreArtistTracks];
+                    artistTracks = allTracks.filter((t, i, self) => self.findIndex(x => x.id === t.id) === i);
+                }
+                
                 if (artistTracks.length > 0) {
-                    if (document.getElementById('artistHeroImg')) document.getElementById('artistHeroImg').src = artistTracks[0].image;
+                    const heroImg = document.getElementById('artistHeroImg');
+                    if (heroImg) heroImg.src = artistTracks[0].image;
                     renderTracksList(artistTracks, 'artistTracksContainer', artistTracks);
                 } else {
                     container.innerHTML = `<p style="color:#b3b3b3;">Nessun brano trovato per ${artistName}.</p>`;
                 }
             } catch(e) {
+                console.error('[Artist] Errore:', e);
                 container.innerHTML = '<p style="color:#f15e6c;">Errore nel caricamento.</p>';
+            }
+        }
+
+        function toggleFollowArtist() {
+            if (!currentArtistPage) return;
+            if (followedArtists.includes(currentArtistPage)) {
+                followedArtists = followedArtists.filter(a => a !== currentArtistPage);
+            } else {
+                followedArtists.push(currentArtistPage);
+            }
+            saveUserData();
+            const btn = document.getElementById('followArtistBtn');
+            if (btn) {
+                if (followedArtists.includes(currentArtistPage)) {
+                    btn.innerText = 'Segui già';
+                    btn.style.background = '#333';
+                } else {
+                    btn.innerText = 'Segui';
+                    btn.style.background = 'var(--spotify-green)';
+                }
             }
         }
 
@@ -1928,12 +1985,14 @@
             AppState.isLyricsActive = !AppState.isLyricsActive;
             const lyricsView = document.getElementById('lyricsView');
             const standardView = document.getElementById('standardPlayerView');
-            if (AppState.isLyricsActive) {
-                lyricsView.classList.add('active');
-                standardView.style.display = 'none';
-            } else {
-                lyricsView.classList.remove('active');
-                standardView.style.display = 'flex';
+            if (lyricsView && standardView) {
+                if (AppState.isLyricsActive) {
+                    lyricsView.classList.add('active');
+                    standardView.style.display = 'none';
+                } else {
+                    lyricsView.classList.remove('active');
+                    standardView.style.display = 'flex';
+                }
             }
         }
 
@@ -2159,7 +2218,6 @@
 
         // ============ PLAYLIST ============
         function openNewPlaylistModal() { openModal('new-playlist-modal'); }
-
         function submitNewPlaylist() {
             const name = document.getElementById('newPlaylistName').value.trim();
             const visibility = document.getElementById('newPlaylistVisibility').value;
@@ -2169,24 +2227,20 @@
             closeModal('new-playlist-modal');
             renderLibraryContent();
         }
-
         function openPlaylistSelectorForCurrent() {
             selectedTrackForPlaylist = AppState.currentTrack;
             showPlaylistSelectorModal();
         }
-
         function openPlaylistSelectorForTrackObj(trackJson) {
             selectedTrackForPlaylist = JSON.parse(decodeURIComponent(escape(atob(trackJson))));
             showPlaylistSelectorModal();
         }
-
         function showPlaylistSelectorModal() {
             const list = document.getElementById('playlistSelectList');
             const all = [...userPlaylists, ...autoPlaylists];
             list.innerHTML = all.length === 0 ? '<p style="color:#b3b3b3;">Nessuna playlist.</p>' : all.map(pl => `<div class="track-row" onclick="addTrackToPlaylist('${pl.id}')"><div class="track-meta"><h4>${pl.name}</h4><p>${pl.tracks.length} brani</p></div><i class="fas fa-plus" style="color:var(--spotify-green);"></i></div>`).join('');
             openModal('playlist-select-modal');
         }
-
         function addTrackToPlaylist(pid) {
             const pl = userPlaylists.find(p => p.id === pid) || autoPlaylists.find(p => p.id === pid);
             if (pl && selectedTrackForPlaylist) {
@@ -2198,7 +2252,6 @@
             }
             closeModal('playlist-select-modal');
         }
-
         function openUserPlaylistDetails(pid) {
             const pl = userPlaylists.find(p => p.id === pid) || autoPlaylists.find(p => p.id === pid);
             if (!pl) return;
@@ -2214,14 +2267,12 @@
             div.innerHTML = pl.tracks.length === 0 ? '<p style="color:#b3b3b3;">Nessun brano.</p>' : pl.tracks.map((t, i) => renderSingleTrackRow(t, i, pl.tracks)).join('');
             c.appendChild(div);
         }
-
         function openAddToPlaylistModal(playlistId) {
             currentPlaylistToAddTo = playlistId;
             document.getElementById('addToPlaylistSearch').value = '';
             document.getElementById('addToPlaylistResults').innerHTML = '';
             openModal('add-to-playlist-modal');
         }
-
         async function searchForPlaylistAddition(query) {
             const container = document.getElementById('addToPlaylistResults');
             if (query.trim().length < 2) { container.innerHTML = ''; return; }
@@ -2244,7 +2295,6 @@
                 container.innerHTML = '<p style="color:#f15e6c;">Errore.</p>';
             }
         }
-
         function addTrackToCurrentPlaylist(trackJson) {
             if (!currentPlaylistToAddTo) return;
             const t = JSON.parse(decodeURIComponent(escape(atob(trackJson))));
@@ -2261,7 +2311,6 @@
             closeModal('add-to-playlist-modal');
             renderLibraryContent();
         }
-
         function sharePlaylistViaWhatsApp(playlistId) {
             const pl = userPlaylists.find(p => p.id === playlistId) || autoPlaylists.find(p => p.id === playlistId);
             if (!pl) return;
@@ -2280,7 +2329,6 @@
             document.getElementById('importProgress').innerHTML = '';
             openModal('import-playlist-modal');
         }
-
         async function importPlaylistFromLink() {
             const link = document.getElementById('playlistLinkInput').value.trim();
             const customName = document.getElementById('playlistNameInput').value.trim();
@@ -2326,7 +2374,6 @@
             select.innerHTML = friendsList.map(f => `<option value="${f}">${f}</option>`).join('') || '<option>Nessun amico</option>';
             openModal('blend-modal');
         }
-
         async function runAiDjSelection() {
             closeModal('ai-dj-modal');
             showSiriNotification('🤖 AI DJ: creo il tuo mix personale...');
@@ -2350,7 +2397,6 @@
                 }
             } catch(e) { showSiriNotification('Errore nella creazione del mix'); }
         }
-
         async function generateAiPromptPlaylist() {
             const prompt = document.getElementById('aiPromptInput').value.trim().toLowerCase();
             if (!prompt) return;
@@ -2367,7 +2413,6 @@
                 }
             } catch(e) {}
         }
-
         async function createBlendPlaylist() {
             const friend = document.getElementById('blendFriendSelect').value;
             if (!friend) return;
@@ -2393,7 +2438,6 @@
             document.getElementById('profilePhotoPreview').innerHTML = profilePhotoData ? `<img src="${profilePhotoData}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;">` : '';
             openModal('profile-edit-modal');
         }
-
         function saveProfileChanges() {
             const name = document.getElementById('editProfileName').value.trim();
             const bio = document.getElementById('editProfileBio').value.trim();
@@ -2410,12 +2454,10 @@
             closeModal('profile-edit-modal');
             updateUserUI();
         }
-
         function renderProfileFriends() {
             const c = document.getElementById('profileFriendsList');
             if (c) c.innerHTML = friendsList.length === 0 ? '<p style="color:#b3b3b3;">Nessun amico.</p>' : friendsList.map(f => `<div class="track-row"><div class="track-meta"><h4>${f}</h4></div></div>`).join('');
         }
-
         function renderProfilePublicPlaylists() {
             const c = document.getElementById('profilePublicPlaylists');
             if (c) {
@@ -2475,7 +2517,6 @@
             } else {
                 fs.style.display = 'flex';
                 overlay.style.display = 'block';
-                // Forza reflow per l'animazione
                 void fs.offsetWidth;
                 void overlay.offsetWidth;
                 fs.classList.add('active');
@@ -2913,7 +2954,6 @@
             }
         });
 
-        // Previeni scroll sotto il player quando è aperto
         document.addEventListener('touchmove', (e) => {
             const fsPlayer = document.getElementById('fullscreen-player');
             const modalOpen = document.querySelector('.modal-overlay.active');
