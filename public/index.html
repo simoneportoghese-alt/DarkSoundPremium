@@ -314,7 +314,17 @@
             padding-top: var(--safe-top);
             padding-bottom: var(--safe-bottom);
         }
-        #splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        #splash-screen.hidden { 
+            opacity: 0; 
+            visibility: hidden; 
+            pointer-events: none; 
+        }
+        #splash-screen.force-hidden {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
         .splash-logo {
             width: clamp(60px, 15vw, 80px);
             height: clamp(60px, 15vw, 80px);
@@ -1499,6 +1509,40 @@
             return { isIPhone, isIPad, isAndroid, width, height };
         }
 
+        // ============ FUNZIONE PER NASCONDERE LO SPLASH CON FALLBACK ============
+        let splashHidden = false;
+        
+        function hideSplashScreen() {
+            if (splashHidden) return;
+            splashHidden = true;
+            
+            const splash = document.getElementById('splash-screen');
+            if (splash) {
+                // Aggiungi classe hidden per transizione fluida
+                splash.classList.add('hidden');
+                
+                // Dopo la transizione, nascondi completamente
+                setTimeout(() => {
+                    splash.classList.add('force-hidden');
+                    splash.style.display = 'none';
+                }, 600);
+            }
+            
+            // FALLBACK: Se dopo 3 secondi lo splash è ancora visibile, forzane la rimozione
+            clearTimeout(window._splashFallback);
+            window._splashFallback = setTimeout(() => {
+                const splashEl = document.getElementById('splash-screen');
+                if (splashEl && splashEl.style.display !== 'none') {
+                    console.log('[Splash] Forzata rimozione dopo fallback');
+                    splashEl.classList.add('force-hidden');
+                    splashEl.style.display = 'none';
+                    splashEl.style.opacity = '0';
+                    splashEl.style.visibility = 'hidden';
+                    splashEl.style.pointerEvents = 'none';
+                }
+            }, 3000);
+        }
+
         // ============ PULIZIA AVANZATA TITOLI YOUTUBE ============
         function cleanYouTubeTitle(title) {
             if (!title) return '';
@@ -2239,14 +2283,6 @@
         }
 
         // ============ FUNZIONI PRINCIPALI ============
-        function hideSplashScreen() {
-            const splash = document.getElementById('splash-screen');
-            if (splash) {
-                splash.classList.add('hidden');
-                setTimeout(() => { splash.style.display = 'none'; }, 500);
-            }
-        }
-
         function updateUserUI() {
             const name = currentUser || 'Ospite';
             const avatar = userProfile?.avatar || name.charAt(0).toUpperCase();
@@ -3883,16 +3919,28 @@
             initSiriIntegration();
             addSiriButtonToPlayer();
             
-            setTimeout(hideSplashScreen, 2000);
+            // Nascondi lo splash screen dopo il caricamento
+            setTimeout(hideSplashScreen, 1500);
             
+            // Fallback di sicurezza: dopo 4 secondi forza la rimozione
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
-                if (splash && !splash.classList.contains('hidden')) {
-                    hideSplashScreen();
+                if (splash && splash.style.display !== 'none') {
+                    console.log('[Splash] Forzata rimozione dopo timeout globale');
+                    splash.classList.add('force-hidden');
+                    splash.style.display = 'none';
                 }
-            }, 3500);
+            }, 4000);
             
-            if (!currentUser) setTimeout(() => openModal('auth-modal'), 2500);
+            // Se l'utente non è loggato, mostra il modale di login
+            if (!currentUser) {
+                setTimeout(() => {
+                    // Assicurati che lo splash sia nascosto prima di mostrare il modale
+                    setTimeout(() => {
+                        openModal('auth-modal');
+                    }, 500);
+                }, 2000);
+            }
         };
     </script>
 </body>
