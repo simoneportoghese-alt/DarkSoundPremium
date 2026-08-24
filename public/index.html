@@ -34,7 +34,6 @@
             --player-max-height: 90vh;
         }
 
-        /* TEMI COMPLETI */
         [data-theme="verde"] {
             --spotify-green: #1db954;
             --spotify-green-hover: #1ed760;
@@ -192,10 +191,6 @@
             overflow: hidden;
         }
 
-        body.modal-open {
-            overflow: hidden;
-        }
-
         #app-container {
             position: fixed;
             top: 0;
@@ -215,15 +210,11 @@
             z-index: 1;
         }
 
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes scaleIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes wave { 0%, 100% { transform: scaleY(0.3); } 50% { transform: scaleY(1); } }
-        @keyframes loadingBar { 0% { width: 0%; } 50% { width: 60%; } 100% { width: 100%; } }
-        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes eqBar1 { 0%, 100% { height: 4px; } 20% { height: 16px; } 40% { height: 8px; } 60% { height: 20px; } 80% { height: 6px; } }
         @keyframes eqBar2 { 0%, 100% { height: 16px; } 20% { height: 6px; } 40% { height: 20px; } 60% { height: 8px; } 80% { height: 14px; } }
         @keyframes eqBar3 { 0%, 100% { height: 8px; } 20% { height: 20px; } 40% { height: 6px; } 60% { height: 16px; } 80% { height: 10px; } }
@@ -275,7 +266,7 @@
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
         }
         #splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         .splash-logo {
@@ -288,31 +279,28 @@
             justify-content: center;
             font-size: 2rem;
             color: #000;
-            animation: scaleIn 0.8s ease, float 3s ease-in-out infinite 0.8s;
+            animation: scaleIn 0.6s ease, float 3s ease-in-out infinite 0.6s;
         }
         .splash-title { font-size: 1.6rem; font-weight: 900; color: #fff; margin-top: 14px; }
         .splash-subtitle { font-size: 0.75rem; color: var(--text-accent); letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
-        .splash-wave { display: flex; align-items: center; gap: 4px; margin-top: 20px; height: 25px; }
-        .splash-wave span { width: 4px; height: 18px; background: var(--spotify-green); border-radius: 2px; animation: wave 1s ease-in-out infinite; }
-        .splash-wave span:nth-child(2) { animation-delay: 0.1s; }
-        .splash-wave span:nth-child(3) { animation-delay: 0.2s; }
-        .splash-wave span:nth-child(4) { animation-delay: 0.3s; }
-        .splash-wave span:nth-child(5) { animation-delay: 0.4s; }
-        .splash-wave span:nth-child(6) { animation-delay: 0.5s; }
-        .splash-wave span:nth-child(7) { animation-delay: 0.6s; }
         .splash-loading { width: 180px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; margin-top: 14px; }
-        .splash-loading-bar { height: 100%; background: linear-gradient(90deg, var(--spotify-green), var(--accent-tertiary), var(--spotify-green)); background-size: 200% 100%; animation: loadingBar 2s ease forwards, gradientShift 2s ease infinite; }
+        .splash-loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--spotify-green), var(--accent-tertiary), var(--spotify-green));
+            background-size: 200% 100%;
+            animation: loadingBar 2s ease forwards;
+        }
+        @keyframes loadingBar { 0% { width: 0%; } 50% { width: 60%; } 100% { width: 100%; } }
 
         .view {
             display: none;
             padding: 12px;
             padding-bottom: 160px;
-            animation: fadeIn 0.3s ease;
             max-width: 800px;
             margin: 0 auto;
             min-height: 100%;
         }
-        .view.active { display: block; }
+        .view.active { display: block; animation: fadeIn 0.3s ease; }
 
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; margin-bottom: 12px; }
         .top-bar-title { font-size: 1.3rem; font-weight: 900; letter-spacing: -0.5px; }
@@ -354,6 +342,7 @@
             -webkit-tap-highlight-color: transparent;
             user-select: none;
             -webkit-user-select: none;
+            -webkit-touch-callout: none;
         }
         .track-row:active { background: #333; }
         .track-row-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; overflow: hidden; pointer-events: none; }
@@ -363,7 +352,7 @@
         .track-meta h4 { font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
         .track-meta p { font-size: 0.7rem; color: var(--spotify-gray); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
         .track-actions { display: flex; gap: 10px; color: var(--spotify-gray); font-size: 0.8rem; opacity: 1; pointer-events: auto; }
-        .track-actions i { cursor: pointer; }
+        .track-actions i { cursor: pointer; padding: 2px; }
 
         .search-box {
             background: #fff; border-radius: var(--radius-full);
@@ -386,7 +375,6 @@
             border-radius: var(--radius-md); padding: 16px; cursor: pointer;
             min-height: 65px; display: flex; align-items: flex-end;
             border: none;
-            -webkit-tap-highlight-color: transparent;
         }
         .genre-card:active { transform: scale(0.95); }
         .genre-card h3 { font-size: 0.9rem; font-weight: 900; }
@@ -394,7 +382,6 @@
         .artist-card {
             display: flex; align-items: center; gap: 10px;
             padding: 10px; border-radius: var(--radius-md); cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
         }
         .artist-card:active { background: #333; }
         .artist-card img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; pointer-events: none; }
@@ -430,7 +417,7 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(0.9);
             width: calc(100% - 20px);
             max-width: var(--player-max-width);
             height: auto;
@@ -446,15 +433,21 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            opacity: 0;
+            transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        #fullscreen-player.active { display: flex; animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        #fullscreen-player.active {
+            display: flex;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
         .fs-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; filter: blur(80px); background-size: cover; border-radius: 20px; }
         .fs-top { display: flex; justify-content: space-between; align-items: center; z-index: 2; padding: 4px 0; }
         .fs-top i { color: #fff; cursor: pointer; font-size: 1.1rem; padding: 6px; }
         .fs-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2; padding: 8px 0; }
         .fs-cover { width: 100%; max-width: 200px; aspect-ratio: 1; border-radius: 12px; object-fit: cover; margin-bottom: 12px; box-shadow: 0 10px 30px var(--border-glow); }
         .fs-title { font-size: 1.1rem; font-weight: 900; color: #fff; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-        .fs-artist { font-size: 0.8rem; color: #b3b3b3; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+        .fs-artist { font-size: 0.8rem; color: #b3b3b3; margin-top: 2px; }
         .fs-actions { display: flex; gap: 14px; margin-top: 10px; }
         .fs-actions i { font-size: 1.1rem; color: #b3b3b3; cursor: pointer; padding: 4px; }
         .fs-actions i.active { color: var(--spotify-green); }
@@ -487,10 +480,10 @@
             background: rgba(0,0,0,0.7);
             z-index: 2400;
             display: none;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.25s ease;
         }
-        .fs-overlay.active { display: block; }
+        .fs-overlay.active { display: block; opacity: 1; }
 
         .lyrics-view {
             position: absolute;
@@ -507,7 +500,7 @@
             background: var(--gradient-bg);
             border-radius: 20px;
         }
-        .lyrics-view.active { display: flex; }
+        .lyrics-view.active { display: flex; animation: fadeIn 0.3s ease; }
         .lyrics-close-btn {
             position: fixed;
             top: 25px;
@@ -540,8 +533,8 @@
             line-height: 1.5;
         }
         .lyric-line.active { color: #fff; font-size: 1.1rem !important; text-shadow: 0 0 15px var(--border-glow); opacity: 1; }
-        .lyric-line.near-past, .lyric-line.near-future { color: rgba(255,255,255,0.5); opacity: 0.65; font-size: 1.1rem !important; }
-        .lyric-line.far { color: rgba(255,255,255,0.1); opacity: 0.2; font-size: 1.1rem !important; }
+        .lyric-line.near-past, .lyric-line.near-future { color: rgba(255,255,255,0.5); opacity: 0.65; }
+        .lyric-line.far { color: rgba(255,255,255,0.1); opacity: 0.2; }
 
         nav {
             position: fixed;
@@ -590,7 +583,7 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
-        .modal-overlay.active { display: flex; }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease; }
         .modal-card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -599,7 +592,7 @@
             max-width: 350px;
             max-height: 80vh;
             overflow-y: auto;
-            animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: scaleIn 0.25s ease;
             border: 1px solid var(--border-glow);
         }
         .modal-card h2 { font-size: 1.1rem; font-weight: 900; margin-bottom: 12px; }
@@ -765,7 +758,6 @@
             #fullscreen-player { max-height: 85vh; padding: 10px; }
             .fs-cover { max-width: 140px; margin-bottom: 8px; }
             .fs-title { font-size: 0.95rem; }
-            .fs-artist { font-size: 0.7rem; }
             .player-equalizer-large { height: 25px; margin: 4px 0; }
             .fs-controls { margin-top: 6px; gap: 10px; }
             .fs-play-btn { width: 40px; height: 40px; }
@@ -778,9 +770,6 @@
         <div class="splash-logo"><i class="fas fa-music"></i></div>
         <div class="splash-title">DarkSound Pro</div>
         <div class="splash-subtitle">by DarkSW</div>
-        <div class="splash-wave">
-            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-        </div>
         <div class="splash-loading"><div class="splash-loading-bar"></div></div>
     </div>
 
@@ -788,7 +777,7 @@
 
     <div id="app-container">
         <div class="view-scroll-area" id="viewScrollArea">
-            <div id="profileDrawer" style="position:fixed; top:0; right:-100%; width:100%; max-width:300px; height:100%; background:var(--card-bg); z-index:4000; transition:right 0.4s; display:flex; flex-direction:column; padding:16px; overflow-y:auto; border-left: 1px solid var(--border-glow);">
+            <div id="profileDrawer" style="position:fixed; top:0; right:-100%; width:100%; max-width:300px; height:100%; background:var(--card-bg); z-index:4000; transition:right 0.3s; display:flex; flex-direction:column; padding:16px; overflow-y:auto; border-left: 1px solid var(--border-glow);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                     <div style="display:flex; align-items:center; gap:10px;">
                         <div id="drawerAvatarInitial" style="width:40px;height:40px;border-radius:50%;background:var(--spotify-green);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;overflow:hidden;">S</div>
@@ -822,165 +811,11 @@
                 </div>
             </div>
 
-            <!-- MODALI -->
-            <div id="auth-modal" class="modal-overlay">
-                <div class="modal-card" style="text-align:center;">
-                    <div style="width:50px;height:50px;border-radius:16px;background:linear-gradient(135deg,var(--spotify-green),var(--accent-tertiary));display:flex;align-items:center;justify-content:center;margin:0 auto 12px auto;font-size:1.3rem;color:#000;"><i class="fas fa-music"></i></div>
-                    <h2>Accedi a DarkSound</h2>
-                    <p style="color:#b3b3b3;font-size:0.75rem;margin-bottom:14px;">La tua musica, ovunque tu sia</p>
-                    <button class="btn-google" onclick="loginWithGoogle()" style="margin-bottom:12px;"><i class="fab fa-google" style="color:#4285F4;"></i> Continua con Google</button>
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div style="flex:1;height:1px;background:#333;"></div><span style="color:#777;font-size:0.7rem;">oppure</span><div style="flex:1;height:1px;background:#333;"></div></div>
-                    <div class="modal-input"><label style="text-align:left;">Nome Utente</label><input type="text" id="authEmail" placeholder="mario_rossi"></div>
-                    <div class="modal-input"><label style="text-align:left;">Password (opzionale)</label><input type="password" id="authPassword" placeholder="••••••••"></div>
-                    <button class="btn-primary" onclick="proceedToOnboarding()">Accedi</button>
-                    <button class="btn-secondary" onclick="closeModal('auth-modal')">Continua come Ospite</button>
-                </div>
-            </div>
-
-            <div id="onboarding-modal" class="modal-overlay">
-                <div class="modal-card">
-                    <h2>🎵 Benvenuto su DarkSound!</h2>
-                    <p style="color:#b3b3b3;font-size:0.75rem;margin-bottom:12px;">Seleziona i tuoi generi preferiti e creeremo playlist personalizzate per te con l'IA.</p>
-                    <div class="section-title" style="font-size:0.8rem;">Passo 1: Scegli i tuoi generi</div>
-                    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px;" id="genreGrid">
-                        <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🎵 Pop</button>
-                        <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🎤 Rap</button>
-                        <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🎸 Rock</button>
-                        <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🎧 Techno</button>
-                        <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🔊 Phonk</button>
-                        <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🎷 Jazz</button>
-                        <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🌴 Latin</button>
-                        <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🇰🇷 K-Pop</button>
-                    </div>
-                    <div class="section-title" style="font-size:0.8rem;">Passo 2: Artisti preferiti</div>
-                    <div class="modal-input"><label>Artista preferito</label><input type="text" id="favArtistInput" placeholder="Es. Travis Scott, Geolier, Lazza..."></div>
-                    <div class="modal-input"><label>Altri artisti (separati da virgola)</label><input type="text" id="moreArtistsInput" placeholder="Sfera Ebbasta, Shiva, Kid Yugi..."></div>
-                    <button class="btn-primary" onclick="completeOnboarding()">Crea la mia Radio e Playlist IA</button>
-                </div>
-            </div>
-
-            <div id="followed-artists-modal" class="modal-overlay">
-                <div class="modal-card">
-                    <h2>Artisti che Segui</h2>
-                    <div id="followedArtistsList" style="max-height:300px;overflow-y:auto;"></div>
-                    <button class="btn-secondary" onclick="closeModal('followed-artists-modal')">Chiudi</button>
-                </div>
-            </div>
-
-            <div id="profile-edit-modal" class="modal-overlay">
-                <div class="modal-card">
-                    <h2>Modifica Profilo</h2>
-                    <div class="modal-input"><label>Nome Utente</label><input type="text" id="editProfileName"></div>
-                    <div class="modal-input"><label>Bio</label><input type="text" id="editProfileBio"></div>
-                    <div class="modal-input"><label>Foto Profilo</label><input type="file" id="editProfilePhoto" accept="image/*" onchange="previewProfilePhoto(this)"></div>
-                    <div id="profilePhotoPreview" style="margin-top:6px;text-align:center;"></div>
-                    <div class="modal-input"><label>Genere</label><select id="editProfileGenre"><option>Pop</option><option>Rap</option><option>Rock</option><option>Techno</option><option>Jazz</option></select></div>
-                    <button class="btn-primary" onclick="saveProfileChanges()">Salva</button>
-                    <button class="btn-secondary" onclick="closeModal('profile-edit-modal')">Annulla</button>
-                </div>
-            </div>
-
-            <div id="add-friend-modal" class="modal-overlay">
-                <div class="modal-card">
-                    <h2>Aggiungi Amico</h2>
-                    <div class="modal-input"><label>Nome Utente</label><input type="text" id="addFriendInput"></div>
-                    <div id="addFriendResults"></div>
-                    <button class="btn-primary" onclick="searchFriend()">Cerca</button>
-                    <button class="btn-secondary" onclick="closeModal('add-friend-modal')">Chiudi</button>
-                </div>
-            </div>
-
-            <div id="share-modal" class="modal-overlay">
-                <div class="modal-card">
-                    <h3 style="font-weight:800;margin-bottom:8px;">Condividi</h3>
-                    <p id="shareTrackSubtitle" style="color:#b3b3b3;font-size:0.75rem;margin-bottom:12px;"></p>
-                    <button class="btn-primary" onclick="shareViaWhatsApp()" style="background:#25D366;color:#fff;"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                    <button class="btn-secondary" onclick="copyTrackLink()"><i class="fas fa-link"></i> Copia Link</button>
-                    <button class="btn-secondary" onclick="closeModal('share-modal')">Chiudi</button>
-                </div>
-            </div>
-
-            <div id="playlist-select-modal" class="modal-overlay">
-                <div class="modal-card">
-                    <h3 style="font-weight:800;margin-bottom:10px;">Aggiungi a playlist</h3>
-                    <div id="playlistSelectList" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;"></div>
-                    <button class="btn-secondary" onclick="closeModal('playlist-select-modal')">Chiudi</button>
-                </div>
-            </div>
-
-            <div id="new-playlist-modal" class="modal-overlay">
-                <div class="modal-card">
-                    <h3 style="font-weight:800;margin-bottom:10px;">Crea Nuova Playlist</h3>
-                    <div class="modal-input"><label>Nome</label><input type="text" id="newPlaylistName"></div>
-                    <div class="modal-input"><label>Visibilità</label><select id="newPlaylistVisibility"><option value="private">Privata</option><option value="public">Pubblica</option></select></div>
-                    <button class="btn-primary" onclick="submitNewPlaylist()">Crea</button>
-                    <button class="btn-secondary" onclick="closeModal('new-playlist-modal')">Annulla</button>
-                </div>
-            </div>
-
-            <div id="ai-dj-modal" class="modal-overlay">
-                <div class="modal-card">
-                    <h2>AI DJ</h2>
-                    <p style="color:#b3b3b3;font-size:0.75rem;margin-bottom:12px;">"Ciao! Sono il tuo DJ virtuale. Creo un mix con le tue canzoni preferite!"</p>
-                    <button class="btn-primary" onclick="runAiDjSelection()">Avvia Mix Automatico</button>
-                    <button class="btn-secondary" onclick="closeModal('ai-dj-modal')">Chiudi</button>
-                </div>
-            </div>
-
-            <div id="ai-playlist-modal" class="modal-overlay">
-                <div class="modal-card">
-                    <h2>Crea Playlist con IA</h2>
-                    <div class="modal-input"><label>Scrivi un genere musicale</label><input type="text" id="aiPromptInput" placeholder="Es. Techno, Pop, Rap, Phonk..."></div>
-                    <button class="btn-primary" onclick="generateAiPromptPlaylist()">Genera Mix</button>
-                    <button class="btn-secondary" onclick="closeModal('ai-playlist-modal')">Annulla</button>
-                </div>
-            </div>
-
-            <div id="blend-modal" class="modal-overlay">
-                <div class="modal-card">
-                    <h2>Crea Blend con un Amico</h2>
-                    <div class="modal-input"><label>Seleziona amico</label><select id="blendFriendSelect"></select></div>
-                    <button class="btn-primary" onclick="createBlendPlaylist()">Crea Playlist Blend</button>
-                    <button class="btn-secondary" onclick="closeModal('blend-modal')">Chiudi</button>
-                </div>
-            </div>
-
-            <div id="import-playlist-modal" class="modal-overlay">
-                <div class="modal-card">
-                    <h2>Importa Playlist</h2>
-                    <p style="color:#b3b3b3;font-size:0.7rem;margin-bottom:12px;">Incolla un link Spotify, YouTube, SoundCloud o Deezer.</p>
-                    <div class="modal-input"><label>Link Playlist</label><input type="text" id="playlistLinkInput" placeholder="https://open.spotify.com/playlist/..."></div>
-                    <div class="modal-input"><label>Nome (opzionale)</label><input type="text" id="playlistNameInput"></div>
-                    <button class="btn-primary" onclick="importPlaylistFromLink()">Importa</button>
-                    <button class="btn-secondary" onclick="closeModal('import-playlist-modal')">Annulla</button>
-                    <div id="importProgress" style="margin-top:10px;text-align:center;font-size:0.7rem;color:#b3b3b3;"></div>
-                </div>
-            </div>
-
-            <div id="add-to-playlist-modal" class="modal-overlay">
-                <div class="modal-card">
-                    <h3 style="font-weight:800;margin-bottom:10px;">Aggiungi brani</h3>
-                    <div class="modal-input"><label>Cerca brano da aggiungere</label><input type="text" id="addToPlaylistSearch" placeholder="Cerca un brano..." oninput="searchForPlaylistAddition(this.value)"></div>
-                    <div id="addToPlaylistResults" style="max-height:250px;overflow-y:auto;"></div>
-                    <button class="btn-secondary" onclick="closeModal('add-to-playlist-modal')">Chiudi</button>
-                </div>
-            </div>
-
             <!-- VISTE -->
             <div id="view-home" class="view active">
                 <div class="top-bar">
                     <span class="top-bar-title" id="homeWelcomeTitle">Esplora</span>
                     <button class="user-btn" onclick="toggleProfileDrawer()" id="pillUserNameBtn">S</button>
-                </div>
-                
-                <div class="trend-section" style="margin-bottom:16px;background:var(--gradient-bg);border:1px solid var(--border-glow);border-radius:var(--radius-lg);overflow:hidden;">
-                    <div class="trend-header" onclick="toggleTrendSection()" style="display:flex;justify-content:space-between;align-items:center;padding:12px;cursor:pointer;">
-                        <h3 style="font-size:0.9rem;font-weight:900;display:flex;align-items:center;gap:6px;"><i class="fas fa-fire" style="color:#f15e6c;"></i> Trend del momento</h3>
-                        <i class="fas fa-chevron-down" id="trendChevron" style="color:#b3b3b3;transition:transform 0.3s;"></i>
-                    </div>
-                    <div class="trend-content" id="trendContent" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease;padding:0 12px;">
-                        <p style="color:#b3b3b3;font-size:0.75rem;">Caricamento trend...</p>
-                    </div>
                 </div>
                 
                 <div class="quick-grid">
@@ -1021,8 +856,6 @@
                         <div class="genre-card" style="background:#8d67ab;" onclick="searchGenrePlaylist('USA')"><h3>R&B</h3></div>
                         <div class="genre-card" style="background:#006450;" onclick="searchGenrePlaylist('Corea')"><h3>K-Pop</h3></div>
                     </div>
-                    <div class="section-title" style="margin-top:12px;">Playlist per Genere</div>
-                    <div id="genrePlaylistsContainer"></div>
                 </div>
                 
                 <div id="countriesViewSection" style="display:none;">
@@ -1073,6 +906,28 @@
                     <div class="section-title" style="margin-top:16px;">Playlist Pubbliche</div>
                     <div id="profilePublicPlaylists"></div>
                 </div>
+            </div>
+
+            <div id="view-stats" class="view">
+                <div class="top-bar"><span class="top-bar-title">Statistiche</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
+                    <div style="background:var(--card-bg);border-radius:8px;padding:16px;text-align:center;border:1px solid var(--border-glow);"><h3 style="font-size:1.5rem;font-weight:900;color:var(--spotify-green);" id="statsLikedSongs">0</h3><p style="font-size:0.7rem;color:#b3b3b3;">Preferiti</p></div>
+                    <div style="background:var(--card-bg);border-radius:8px;padding:16px;text-align:center;border:1px solid var(--border-glow);"><h3 style="font-size:1.5rem;font-weight:900;color:#3d91f4;" id="statsPlaylists">0</h3><p style="font-size:0.7rem;color:#b3b3b3;">Playlist</p></div>
+                    <div style="background:var(--card-bg);border-radius:8px;padding:16px;text-align:center;border:1px solid var(--border-glow);"><h3 style="font-size:1.5rem;font-weight:900;color:#a855f7;" id="statsFriends">0</h3><p style="font-size:0.7rem;color:#b3b3b3;">Amici</p></div>
+                    <div style="background:var(--card-bg);border-radius:8px;padding:16px;text-align:center;border:1px solid var(--border-glow);"><h3 style="font-size:1.5rem;font-weight:900;color:#ff9f0a;" id="statsHistory">0</h3><p style="font-size:0.7rem;color:#b3b3b3;">Ascoltati</p></div>
+                    <div style="background:var(--card-bg);border-radius:8px;padding:16px;text-align:center;border:1px solid var(--border-glow);"><h3 style="font-size:1.5rem;font-weight:900;color:#f15e6c;" id="statsDownloads">0</h3><p style="font-size:0.7rem;color:#b3b3b3;">Scaricati</p></div>
+                    <div style="background:var(--card-bg);border-radius:8px;padding:16px;text-align:center;border:1px solid var(--border-glow);"><h3 style="font-size:1.5rem;font-weight:900;color:var(--spotify-green);" id="statsArtistsFollowed">0</h3><p style="font-size:0.7rem;color:#b3b3b3;">Artisti Seguiti</p></div>
+                </div>
+            </div>
+
+            <div id="view-history" class="view">
+                <div class="top-bar"><span class="top-bar-title">Cronologia</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
+                <div id="historyList"></div>
+            </div>
+
+            <div id="view-downloads" class="view">
+                <div class="top-bar"><span class="top-bar-title">Download</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
+                <div id="downloadsList"></div>
             </div>
 
             <div id="view-settings" class="view">
@@ -1201,137 +1056,115 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        // ============ ENCICLOPEDIA MUSICALE COMPLETA ============
+        // ============ ENCICLOPEDIA MUSICALE ============
         const MUSIC_ENCYCLOPEDIA = {
             'Italia': {
-                title: '🇮🇹 Italia - Mercato Italia & Mediterraneo',
-                color: '#009246',
+                title: '🇮🇹 Italia',
                 subgenres: {
-                    'Mainstream Pop & Sanremo Icons': ['Tiziano Ferro', 'Laura Pausini', 'Marco Mengoni', 'Annalisa', 'Giorgia', 'Emma', 'Elisa', 'Mahmood', 'Angelina Mango', 'Irama', 'Achille Lauro', 'Fedez', 'Francesca Michielin', 'Noemi', 'Arisa', 'Rocco Hunt', 'Baby K', 'Boomdabash', 'Elettra Lamborghini', 'Shade'],
-                    'Contemporary Indie Pop': ['Cesare Cremonini', 'Calcutta', 'Gazzelle', 'Brunori Sas', 'Tommaso Paradiso', 'Coez', 'Frah Quintale', 'Diodato', 'Madame', 'Rose Villain', 'Levante', 'Coma_Cose', 'Pinguini Tattici Nucleari', 'La Rappresentante di Lista', 'Fulminacci', 'Colapesce', 'Dimartino', 'Venerus', 'Mecna', 'Sick Luke'],
-                    'Commercial & Mega-Trap': ['Sfera Ebbasta', 'Geolier', 'Lazza', 'Shiva', 'Tony Effe', 'Capo Plaza', 'Guè', 'Marracash', 'Tedua', 'Tony Boy', 'Side Baby', 'Dark Polo Gang', 'Izi', 'Rkomi', 'Ernia', 'Nitro', 'Fabri Fibra', 'Gemitaiz', 'MadMan', 'Clementino'],
-                    'Melodic Trap & New Wave': ['Artie 5ive', 'Bresh', 'Rkomi', 'Pyrex', 'Rhove', 'Diss Gacha', 'Anna', 'Low Kidd', 'Night Skinny', 'Vale Pain', 'Nerissima Serpe', 'Papa V', 'Kid Yugi', 'Nayt', 'Noyz Narcos', 'Emis Killa', 'Salmo', 'Massimo Pericolo', 'Rondodasosa', 'Baby Gang'],
-                    'Conscious & Street Rap': ['Kid Yugi', 'Nayt', 'Noyz Narcos', 'Ernia', 'Fabri Fibra', 'Salmo', 'Massimo Pericolo', 'Emis Killa', 'Gemitaiz', 'MadMan', 'Nitro', 'Clementino', 'Ensi', 'Jack The Smoker', 'Mistaman', 'Rancore', 'Murubutu', 'Claver Gold', 'Lanz Khan', 'DSA Commando'],
-                    'Italian Drill & Street Sound': ['Rondodasosa', 'Vale Pain', 'Neima Ezza', 'Baby Gang', 'Sacky', 'Naska', 'Simba La Rue', 'Kassimi', 'Nko', 'Speranza', 'J Lord', 'Mikush', 'Delaruà', 'Digital Astro', 'Faneto'],
-                    'Melodic Techno & Progressive': ['Tale Of Us', 'Anyma', 'Giorgia Angiuli', 'Mathame', 'Meduza', 'Gabry Ponte', 'Gigi D\'Agostino', 'Mace', 'Venerus', 'Go Dugong', 'Bawrut', 'Malandra Jr', 'Speaking Minds', 'Templar', 'Underspreche'],
-                    'Rock & Alternative': ['Måneskin', 'Verdena', 'Afterhours', 'Baustelle', 'Subsonica', 'Zen Circus', 'Ministri', 'Fast Animals and Slow Kids', 'Pinguini Tattici Nucleari', 'La Rappresentante di Lista', 'Calcutta', 'Gazzelle', 'Brunori Sas', 'Diodato', 'Levante', 'Coma_Cose']
+                    'Pop': ['Tiziano Ferro', 'Marco Mengoni', 'Annalisa', 'Angelina Mango', 'Irama', 'Achille Lauro', 'Fedez'],
+                    'Trap': ['Sfera Ebbasta', 'Geolier', 'Lazza', 'Shiva', 'Tony Effe', 'Capo Plaza', 'Guè', 'Marracash'],
+                    'Rap': ['Kid Yugi', 'Nayt', 'Salmo', 'Fabri Fibra', 'Nitro', 'Emis Killa', 'Gemitaiz', 'MadMan'],
+                    'Drill': ['Rondodasosa', 'Vale Pain', 'Baby Gang', 'Sacky', 'Simba La Rue', 'Neima Ezza'],
+                    'Indie': ['Calcutta', 'Gazzelle', 'Brunori Sas', 'Cesare Cremonini', 'Diodato', 'Levante'],
+                    'Techno': ['Tale Of Us', 'Anyma', 'Mathame', 'Meduza', 'Gabry Ponte', 'Gigi D\'Agostino'],
+                    'Rock': ['Måneskin', 'Verdena', 'Afterhours', 'Subsonica', 'Zen Circus']
                 }
             },
             'USA': {
-                title: '🇺🇸 Stati Uniti - Mainstream & Underground',
-                color: '#3c3b6e',
+                title: '🇺🇸 USA',
                 subgenres: {
-                    'Global Pop Megastars': ['Taylor Swift', 'Ariana Grande', 'Bruno Mars', 'Katy Perry', 'Lady Gaga', 'Miley Cyrus', 'Shawn Mendes', 'Charlie Puth', 'Billie Eilish', 'Olivia Rodrigo', 'Sabrina Carpenter', 'Chappell Roan', 'Benson Boone', 'Tate McRae', 'Dua Lipa', 'Harry Styles'],
-                    'Gen-Z Viral & Dance-Pop': ['Sabrina Carpenter', 'Chappell Roan', 'Olivia Rodrigo', 'Tate McRae', 'Doja Cat', 'Benson Boone', 'Troye Sivan', 'Reneé Rapp', 'Gracie Abrams', 'Madison Beer', 'Lauv', 'Lauv', 'SZA', 'Beyoncé', 'Taylor Swift', 'Ariana Grande'],
-                    'Commercial Mega-Rap & Trap': ['Drake', 'Travis Scott', 'Kanye West', 'Kendrick Lamar', 'Future', 'Post Malone', 'Playboi Carti', 'Lil Baby', 'Gunna', 'Lil Uzi Vert', '21 Savage', 'Metro Boomin', 'Young Thug', 'A$AP Rocky', 'Tyler The Creator', 'J. Cole'],
-                    'Melodic Trap & Soundcloud Era': ['Juice WRLD', 'Lil Durk', 'Rod Wave', 'Don Toliver', 'Yeat', 'Ken Carson', 'Destroy Lonely', 'Lil Tecca', 'Baby Keem', 'Polo G', 'Lil Tjay', 'The Kid LAROI', 'Iann Dior', '24kGoldn', 'NLE Choppa', 'Cochise'],
-                    'Conscious, Jazz & Alternative Rap': ['J. Cole', 'Nas', 'Tyler The Creator', 'JID', 'Denzel Curry', 'Joey Bada$$', 'Mac Miller', 'Vince Staples', 'Wu-Tang Clan', 'OutKast', 'Earl Sweatshirt', 'Freddie Gibbs', 'Run The Jewels', 'Danny Brown', 'JPEGMAFIA', 'Death Grips'],
-                    'Stadium Rock & Hard Rock': ['Foo Fighters', 'Metallica', 'Red Hot Chili Peppers', 'Guns N\' Roses', 'Nirvana', 'Pearl Jam', 'Green Day', 'Blink-182', 'Linkin Park', 'Slipknot', 'Korn', 'Paramore', 'My Chemical Romance', 'Fall Out Boy', 'Machine Gun Kelly', 'Bad Omens'],
-                    'Metalcore, Deathcore & Modern Rock': ['Bad Omens', 'Lorna Shore', 'Spiritbox', 'Falling In Reverse', 'Architects', 'Deftones', 'Tool', 'Mastodon', 'Bring Me The Horizon', 'Motionless In White', 'Ice Nine Kills', 'Wage War', 'Polaris', 'Currents', 'Erra', 'Silent Planet'],
-                    'Modern Country Rock & Americana': ['Zach Bryan', 'Morgan Wallen', 'Luke Combs', 'Shaboozey', 'Jelly Roll', 'Chris Stapleton', 'Lainey Wilson', 'Johnny Cash', 'Kacey Musgraves', 'Tyler Childers', 'Sturgill Simpson', 'Jason Isbell', 'Brandi Carlile', 'Orville Peck', 'Margo Price'],
-                    'Contemporary R&B & Alt-Soul': ['SZA', 'Frank Ocean', 'Beyoncé', 'H.E.R.', 'Bryson Tiller', 'Rihanna', 'Usher', 'Brent Faiyaz', 'Summer Walker', 'Jhené Aiko', 'Kehlani', 'Daniel Caesar', 'Giveon', 'Lucky Daye', 'Snoh Aalegra', 'Sabrina Claudio'],
-                    'Neo-Soul, Funk & Legacy': ['Anderson .Paak', 'Leon Bridges', 'Silk Sonic', 'Thundercat', 'Erykah Badu', 'D\'Angelo', 'Stevie Wonder', 'Marvin Gaye', 'Prince', 'Kendrick Lamar', 'Jill Scott', 'Maxwell', 'Musiq Soulchild', 'Anthony Hamilton', 'Raphael Saadiq', 'D\'Angelo'],
-                    'Bass, Dubstep & Festival EDM': ['Skrillex', 'Diplo', 'Marshmello', 'Illenium', 'Excision', 'Fisher', 'John Summit', 'Dom Dolla', 'Sara Landry', 'REZZ', 'Zeds Dead', 'Subtronics', 'Svdden Death', 'Wooli', 'Ganja White Night', 'Liquid Stranger']
+                    'Pop': ['Taylor Swift', 'Ariana Grande', 'Bruno Mars', 'Billie Eilish', 'Olivia Rodrigo', 'Sabrina Carpenter'],
+                    'Hip-Hop': ['Drake', 'Travis Scott', 'Kendrick Lamar', 'Kanye West', 'Future', 'Post Malone'],
+                    'Trap': ['Lil Baby', 'Gunna', 'Lil Uzi Vert', '21 Savage', 'Metro Boomin', 'Playboi Carti'],
+                    'Rock': ['Foo Fighters', 'Metallica', 'Red Hot Chili Peppers', 'Nirvana', 'Pearl Jam'],
+                    'Metal': ['Slipknot', 'Korn', 'Linkin Park', 'Bad Omens', 'Tool', 'Deftones'],
+                    'R&B': ['SZA', 'Frank Ocean', 'Beyoncé', 'Bryson Tiller', 'Summer Walker', 'Brent Faiyaz'],
+                    'Country': ['Zach Bryan', 'Morgan Wallen', 'Luke Combs', 'Chris Stapleton', 'Jelly Roll'],
+                    'EDM': ['Skrillex', 'Marshmello', 'Illenium', 'Excision', 'Fisher', 'John Summit']
                 }
             },
             'UK': {
-                title: '🇬🇧 Regno Unito - British Invasion & Underground',
-                color: '#012169',
+                title: '🇬🇧 Regno Unito',
                 subgenres: {
-                    'UK Pop & Chart-Toppers': ['Ed Sheeran', 'Dua Lipa', 'Harry Styles', 'Adele', 'Coldplay', 'Sam Smith', 'Charli XCX', 'Ellie Goulding', 'Lewis Capaldi', 'Tom Grennan', 'Rag\'n\'Bone Man', 'Calum Scott', 'James Arthur', 'Anne-Marie', 'Becky Hill', 'Jorja Smith'],
-                    'UK Rap, Grime & Afroswing': ['Central Cee', 'Dave', 'Stormzy', 'Skepta', 'Headie One', 'D-Block Europe', 'AJ Tracey', 'Wiley', 'Jme', 'Giggs', 'Kano', 'Ghetts', 'Wretch 32', 'Aitch', 'Tion Wayne', 'Russ Millions'],
-                    'Drill & Underground Hip-Hop': ['Digga D', 'Knucks', 'Little Simz', 'Fredo', 'Ice Spice', 'Nines', 'Potter Payper', 'M Huncho', 'Unknown T', 'M24', 'Abra Cadabra', 'Loski', 'Blanco', 'Kwengface', 'PS Hitsquad', 'Zone 2'],
-                    'Indie & Britpop Legacy': ['Arctic Monkeys', 'The 1975', 'Oasis', 'Blur', 'Radiohead', 'Florence + The Machine', 'The Smiths', 'Joy Division', 'The Cure', 'Depeche Mode', 'New Order', 'Pulp', 'Suede', 'Manic Street Preachers', 'The Verve', 'Stone Roses'],
-                    'Post-Punk Revival & Alternative': ['Fontaines D.C.', 'Idles', 'Shame', 'Bring Me The Horizon', 'Muse', 'Greta Van Fleet', 'The Libertines', 'Franz Ferdinand', 'Kasabian', 'The Strokes', 'Interpol', 'Yeah Yeah Yeahs', 'TV On The Radio', 'LCD Soundsystem', 'Foals', 'Everything Everything'],
-                    'UK Garage, Dubstep & Ambient': ['Fred again..', 'Sub Focus', 'Sammy Virji', 'Chase & Status', 'Burial', 'Aphex Twin', 'Boards of Canada', 'Jon Hopkins', 'Four Tet', 'Jamie xx', 'Disclosure', 'Skream', 'Benga', 'Mala', 'Coki', 'Loefah'],
-                    'UK R&B & Alternative Soul': ['Jorja Smith', 'Mahalia', 'Cleo Sol', 'PinkPantheress', 'Arlo Parks', 'FKA twigs', 'Raye', 'Sampha', 'Michael Kiwanuka', 'Lianne La Havas', 'Nao', 'Tiana Major9', 'Kojey Radical', 'Tom Misch', 'Jordan Rakei', 'Yussef Dayes']
+                    'Pop': ['Ed Sheeran', 'Dua Lipa', 'Harry Styles', 'Adele', 'Sam Smith', 'Lewis Capaldi'],
+                    'Rap': ['Central Cee', 'Dave', 'Stormzy', 'Skepta', 'Headie One', 'AJ Tracey'],
+                    'Indie': ['Arctic Monkeys', 'Oasis', 'Radiohead', 'The Smiths', 'Blur'],
+                    'Garage': ['Fred again..', 'Sub Focus', 'Chase & Status', 'Disclosure']
                 }
             },
             'Phonk': {
-                title: '🔊 Phonk & Brazilian Funk',
-                color: '#503750',
+                title: '🔊 Phonk',
                 subgenres: {
-                    'Brazilian Phonk': ['MXZI', 'Ogryzek', 'MC Ryan SP', 'DJ GBR', 'MC Tuto', 'DJ Samir', 'Rushex', 'MC GW', 'MC Cabelinho', 'MC Kevin', 'MC Don Juan', 'MC Davi', 'MC Hariel', 'MC Lele JP', 'MC Marks', 'MC Paiva'],
-                    'Chill Phonk & Wave': ['LONOWN', 'DVRST', 'LXST CXNTURY', 'Skeler', 'd4vd', 'Kordhell', 'Interworld', 'Pharmacist', 'KSLV Noh', 'Dxrk ダーク', 'PlayaPhonk', 'MoonDeity', 'Soudiere', 'Von Storm', 'SCARION', 'FRXXMAN'],
-                    'Drift Phonk': ['DJ Smokey', 'Ghostface Playa', 'Sadfriendd', 'Roland Jones', 'Soudiere', 'Baker Ya Maker', 'Soulzay', 'Cursed', 'HAARPER', 'Ponsuda', 'Mupp', 'Freddie Dredd', 'Sxmpra', 'Doomshop', 'Slim Guerilla', 'Berrymane'],
-                    'Hard Phonk': ['Carpenter Brut', 'Perturbator', 'GosT', 'Dance With the Dead', 'Kavinsky', 'Mega Drive', 'Lazerhawk', 'Power Glove', 'Danger', 'Justice', 'SebastiAn', 'Mr. Oizo', 'Boys Noize', 'Gesaffelstein', 'The Hacker', 'Miss Kittin']
+                    'Brazilian Phonk': ['MXZI', 'Ogryzek', 'MC Ryan SP', 'DJ GBR', 'MC Tuto', 'DJ Samir'],
+                    'Chill Phonk': ['LONOWN', 'DVRST', 'Kordhell', 'Interworld', 'Pharmacist', 'Skeler'],
+                    'Drift Phonk': ['DJ Smokey', 'Ghostface Playa', 'Sadfriendd', 'Soudiere', 'Freddie Dredd'],
+                    'Hard Phonk': ['Carpenter Brut', 'Perturbator', 'GosT', 'Dance With the Dead']
                 }
             },
             'Techno': {
-                title: '🎧 Techno & Club Culture',
-                color: '#0d72ea',
+                title: '🎧 Techno',
                 subgenres: {
-                    'Hard Techno': ['Sara Landry', 'I Hate Models', '999999999', 'Paula Temple', 'Klangkuenstler', '6EJOU', 'SNTS', 'Alignment', 'Kobosil', 'Brutalismus 3000', 'Angerfist', 'Mad Dog', 'Miss K8', 'AniMe', 'N-Vitral', 'Deadly Guns'],
-                    'Melodic Techno': ['Tale Of Us', 'ARTBAT', 'Anyma', 'Stephan Bodzin', 'Ben Böhmer', 'CamelPhat', 'Mathame', 'Adriatique', 'Innellea', 'Kevin de Vries', 'Konstantin Sibold', 'Colyn', 'Fideles', 'Mind Against', 'Agents Of Time', 'Woo York'],
-                    'Tech-House': ['Fisher', 'Dom Dolla', 'John Summit', 'Chris Lake', 'Michael Bibi', 'Green Velvet', 'Patrick Topping', 'Hot Since 82', 'Solardo', 'CamelPhat', 'Eli Brown', 'Franky Rizardo', 'Latmun', 'Wheats', 'Detlef', 'Mason Maynard'],
-                    'EDM & Trance': ['David Guetta', 'Martin Garrix', 'Tiësto', 'Calvin Harris', 'Armin van Buuren', 'Hardwell', 'Afrojack', 'Dimitri Vegas & Like Mike', 'Nicky Romero', 'W&W', 'Blasterjaxx', 'Bassjackers', 'R3HAB', 'Don Diablo', 'Oliver Heldens', 'Lost Frequencies']
+                    'Hard Techno': ['Sara Landry', 'I Hate Models', 'Klangkuenstler', '999999999', 'Paula Temple'],
+                    'Melodic': ['Tale Of Us', 'ARTBAT', 'Anyma', 'Stephan Bodzin', 'Ben Böhmer'],
+                    'Tech-House': ['Fisher', 'John Summit', 'Chris Lake', 'Dom Dolla', 'Michael Bibi'],
+                    'EDM': ['David Guetta', 'Martin Garrix', 'Tiësto', 'Calvin Harris', 'Armin van Buuren']
                 }
             },
             'Latin': {
-                title: '🌎 America Latina & Caraibi',
-                color: '#006847',
+                title: '🌎 Latin',
                 subgenres: {
-                    'Reggaeton & Global Latin Pop': ['Bad Bunny', 'Karol G', 'Shakira', 'J Balvin', 'Daddy Yankee', 'Ozuna', 'Feid', 'Rauw Alejandro', 'Maluma', 'Anuel AA', 'Myke Towers', 'Sech', 'Wisin', 'Yandel', 'Nicky Jam', 'Farruko'],
-                    'Latin Trap & Urbano Alternativo': ['Duki', 'Bizarrap', 'Young Miko', 'Quevedo', 'Morad', 'Trueno', 'Nicki Nicole', 'Tiago PZK', 'Paulo Londra', 'Dillom', 'El Alfa', 'Ñengo Flow', 'Arcángel', 'De La Ghetto', 'Jhayco', 'Mora'],
-                    'Regional Mexicano & Corridos': ['Peso Pluma', 'Fuerza Regida', 'Junior H', 'Natanael Cano', 'Netón Vega', 'DannyLux', 'Grupo Frontera', 'Carin León', 'Eslabon Armado', 'Jasiel Nuñez', 'Gabito Ballesteros', 'Xavi', 'Oscar Maydon', 'Chino Pacas', 'Tito Double P', 'Luis R Conriquez'],
-                    'Tropical, Salsa & Bachata': ['Marc Anthony', 'Romeo Santos', 'Prince Royce', 'Juan Luis Guerra', 'Carlos Vives', 'Gilberto Santa Rosa', 'Celia Cruz', 'Héctor Lavoe', 'Buena Vista Social Club', 'Aventura', 'Monchy & Alexandra', 'Xtreme', 'Toby Love', 'Frank Reyes', 'Raulín Rodríguez']
+                    'Reggaeton': ['Bad Bunny', 'Karol G', 'J Balvin', 'Daddy Yankee', 'Ozuna', 'Feid'],
+                    'Trap': ['Duki', 'Bizarrap', 'Young Miko', 'Quevedo', 'Trueno', 'Tiago PZK'],
+                    'Corridos': ['Peso Pluma', 'Fuerza Regida', 'Junior H', 'Natanael Cano', 'Grupo Frontera']
                 }
             },
             'Corea': {
-                title: '🇰🇷 Corea del Sud - K-Pop Hub',
-                color: '#cd2e3a',
+                title: '🇰🇷 Corea',
                 subgenres: {
-                    'Global Icon Groups': ['BTS', 'BLACKPINK', 'TWICE', 'Stray Kids', 'SEVENTEEN', 'EXO', 'Red Velvet', 'NCT', 'NCT 127', 'NCT Dream', 'WayV', 'SuperM', 'SHINee', 'Big Bang', '2NE1', 'Girls\' Generation'],
-                    '4th & 5th Gen Powerhouses': ['NewJeans', 'LE SSERAFIM', 'aespa', 'ENHYPEN', 'ITZY', 'IVE', '(G)I-DLE', 'NMIXX', 'BOYNEXTDOOR', 'ILLIT', 'RIIZE', 'ZEROBASEONE', 'TWS', 'BABYMONSTER', 'MEOVV', 'TREASURE'],
-                    'Solo Superstars Lineage': ['Jung Kook', 'Jimin', 'V', 'J-Hope', 'RM', 'Suga', 'Jennie', 'Rosé', 'Lisa', 'Jisoo', 'Zico', 'Taemin', 'Baekhyun', 'Kai', 'Chen', 'D.O.'],
-                    'K-R&B, Indie & Soloists': ['IU', 'Taeyeon', 'Dean', 'BIBI', 'Crush', 'DPR Live', 'Jackson Wang', 'Sunmi', 'Colde', 'DPR Ian', 'Heize', 'Suran', 'Lee Hi', 'Zion.T', 'Katie', 'Junoflo']
+                    'K-Pop': ['BTS', 'BLACKPINK', 'TWICE', 'Stray Kids', 'NewJeans', 'aespa'],
+                    'Solo': ['Jung Kook', 'Jimin', 'Jennie', 'Rosé', 'Lisa', 'IU']
                 }
             },
             'Brasile': {
-                title: '🇧🇷 Brasile - Brazilian Hub',
-                color: '#009c3b',
+                title: '🇧🇷 Brasile',
                 subgenres: {
-                    'MTG, Montagem & Brazilian Phonk': ['MXZI', 'Ogryzek', 'DJ Samir', 'Rushex', 'MC Ryan SP', 'DJ GBR', 'MC Tuto', 'MC GW', 'MC Cabelinho', 'MC Kevin', 'MC Don Juan', 'MC Davi', 'MC Hariel', 'MC Lele JP', 'MC Marks', 'MC Paiva'],
-                    'Funk Carioca & Baile Funk': ['Anitta', 'Kevin o Chris', 'Ludmilla', 'MC Livinho', 'Lexa', 'Dennis DJ', 'MC Kevinho', 'MC Rebecca', 'MC Zaac', 'MC Loma', 'MC G15', 'MC WM', 'MC Jhowzinho', 'MC Kadinho', 'MC Menor', 'MC Dede'],
-                    'Samba, Bossa Nova & MPB': ['Tom Jobim', 'João Gilberto', 'Caetano Veloso', 'Gilberto Gil', 'Vinícius de Moraes', 'Marisa Monte', 'Elis Regina', 'Chico Buarque', 'Gal Costa', 'Jorge Ben Jor', 'Novos Baianos', 'Os Mutantes', 'Secos & Molhados', 'Raul Seixas', 'Tim Maia', 'Jorge Aragão']
+                    'Funk': ['Anitta', 'Kevin o Chris', 'Ludmilla', 'MC Livinho', 'Dennis DJ'],
+                    'Samba': ['Tom Jobim', 'João Gilberto', 'Caetano Veloso', 'Gilberto Gil']
                 }
             },
             'Francia': {
-                title: '🇫🇷 Francia - Scène Française',
-                color: '#0055a4',
+                title: '🇫🇷 Francia',
                 subgenres: {
-                    'French Rap, Trap & Drill': ['PNL', 'Damso', 'Ninho', 'Booba', 'SCH', 'Gazo', 'Niska', 'Jul', 'Tiakola', 'SDM', 'Hamza', 'Kaaris', 'Lacrim', 'Sofiane', 'RK', 'Zola'],
-                    'French Touch & Electro': ['Daft Punk', 'Gesaffelstein', 'Justice', 'DJ Snake', 'Bob Sinclar', 'Vladimir Cauchemar', 'Kavinsky', 'Breakbot', 'SebastiAn', 'Mr. Oizo', 'Busy P', 'Madeon', 'Porter Robinson', 'M83', 'Air', 'Phoenix']
+                    'Rap': ['PNL', 'Damso', 'Ninho', 'Booba', 'SCH', 'Gazo'],
+                    'Electro': ['Daft Punk', 'Gesaffelstein', 'Justice', 'DJ Snake', 'Kavinsky']
                 }
             },
             'Germania': {
-                title: '🇩🇪 Germania - Germany Hub',
-                color: '#000000',
+                title: '🇩🇪 Germania',
                 subgenres: {
-                    'Hard Techno, Industrial & Gabber': ['I Hate Models', '999999999', 'Paula Temple', 'Klangkuenstler', '6EJOU', 'SNTS', 'Alignment', 'Kobosil', 'Brutalismus 3000', 'Angerfist', 'Mad Dog', 'Miss K8', 'AniMe', 'N-Vitral', 'Deadly Guns', 'Sefa'],
-                    'Deutschrap & Elettronica': ['Apache 207', 'Bonez MC', 'Ufo361', 'Luciano', 'Shirin David', 'Kraftwerk', 'Paul Kalkbrenner', 'Robin Schulz', 'Felix Jaehn', 'Zedd', 'ATB', 'Blank & Jones', 'Talla 2XLC', 'Kai Tracid', 'Scooter', 'Blutengel']
+                    'Techno': ['I Hate Models', 'Klangkuenstler', 'Kobosil', '999999999'],
+                    'Rap': ['Apache 207', 'Bonez MC', 'Ufo361', 'Luciano']
                 }
             },
             'Africa': {
-                title: '🌍 Nigeria & Sudafrica - African Waves',
-                color: '#008751',
+                title: '🌍 Africa',
                 subgenres: {
-                    'Afrobeats & Afro-Fusion': ['Burna Boy', 'Wizkid', 'Tems', 'Rema', 'Ayra Starr', 'Ruger', 'Asake', 'Omah Lay', 'Davido', 'CKay', 'Tiwa Savage', 'Fireboy DML', 'Oxlade', 'Kizz Daniel', 'Zlatan', 'Naira Marley'],
-                    'Amapiano & African House': ['Tyla', 'Kabza De Small', 'DJ Maphorisa', 'Focalistic', 'Major League DJz', 'Uncle Waffles', 'DBN Gogo', 'Vigro Deep', 'De Mthuda', 'Njelic', 'Mellow & Sleazy', 'Felo Le Tee', 'Toss', 'Young Stunna', 'Semi Tee', 'Mdu aka TRP']
+                    'Afrobeats': ['Burna Boy', 'Wizkid', 'Tems', 'Rema', 'Ayra Starr', 'Asake'],
+                    'Amapiano': ['Tyla', 'Kabza De Small', 'DJ Maphorisa', 'Focalistic']
                 }
             },
             'Canada': {
-                title: '🇨🇦 Canada - Canada Hub',
-                color: '#ff0000',
+                title: '🇨🇦 Canada',
                 subgenres: {
-                    'Canadian Pop, R&B & Hip-Hop': ['The Weeknd', 'Justin Bieber', 'Drake', 'Shawn Mendes', 'Tate McRae', 'Michael Bublé', 'Arcade Fire', 'Sum 41', 'Avril Lavigne', 'Céline Dion', 'Shania Twain', 'Bryan Adams', 'Alessia Cara', 'PartyNextDoor', 'Nav', 'Tory Lanez']
+                    'Pop': ['The Weeknd', 'Justin Bieber', 'Shawn Mendes', 'Tate McRae', 'Alessia Cara'],
+                    'Rock': ['Arcade Fire', 'Sum 41', 'Avril Lavigne']
                 }
             },
             'Oceania': {
-                title: '🇦🇺 Australia & Oceania',
-                color: '#00008b',
+                title: '🇦🇺 Oceania',
                 subgenres: {
-                    'Indie, Alternative & Electronic': ['Tame Impala', 'Lorde', 'Troye Sivan', 'Rüfüs Du Sol', 'The Kid LAROI', 'Flume', 'King Gizzard & the Lizard Wizard', 'Amyl and the Sniffers', '5 Seconds of Summer', 'Sia', 'Kylie Minogue', 'Iggy Azalea', 'Vance Joy', 'Gotye', 'AC/DC', 'INXS']
+                    'Indie': ['Tame Impala', 'Lorde', 'Rüfüs Du Sol', 'Vance Joy'],
+                    'Pop': ['Sia', 'Kylie Minogue', 'The Kid LAROI', '5 Seconds of Summer']
                 }
             }
         };
@@ -1376,7 +1209,7 @@
             changeTheme(savedTheme);
         }
 
-        // ============ NAVIGAZIONE CHE NON RIPORTA IN CIMA ============
+        // ============ NAVIGAZIONE ============
         function switchView(viewName, btnElement) {
             const currentActiveView = document.querySelector('.view.active');
             if (currentActiveView) {
@@ -1384,6 +1217,7 @@
             }
             const drawer = document.getElementById('profileDrawer');
             if (drawer.style.right === '0px') drawer.style.right = '-100%';
+            
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             const target = document.getElementById('view-' + viewName);
             if (target) {
@@ -1424,6 +1258,31 @@
         function openAboutView() { toggleProfileDrawer(); switchView('about'); }
         function openLikedSongs() { switchView('liked-songs'); renderLikedSongsView(); }
 
+        // ============ MODALI ============
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+                document.body.classList.add('modal-open');
+                document.getElementById('viewScrollArea').style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.classList.remove('modal-open');
+                document.getElementById('viewScrollArea').style.overflow = 'auto';
+            }
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+            document.body.classList.remove('modal-open');
+            document.getElementById('viewScrollArea').style.overflow = 'auto';
+        }
+
         // ============ RICERCA PLAYLIST PER GENERE ============
         async function searchGenrePlaylist(genreKey) {
             switchView('search', document.querySelectorAll('.nav-item')[1]);
@@ -1444,17 +1303,15 @@
                 allArtists.push(...subgenre);
             }
             
-            // Mostra playlist del genere
             let html = `<div class="section-title" style="margin-top:12px;">${genreData.title} - Playlist</div>`;
             html += `<div class="track-row" style="cursor:pointer;" onclick="playGenrePlaylist('${genreKey}')">
                 <div class="track-row-left">
-                    <div style="width:42px;height:42px;background:${genreData.color};border-radius:4px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:#fff;"></i></div>
+                    <div style="width:42px;height:42px;background:${genreData.color || 'var(--spotify-green)'};border-radius:4px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:#fff;"></i></div>
                     <div class="track-meta"><h4>${genreData.title}</h4><p>${allArtists.length} artisti • Tocca per riprodurre</p></div>
                 </div>
                 <i class="fas fa-play" style="color:var(--spotify-green);"></i>
             </div>`;
             
-            // Mostra artisti del genere
             html += `<div class="section-title" style="margin-top:16px;">Artisti ${genreData.title}</div>`;
             
             const uniqueArtists = [...new Set(allArtists)].slice(0, 30);
@@ -1469,7 +1326,6 @@
             container.innerHTML = html;
         }
 
-        // Riproduce playlist del genere
         async function playGenrePlaylist(genreKey) {
             const genreData = MUSIC_ENCYCLOPEDIA[genreKey];
             if (!genreData) return;
@@ -1495,16 +1351,6 @@
             allTracks = allTracks.filter((t, i, self) => self.findIndex(x => x.id === t.id) === i);
             
             if (allTracks.length > 0) {
-                autoPlaylists.push({
-                    id: 'pl_genre_' + Date.now(),
-                    name: genreData.title,
-                    visibility: 'private',
-                    owner: currentUser,
-                    tracks: allTracks.slice(0, 20),
-                    autoGenerated: true
-                });
-                saveUserData();
-                
                 playSelectedTrack(
                     btoa(unescape(encodeURIComponent(JSON.stringify(allTracks[0])))),
                     btoa(unescape(encodeURIComponent(JSON.stringify(allTracks)))),
@@ -1535,7 +1381,6 @@
             const container = document.getElementById('searchResultsContainer');
             container.innerHTML = '<p style="color:#b3b3b3;">Ricerca...</p>';
             
-            // Prima controlla se è un genere
             const genreKey = Object.keys(MUSIC_ENCYCLOPEDIA).find(key => 
                 key.toLowerCase() === query.toLowerCase() || 
                 MUSIC_ENCYCLOPEDIA[key].title.toLowerCase().includes(query.toLowerCase())
@@ -1575,11 +1420,8 @@
 
         // ============ FILTRO ANTI-MIX ============
         const MIX_PATTERNS = [
-            /\bmix\b/i, /\bremix\b/i, /\bmashup\b/i, /\bremaster(ed)?\b/i,
-            /\blive\b/i, /\bacoustic\b/i, /\bcover\b/i, /\bkaraoke\b/i,
-            /\binstrumental\b/i, /\bedit\b/i, /\bextended\b/i,
-            /\bbest of\b/i, /\bgreatest hits\b/i, /\bcompilation\b/i,
-            /\bplaylist\b/i, /\btop 10\b/i, /\btop 50\b/i, /\btop 100\b/i
+            /\bmix\b/i, /\bremix\b/i, /\bmashup\b/i, /\blive\b/i, /\bcover\b/i,
+            /\binstrumental\b/i, /\bedit\b/i, /\bextended\b/i, /\bplaylist\b/i
         ];
 
         function isMixOrCompilation(track) {
@@ -1606,12 +1448,7 @@
                 const trackArtist = normalizeString(track.artist);
                 return trackArtist.includes(normalizedSearch) || normalizedSearch.includes(trackArtist);
             });
-            if (partialMatches.length > 0) return partialMatches;
-            const searchWords = normalizedSearch.split(' ');
-            return tracks.filter(track => {
-                const trackArtist = normalizeString(track.artist);
-                return searchWords.some(word => word.length > 2 && trackArtist.includes(word));
-            });
+            return partialMatches;
         }
 
         // ============ STATE MANAGER ============
@@ -1626,11 +1463,7 @@
             repeat: false,
             isLyricsActive: false,
             parsedSyncedLyrics: [],
-            settings: {
-                autoplay: true,
-                backgroundPlay: true,
-                highQuality: true
-            },
+            settings: { autoplay: true, backgroundPlay: true, highQuality: true },
             
             init() {
                 this.loadSettings();
@@ -1658,48 +1491,12 @@
             }
         };
 
-        // ============ MODALI ============
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-            document.body.classList.add('modal-open');
-            document.getElementById('viewScrollArea').style.overflow = 'hidden';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-            document.body.classList.remove('modal-open');
-            document.getElementById('viewScrollArea').style.overflow = 'auto';
-        }
-
-        function closeAllModals() {
-            document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
-            document.body.classList.remove('modal-open');
-            document.getElementById('viewScrollArea').style.overflow = 'auto';
-        }
-
-        // ============ TREND ESPANDIBILE ============
-        function toggleTrendSection() {
-            const content = document.getElementById('trendContent');
-            const chevron = document.getElementById('trendChevron');
-            content.classList.toggle('expanded');
-            content.style.maxHeight = content.classList.contains('expanded') ? '600px' : '0';
-            chevron.style.transform = content.classList.contains('expanded') ? 'rotate(180deg)' : 'rotate(0deg)';
-        }
-
-        // ============ SEARCH VIEW TOGGLE ============
-        function toggleSearchView(view) {
-            document.getElementById('genresViewSection').style.display = view === 'genres' ? 'block' : 'none';
-            document.getElementById('countriesViewSection').style.display = view === 'countries' ? 'block' : 'none';
-            document.getElementById('btnGenresView').classList.toggle('active', view === 'genres');
-            document.getElementById('btnCountriesView').classList.toggle('active', view === 'countries');
-        }
-
         // ============ SETTINGS ============
         function loadSettings() {
             const s = AppState.settings;
-            document.getElementById('toggleAutoplay').className = s.autoplay ? 'toggle-switch active' : 'toggle-switch';
-            document.getElementById('toggleBackgroundPlay').className = s.backgroundPlay ? 'toggle-switch active' : 'toggle-switch';
-            document.getElementById('toggleHighQuality').className = s.highQuality ? 'toggle-switch active' : 'toggle-switch';
+            if (document.getElementById('toggleAutoplay')) document.getElementById('toggleAutoplay').className = s.autoplay ? 'toggle-switch active' : 'toggle-switch';
+            if (document.getElementById('toggleBackgroundPlay')) document.getElementById('toggleBackgroundPlay').className = s.backgroundPlay ? 'toggle-switch active' : 'toggle-switch';
+            if (document.getElementById('toggleHighQuality')) document.getElementById('toggleHighQuality').className = s.highQuality ? 'toggle-switch active' : 'toggle-switch';
         }
 
         function toggleSetting(name) {
@@ -1717,12 +1514,12 @@
 
         // ============ STATS ============
         function renderStats() {
-            document.getElementById('statsLikedSongs').innerText = likedSongs.length;
-            document.getElementById('statsPlaylists').innerText = userPlaylists.length + autoPlaylists.length;
-            document.getElementById('statsFriends').innerText = friendsList.length;
-            document.getElementById('statsHistory').innerText = historyTracks.length;
-            document.getElementById('statsDownloads').innerText = downloadedTracks.length;
-            document.getElementById('statsArtistsFollowed').innerText = followedArtists.length;
+            if (document.getElementById('statsLikedSongs')) document.getElementById('statsLikedSongs').innerText = likedSongs.length;
+            if (document.getElementById('statsPlaylists')) document.getElementById('statsPlaylists').innerText = userPlaylists.length + autoPlaylists.length;
+            if (document.getElementById('statsFriends')) document.getElementById('statsFriends').innerText = friendsList.length;
+            if (document.getElementById('statsHistory')) document.getElementById('statsHistory').innerText = historyTracks.length;
+            if (document.getElementById('statsDownloads')) document.getElementById('statsDownloads').innerText = downloadedTracks.length;
+            if (document.getElementById('statsArtistsFollowed')) document.getElementById('statsArtistsFollowed').innerText = followedArtists.length;
         }
 
         // ============ STORIA E DOWNLOAD ============
@@ -1739,6 +1536,7 @@
 
         function renderHistory() {
             const c = document.getElementById('historyList');
+            if (!c) return;
             if (historyTracks.length === 0) {
                 c.innerHTML = '<p style="color:#b3b3b3;font-size:0.75rem;">Nessun brano ascoltato.</p>';
                 return;
@@ -1755,6 +1553,7 @@
 
         function renderDownloads() {
             const c = document.getElementById('downloadsList');
+            if (!c) return;
             if (downloadedTracks.length === 0) {
                 c.innerHTML = '<p style="color:#b3b3b3;font-size:0.75rem;">Nessun brano scaricato.</p>';
                 return;
@@ -1777,7 +1576,7 @@
             const splash = document.getElementById('splash-screen');
             if (splash) {
                 splash.classList.add('hidden');
-                setTimeout(() => { splash.style.display = 'none'; }, 700);
+                setTimeout(() => { splash.style.display = 'none'; }, 500);
             }
         }
 
@@ -1796,11 +1595,11 @@
                 drawerAvatar.innerText = avatar;
                 profileAvatar.innerText = avatar;
             }
-            document.getElementById('drawerUserName').innerText = name;
-            document.getElementById('profileNameLarge').innerText = name;
-            document.getElementById('profileGenreLarge').innerText = userProfile?.genre || 'Pop';
-            document.getElementById('profileBioLarge').innerText = userProfile?.bio || 'Nessuna bio ancora.';
-            if (currentUser) document.getElementById('homeWelcomeTitle').innerText = `Ciao, ${name}`;
+            if (document.getElementById('drawerUserName')) document.getElementById('drawerUserName').innerText = name;
+            if (document.getElementById('profileNameLarge')) document.getElementById('profileNameLarge').innerText = name;
+            if (document.getElementById('profileGenreLarge')) document.getElementById('profileGenreLarge').innerText = userProfile?.genre || 'Pop';
+            if (document.getElementById('profileBioLarge')) document.getElementById('profileBioLarge').innerText = userProfile?.bio || 'Nessuna bio ancora.';
+            if (currentUser && document.getElementById('homeWelcomeTitle')) document.getElementById('homeWelcomeTitle').innerText = `Ciao, ${name}`;
         }
 
         function saveUserData() {
@@ -1852,53 +1651,7 @@
             followedArtists = [];
             closeModal('onboarding-modal');
             updateUserUI();
-            createAutoPlaylistsForGenres(genres, favArtist, moreArtists);
             loadHomeTracks();
-        }
-
-        async function createAutoPlaylistsForGenres(genres, favArtist, moreArtists) {
-            const allArtistsToSearch = [];
-            if (favArtist) allArtistsToSearch.push(favArtist);
-            if (moreArtists) {
-                moreArtists.split(',').forEach(a => {
-                    const trimmed = a.trim();
-                    if (trimmed) allArtistsToSearch.push(trimmed);
-                });
-            }
-            genres.forEach(genre => {
-                const genreLower = genre.toLowerCase();
-                for (const [key, data] of Object.entries(MUSIC_ENCYCLOPEDIA)) {
-                    if (key.toLowerCase().includes(genreLower) || genreLower.includes(key.toLowerCase())) {
-                        for (const artists of Object.values(data.subgenres)) {
-                            allArtistsToSearch.push(...artists.slice(0, 5));
-                        }
-                        break;
-                    }
-                }
-            });
-            const uniqueArtists = [...new Set(allArtistsToSearch)].slice(0, 15);
-            let allTracks = [];
-            for (const artist of uniqueArtists) {
-                try {
-                    const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artist)}`);
-                    const tracks = await res.json();
-                    const filtered = filterOriginalTracks(tracks);
-                    const exactTracks = filterTracksByExactArtist(filtered, artist);
-                    allTracks.push(...exactTracks.slice(0, 3));
-                } catch(e) {}
-            }
-            allTracks = allTracks.filter((t, i, self) => self.findIndex(x => x.id === t.id) === i);
-            if (allTracks.length > 0) {
-                autoPlaylists.push({
-                    id: 'pl_welcome_' + Date.now(),
-                    name: '🎵 Playlist di Benvenuto',
-                    visibility: 'private',
-                    owner: currentUser,
-                    tracks: allTracks.slice(0, 30),
-                    autoGenerated: true
-                });
-                saveUserData();
-            }
         }
 
         async function loadHomeTracks() {
@@ -1957,25 +1710,17 @@
         async function openArtistPage(artistName, artistImageOverride) {
             switchView('artist');
             currentArtistPage = artistName;
-            document.getElementById('artistNameTitle').innerText = artistName;
-            updateFollowButtonState(artistName);
+            if (document.getElementById('artistNameTitle')) document.getElementById('artistNameTitle').innerText = artistName;
             const container = document.getElementById('artistTracksContainer');
+            if (!container) return;
             container.innerHTML = '<p style="color:#b3b3b3;">Caricamento brani...</p>';
             try {
                 const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artistName)}`);
                 let tracks = await res.json();
                 tracks = filterOriginalTracks(tracks);
                 let artistTracks = filterTracksByExactArtist(tracks, artistName);
-                if (artistTracks.length < 5) {
-                    const res2 = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artistName + ' songs')}`);
-                    let moreTracks = await res2.json();
-                    moreTracks = filterOriginalTracks(moreTracks);
-                    const moreArtistTracks = filterTracksByExactArtist(moreTracks, artistName);
-                    const allTracks = [...artistTracks, ...moreArtistTracks];
-                    artistTracks = allTracks.filter((t, i, self) => self.findIndex(x => x.id === t.id) === i);
-                }
                 if (artistTracks.length > 0) {
-                    document.getElementById('artistHeroImg').src = artistTracks[0].image;
+                    if (document.getElementById('artistHeroImg')) document.getElementById('artistHeroImg').src = artistTracks[0].image;
                     renderTracksList(artistTracks, 'artistTracksContainer', artistTracks);
                 } else {
                     container.innerHTML = `<p style="color:#b3b3b3;">Nessun brano trovato per ${artistName}.</p>`;
@@ -1983,28 +1728,6 @@
             } catch(e) {
                 container.innerHTML = '<p style="color:#f15e6c;">Errore nel caricamento.</p>';
             }
-        }
-
-        function updateFollowButtonState(artistName) {
-            const btn = document.getElementById('followArtistBtn');
-            if (followedArtists.includes(artistName)) {
-                btn.innerText = 'Segui già';
-                btn.style.background = '#333';
-            } else {
-                btn.innerText = 'Segui';
-                btn.style.background = 'var(--spotify-green)';
-            }
-        }
-
-        function toggleFollowArtist() {
-            if (!currentArtistPage) return;
-            if (followedArtists.includes(currentArtistPage)) {
-                followedArtists = followedArtists.filter(a => a !== currentArtistPage);
-            } else {
-                followedArtists.push(currentArtistPage);
-            }
-            saveUserData();
-            updateFollowButtonState(currentArtistPage);
         }
 
         // ============ PLAYER ============
@@ -2015,27 +1738,31 @@
                 AppState.queue = queue;
                 AppState.queueIndex = index;
                 AppState.currentTrack = t;
-                document.getElementById('playerBar').style.display = 'flex';
-                document.getElementById('playerTitle').innerText = t.name;
-                document.getElementById('playerArtist').innerText = t.artist;
-                document.getElementById('playerImg').src = t.image;
-                document.getElementById('fsTitle').innerText = t.name;
-                document.getElementById('fsArtist').innerText = t.artist;
-                document.getElementById('fsCover').src = t.image;
-                document.getElementById('canvasBgLayer').style.backgroundImage = `url('${t.image}')`;
+                
+                if (document.getElementById('playerBar')) document.getElementById('playerBar').style.display = 'flex';
+                if (document.getElementById('playerTitle')) document.getElementById('playerTitle').innerText = t.name;
+                if (document.getElementById('playerArtist')) document.getElementById('playerArtist').innerText = t.artist;
+                if (document.getElementById('playerImg')) document.getElementById('playerImg').src = t.image;
+                if (document.getElementById('fsTitle')) document.getElementById('fsTitle').innerText = t.name;
+                if (document.getElementById('fsArtist')) document.getElementById('fsArtist').innerText = t.artist;
+                if (document.getElementById('fsCover')) document.getElementById('fsCover').src = t.image;
+                if (document.getElementById('canvasBgLayer')) document.getElementById('canvasBgLayer').style.backgroundImage = `url('${t.image}')`;
+                
                 updateEqualizer(true);
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
                 updateMediaSessionMetadata();
                 addToHistory(t);
                 loadLyricsForCurrentTrack();
+                
                 if (AppState.player && AppState.playerReady) {
                     AppState.player.loadVideoById({videoId: t.id, suggestedQuality: 'hd720'});
                     AppState.player.playVideo();
                     AppState.isPlaying = true;
                     updatePlayIcons(true);
                 } else {
-                    document.getElementById('youtube-player').innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${t.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}&playsinline=1&controls=0&rel=0&vq=hd720"></iframe>`;
+                    const ytContainer = document.getElementById('youtube-player');
+                    ytContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${t.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}&playsinline=1&controls=0&rel=0&vq=hd720"></iframe>`;
                     AppState.isPlaying = true;
                     updatePlayIcons(true);
                 }
@@ -2092,8 +1819,10 @@
         }
 
         function updatePlayIcons(playing) {
-            document.getElementById('playPauseIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
-            document.getElementById('fsPlayIcon').className = playing ? 'fas fa-pause' : 'fas fa-play';
+            const playPauseIcon = document.getElementById('playPauseIcon');
+            const fsPlayIcon = document.getElementById('fsPlayIcon');
+            if (playPauseIcon) playPauseIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
+            if (fsPlayIcon) fsPlayIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
         }
 
         function nextTrack() {
@@ -2119,14 +1848,14 @@
                 const t = q[index];
                 AppState.queueIndex = index;
                 AppState.currentTrack = t;
-                document.getElementById('playerBar').style.display = 'flex';
-                document.getElementById('playerTitle').innerText = t.name;
-                document.getElementById('playerArtist').innerText = t.artist;
-                document.getElementById('playerImg').src = t.image;
-                document.getElementById('fsTitle').innerText = t.name;
-                document.getElementById('fsArtist').innerText = t.artist;
-                document.getElementById('fsCover').src = t.image;
-                document.getElementById('canvasBgLayer').style.backgroundImage = `url('${t.image}')`;
+                if (document.getElementById('playerBar')) document.getElementById('playerBar').style.display = 'flex';
+                if (document.getElementById('playerTitle')) document.getElementById('playerTitle').innerText = t.name;
+                if (document.getElementById('playerArtist')) document.getElementById('playerArtist').innerText = t.artist;
+                if (document.getElementById('playerImg')) document.getElementById('playerImg').src = t.image;
+                if (document.getElementById('fsTitle')) document.getElementById('fsTitle').innerText = t.name;
+                if (document.getElementById('fsArtist')) document.getElementById('fsArtist').innerText = t.artist;
+                if (document.getElementById('fsCover')) document.getElementById('fsCover').src = t.image;
+                if (document.getElementById('canvasBgLayer')) document.getElementById('canvasBgLayer').style.backgroundImage = `url('${t.image}')`;
                 updateEqualizer(true);
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
@@ -2141,12 +1870,14 @@
 
         function toggleShuffle() {
             AppState.shuffle = !AppState.shuffle;
-            document.getElementById('shuffleBtn').style.color = AppState.shuffle ? 'var(--spotify-green)' : '#b3b3b3';
+            const shuffleBtn = document.getElementById('shuffleBtn');
+            if (shuffleBtn) shuffleBtn.style.color = AppState.shuffle ? 'var(--spotify-green)' : '#b3b3b3';
         }
 
         function toggleRepeat() {
             AppState.repeat = !AppState.repeat;
-            document.getElementById('repeatBtn').style.color = AppState.repeat ? 'var(--spotify-green)' : '#b3b3b3';
+            const repeatBtn = document.getElementById('repeatBtn');
+            if (repeatBtn) repeatBtn.style.color = AppState.repeat ? 'var(--spotify-green)' : '#b3b3b3';
         }
 
         function startProgressTracker() {
@@ -2156,9 +1887,12 @@
                     const cur = AppState.player.getCurrentTime();
                     const dur = AppState.player.getDuration();
                     if (dur) {
-                        document.getElementById('progressBarFill').style.width = ((cur/dur)*100) + '%';
-                        document.getElementById('currentTime').innerText = formatTime(cur);
-                        document.getElementById('totalDuration').innerText = formatTime(dur);
+                        const fill = document.getElementById('progressBarFill');
+                        const currentTime = document.getElementById('currentTime');
+                        const totalDuration = document.getElementById('totalDuration');
+                        if (fill) fill.style.width = ((cur/dur)*100) + '%';
+                        if (currentTime) currentTime.innerText = formatTime(cur);
+                        if (totalDuration) totalDuration.innerText = formatTime(dur);
                         updateActiveLyric(cur);
                     }
                 }
@@ -2274,7 +2008,7 @@
             });
         }
 
-        // ============ LIKE / DOWNLOAD / RIMUOVI PREFERITI ============
+        // ============ LIKE / DOWNLOAD ============
         function toggleLikeCurrent() {
             if (!AppState.currentTrack?.id) return;
             const exists = likedSongs.findIndex(s => s.id === AppState.currentTrack.id);
@@ -2288,20 +2022,17 @@
             saveUserData();
             updateLikeButtonUI();
             if (currentLibTab === 'liked') renderLibraryContent();
-            if (document.getElementById('view-liked-songs').classList.contains('active')) renderLikedSongsView();
+            if (document.getElementById('view-liked-songs')?.classList.contains('active')) renderLikedSongsView();
         }
 
         function toggleLikeTrackObj(trackJson) {
             const t = JSON.parse(decodeURIComponent(escape(atob(trackJson))));
             const exists = likedSongs.findIndex(s => s.id === t.id);
-            if (exists > -1) {
-                likedSongs.splice(exists, 1);
-            } else {
-                likedSongs.push(t);
-            }
+            if (exists > -1) likedSongs.splice(exists, 1);
+            else likedSongs.push(t);
             saveUserData();
             if (currentLibTab === 'liked') renderLibraryContent();
-            if (document.getElementById('view-liked-songs').classList.contains('active')) renderLikedSongsView();
+            if (document.getElementById('view-liked-songs')?.classList.contains('active')) renderLikedSongsView();
         }
 
         function removeLikedTrack(trackId) {
@@ -2400,7 +2131,8 @@
         }
 
         function renderLikedSongsView() {
-            document.getElementById('likedSongsCountSub').innerText = `${likedSongs.length} brani`;
+            const countEl = document.getElementById('likedSongsCountSub');
+            if (countEl) countEl.innerText = `${likedSongs.length} brani`;
             renderTracksList(likedSongs, 'likedSongsFullContainer', likedSongs);
         }
 
@@ -2611,8 +2343,6 @@
                 aiMixTracks = aiMixTracks.filter((t, i, self) => self.findIndex(x => x.id === t.id) === i);
                 aiMixTracks = aiMixTracks.slice(0, 15);
                 if (aiMixTracks.length > 0) {
-                    autoPlaylists.push({ id: 'pl_ai_mix_' + Date.now(), name: '🤖 AI Mix - Le tue hit', visibility: 'private', owner: currentUser, tracks: aiMixTracks, autoGenerated: true, temporary: true });
-                    saveUserData();
                     playSelectedTrack(btoa(unescape(encodeURIComponent(JSON.stringify(aiMixTracks[0])))), btoa(unescape(encodeURIComponent(JSON.stringify(aiMixTracks)))), 0);
                     showSiriNotification(`🤖 AI DJ: Riproduco ${aiMixTracks.length} brani dalle tue hit!`);
                 } else {
@@ -2670,7 +2400,7 @@
             const genre = document.getElementById('editProfileGenre').value;
             if (!name) return;
             if (name !== currentUser) {
-                const keys = ['liked','downloads','playlists','auto_playlists','friends','prefs','profile','followed_artists','subgenres','settings','history'];
+                const keys = ['liked','downloads','playlists','auto_playlists','friends','prefs','profile','followed_artists','settings','history'];
                 keys.forEach(k => { const old = localStorage.getItem(`${k}_${currentUser}`); if (old) { localStorage.setItem(`${k}_${name}`, old); localStorage.removeItem(`${k}_${currentUser}`); } });
                 currentUser = name;
                 localStorage.setItem('darksound_current_user', currentUser);
@@ -2683,20 +2413,22 @@
 
         function renderProfileFriends() {
             const c = document.getElementById('profileFriendsList');
-            c.innerHTML = friendsList.length === 0 ? '<p style="color:#b3b3b3;">Nessun amico.</p>' : friendsList.map(f => `<div class="track-row"><div class="track-meta"><h4>${f}</h4></div></div>`).join('');
+            if (c) c.innerHTML = friendsList.length === 0 ? '<p style="color:#b3b3b3;">Nessun amico.</p>' : friendsList.map(f => `<div class="track-row"><div class="track-meta"><h4>${f}</h4></div></div>`).join('');
         }
 
         function renderProfilePublicPlaylists() {
             const c = document.getElementById('profilePublicPlaylists');
-            const pubs = userPlaylists.filter(p => p.visibility === 'public');
-            c.innerHTML = pubs.length === 0 ? '<p style="color:#b3b3b3;">Nessuna playlist pubblica.</p>' : pubs.map(pl => `<div class="track-row"><div class="track-meta"><h4>${pl.name}</h4><p>${pl.tracks.length} brani</p></div><i class="fas fa-share-alt" style="color:#25D366;cursor:pointer;" onclick="sharePlaylistViaWhatsApp('${pl.id}')"></i></div>`).join('');
+            if (c) {
+                const pubs = userPlaylists.filter(p => p.visibility === 'public');
+                c.innerHTML = pubs.length === 0 ? '<p style="color:#b3b3b3;">Nessuna playlist pubblica.</p>' : pubs.map(pl => `<div class="track-row"><div class="track-meta"><h4>${pl.name}</h4><p>${pl.tracks.length} brani</p></div></div>`).join('');
+            }
         }
 
         // ============ FRIENDS ============
         function loadFriendsList() { if (currentUser) friendsList = JSON.parse(localStorage.getItem(`friends_${currentUser}`) || '[]'); renderDrawerFriends(); }
         function renderDrawerFriends() {
             const c = document.getElementById('drawerFriendsList');
-            c.innerHTML = friendsList.length === 0 ? '<p style="color:#b3b3b3;font-size:0.7rem;">Nessun amico.</p>' : friendsList.map(f => `<div class="track-row"><div class="track-meta"><h4>${f}</h4></div></div>`).join('');
+            if (c) c.innerHTML = friendsList.length === 0 ? '<p style="color:#b3b3b3;font-size:0.7rem;">Nessun amico.</p>' : friendsList.map(f => `<div class="track-row"><div class="track-meta"><h4>${f}</h4></div></div>`).join('');
         }
         function openAddFriendModal() { toggleProfileDrawer(); document.getElementById('addFriendInput').value = ''; document.getElementById('addFriendResults').innerHTML = ''; openModal('add-friend-modal'); }
         function searchFriend() {
@@ -2726,7 +2458,7 @@
         function copyTrackLink() { navigator.clipboard.writeText(`https://www.youtube.com/watch?v=${AppState.currentTrack.id}`).then(() => { closeModal('share-modal'); alert('Link copiato!'); }); }
         function shareViaWhatsApp() { window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`Ascolta "${AppState.currentTrack.name}" su DarkSound Pro!`)}`, '_blank'); closeModal('share-modal'); }
 
-        // ============ TOGGLE FULLSCREEN CON OVERLAY ============
+        // ============ TOGGLE FULLSCREEN FLUIDO ============
         function toggleFullscreen() {
             const fs = document.getElementById('fullscreen-player');
             const overlay = document.getElementById('fsOverlay');
@@ -2736,7 +2468,16 @@
                 AppState.isLyricsActive = false;
                 document.getElementById('lyricsView').classList.remove('active');
                 document.getElementById('standardPlayerView').style.display = 'flex';
+                setTimeout(() => {
+                    fs.style.display = 'none';
+                    overlay.style.display = 'none';
+                }, 250);
             } else {
+                fs.style.display = 'flex';
+                overlay.style.display = 'block';
+                // Forza reflow per l'animazione
+                void fs.offsetWidth;
+                void overlay.offsetWidth;
                 fs.classList.add('active');
                 overlay.classList.add('active');
             }
@@ -2778,14 +2519,13 @@
                 loginWithGoogle();
             }
         }
-               // ============ INTEGRAZIONE SIRI E CONTROLLO VOCALE ============
+                // ============ INTEGRAZIONE SIRI E CONTROLLO VOCALE ============
         let siriRecognition = null;
         let isSiriListening = false;
         let siriWakeWordDetected = false;
         let siriActivationTime = 0;
         let lastVoiceCommand = '';
         
-        // Inizializza il riconoscimento vocale per Siri
         function initSiriIntegration() {
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.setActionHandler('play', () => togglePlay());
@@ -2795,16 +2535,6 @@
                 navigator.mediaSession.setActionHandler('seekto', (details) => {
                     if (details.seekTime && AppState.player?.seekTo) {
                         AppState.player.seekTo(details.seekTime, true);
-                    }
-                });
-                navigator.mediaSession.setActionHandler('seekbackward', () => {
-                    if (AppState.player?.getCurrentTime) {
-                        AppState.player.seekTo(Math.max(0, AppState.player.getCurrentTime() - 10), true);
-                    }
-                });
-                navigator.mediaSession.setActionHandler('seekforward', () => {
-                    if (AppState.player?.getCurrentTime) {
-                        AppState.player.seekTo(AppState.player.getCurrentTime() + 10, true);
                     }
                 });
             }
@@ -2838,29 +2568,24 @@
                     updateSiriButtonState();
                     if (siriWakeWordDetected) {
                         setTimeout(() => {
-                            if (siriWakeWordDetected) {
-                                startSiriListening();
-                            }
+                            if (siriWakeWordDetected) startSiriListening();
                         }, 100);
                     }
                 };
             }
         }
         
-        // Avvia l'ascolto di Siri
         function startSiriListening() {
             if (!siriRecognition) {
                 showSiriNotification('Riconoscimento vocale non supportato');
                 return;
             }
-            
             if (isSiriListening) {
                 siriRecognition.stop();
                 isSiriListening = false;
                 updateSiriButtonState();
                 return;
             }
-            
             try {
                 siriRecognition.start();
                 isSiriListening = true;
@@ -2875,7 +2600,6 @@
             }
         }
         
-        // Ferma l'ascolto di Siri
         function stopSiriListening() {
             if (siriRecognition && isSiriListening) {
                 siriRecognition.stop();
@@ -2886,14 +2610,11 @@
             }
         }
         
-        // Processa i comandi vocali
         function processVoiceCommand(command) {
             if (!command || command.length < 2) return;
-            
             lastVoiceCommand = command;
             console.log('[Siri] Processo comando:', command);
             
-            // COMANDI DI RIPRODUZIONE
             if (command.includes('riproduci') || command.includes('metti') || command.includes('avvia') || command.includes('play') || command.includes('ascolta') || command.includes('metti su')) {
                 const searchTerm = command.replace(/^(riproduci|metti|avvia|play|ascolta|metti su)\s+/i, '').trim();
                 if (searchTerm && searchTerm.length > 2) {
@@ -2902,78 +2623,66 @@
                     resumePlayback();
                 }
             }
-            // COMANDI DI PAUSA
             else if (command.includes('pausa') || command.includes('metti pausa') || command.includes('ferma') || command.includes('fermati') || command.includes('stop') || command.includes('metti stop') || command.includes('metti in pausa')) {
                 pausePlayback();
                 showSiriNotification('⏸️ Riproduzione in pausa');
             }
-            // COMANDI RIPRENDI
-            else if (command.includes('riprendi') || command.includes('riproduci di nuovo') || command.includes('continua') || command.includes('resume') || command.includes('metti play') || command.includes('metti riproduci') || command.includes('metti di nuovo')) {
+            else if (command.includes('riprendi') || command.includes('riproduci di nuovo') || command.includes('continua') || command.includes('resume') || command.includes('metti play') || command.includes('metti riproduci')) {
                 resumePlayback();
                 showSiriNotification('▶️ Riproduzione ripresa');
             }
-            // COMANDI BRANO SUCCESSIVO
-            else if (command.includes('brano successivo') || command.includes('prossimo') || command.includes('successivo') || command.includes('avanti') || command.includes('skip') || command.includes('salta') || command.includes('prossima canzone') || command.includes('brano dopo') || command.includes('canzone successiva') || command.includes('metti il prossimo') || command.includes('metti la prossima')) {
+            else if (command.includes('brano successivo') || command.includes('prossimo') || command.includes('successivo') || command.includes('avanti') || command.includes('skip') || command.includes('salta') || command.includes('prossima canzone') || command.includes('brano dopo') || command.includes('canzone successiva')) {
                 nextTrack();
                 showSiriNotification('⏭️ Brano successivo');
             }
-            // COMANDI BRANO PRECEDENTE
-            else if (command.includes('brano precedente') || command.includes('precedente') || command.includes('indietro') || command.includes('brano prima') || command.includes('canzone precedente') || command.includes('torna indietro') || command.includes('metti il precedente') || command.includes('metti la precedente')) {
+            else if (command.includes('brano precedente') || command.includes('precedente') || command.includes('indietro') || command.includes('brano prima') || command.includes('canzone precedente') || command.includes('torna indietro')) {
                 prevTrack();
                 showSiriNotification('⏮️ Brano precedente');
             }
-            // COMANDI DI RICERCA
             else if (command.includes('cerca') || command.includes('trova') || command.includes('search') || command.includes('cercami') || command.includes('cerca la canzone') || command.includes('cerca il brano') || command.includes('cerca playlist')) {
                 const searchTerm = command.replace(/^(cerca|trova|search|cercami|cerca la canzone|cerca il brano|cerca playlist)\s+/i, '').trim();
                 if (searchTerm && searchTerm.length > 2) {
                     searchAndShowResults(searchTerm);
                 }
             }
-            // COMANDI MI PIACE
-            else if (command.includes('mi piace') || command.includes('like') || command.includes('preferito') || command.includes('aggiungi ai preferiti') || command.includes('metti mi piace') || command.includes('metti like') || command.includes('aggiungi ai piaciuti')) {
+            else if (command.includes('mi piace') || command.includes('like') || command.includes('preferito') || command.includes('aggiungi ai preferiti') || command.includes('metti mi piace') || command.includes('metti like')) {
                 toggleLikeCurrent();
                 showSiriNotification('❤️ Brano aggiunto ai preferiti');
             }
-            // COMANDI RIMUOVI PREFERITO
             else if (command.includes('rimuovi preferito') || command.includes('togli preferito') || command.includes('non mi piace più') || command.includes('togli mi piace') || command.includes('rimuovi dai preferiti') || command.includes('togli dai preferiti')) {
                 if (AppState.currentTrack) {
                     removeLikedTrack(AppState.currentTrack.id);
                 }
             }
-            // COMANDI SHUFFLE
-            else if (command.includes('shuffle') || command.includes('casuale') || command.includes('random') || command.includes('riproduzione casuale') || command.includes('metti casuale') || command.includes('metti shuffle') || command.includes('metti random')) {
+            else if (command.includes('shuffle') || command.includes('casuale') || command.includes('random') || command.includes('riproduzione casuale') || command.includes('metti casuale') || command.includes('metti shuffle')) {
                 toggleShuffle();
                 showSiriNotification('🔀 Shuffle ' + (AppState.shuffle ? 'attivato' : 'disattivato'));
             }
-            // COMANDI REPEAT
-            else if (command.includes('repeat') || command.includes('ripeti') || command.includes('ricomincia') || command.includes('metti repeat') || command.includes('ripeti brano') || command.includes('ripeti canzone') || command.includes('metti ripeti')) {
+            else if (command.includes('repeat') || command.includes('ripeti') || command.includes('ricomincia') || command.includes('metti repeat') || command.includes('ripeti brano') || command.includes('ripeti canzone')) {
                 toggleRepeat();
                 showSiriNotification('🔁 Repeat ' + (AppState.repeat ? 'attivato' : 'disattivato'));
             }
-            // COMANDI VOLUME
             else if (command.includes('volume')) {
-                if (command.includes('alza') || command.includes('aumenta') || command.includes('più alto') || command.includes('alza il volume') || command.includes('aumenta il volume')) {
+                if (command.includes('alza') || command.includes('aumenta') || command.includes('più alto') || command.includes('alza il volume')) {
                     adjustVolume(10);
                     showSiriNotification('🔊 Volume aumentato');
-                } else if (command.includes('abbassa') || command.includes('diminuisci') || command.includes('più basso') || command.includes('abbassa il volume') || command.includes('diminuisci il volume')) {
+                } else if (command.includes('abbassa') || command.includes('diminuisci') || command.includes('più basso') || command.includes('abbassa il volume')) {
                     adjustVolume(-10);
                     showSiriNotification('🔉 Volume diminuito');
                 }
             }
-            // COMANDI INFO
-            else if (command.includes('che canzone') || command.includes('che brano') || command.includes('cosa sta suonando') || command.includes('che cosa stai suonando') || command.includes('dimmi il brano') || command.includes('dimmi la canzone') || command.includes('che canzone è') || command.includes('che brano è') || command.includes('cosa stai riproducendo')) {
+            else if (command.includes('che canzone') || command.includes('che brano') || command.includes('cosa sta suonando') || command.includes('che cosa stai suonando') || command.includes('dimmi il brano') || command.includes('dimmi la canzone') || command.includes('che canzone è') || command.includes('cosa stai riproducendo')) {
                 if (AppState.currentTrack) {
                     showSiriNotification(`🎵 ${AppState.currentTrack.name} - ${AppState.currentTrack.artist}`);
                 } else {
                     showSiriNotification('Nessun brano in riproduzione');
                 }
             }
-            // COMANDI APRI
             else if (command.includes('apri home') || command.includes('vai alla home') || command.includes('torna alla home') || command.includes('vai a home')) {
                 switchView('home', document.querySelectorAll('.nav-item')[0]);
                 showSiriNotification('🏠 Home');
             }
-            else if (command.includes('apri cerca') || command.includes('vai alla ricerca') || command.includes('apri ricerca') || command.includes('vai a cerca') || command.includes('vai alla cerca')) {
+            else if (command.includes('apri cerca') || command.includes('vai alla ricerca') || command.includes('apri ricerca') || command.includes('vai a cerca')) {
                 switchView('search', document.querySelectorAll('.nav-item')[1]);
                 showSiriNotification('🔍 Ricerca');
             }
@@ -2981,45 +2690,41 @@
                 switchView('library', document.querySelectorAll('.nav-item')[2]);
                 showSiriNotification('📚 Libreria');
             }
-            else if (command.includes('apri profilo') || command.includes('vai al profilo') || command.includes('vai al mio profilo') || command.includes('apri il profilo') || command.includes('apri il mio profilo')) {
+            else if (command.includes('apri profilo') || command.includes('vai al profilo') || command.includes('vai al mio profilo') || command.includes('apri il profilo')) {
                 switchView('profile', document.querySelectorAll('.nav-item')[3]);
                 showSiriNotification('👤 Profilo');
             }
-            // COMANDI AI DJ
-            else if (command.includes('ai dj') || command.includes('dj automatico') || command.includes('avvia il dj') || command.includes('metti il dj') || command.includes('mix automatico') || command.includes('avvia il mix') || command.includes('metti il mix') || command.includes('avvia mix automatico')) {
+            else if (command.includes('ai dj') || command.includes('dj automatico') || command.includes('avvia il dj') || command.includes('metti il dj') || command.includes('mix automatico') || command.includes('avvia il mix')) {
                 runAiDjSelection();
                 showSiriNotification('🤖 AI DJ avviato');
             }
-            // COMANDI PLAYLIST GENERE
-            else if (command.includes('playlist phonk') || command.includes('playlist techno') || command.includes('playlist trap') || command.includes('playlist pop') || command.includes('playlist rock') || command.includes('playlist rap') || command.includes('playlist jazz') || command.includes('playlist latin')) {
-                const genreMatch = command.match(/playlist\s+(phonk|techno|trap|pop|rock|rap|jazz|latin)/i);
+            else if (command.includes('ai playlist') || command.includes('playlist automatica') || command.includes('crea playlist') || command.includes('genera playlist')) {
+                openAiPlaylistModal();
+                showSiriNotification('✨ Crea playlist con IA');
+            }
+            else if (command.includes('playlist phonk') || command.includes('playlist techno') || command.includes('playlist trap') || command.includes('playlist pop') || command.includes('playlist rock') || command.includes('playlist rap') || command.includes('playlist latin')) {
+                const genreMatch = command.match(/playlist\s+(phonk|techno|trap|pop|rock|rap|latin)/i);
                 if (genreMatch) {
-                    const genreMap = { 'phonk': 'Phonk', 'techno': 'Techno', 'trap': 'Italia', 'pop': 'USA', 'rock': 'USA', 'rap': 'Italia', 'jazz': 'USA', 'latin': 'Latin' };
+                    const genreMap = { 'phonk': 'Phonk', 'techno': 'Techno', 'trap': 'Italia', 'pop': 'USA', 'rock': 'USA', 'rap': 'Italia', 'latin': 'Latin' };
                     searchGenrePlaylist(genreMap[genreMatch[1].toLowerCase()]);
                     showSiriNotification(`🎵 Playlist ${genreMatch[1]} trovata!`);
                 }
             }
-            // COMANDI DOWNLOAD
-            else if (command.includes('scarica') || command.includes('download') || command.includes('salva brano') || command.includes('salva canzone') || command.includes('scarica il brano') || command.includes('scarica la canzone') || command.includes('metti download')) {
+            else if (command.includes('scarica') || command.includes('download') || command.includes('salva brano') || command.includes('salva canzone')) {
                 toggleDownloadCurrent();
                 showSiriNotification('⬇️ Download aggiornato');
             }
-            // COMANDI PREFERITI
-            else if (command.includes('apri preferiti') || command.includes('vai ai preferiti') || command.includes('apri i preferiti') || command.includes('vai ai piaciuti') || command.includes('apri i piaciuti')) {
+            else if (command.includes('apri preferiti') || command.includes('vai ai preferiti') || command.includes('apri i preferiti') || command.includes('vai ai piaciuti')) {
                 openLikedSongs();
                 showSiriNotification('❤️ Preferiti');
             }
-            // COMANDO AIUTO
-            else if (command.includes('aiuto') || command.includes('help') || command.includes('cosa puoi fare') || command.includes('comandi disponibili') || command.includes('quali comandi') || command.includes('dimmi i comandi') || command.includes('quali sono i comandi')) {
+            else if (command.includes('aiuto') || command.includes('help') || command.includes('cosa puoi fare') || command.includes('comandi disponibili') || command.includes('quali comandi')) {
                 showSiriNotification('🎤 Comandi: riproduci, metti pausa, brano successivo, brano precedente, cerca, cerca playlist phonk, mi piace, rimuovi preferito, shuffle, repeat, volume, ai dj, apri home');
             }
         }
         
-        // Funzioni helper per Siri
         function pausePlayback() {
-            if (AppState.isPlaying) {
-                togglePlay();
-            }
+            if (AppState.isPlaying) togglePlay();
         }
         
         function resumePlayback() {
@@ -3040,20 +2745,17 @@
             }
         }
         
-        // Cerca e riproduce un brano tramite voce
         async function searchAndPlayTrack(searchTerm) {
             showSiriNotification(`🔍 Cerco "${searchTerm}"...`);
             try {
                 const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(searchTerm)}`);
                 let tracks = await res.json();
                 tracks = filterOriginalTracks(tracks);
-                
                 if (tracks.length > 0) {
                     const exactMatch = tracks.find(t => 
                         t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         t.artist.toLowerCase().includes(searchTerm.toLowerCase())
                     );
-                    
                     const trackToPlay = exactMatch || tracks[0];
                     playSelectedTrack(
                         btoa(unescape(encodeURIComponent(JSON.stringify(trackToPlay)))),
@@ -3069,7 +2771,6 @@
             }
         }
         
-        // Cerca e mostra risultati
         async function searchAndShowResults(searchTerm) {
             showSiriNotification(`🔍 Cerco "${searchTerm}"...`);
             switchView('search', document.querySelectorAll('.nav-item')[1]);
@@ -3078,7 +2779,6 @@
             setTimeout(() => hideSiriNotification(), 2000);
         }
         
-        // Mostra notifica Siri
         function showSiriNotification(message) {
             let notification = document.getElementById('siriNotification');
             if (!notification) {
@@ -3107,7 +2807,6 @@
             }
             notification.innerText = message;
             notification.style.display = 'block';
-            
             clearTimeout(notification._timeout);
             notification._timeout = setTimeout(() => {
                 notification.style.display = 'none';
@@ -3116,9 +2815,7 @@
         
         function hideSiriNotification() {
             const notification = document.getElementById('siriNotification');
-            if (notification) {
-                notification.style.display = 'none';
-            }
+            if (notification) notification.style.display = 'none';
         }
         
         function updateSiriButtonState() {
@@ -3136,7 +2833,6 @@
             }
         }
         
-        // Aggiungi pulsante Siri al player
         function addSiriButtonToPlayer() {
             const controlsDiv = document.querySelector('.fs-controls');
             if (controlsDiv && !document.getElementById('siriButton')) {
@@ -3171,7 +2867,6 @@
                     this.setAttribute('autocapitalize', 'off');
                     this.setAttribute('spellcheck', 'false');
                 });
-                
                 el.addEventListener('touchstart', function(e) {
                     e.stopPropagation();
                 });
@@ -3242,17 +2937,17 @@
             initSiriIntegration();
             addSiriButtonToPlayer();
             
-            setTimeout(hideSplashScreen, 2500);
+            setTimeout(hideSplashScreen, 2000);
             
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 if (splash && !splash.classList.contains('hidden')) {
                     hideSplashScreen();
                 }
-            }, 4000);
+            }, 3500);
             
-            if (!currentUser) setTimeout(() => openModal('auth-modal'), 2800);
+            if (!currentUser) setTimeout(() => openModal('auth-modal'), 2500);
         };
     </script>
 </body>
-</html> 
+</html>
