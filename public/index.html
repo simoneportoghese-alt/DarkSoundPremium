@@ -30,11 +30,8 @@
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --safe-top: env(safe-area-inset-top, 0px);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
-            /* Dimensioni responsive */
             --player-max-width: 400px;
             --player-max-height: 90vh;
-            --controls-size: 48px;
-            --controls-icon-size: 1.1rem;
         }
 
         /* TEMI COMPLETI */
@@ -199,7 +196,6 @@
             overflow: hidden;
         }
 
-        /* Contenitore principale con scroll */
         #app-container {
             position: fixed;
             top: 0;
@@ -211,7 +207,6 @@
             flex-direction: column;
         }
 
-        /* Area vista con scroll */
         .view-scroll-area {
             flex: 1;
             overflow-y: auto;
@@ -220,7 +215,6 @@
             z-index: 1;
         }
 
-        /* Animazioni */
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes scaleIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -236,7 +230,6 @@
         @keyframes eqBar4 { 0%, 100% { height: 20px; } 20% { height: 8px; } 40% { height: 14px; } 60% { height: 4px; } 80% { height: 18px; } }
         @keyframes eqBar5 { 0%, 100% { height: 10px; } 20% { height: 18px; } 40% { height: 4px; } 60% { height: 12px; } 80% { height: 16px; } }
 
-        /* Equalizer */
         .equalizer { display: flex; align-items: center; justify-content: center; gap: 2px; width: 20px; height: 20px; }
         .equalizer-bar { width: 3px; background: var(--spotify-green); border-radius: 2px; min-height: 3px; transform-origin: center; }
         .equalizer:not(.paused) .equalizer-bar:nth-child(1) { animation: eqBar1 0.6s ease-in-out infinite; }
@@ -270,7 +263,6 @@
         .player-equalizer-large .eq-large-bar:nth-child(6) { animation: eqBar1 0.65s ease-in-out infinite; }
         .player-equalizer-large .eq-large-bar:nth-child(7) { animation: eqBar3 0.5s ease-in-out infinite; }
 
-        /* SPLASH SCREEN */
         #splash-screen {
             position: fixed;
             top: 0;
@@ -297,7 +289,6 @@
             font-size: 2rem;
             color: #000;
             animation: scaleIn 0.8s ease, float 3s ease-in-out infinite 0.8s;
-            box-shadow: 0 10px 40px var(--border-glow);
         }
         .splash-title { font-size: 1.6rem; font-weight: 900; color: #fff; margin-top: 14px; }
         .splash-subtitle { font-size: 0.75rem; color: var(--text-accent); letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
@@ -329,7 +320,6 @@
             width: 36px; height: 36px; border-radius: 50%;
             background: var(--spotify-green); border: none;
             color: #000; font-weight: 900; cursor: pointer; font-size: 0.9rem;
-            transition: transform 0.3s;
         }
         .user-btn:active { transform: scale(0.9); }
 
@@ -339,9 +329,8 @@
         .quick-card {
             background: var(--card-bg); border-radius: var(--radius-md);
             padding: 12px 6px; text-align: center; cursor: pointer;
-            border: 1px solid var(--border-glow); transition: all 0.3s;
+            border: 1px solid var(--border-glow);
             -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
         .quick-card:active { transform: scale(0.92); }
         .quick-card i { font-size: 1rem; display: block; margin-bottom: 4px; }
@@ -351,9 +340,8 @@
         .feature-card {
             background: var(--card-bg); border-radius: var(--radius-md);
             padding: 16px 10px; text-align: center; cursor: pointer;
-            border: 1px solid var(--border-glow); transition: all 0.3s;
+            border: 1px solid var(--border-glow);
             -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
         }
         .feature-card:active { transform: scale(0.92); }
         .feature-card i { font-size: 1.2rem; color: var(--spotify-green); display: block; margin-bottom: 6px; }
@@ -363,12 +351,9 @@
         .track-row {
             display: flex; align-items: center; padding: 6px 10px;
             cursor: pointer; border-radius: var(--radius-md); margin-bottom: 2px;
-            transition: background 0.2s;
             -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
             user-select: none;
             -webkit-user-select: none;
-            -webkit-touch-callout: none;
         }
         .track-row:active { background: #333; }
         .track-row-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; overflow: hidden; pointer-events: none; }
@@ -392,7 +377,7 @@
             flex: 1; padding: 8px; border-radius: 20px;
             background: var(--card-bg); border: 1px solid var(--border-glow);
             color: #b3b3b3; font-size: 0.75rem; font-weight: 700;
-            cursor: pointer; transition: all 0.3s;
+            cursor: pointer;
         }
         .search-view-toggle button.active { background: #fff; color: #000; border-color: #fff; }
 
@@ -400,7 +385,7 @@
         .genre-card {
             border-radius: var(--radius-md); padding: 16px; cursor: pointer;
             min-height: 65px; display: flex; align-items: flex-end;
-            border: none; transition: transform 0.2s;
+            border: none;
             -webkit-tap-highlight-color: transparent;
         }
         .genre-card:active { transform: scale(0.95); }
@@ -417,7 +402,6 @@
         .artist-card p { font-size: 0.7rem; color: var(--spotify-gray); pointer-events: none; }
         .artist-card > div { pointer-events: none; }
 
-        /* PLAYER BAR - Compatta */
         .player-bar {
             position: fixed;
             bottom: 55px;
@@ -432,11 +416,9 @@
             z-index: 100;
             cursor: pointer;
             border: 1px solid var(--border-glow);
-            transition: transform 0.3s;
             max-width: 600px;
             margin: 0 auto;
         }
-        .player-bar:active { transform: scale(0.98); }
         .player-bar img { width: 36px; height: 36px; border-radius: 4px; }
         .player-meta { flex: 1; min-width: 0; }
         .p-title { font-size: 0.75rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -444,7 +426,6 @@
         .player-icons { display: flex; gap: 10px; font-size: 1rem; }
         .player-icons i { cursor: pointer; padding: 4px; }
 
-        /* FULLSCREEN PLAYER - Compatto e centrato */
         #fullscreen-player {
             position: fixed;
             top: 50%;
@@ -493,12 +474,10 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.2s;
         }
         .fs-play-btn:active { transform: scale(0.9); }
         .fs-play-btn i { font-size: 1.1rem; color: #000; }
 
-        /* Overlay per bloccare interazione sotto il player */
         .fs-overlay {
             position: fixed;
             top: 0;
@@ -513,7 +492,6 @@
         }
         .fs-overlay.active { display: block; }
 
-        /* LYRICS */
         .lyrics-view {
             position: absolute;
             top: 0;
@@ -528,9 +506,8 @@
             z-index: 3;
             background: var(--gradient-bg);
             border-radius: 20px;
-            scroll-behavior: smooth;
         }
-        .lyrics-view.active { display: flex; animation: fadeIn 0.3s ease; }
+        .lyrics-view.active { display: flex; }
         .lyrics-close-btn {
             position: fixed;
             top: 25px;
@@ -594,8 +571,6 @@
             border: none;
             cursor: pointer;
             padding: 4px 12px;
-            transition: all 0.3s;
-            position: relative;
         }
         .nav-item.active { color: var(--spotify-green); }
         .nav-item i { font-size: 1.1rem; }
@@ -615,7 +590,7 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
-        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .modal-overlay.active { display: flex; }
         .modal-card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -650,7 +625,6 @@
             border: none;
             font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.3s;
         }
         .btn-primary:active { transform: scale(0.95); }
         .btn-secondary {
@@ -750,7 +724,6 @@
             font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
         }
         .artist-chip:active { background: var(--spotify-green); color: #000; }
 
@@ -775,12 +748,10 @@
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid transparent;
-            transition: all 0.3s;
         }
         .theme-dot:active { transform: scale(1.2); }
         .theme-dot.active { border-color: #fff; box-shadow: 0 0 10px var(--border-glow); }
 
-        /* Media queries per schermi piccoli */
         @media (max-width: 380px) {
             .view { padding: 8px; padding-bottom: 140px; }
             .quick-card { padding: 10px 4px; }
@@ -804,9 +775,7 @@
 <body data-theme="verde">
 
     <div id="splash-screen">
-        <div class="splash-logo">
-            <i class="fas fa-music"></i>
-        </div>
+        <div class="splash-logo"><i class="fas fa-music"></i></div>
         <div class="splash-title">DarkSound Pro</div>
         <div class="splash-subtitle">by DarkSW</div>
         <div class="splash-wave">
@@ -815,12 +784,11 @@
         <div class="splash-loading"><div class="splash-loading-bar"></div></div>
     </div>
 
-    <!-- Overlay per bloccare interazione sotto il player -->
     <div class="fs-overlay" id="fsOverlay" onclick="toggleFullscreen()"></div>
 
     <div id="app-container">
         <div class="view-scroll-area" id="viewScrollArea">
-            <div id="profileDrawer" style="position:fixed; top:0; right:-100%; width:100%; max-width:300px; height:100%; background:var(--card-bg); z-index:4000; transition:right 0.4s cubic-bezier(0.4, 0, 0.2, 1); display:flex; flex-direction:column; padding:16px; overflow-y:auto; border-left: 1px solid var(--border-glow);">
+            <div id="profileDrawer" style="position:fixed; top:0; right:-100%; width:100%; max-width:300px; height:100%; background:var(--card-bg); z-index:4000; transition:right 0.4s; display:flex; flex-direction:column; padding:16px; overflow-y:auto; border-left: 1px solid var(--border-glow);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                     <div style="display:flex; align-items:center; gap:10px;">
                         <div id="drawerAvatarInitial" style="width:40px;height:40px;border-radius:50%;background:var(--spotify-green);display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;overflow:hidden;">S</div>
@@ -857,22 +825,11 @@
             <!-- MODALI -->
             <div id="auth-modal" class="modal-overlay">
                 <div class="modal-card" style="text-align:center;">
-                    <div style="width:50px;height:50px;border-radius:16px;background:linear-gradient(135deg,var(--spotify-green),var(--accent-tertiary));display:flex;align-items:center;justify-content:center;margin:0 auto 12px auto;font-size:1.3rem;color:#000;">
-                        <i class="fas fa-music"></i>
-                    </div>
+                    <div style="width:50px;height:50px;border-radius:16px;background:linear-gradient(135deg,var(--spotify-green),var(--accent-tertiary));display:flex;align-items:center;justify-content:center;margin:0 auto 12px auto;font-size:1.3rem;color:#000;"><i class="fas fa-music"></i></div>
                     <h2>Accedi a DarkSound</h2>
                     <p style="color:#b3b3b3;font-size:0.75rem;margin-bottom:14px;">La tua musica, ovunque tu sia</p>
-                    
-                    <button class="btn-google" onclick="loginWithGoogle()" style="margin-bottom:12px;">
-                        <i class="fab fa-google" style="color:#4285F4;"></i> Continua con Google
-                    </button>
-                    
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-                        <div style="flex:1;height:1px;background:#333;"></div>
-                        <span style="color:#777;font-size:0.7rem;">oppure</span>
-                        <div style="flex:1;height:1px;background:#333;"></div>
-                    </div>
-                    
+                    <button class="btn-google" onclick="loginWithGoogle()" style="margin-bottom:12px;"><i class="fab fa-google" style="color:#4285F4;"></i> Continua con Google</button>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div style="flex:1;height:1px;background:#333;"></div><span style="color:#777;font-size:0.7rem;">oppure</span><div style="flex:1;height:1px;background:#333;"></div></div>
                     <div class="modal-input"><label style="text-align:left;">Nome Utente</label><input type="text" id="authEmail" placeholder="mario_rossi"></div>
                     <div class="modal-input"><label style="text-align:left;">Password (opzionale)</label><input type="password" id="authPassword" placeholder="••••••••"></div>
                     <button class="btn-primary" onclick="proceedToOnboarding()">Accedi</button>
@@ -884,7 +841,6 @@
                 <div class="modal-card">
                     <h2>🎵 Benvenuto su DarkSound!</h2>
                     <p style="color:#b3b3b3;font-size:0.75rem;margin-bottom:12px;">Seleziona i tuoi generi preferiti e creeremo playlist personalizzate per te con l'IA.</p>
-                    
                     <div class="section-title" style="font-size:0.8rem;">Passo 1: Scegli i tuoi generi</div>
                     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px;" id="genreGrid">
                         <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🎵 Pop</button>
@@ -896,11 +852,9 @@
                         <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🌴 Latin</button>
                         <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:#282828;border:1px solid #333;border-radius:6px;color:#fff;cursor:pointer;font-size:0.8rem;">🇰🇷 K-Pop</button>
                     </div>
-                    
                     <div class="section-title" style="font-size:0.8rem;">Passo 2: Artisti preferiti</div>
                     <div class="modal-input"><label>Artista preferito</label><input type="text" id="favArtistInput" placeholder="Es. Travis Scott, Geolier, Lazza..."></div>
                     <div class="modal-input"><label>Altri artisti (separati da virgola)</label><input type="text" id="moreArtistsInput" placeholder="Sfera Ebbasta, Shiva, Kid Yugi..."></div>
-                    
                     <button class="btn-primary" onclick="completeOnboarding()">Crea la mia Radio e Playlist IA</button>
                 </div>
             </div>
@@ -1048,7 +1002,7 @@
 
             <div id="view-search" class="view">
                 <div class="top-bar"><span class="top-bar-title">Cerca</span></div>
-                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="spotifySearchInput" placeholder="Cerca artisti, brani, generi..." oninput="handleSearchInput(this.value)"></div>
+                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="spotifySearchInput" placeholder="Cerca artisti, brani, generi o playlist..." oninput="handleSearchInput(this.value)"></div>
                 
                 <div class="search-view-toggle">
                     <button class="active" id="btnGenresView" onclick="toggleSearchView('genres')">🎵 Generi</button>
@@ -1058,44 +1012,38 @@
                 <div id="genresViewSection">
                     <div class="section-title">Generi Musicali</div>
                     <div class="genre-grid">
-                        <div class="genre-card" style="background:#503750;" onclick="openGenreBrowser('Phonk')"><h3>Phonk</h3></div>
-                        <div class="genre-card" style="background:#0d72ea;" onclick="openGenreBrowser('Techno')"><h3>Techno</h3></div>
-                        <div class="genre-card" style="background:#7358ff;" onclick="openGenreBrowser('USA')"><h3>Hip-Hop USA</h3></div>
-                        <div class="genre-card" style="background:#009246;" onclick="openGenreBrowser('Italia')"><h3>Trap Italia</h3></div>
-                        <div class="genre-card" style="background:#e91429;" onclick="openGenreBrowser('USA')"><h3>Rock</h3></div>
-                        <div class="genre-card" style="background:#af2896;" onclick="openGenreBrowser('Latin')"><h3>Reggaeton</h3></div>
-                        <div class="genre-card" style="background:#8d67ab;" onclick="openGenreBrowser('USA')"><h3>R&B</h3></div>
-                        <div class="genre-card" style="background:#006450;" onclick="openGenreBrowser('Corea')"><h3>K-Pop</h3></div>
+                        <div class="genre-card" style="background:#503750;" onclick="searchGenrePlaylist('Phonk')"><h3>Phonk</h3></div>
+                        <div class="genre-card" style="background:#0d72ea;" onclick="searchGenrePlaylist('Techno')"><h3>Techno</h3></div>
+                        <div class="genre-card" style="background:#7358ff;" onclick="searchGenrePlaylist('USA')"><h3>Hip-Hop USA</h3></div>
+                        <div class="genre-card" style="background:#009246;" onclick="searchGenrePlaylist('Italia')"><h3>Trap Italia</h3></div>
+                        <div class="genre-card" style="background:#e91429;" onclick="searchGenrePlaylist('USA')"><h3>Rock</h3></div>
+                        <div class="genre-card" style="background:#af2896;" onclick="searchGenrePlaylist('Latin')"><h3>Reggaeton</h3></div>
+                        <div class="genre-card" style="background:#8d67ab;" onclick="searchGenrePlaylist('USA')"><h3>R&B</h3></div>
+                        <div class="genre-card" style="background:#006450;" onclick="searchGenrePlaylist('Corea')"><h3>K-Pop</h3></div>
                     </div>
+                    <div class="section-title" style="margin-top:12px;">Playlist per Genere</div>
+                    <div id="genrePlaylistsContainer"></div>
                 </div>
                 
                 <div id="countriesViewSection" style="display:none;">
                     <div class="section-title">Hub Musicali Globali</div>
                     <div class="country-hub-grid">
-                        <div class="country-hub-card" style="background:linear-gradient(135deg,#009246,#ce2b37);" onclick="openGenreBrowser('Italia')"><span class="flag">🇮🇹</span><h3>Italia</h3></div>
-                        <div class="country-hub-card" style="background:linear-gradient(135deg,#3c3b6e,#b22234);" onclick="openGenreBrowser('USA')"><span class="flag">🇺🇸</span><h3>USA</h3></div>
-                        <div class="country-hub-card" style="background:linear-gradient(135deg,#012169,#c8102e);" onclick="openGenreBrowser('UK')"><span class="flag">🇬🇧</span><h3>Regno Unito</h3></div>
-                        <div class="country-hub-card" style="background:linear-gradient(135deg,#cd2e3a,#0047a0);" onclick="openGenreBrowser('Corea')"><span class="flag">🇰🇷</span><h3>Corea del Sud</h3></div>
-                        <div class="country-hub-card" style="background:linear-gradient(135deg,#bc002d,#ffffff);" onclick="openGenreBrowser('Giappone')"><span class="flag">🇯🇵</span><h3>Giappone</h3></div>
-                        <div class="country-hub-card" style="background:linear-gradient(135deg,#006847,#ce1126);" onclick="openGenreBrowser('Latin')"><span class="flag">🌎</span><h3>America Latina</h3></div>
-                        <div class="country-hub-card" style="background:linear-gradient(135deg,#009c3b,#ffdf00);" onclick="openGenreBrowser('Brasile')"><span class="flag">🇧🇷</span><h3>Brasile</h3></div>
-                        <div class="country-hub-card" style="background:linear-gradient(135deg,#0055a4,#ef4135);" onclick="openGenreBrowser('Francia')"><span class="flag">🇫🇷</span><h3>Francia</h3></div>
-                        <div class="country-hub-card" style="background:linear-gradient(135deg,#000000,#dd0000);" onclick="openGenreBrowser('Germania')"><span class="flag">🇩🇪</span><h3>Germania</h3></div>
-                        <div class="country-hub-card" style="background:linear-gradient(135deg,#008751,#ffffff);" onclick="openGenreBrowser('Africa')"><span class="flag">🌍</span><h3>Nigeria & Sudafrica</h3></div>
-                        <div class="country-hub-card" style="background:linear-gradient(135deg,#ff0000,#ffffff);" onclick="openGenreBrowser('Canada')"><span class="flag">🇨🇦</span><h3>Canada</h3></div>
-                        <div class="country-hub-card" style="background:linear-gradient(135deg,#00008b,#ff0000);" onclick="openGenreBrowser('Oceania')"><span class="flag">🇦🇺</span><h3>Australia</h3></div>
+                        <div class="country-hub-card" style="background:linear-gradient(135deg,#009246,#ce2b37);" onclick="searchGenrePlaylist('Italia')"><span class="flag">🇮🇹</span><h3>Italia</h3></div>
+                        <div class="country-hub-card" style="background:linear-gradient(135deg,#3c3b6e,#b22234);" onclick="searchGenrePlaylist('USA')"><span class="flag">🇺🇸</span><h3>USA</h3></div>
+                        <div class="country-hub-card" style="background:linear-gradient(135deg,#012169,#c8102e);" onclick="searchGenrePlaylist('UK')"><span class="flag">🇬🇧</span><h3>Regno Unito</h3></div>
+                        <div class="country-hub-card" style="background:linear-gradient(135deg,#cd2e3a,#0047a0);" onclick="searchGenrePlaylist('Corea')"><span class="flag">🇰🇷</span><h3>Corea del Sud</h3></div>
+                        <div class="country-hub-card" style="background:linear-gradient(135deg,#bc002d,#ffffff);" onclick="searchGenrePlaylist('Giappone')"><span class="flag">🇯🇵</span><h3>Giappone</h3></div>
+                        <div class="country-hub-card" style="background:linear-gradient(135deg,#006847,#ce1126);" onclick="searchGenrePlaylist('Latin')"><span class="flag">🌎</span><h3>America Latina</h3></div>
+                        <div class="country-hub-card" style="background:linear-gradient(135deg,#009c3b,#ffdf00);" onclick="searchGenrePlaylist('Brasile')"><span class="flag">🇧🇷</span><h3>Brasile</h3></div>
+                        <div class="country-hub-card" style="background:linear-gradient(135deg,#0055a4,#ef4135);" onclick="searchGenrePlaylist('Francia')"><span class="flag">🇫🇷</span><h3>Francia</h3></div>
+                        <div class="country-hub-card" style="background:linear-gradient(135deg,#000000,#dd0000);" onclick="searchGenrePlaylist('Germania')"><span class="flag">🇩🇪</span><h3>Germania</h3></div>
+                        <div class="country-hub-card" style="background:linear-gradient(135deg,#008751,#ffffff);" onclick="searchGenrePlaylist('Africa')"><span class="flag">🌍</span><h3>Nigeria & Sudafrica</h3></div>
+                        <div class="country-hub-card" style="background:linear-gradient(135deg,#ff0000,#ffffff);" onclick="searchGenrePlaylist('Canada')"><span class="flag">🇨🇦</span><h3>Canada</h3></div>
+                        <div class="country-hub-card" style="background:linear-gradient(135deg,#00008b,#ff0000);" onclick="searchGenrePlaylist('Oceania')"><span class="flag">🇦🇺</span><h3>Australia</h3></div>
                     </div>
                 </div>
                 
                 <div id="searchResultsContainer"></div>
-            </div>
-
-            <div id="view-genre-browser" class="view">
-                <div class="top-bar">
-                    <span class="top-bar-title" id="genreBrowserTitle">Generi</span>
-                    <button onclick="switchView('search', document.querySelectorAll('.nav-item')[1])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button>
-                </div>
-                <div id="genreBrowserContent"></div>
             </div>
 
             <div id="view-library" class="view">
@@ -1125,28 +1073,6 @@
                     <div class="section-title" style="margin-top:16px;">Playlist Pubbliche</div>
                     <div id="profilePublicPlaylists"></div>
                 </div>
-            </div>
-
-            <div id="view-stats" class="view">
-                <div class="top-bar"><span class="top-bar-title">Statistiche</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
-                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">
-                    <div style="background:var(--card-bg);border-radius:8px;padding:16px;text-align:center;border:1px solid var(--border-glow);"><h3 style="font-size:1.5rem;font-weight:900;color:var(--spotify-green);" id="statsLikedSongs">0</h3><p style="font-size:0.7rem;color:#b3b3b3;">Preferiti</p></div>
-                    <div style="background:var(--card-bg);border-radius:8px;padding:16px;text-align:center;border:1px solid var(--border-glow);"><h3 style="font-size:1.5rem;font-weight:900;color:#3d91f4;" id="statsPlaylists">0</h3><p style="font-size:0.7rem;color:#b3b3b3;">Playlist</p></div>
-                    <div style="background:var(--card-bg);border-radius:8px;padding:16px;text-align:center;border:1px solid var(--border-glow);"><h3 style="font-size:1.5rem;font-weight:900;color:#a855f7;" id="statsFriends">0</h3><p style="font-size:0.7rem;color:#b3b3b3;">Amici</p></div>
-                    <div style="background:var(--card-bg);border-radius:8px;padding:16px;text-align:center;border:1px solid var(--border-glow);"><h3 style="font-size:1.5rem;font-weight:900;color:#ff9f0a;" id="statsHistory">0</h3><p style="font-size:0.7rem;color:#b3b3b3;">Ascoltati</p></div>
-                    <div style="background:var(--card-bg);border-radius:8px;padding:16px;text-align:center;border:1px solid var(--border-glow);"><h3 style="font-size:1.5rem;font-weight:900;color:#f15e6c;" id="statsDownloads">0</h3><p style="font-size:0.7rem;color:#b3b3b3;">Scaricati</p></div>
-                    <div style="background:var(--card-bg);border-radius:8px;padding:16px;text-align:center;border:1px solid var(--border-glow);"><h3 style="font-size:1.5rem;font-weight:900;color:var(--spotify-green);" id="statsArtistsFollowed">0</h3><p style="font-size:0.7rem;color:#b3b3b3;">Artisti Seguiti</p></div>
-                </div>
-            </div>
-
-            <div id="view-history" class="view">
-                <div class="top-bar"><span class="top-bar-title">Cronologia</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
-                <div id="historyList"></div>
-            </div>
-
-            <div id="view-downloads" class="view">
-                <div class="top-bar"><span class="top-bar-title">Download</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
-                <div id="downloadsList"></div>
             </div>
 
             <div id="view-settings" class="view">
@@ -1180,38 +1106,6 @@
                     <div class="settings-item" onclick="openProfileEditModal()"><span style="font-size:0.8rem;">Modifica profilo</span><i class="fas fa-chevron-right" style="color:#b3b3b3;"></i></div>
                     <div class="settings-item" onclick="syncWithGoogle()"><span style="font-size:0.8rem;">Sincronizza con Google</span><i class="fab fa-google" style="color:#4285F4;"></i></div>
                     <div class="settings-item" onclick="clearAllData()"><span style="font-size:0.8rem;color:#f15e6c;">Cancella tutti i dati</span><i class="fas fa-trash" style="color:#f15e6c;"></i></div>
-                </div>
-            </div>
-
-            <div id="view-help" class="view">
-                <div class="top-bar"><span class="top-bar-title">Aiuto</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
-                <div class="settings-group">
-                    <div class="section-title">FAQ</div>
-                    <div class="settings-item" onclick="toggleFaq('faq1')"><span style="font-size:0.8rem;">Come importo una playlist?</span><i class="fas fa-chevron-down" style="color:#b3b3b3;"></i></div>
-                    <div id="faq1" style="display:none;padding:8px;color:#b3b3b3;font-size:0.75rem;">Apri il menu profilo e seleziona "Importa Playlist".</div>
-                </div>
-            </div>
-
-            <div id="view-about" class="view">
-                <div class="top-bar"><span class="top-bar-title">Info</span><button onclick="switchView('home', document.querySelectorAll('.nav-item')[0])" style="background:none;border:none;color:#fff;cursor:pointer;"><i class="fas fa-arrow-left"></i></button></div>
-                <div style="text-align:center;padding:16px;">
-                    <div style="width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,var(--spotify-green),var(--accent-tertiary));display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:1.3rem;color:#000;animation:float 3s ease-in-out infinite;"><i class="fas fa-music"></i></div>
-                    <h3 style="font-weight:900;">DarkSound Pro</h3>
-                    <p style="color:#b3b3b3;">Versione 3.0.0</p>
-                </div>
-            </div>
-
-            <div id="view-artist" class="view">
-                <div style="position:relative;height:200px;border-radius:0 0 16px 16px;overflow:hidden;">
-                    <img id="artistHeroImg" src="" style="width:100%;height:100%;object-fit:cover;">
-                    <div style="position:absolute;bottom:0;left:0;right:0;padding:16px;background:linear-gradient(transparent,#000);">
-                        <h1 id="artistNameTitle" style="font-size:1.5rem;font-weight:900;"></h1>
-                        <button class="btn-primary" id="followArtistBtn" onclick="toggleFollowArtist()" style="width:auto;padding:6px 16px;margin-top:6px;font-size:0.8rem;">Segui</button>
-                    </div>
-                </div>
-                <div style="padding:12px;">
-                    <div class="section-title">Brani</div>
-                    <div id="artistTracksContainer"></div>
                 </div>
             </div>
 
@@ -1307,6 +1201,141 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
+        // ============ ENCICLOPEDIA MUSICALE COMPLETA ============
+        const MUSIC_ENCYCLOPEDIA = {
+            'Italia': {
+                title: '🇮🇹 Italia - Mercato Italia & Mediterraneo',
+                color: '#009246',
+                subgenres: {
+                    'Mainstream Pop & Sanremo Icons': ['Tiziano Ferro', 'Laura Pausini', 'Marco Mengoni', 'Annalisa', 'Giorgia', 'Emma', 'Elisa', 'Mahmood', 'Angelina Mango', 'Irama', 'Achille Lauro', 'Fedez', 'Francesca Michielin', 'Noemi', 'Arisa', 'Rocco Hunt', 'Baby K', 'Boomdabash', 'Elettra Lamborghini', 'Shade'],
+                    'Contemporary Indie Pop': ['Cesare Cremonini', 'Calcutta', 'Gazzelle', 'Brunori Sas', 'Tommaso Paradiso', 'Coez', 'Frah Quintale', 'Diodato', 'Madame', 'Rose Villain', 'Levante', 'Coma_Cose', 'Pinguini Tattici Nucleari', 'La Rappresentante di Lista', 'Fulminacci', 'Colapesce', 'Dimartino', 'Venerus', 'Mecna', 'Sick Luke'],
+                    'Commercial & Mega-Trap': ['Sfera Ebbasta', 'Geolier', 'Lazza', 'Shiva', 'Tony Effe', 'Capo Plaza', 'Guè', 'Marracash', 'Tedua', 'Tony Boy', 'Side Baby', 'Dark Polo Gang', 'Izi', 'Rkomi', 'Ernia', 'Nitro', 'Fabri Fibra', 'Gemitaiz', 'MadMan', 'Clementino'],
+                    'Melodic Trap & New Wave': ['Artie 5ive', 'Bresh', 'Rkomi', 'Pyrex', 'Rhove', 'Diss Gacha', 'Anna', 'Low Kidd', 'Night Skinny', 'Vale Pain', 'Nerissima Serpe', 'Papa V', 'Kid Yugi', 'Nayt', 'Noyz Narcos', 'Emis Killa', 'Salmo', 'Massimo Pericolo', 'Rondodasosa', 'Baby Gang'],
+                    'Conscious & Street Rap': ['Kid Yugi', 'Nayt', 'Noyz Narcos', 'Ernia', 'Fabri Fibra', 'Salmo', 'Massimo Pericolo', 'Emis Killa', 'Gemitaiz', 'MadMan', 'Nitro', 'Clementino', 'Ensi', 'Jack The Smoker', 'Mistaman', 'Rancore', 'Murubutu', 'Claver Gold', 'Lanz Khan', 'DSA Commando'],
+                    'Italian Drill & Street Sound': ['Rondodasosa', 'Vale Pain', 'Neima Ezza', 'Baby Gang', 'Sacky', 'Naska', 'Simba La Rue', 'Kassimi', 'Nko', 'Speranza', 'J Lord', 'Mikush', 'Delaruà', 'Digital Astro', 'Faneto'],
+                    'Melodic Techno & Progressive': ['Tale Of Us', 'Anyma', 'Giorgia Angiuli', 'Mathame', 'Meduza', 'Gabry Ponte', 'Gigi D\'Agostino', 'Mace', 'Venerus', 'Go Dugong', 'Bawrut', 'Malandra Jr', 'Speaking Minds', 'Templar', 'Underspreche'],
+                    'Rock & Alternative': ['Måneskin', 'Verdena', 'Afterhours', 'Baustelle', 'Subsonica', 'Zen Circus', 'Ministri', 'Fast Animals and Slow Kids', 'Pinguini Tattici Nucleari', 'La Rappresentante di Lista', 'Calcutta', 'Gazzelle', 'Brunori Sas', 'Diodato', 'Levante', 'Coma_Cose']
+                }
+            },
+            'USA': {
+                title: '🇺🇸 Stati Uniti - Mainstream & Underground',
+                color: '#3c3b6e',
+                subgenres: {
+                    'Global Pop Megastars': ['Taylor Swift', 'Ariana Grande', 'Bruno Mars', 'Katy Perry', 'Lady Gaga', 'Miley Cyrus', 'Shawn Mendes', 'Charlie Puth', 'Billie Eilish', 'Olivia Rodrigo', 'Sabrina Carpenter', 'Chappell Roan', 'Benson Boone', 'Tate McRae', 'Dua Lipa', 'Harry Styles'],
+                    'Gen-Z Viral & Dance-Pop': ['Sabrina Carpenter', 'Chappell Roan', 'Olivia Rodrigo', 'Tate McRae', 'Doja Cat', 'Benson Boone', 'Troye Sivan', 'Reneé Rapp', 'Gracie Abrams', 'Madison Beer', 'Lauv', 'Lauv', 'SZA', 'Beyoncé', 'Taylor Swift', 'Ariana Grande'],
+                    'Commercial Mega-Rap & Trap': ['Drake', 'Travis Scott', 'Kanye West', 'Kendrick Lamar', 'Future', 'Post Malone', 'Playboi Carti', 'Lil Baby', 'Gunna', 'Lil Uzi Vert', '21 Savage', 'Metro Boomin', 'Young Thug', 'A$AP Rocky', 'Tyler The Creator', 'J. Cole'],
+                    'Melodic Trap & Soundcloud Era': ['Juice WRLD', 'Lil Durk', 'Rod Wave', 'Don Toliver', 'Yeat', 'Ken Carson', 'Destroy Lonely', 'Lil Tecca', 'Baby Keem', 'Polo G', 'Lil Tjay', 'The Kid LAROI', 'Iann Dior', '24kGoldn', 'NLE Choppa', 'Cochise'],
+                    'Conscious, Jazz & Alternative Rap': ['J. Cole', 'Nas', 'Tyler The Creator', 'JID', 'Denzel Curry', 'Joey Bada$$', 'Mac Miller', 'Vince Staples', 'Wu-Tang Clan', 'OutKast', 'Earl Sweatshirt', 'Freddie Gibbs', 'Run The Jewels', 'Danny Brown', 'JPEGMAFIA', 'Death Grips'],
+                    'Stadium Rock & Hard Rock': ['Foo Fighters', 'Metallica', 'Red Hot Chili Peppers', 'Guns N\' Roses', 'Nirvana', 'Pearl Jam', 'Green Day', 'Blink-182', 'Linkin Park', 'Slipknot', 'Korn', 'Paramore', 'My Chemical Romance', 'Fall Out Boy', 'Machine Gun Kelly', 'Bad Omens'],
+                    'Metalcore, Deathcore & Modern Rock': ['Bad Omens', 'Lorna Shore', 'Spiritbox', 'Falling In Reverse', 'Architects', 'Deftones', 'Tool', 'Mastodon', 'Bring Me The Horizon', 'Motionless In White', 'Ice Nine Kills', 'Wage War', 'Polaris', 'Currents', 'Erra', 'Silent Planet'],
+                    'Modern Country Rock & Americana': ['Zach Bryan', 'Morgan Wallen', 'Luke Combs', 'Shaboozey', 'Jelly Roll', 'Chris Stapleton', 'Lainey Wilson', 'Johnny Cash', 'Kacey Musgraves', 'Tyler Childers', 'Sturgill Simpson', 'Jason Isbell', 'Brandi Carlile', 'Orville Peck', 'Margo Price'],
+                    'Contemporary R&B & Alt-Soul': ['SZA', 'Frank Ocean', 'Beyoncé', 'H.E.R.', 'Bryson Tiller', 'Rihanna', 'Usher', 'Brent Faiyaz', 'Summer Walker', 'Jhené Aiko', 'Kehlani', 'Daniel Caesar', 'Giveon', 'Lucky Daye', 'Snoh Aalegra', 'Sabrina Claudio'],
+                    'Neo-Soul, Funk & Legacy': ['Anderson .Paak', 'Leon Bridges', 'Silk Sonic', 'Thundercat', 'Erykah Badu', 'D\'Angelo', 'Stevie Wonder', 'Marvin Gaye', 'Prince', 'Kendrick Lamar', 'Jill Scott', 'Maxwell', 'Musiq Soulchild', 'Anthony Hamilton', 'Raphael Saadiq', 'D\'Angelo'],
+                    'Bass, Dubstep & Festival EDM': ['Skrillex', 'Diplo', 'Marshmello', 'Illenium', 'Excision', 'Fisher', 'John Summit', 'Dom Dolla', 'Sara Landry', 'REZZ', 'Zeds Dead', 'Subtronics', 'Svdden Death', 'Wooli', 'Ganja White Night', 'Liquid Stranger']
+                }
+            },
+            'UK': {
+                title: '🇬🇧 Regno Unito - British Invasion & Underground',
+                color: '#012169',
+                subgenres: {
+                    'UK Pop & Chart-Toppers': ['Ed Sheeran', 'Dua Lipa', 'Harry Styles', 'Adele', 'Coldplay', 'Sam Smith', 'Charli XCX', 'Ellie Goulding', 'Lewis Capaldi', 'Tom Grennan', 'Rag\'n\'Bone Man', 'Calum Scott', 'James Arthur', 'Anne-Marie', 'Becky Hill', 'Jorja Smith'],
+                    'UK Rap, Grime & Afroswing': ['Central Cee', 'Dave', 'Stormzy', 'Skepta', 'Headie One', 'D-Block Europe', 'AJ Tracey', 'Wiley', 'Jme', 'Giggs', 'Kano', 'Ghetts', 'Wretch 32', 'Aitch', 'Tion Wayne', 'Russ Millions'],
+                    'Drill & Underground Hip-Hop': ['Digga D', 'Knucks', 'Little Simz', 'Fredo', 'Ice Spice', 'Nines', 'Potter Payper', 'M Huncho', 'Unknown T', 'M24', 'Abra Cadabra', 'Loski', 'Blanco', 'Kwengface', 'PS Hitsquad', 'Zone 2'],
+                    'Indie & Britpop Legacy': ['Arctic Monkeys', 'The 1975', 'Oasis', 'Blur', 'Radiohead', 'Florence + The Machine', 'The Smiths', 'Joy Division', 'The Cure', 'Depeche Mode', 'New Order', 'Pulp', 'Suede', 'Manic Street Preachers', 'The Verve', 'Stone Roses'],
+                    'Post-Punk Revival & Alternative': ['Fontaines D.C.', 'Idles', 'Shame', 'Bring Me The Horizon', 'Muse', 'Greta Van Fleet', 'The Libertines', 'Franz Ferdinand', 'Kasabian', 'The Strokes', 'Interpol', 'Yeah Yeah Yeahs', 'TV On The Radio', 'LCD Soundsystem', 'Foals', 'Everything Everything'],
+                    'UK Garage, Dubstep & Ambient': ['Fred again..', 'Sub Focus', 'Sammy Virji', 'Chase & Status', 'Burial', 'Aphex Twin', 'Boards of Canada', 'Jon Hopkins', 'Four Tet', 'Jamie xx', 'Disclosure', 'Skream', 'Benga', 'Mala', 'Coki', 'Loefah'],
+                    'UK R&B & Alternative Soul': ['Jorja Smith', 'Mahalia', 'Cleo Sol', 'PinkPantheress', 'Arlo Parks', 'FKA twigs', 'Raye', 'Sampha', 'Michael Kiwanuka', 'Lianne La Havas', 'Nao', 'Tiana Major9', 'Kojey Radical', 'Tom Misch', 'Jordan Rakei', 'Yussef Dayes']
+                }
+            },
+            'Phonk': {
+                title: '🔊 Phonk & Brazilian Funk',
+                color: '#503750',
+                subgenres: {
+                    'Brazilian Phonk': ['MXZI', 'Ogryzek', 'MC Ryan SP', 'DJ GBR', 'MC Tuto', 'DJ Samir', 'Rushex', 'MC GW', 'MC Cabelinho', 'MC Kevin', 'MC Don Juan', 'MC Davi', 'MC Hariel', 'MC Lele JP', 'MC Marks', 'MC Paiva'],
+                    'Chill Phonk & Wave': ['LONOWN', 'DVRST', 'LXST CXNTURY', 'Skeler', 'd4vd', 'Kordhell', 'Interworld', 'Pharmacist', 'KSLV Noh', 'Dxrk ダーク', 'PlayaPhonk', 'MoonDeity', 'Soudiere', 'Von Storm', 'SCARION', 'FRXXMAN'],
+                    'Drift Phonk': ['DJ Smokey', 'Ghostface Playa', 'Sadfriendd', 'Roland Jones', 'Soudiere', 'Baker Ya Maker', 'Soulzay', 'Cursed', 'HAARPER', 'Ponsuda', 'Mupp', 'Freddie Dredd', 'Sxmpra', 'Doomshop', 'Slim Guerilla', 'Berrymane'],
+                    'Hard Phonk': ['Carpenter Brut', 'Perturbator', 'GosT', 'Dance With the Dead', 'Kavinsky', 'Mega Drive', 'Lazerhawk', 'Power Glove', 'Danger', 'Justice', 'SebastiAn', 'Mr. Oizo', 'Boys Noize', 'Gesaffelstein', 'The Hacker', 'Miss Kittin']
+                }
+            },
+            'Techno': {
+                title: '🎧 Techno & Club Culture',
+                color: '#0d72ea',
+                subgenres: {
+                    'Hard Techno': ['Sara Landry', 'I Hate Models', '999999999', 'Paula Temple', 'Klangkuenstler', '6EJOU', 'SNTS', 'Alignment', 'Kobosil', 'Brutalismus 3000', 'Angerfist', 'Mad Dog', 'Miss K8', 'AniMe', 'N-Vitral', 'Deadly Guns'],
+                    'Melodic Techno': ['Tale Of Us', 'ARTBAT', 'Anyma', 'Stephan Bodzin', 'Ben Böhmer', 'CamelPhat', 'Mathame', 'Adriatique', 'Innellea', 'Kevin de Vries', 'Konstantin Sibold', 'Colyn', 'Fideles', 'Mind Against', 'Agents Of Time', 'Woo York'],
+                    'Tech-House': ['Fisher', 'Dom Dolla', 'John Summit', 'Chris Lake', 'Michael Bibi', 'Green Velvet', 'Patrick Topping', 'Hot Since 82', 'Solardo', 'CamelPhat', 'Eli Brown', 'Franky Rizardo', 'Latmun', 'Wheats', 'Detlef', 'Mason Maynard'],
+                    'EDM & Trance': ['David Guetta', 'Martin Garrix', 'Tiësto', 'Calvin Harris', 'Armin van Buuren', 'Hardwell', 'Afrojack', 'Dimitri Vegas & Like Mike', 'Nicky Romero', 'W&W', 'Blasterjaxx', 'Bassjackers', 'R3HAB', 'Don Diablo', 'Oliver Heldens', 'Lost Frequencies']
+                }
+            },
+            'Latin': {
+                title: '🌎 America Latina & Caraibi',
+                color: '#006847',
+                subgenres: {
+                    'Reggaeton & Global Latin Pop': ['Bad Bunny', 'Karol G', 'Shakira', 'J Balvin', 'Daddy Yankee', 'Ozuna', 'Feid', 'Rauw Alejandro', 'Maluma', 'Anuel AA', 'Myke Towers', 'Sech', 'Wisin', 'Yandel', 'Nicky Jam', 'Farruko'],
+                    'Latin Trap & Urbano Alternativo': ['Duki', 'Bizarrap', 'Young Miko', 'Quevedo', 'Morad', 'Trueno', 'Nicki Nicole', 'Tiago PZK', 'Paulo Londra', 'Dillom', 'El Alfa', 'Ñengo Flow', 'Arcángel', 'De La Ghetto', 'Jhayco', 'Mora'],
+                    'Regional Mexicano & Corridos': ['Peso Pluma', 'Fuerza Regida', 'Junior H', 'Natanael Cano', 'Netón Vega', 'DannyLux', 'Grupo Frontera', 'Carin León', 'Eslabon Armado', 'Jasiel Nuñez', 'Gabito Ballesteros', 'Xavi', 'Oscar Maydon', 'Chino Pacas', 'Tito Double P', 'Luis R Conriquez'],
+                    'Tropical, Salsa & Bachata': ['Marc Anthony', 'Romeo Santos', 'Prince Royce', 'Juan Luis Guerra', 'Carlos Vives', 'Gilberto Santa Rosa', 'Celia Cruz', 'Héctor Lavoe', 'Buena Vista Social Club', 'Aventura', 'Monchy & Alexandra', 'Xtreme', 'Toby Love', 'Frank Reyes', 'Raulín Rodríguez']
+                }
+            },
+            'Corea': {
+                title: '🇰🇷 Corea del Sud - K-Pop Hub',
+                color: '#cd2e3a',
+                subgenres: {
+                    'Global Icon Groups': ['BTS', 'BLACKPINK', 'TWICE', 'Stray Kids', 'SEVENTEEN', 'EXO', 'Red Velvet', 'NCT', 'NCT 127', 'NCT Dream', 'WayV', 'SuperM', 'SHINee', 'Big Bang', '2NE1', 'Girls\' Generation'],
+                    '4th & 5th Gen Powerhouses': ['NewJeans', 'LE SSERAFIM', 'aespa', 'ENHYPEN', 'ITZY', 'IVE', '(G)I-DLE', 'NMIXX', 'BOYNEXTDOOR', 'ILLIT', 'RIIZE', 'ZEROBASEONE', 'TWS', 'BABYMONSTER', 'MEOVV', 'TREASURE'],
+                    'Solo Superstars Lineage': ['Jung Kook', 'Jimin', 'V', 'J-Hope', 'RM', 'Suga', 'Jennie', 'Rosé', 'Lisa', 'Jisoo', 'Zico', 'Taemin', 'Baekhyun', 'Kai', 'Chen', 'D.O.'],
+                    'K-R&B, Indie & Soloists': ['IU', 'Taeyeon', 'Dean', 'BIBI', 'Crush', 'DPR Live', 'Jackson Wang', 'Sunmi', 'Colde', 'DPR Ian', 'Heize', 'Suran', 'Lee Hi', 'Zion.T', 'Katie', 'Junoflo']
+                }
+            },
+            'Brasile': {
+                title: '🇧🇷 Brasile - Brazilian Hub',
+                color: '#009c3b',
+                subgenres: {
+                    'MTG, Montagem & Brazilian Phonk': ['MXZI', 'Ogryzek', 'DJ Samir', 'Rushex', 'MC Ryan SP', 'DJ GBR', 'MC Tuto', 'MC GW', 'MC Cabelinho', 'MC Kevin', 'MC Don Juan', 'MC Davi', 'MC Hariel', 'MC Lele JP', 'MC Marks', 'MC Paiva'],
+                    'Funk Carioca & Baile Funk': ['Anitta', 'Kevin o Chris', 'Ludmilla', 'MC Livinho', 'Lexa', 'Dennis DJ', 'MC Kevinho', 'MC Rebecca', 'MC Zaac', 'MC Loma', 'MC G15', 'MC WM', 'MC Jhowzinho', 'MC Kadinho', 'MC Menor', 'MC Dede'],
+                    'Samba, Bossa Nova & MPB': ['Tom Jobim', 'João Gilberto', 'Caetano Veloso', 'Gilberto Gil', 'Vinícius de Moraes', 'Marisa Monte', 'Elis Regina', 'Chico Buarque', 'Gal Costa', 'Jorge Ben Jor', 'Novos Baianos', 'Os Mutantes', 'Secos & Molhados', 'Raul Seixas', 'Tim Maia', 'Jorge Aragão']
+                }
+            },
+            'Francia': {
+                title: '🇫🇷 Francia - Scène Française',
+                color: '#0055a4',
+                subgenres: {
+                    'French Rap, Trap & Drill': ['PNL', 'Damso', 'Ninho', 'Booba', 'SCH', 'Gazo', 'Niska', 'Jul', 'Tiakola', 'SDM', 'Hamza', 'Kaaris', 'Lacrim', 'Sofiane', 'RK', 'Zola'],
+                    'French Touch & Electro': ['Daft Punk', 'Gesaffelstein', 'Justice', 'DJ Snake', 'Bob Sinclar', 'Vladimir Cauchemar', 'Kavinsky', 'Breakbot', 'SebastiAn', 'Mr. Oizo', 'Busy P', 'Madeon', 'Porter Robinson', 'M83', 'Air', 'Phoenix']
+                }
+            },
+            'Germania': {
+                title: '🇩🇪 Germania - Germany Hub',
+                color: '#000000',
+                subgenres: {
+                    'Hard Techno, Industrial & Gabber': ['I Hate Models', '999999999', 'Paula Temple', 'Klangkuenstler', '6EJOU', 'SNTS', 'Alignment', 'Kobosil', 'Brutalismus 3000', 'Angerfist', 'Mad Dog', 'Miss K8', 'AniMe', 'N-Vitral', 'Deadly Guns', 'Sefa'],
+                    'Deutschrap & Elettronica': ['Apache 207', 'Bonez MC', 'Ufo361', 'Luciano', 'Shirin David', 'Kraftwerk', 'Paul Kalkbrenner', 'Robin Schulz', 'Felix Jaehn', 'Zedd', 'ATB', 'Blank & Jones', 'Talla 2XLC', 'Kai Tracid', 'Scooter', 'Blutengel']
+                }
+            },
+            'Africa': {
+                title: '🌍 Nigeria & Sudafrica - African Waves',
+                color: '#008751',
+                subgenres: {
+                    'Afrobeats & Afro-Fusion': ['Burna Boy', 'Wizkid', 'Tems', 'Rema', 'Ayra Starr', 'Ruger', 'Asake', 'Omah Lay', 'Davido', 'CKay', 'Tiwa Savage', 'Fireboy DML', 'Oxlade', 'Kizz Daniel', 'Zlatan', 'Naira Marley'],
+                    'Amapiano & African House': ['Tyla', 'Kabza De Small', 'DJ Maphorisa', 'Focalistic', 'Major League DJz', 'Uncle Waffles', 'DBN Gogo', 'Vigro Deep', 'De Mthuda', 'Njelic', 'Mellow & Sleazy', 'Felo Le Tee', 'Toss', 'Young Stunna', 'Semi Tee', 'Mdu aka TRP']
+                }
+            },
+            'Canada': {
+                title: '🇨🇦 Canada - Canada Hub',
+                color: '#ff0000',
+                subgenres: {
+                    'Canadian Pop, R&B & Hip-Hop': ['The Weeknd', 'Justin Bieber', 'Drake', 'Shawn Mendes', 'Tate McRae', 'Michael Bublé', 'Arcade Fire', 'Sum 41', 'Avril Lavigne', 'Céline Dion', 'Shania Twain', 'Bryan Adams', 'Alessia Cara', 'PartyNextDoor', 'Nav', 'Tory Lanez']
+                }
+            },
+            'Oceania': {
+                title: '🇦🇺 Australia & Oceania',
+                color: '#00008b',
+                subgenres: {
+                    'Indie, Alternative & Electronic': ['Tame Impala', 'Lorde', 'Troye Sivan', 'Rüfüs Du Sol', 'The Kid LAROI', 'Flume', 'King Gizzard & the Lizard Wizard', 'Amyl and the Sniffers', '5 Seconds of Summer', 'Sia', 'Kylie Minogue', 'Iggy Azalea', 'Vance Joy', 'Gotye', 'AC/DC', 'INXS']
+                }
+            }
+        };
+
         // ============ VARIABILI GLOBALI ============
         let currentUser = localStorage.getItem('darksound_current_user') || null;
         let userProfile = JSON.parse(localStorage.getItem(currentUser ? `profile_${currentUser}` : 'darksound_profile') || 'null');
@@ -1394,79 +1423,97 @@
         function openHelpView() { toggleProfileDrawer(); switchView('help'); }
         function openAboutView() { toggleProfileDrawer(); switchView('about'); }
         function openLikedSongs() { switchView('liked-songs'); renderLikedSongsView(); }
-        
-        function openFollowedArtistsModal() {
-            toggleProfileDrawer();
-            const container = document.getElementById('followedArtistsList');
-            if (followedArtists.length === 0) {
-                container.innerHTML = '<p style="color:#b3b3b3;">Non segui nessun artista.</p>';
-            } else {
-                container.innerHTML = followedArtists.map(a => 
-                    `<div class="artist-card" onclick="openArtistPage('${a.replace(/'/g, "\\'")}')">
-                        <img src="https://picsum.photos/seed/${encodeURIComponent(a)}/100">
-                        <div style="pointer-events:none;"><h3>${a}</h3><p>Artista seguito</p></div>
-                    </div>`
-                ).join('');
-            }
-            openModal('followed-artists-modal');
-        }
 
-        // ============ MODALI ============
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-            document.body.classList.add('modal-open');
-            // Blocca lo scroll della vista sotto
-            document.getElementById('viewScrollArea').style.overflow = 'hidden';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-            document.body.classList.remove('modal-open');
-            // Riabilita lo scroll della vista sotto
-            document.getElementById('viewScrollArea').style.overflow = 'auto';
-        }
-
-        function closeAllModals() {
-            document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
-            document.body.classList.remove('modal-open');
-            document.getElementById('viewScrollArea').style.overflow = 'auto';
-        }
-
-        // ============ TREND ESPANDIBILE ============
-        function toggleTrendSection() {
-            const content = document.getElementById('trendContent');
-            const chevron = document.getElementById('trendChevron');
-            content.classList.toggle('expanded');
-            content.style.maxHeight = content.classList.contains('expanded') ? '600px' : '0';
-            chevron.style.transform = content.classList.contains('expanded') ? 'rotate(180deg)' : 'rotate(0deg)';
-        }
-
-        // ============ SEARCH VIEW TOGGLE ============
-        function toggleSearchView(view) {
-            document.getElementById('genresViewSection').style.display = view === 'genres' ? 'block' : 'none';
-            document.getElementById('countriesViewSection').style.display = view === 'countries' ? 'block' : 'none';
-            document.getElementById('btnGenresView').classList.toggle('active', view === 'genres');
-            document.getElementById('btnCountriesView').classList.toggle('active', view === 'countries');
-        }
-
-        // ============ APRI GENERE ============
-        function openGenreBrowser(countryKey) {
-            switchView('genre-browser');
-            const genreData = MUSIC_ENCYCLOPEDIA[countryKey];
+        // ============ RICERCA PLAYLIST PER GENERE ============
+        async function searchGenrePlaylist(genreKey) {
+            switchView('search', document.querySelectorAll('.nav-item')[1]);
+            document.getElementById('genresViewSection').style.display = 'none';
+            document.getElementById('countriesViewSection').style.display = 'none';
+            
+            const container = document.getElementById('searchResultsContainer');
+            container.innerHTML = '<p style="color:#b3b3b3;">Ricerca playlist e artisti...</p>';
+            
+            const genreData = MUSIC_ENCYCLOPEDIA[genreKey];
             if (!genreData) {
-                document.getElementById('genreBrowserContent').innerHTML = '<p style="color:#b3b3b3;">Hub non trovato.</p>';
+                container.innerHTML = '<p style="color:#b3b3b3;">Genere non trovato.</p>';
                 return;
             }
-            document.getElementById('genreBrowserTitle').innerText = genreData.title;
-            let html = '';
-            for (const [subgenre, artists] of Object.entries(genreData.subgenres)) {
-                html += `<div style="margin-bottom:16px;"><div class="section-title">${subgenre}</div><div class="artist-chip-grid" style="display:flex;flex-wrap:wrap;gap:6px;">`;
-                artists.forEach(artist => {
-                    html += `<button class="artist-chip" onclick="searchArtistFromChip('${artist.replace(/'/g, "\\'")}')">${artist}</button>`;
-                });
-                html += `</div></div>`;
+            
+            let allArtists = [];
+            for (const subgenre of Object.values(genreData.subgenres)) {
+                allArtists.push(...subgenre);
             }
-            document.getElementById('genreBrowserContent').innerHTML = html;
+            
+            // Mostra playlist del genere
+            let html = `<div class="section-title" style="margin-top:12px;">${genreData.title} - Playlist</div>`;
+            html += `<div class="track-row" style="cursor:pointer;" onclick="playGenrePlaylist('${genreKey}')">
+                <div class="track-row-left">
+                    <div style="width:42px;height:42px;background:${genreData.color};border-radius:4px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-list" style="color:#fff;"></i></div>
+                    <div class="track-meta"><h4>${genreData.title}</h4><p>${allArtists.length} artisti • Tocca per riprodurre</p></div>
+                </div>
+                <i class="fas fa-play" style="color:var(--spotify-green);"></i>
+            </div>`;
+            
+            // Mostra artisti del genere
+            html += `<div class="section-title" style="margin-top:16px;">Artisti ${genreData.title}</div>`;
+            
+            const uniqueArtists = [...new Set(allArtists)].slice(0, 30);
+            
+            for (const artist of uniqueArtists) {
+                html += `<div class="artist-card" onclick="openArtistPage('${artist.replace(/'/g, "\\'")}')" style="cursor:pointer;">
+                    <img src="https://picsum.photos/seed/${encodeURIComponent(artist)}/100" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(artist)}/100'">
+                    <div style="pointer-events:none;"><h3>${artist}</h3><p>Artista • Tocca per vedere i brani</p></div>
+                </div>`;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // Riproduce playlist del genere
+        async function playGenrePlaylist(genreKey) {
+            const genreData = MUSIC_ENCYCLOPEDIA[genreKey];
+            if (!genreData) return;
+            
+            let allArtists = [];
+            for (const subgenre of Object.values(genreData.subgenres)) {
+                allArtists.push(...subgenre);
+            }
+            
+            const uniqueArtists = [...new Set(allArtists)].slice(0, 10);
+            let allTracks = [];
+            
+            for (const artist of uniqueArtists) {
+                try {
+                    const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(artist)}`);
+                    const tracks = await res.json();
+                    const filtered = filterOriginalTracks(tracks);
+                    const exactTracks = filterTracksByExactArtist(filtered, artist);
+                    allTracks.push(...exactTracks.slice(0, 2));
+                } catch(e) {}
+            }
+            
+            allTracks = allTracks.filter((t, i, self) => self.findIndex(x => x.id === t.id) === i);
+            
+            if (allTracks.length > 0) {
+                autoPlaylists.push({
+                    id: 'pl_genre_' + Date.now(),
+                    name: genreData.title,
+                    visibility: 'private',
+                    owner: currentUser,
+                    tracks: allTracks.slice(0, 20),
+                    autoGenerated: true
+                });
+                saveUserData();
+                
+                playSelectedTrack(
+                    btoa(unescape(encodeURIComponent(JSON.stringify(allTracks[0])))),
+                    btoa(unescape(encodeURIComponent(JSON.stringify(allTracks)))),
+                    0
+                );
+                showSiriNotification(`▶️ Riproduco ${genreData.title} - ${allTracks.length} brani`);
+            } else {
+                showSiriNotification('Nessun brano trovato per questo genere');
+            }
         }
 
         // ============ SEARCH ============
@@ -1487,6 +1534,18 @@
         async function executeSearch(query) {
             const container = document.getElementById('searchResultsContainer');
             container.innerHTML = '<p style="color:#b3b3b3;">Ricerca...</p>';
+            
+            // Prima controlla se è un genere
+            const genreKey = Object.keys(MUSIC_ENCYCLOPEDIA).find(key => 
+                key.toLowerCase() === query.toLowerCase() || 
+                MUSIC_ENCYCLOPEDIA[key].title.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            if (genreKey) {
+                searchGenrePlaylist(genreKey);
+                return;
+            }
+            
             try {
                 const res = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}`);
                 let tracks = await res.json();
@@ -1511,95 +1570,6 @@
                 container.innerHTML = html;
             } catch(e) {
                 container.innerHTML = '<p style="color:#f15e6c;">Errore.</p>';
-            }
-        }
-
-        function searchArtistFromChip(artistName) {
-            switchView('search', document.querySelectorAll('.nav-item')[1]);
-            document.getElementById('spotifySearchInput').value = artistName;
-            handleSearchInput(artistName);
-        }
-
-        // ============ SETTINGS ============
-        function loadSettings() {
-            const s = AppState.settings;
-            document.getElementById('toggleAutoplay').className = s.autoplay ? 'toggle-switch active' : 'toggle-switch';
-            document.getElementById('toggleBackgroundPlay').className = s.backgroundPlay ? 'toggle-switch active' : 'toggle-switch';
-            document.getElementById('toggleHighQuality').className = s.highQuality ? 'toggle-switch active' : 'toggle-switch';
-        }
-
-        function toggleSetting(name) {
-            AppState.settings[name] = !AppState.settings[name];
-            AppState.saveSettings();
-            loadSettings();
-        }
-
-        function clearAllData() {
-            if (confirm('Cancellare tutti i dati?')) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
-
-        function toggleFaq(id) {
-            const el = document.getElementById(id);
-            el.style.display = el.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // ============ STATS ============
-        function renderStats() {
-            document.getElementById('statsLikedSongs').innerText = likedSongs.length;
-            document.getElementById('statsPlaylists').innerText = userPlaylists.length + autoPlaylists.length;
-            document.getElementById('statsFriends').innerText = friendsList.length;
-            document.getElementById('statsHistory').innerText = historyTracks.length;
-            document.getElementById('statsDownloads').innerText = downloadedTracks.length;
-            document.getElementById('statsArtistsFollowed').innerText = followedArtists.length;
-        }
-
-        // ============ STORIA E DOWNLOAD ============
-        function addToHistory(track) {
-            if (!track?.id) return;
-            historyTracks = historyTracks.filter(t => t.id !== track.id);
-            historyTracks.unshift({...track, listenedAt: Date.now()});
-            historyTracks = historyTracks.slice(0, 100);
-            const key = currentUser ? `history_${currentUser}` : 'darksound_history';
-            localStorage.setItem(key, JSON.stringify(historyTracks));
-            listeningMinutes += 1;
-            localStorage.setItem('darksound_listening_minutes', listeningMinutes.toString());
-        }
-
-        function renderHistory() {
-            const c = document.getElementById('historyList');
-            if (historyTracks.length === 0) {
-                c.innerHTML = '<p style="color:#b3b3b3;font-size:0.75rem;">Nessun brano ascoltato.</p>';
-                return;
-            }
-            c.innerHTML = historyTracks.map((t, i) => `
-                <div class="track-row" onclick="playFromHistory(${i})">
-                    <div class="track-row-left">
-                        <span class="track-num">${i+1}</span>
-                        <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${i}/100'">
-                        <div class="track-meta"><h4>${t.name}</h4><p>${t.artist}</p></div>
-                    </div>
-                </div>`).join('');
-        }
-
-        function renderDownloads() {
-            const c = document.getElementById('downloadsList');
-            if (downloadedTracks.length === 0) {
-                c.innerHTML = '<p style="color:#b3b3b3;font-size:0.75rem;">Nessun brano scaricato.</p>';
-                return;
-            }
-            renderTracksList(downloadedTracks, 'downloadsList', downloadedTracks);
-        }
-
-        function playFromHistory(i) {
-            if (i >= 0 && i < historyTracks.length) {
-                playSelectedTrack(
-                    btoa(unescape(encodeURIComponent(JSON.stringify(historyTracks[i])))),
-                    btoa(unescape(encodeURIComponent(JSON.stringify(historyTracks)))),
-                    i
-                );
             }
         }
 
@@ -1687,6 +1657,120 @@
                 }
             }
         };
+
+        // ============ MODALI ============
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.classList.add('modal-open');
+            document.getElementById('viewScrollArea').style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.classList.remove('modal-open');
+            document.getElementById('viewScrollArea').style.overflow = 'auto';
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+            document.body.classList.remove('modal-open');
+            document.getElementById('viewScrollArea').style.overflow = 'auto';
+        }
+
+        // ============ TREND ESPANDIBILE ============
+        function toggleTrendSection() {
+            const content = document.getElementById('trendContent');
+            const chevron = document.getElementById('trendChevron');
+            content.classList.toggle('expanded');
+            content.style.maxHeight = content.classList.contains('expanded') ? '600px' : '0';
+            chevron.style.transform = content.classList.contains('expanded') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+
+        // ============ SEARCH VIEW TOGGLE ============
+        function toggleSearchView(view) {
+            document.getElementById('genresViewSection').style.display = view === 'genres' ? 'block' : 'none';
+            document.getElementById('countriesViewSection').style.display = view === 'countries' ? 'block' : 'none';
+            document.getElementById('btnGenresView').classList.toggle('active', view === 'genres');
+            document.getElementById('btnCountriesView').classList.toggle('active', view === 'countries');
+        }
+
+        // ============ SETTINGS ============
+        function loadSettings() {
+            const s = AppState.settings;
+            document.getElementById('toggleAutoplay').className = s.autoplay ? 'toggle-switch active' : 'toggle-switch';
+            document.getElementById('toggleBackgroundPlay').className = s.backgroundPlay ? 'toggle-switch active' : 'toggle-switch';
+            document.getElementById('toggleHighQuality').className = s.highQuality ? 'toggle-switch active' : 'toggle-switch';
+        }
+
+        function toggleSetting(name) {
+            AppState.settings[name] = !AppState.settings[name];
+            AppState.saveSettings();
+            loadSettings();
+        }
+
+        function clearAllData() {
+            if (confirm('Cancellare tutti i dati?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // ============ STATS ============
+        function renderStats() {
+            document.getElementById('statsLikedSongs').innerText = likedSongs.length;
+            document.getElementById('statsPlaylists').innerText = userPlaylists.length + autoPlaylists.length;
+            document.getElementById('statsFriends').innerText = friendsList.length;
+            document.getElementById('statsHistory').innerText = historyTracks.length;
+            document.getElementById('statsDownloads').innerText = downloadedTracks.length;
+            document.getElementById('statsArtistsFollowed').innerText = followedArtists.length;
+        }
+
+        // ============ STORIA E DOWNLOAD ============
+        function addToHistory(track) {
+            if (!track?.id) return;
+            historyTracks = historyTracks.filter(t => t.id !== track.id);
+            historyTracks.unshift({...track, listenedAt: Date.now()});
+            historyTracks = historyTracks.slice(0, 100);
+            const key = currentUser ? `history_${currentUser}` : 'darksound_history';
+            localStorage.setItem(key, JSON.stringify(historyTracks));
+            listeningMinutes += 1;
+            localStorage.setItem('darksound_listening_minutes', listeningMinutes.toString());
+        }
+
+        function renderHistory() {
+            const c = document.getElementById('historyList');
+            if (historyTracks.length === 0) {
+                c.innerHTML = '<p style="color:#b3b3b3;font-size:0.75rem;">Nessun brano ascoltato.</p>';
+                return;
+            }
+            c.innerHTML = historyTracks.map((t, i) => `
+                <div class="track-row" onclick="playFromHistory(${i})">
+                    <div class="track-row-left">
+                        <span class="track-num">${i+1}</span>
+                        <img src="${t.image}" onerror="this.src='https://picsum.photos/seed/${i}/100'">
+                        <div class="track-meta"><h4>${t.name}</h4><p>${t.artist}</p></div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function renderDownloads() {
+            const c = document.getElementById('downloadsList');
+            if (downloadedTracks.length === 0) {
+                c.innerHTML = '<p style="color:#b3b3b3;font-size:0.75rem;">Nessun brano scaricato.</p>';
+                return;
+            }
+            renderTracksList(downloadedTracks, 'downloadsList', downloadedTracks);
+        }
+
+        function playFromHistory(i) {
+            if (i >= 0 && i < historyTracks.length) {
+                playSelectedTrack(
+                    btoa(unescape(encodeURIComponent(JSON.stringify(historyTracks[i])))),
+                    btoa(unescape(encodeURIComponent(JSON.stringify(historyTracks)))),
+                    i
+                );
+            }
+        }
 
         // ============ FUNZIONI PRINCIPALI ============
         function hideSplashScreen() {
@@ -1786,13 +1870,13 @@
                 for (const [key, data] of Object.entries(MUSIC_ENCYCLOPEDIA)) {
                     if (key.toLowerCase().includes(genreLower) || genreLower.includes(key.toLowerCase())) {
                         for (const artists of Object.values(data.subgenres)) {
-                            allArtistsToSearch.push(...artists.slice(0, 3));
+                            allArtistsToSearch.push(...artists.slice(0, 5));
                         }
                         break;
                     }
                 }
             });
-            const uniqueArtists = [...new Set(allArtistsToSearch)].slice(0, 10);
+            const uniqueArtists = [...new Set(allArtistsToSearch)].slice(0, 15);
             let allTracks = [];
             for (const artist of uniqueArtists) {
                 try {
@@ -1810,7 +1894,7 @@
                     name: '🎵 Playlist di Benvenuto',
                     visibility: 'private',
                     owner: currentUser,
-                    tracks: allTracks.slice(0, 20),
+                    tracks: allTracks.slice(0, 30),
                     autoGenerated: true
                 });
                 saveUserData();
@@ -2694,51 +2778,7 @@
                 loginWithGoogle();
             }
         }
-
-        // ============ ENCICLOPEDIA MUSICALE ============
-        const MUSIC_ENCYCLOPEDIA = {
-            'Italia': {
-                title: '🇮🇹 Italia',
-                subgenres: {
-                    'Pop': ['Tiziano Ferro', 'Marco Mengoni', 'Annalisa'],
-                    'Trap': ['Sfera Ebbasta', 'Geolier', 'Lazza', 'Shiva'],
-                    'Rap': ['Kid Yugi', 'Nayt', 'Salmo', 'Fabri Fibra']
-                }
-            },
-            'USA': {
-                title: '🇺🇸 USA',
-                subgenres: {
-                    'Pop': ['Taylor Swift', 'Ariana Grande', 'Bruno Mars'],
-                    'Hip-Hop': ['Drake', 'Travis Scott', 'Kendrick Lamar'],
-                    'Rock': ['Foo Fighters', 'Metallica', 'Nirvana']
-                }
-            },
-            'UK': {
-                title: '🇬🇧 Regno Unito',
-                subgenres: {
-                    'Pop': ['Ed Sheeran', 'Dua Lipa', 'Adele'],
-                    'Rap': ['Central Cee', 'Dave', 'Stormzy'],
-                    'Indie': ['Arctic Monkeys', 'Oasis', 'Radiohead']
-                }
-            },
-            'Phonk': {
-                title: '🔊 Phonk',
-                subgenres: {
-                    'Brazilian Phonk': ['MXZI', 'Ogryzek', 'MC Ryan SP'],
-                    'Chill Phonk': ['LONOWN', 'DVRST', 'Kordhell'],
-                    'Drift Phonk': ['DJ Smokey', 'Ghostface Playa']
-                }
-            },
-            'Techno': {
-                title: '🎧 Techno',
-                subgenres: {
-                    'Hard Techno': ['Sara Landry', 'I Hate Models', 'Klangkuenstler'],
-                    'Melodic': ['Tale Of Us', 'ARTBAT', 'Anyma'],
-                    'Tech-House': ['Fisher', 'John Summit', 'Chris Lake']
-                }
-            }
-        };
-                // ============ INTEGRAZIONE SIRI E CONTROLLO VOCALE ============
+               // ============ INTEGRAZIONE SIRI E CONTROLLO VOCALE ============
         let siriRecognition = null;
         let isSiriListening = false;
         let siriWakeWordDetected = false;
@@ -2747,7 +2787,6 @@
         
         // Inizializza il riconoscimento vocale per Siri
         function initSiriIntegration() {
-            // Supporto per MediaSession API
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.setActionHandler('play', () => togglePlay());
                 navigator.mediaSession.setActionHandler('pause', () => togglePlay());
@@ -2770,7 +2809,6 @@
                 });
             }
             
-            // Inizializza il riconoscimento vocale
             if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 siriRecognition = new SpeechRecognition();
@@ -2885,8 +2923,8 @@
                 showSiriNotification('⏮️ Brano precedente');
             }
             // COMANDI DI RICERCA
-            else if (command.includes('cerca') || command.includes('trova') || command.includes('search') || command.includes('cercami') || command.includes('cerca la canzone') || command.includes('cerca il brano')) {
-                const searchTerm = command.replace(/^(cerca|trova|search|cercami|cerca la canzone|cerca il brano)\s+/i, '').trim();
+            else if (command.includes('cerca') || command.includes('trova') || command.includes('search') || command.includes('cercami') || command.includes('cerca la canzone') || command.includes('cerca il brano') || command.includes('cerca playlist')) {
+                const searchTerm = command.replace(/^(cerca|trova|search|cercami|cerca la canzone|cerca il brano|cerca playlist)\s+/i, '').trim();
                 if (searchTerm && searchTerm.length > 2) {
                     searchAndShowResults(searchTerm);
                 }
@@ -2952,10 +2990,14 @@
                 runAiDjSelection();
                 showSiriNotification('🤖 AI DJ avviato');
             }
-            // COMANDI AI PLAYLIST
-            else if (command.includes('ai playlist') || command.includes('playlist automatica') || command.includes('crea playlist') || command.includes('genera playlist') || command.includes('playlist con ia') || command.includes('crea playlist con ia')) {
-                openAiPlaylistModal();
-                showSiriNotification('✨ Crea playlist con IA');
+            // COMANDI PLAYLIST GENERE
+            else if (command.includes('playlist phonk') || command.includes('playlist techno') || command.includes('playlist trap') || command.includes('playlist pop') || command.includes('playlist rock') || command.includes('playlist rap') || command.includes('playlist jazz') || command.includes('playlist latin')) {
+                const genreMatch = command.match(/playlist\s+(phonk|techno|trap|pop|rock|rap|jazz|latin)/i);
+                if (genreMatch) {
+                    const genreMap = { 'phonk': 'Phonk', 'techno': 'Techno', 'trap': 'Italia', 'pop': 'USA', 'rock': 'USA', 'rap': 'Italia', 'jazz': 'USA', 'latin': 'Latin' };
+                    searchGenrePlaylist(genreMap[genreMatch[1].toLowerCase()]);
+                    showSiriNotification(`🎵 Playlist ${genreMatch[1]} trovata!`);
+                }
             }
             // COMANDI DOWNLOAD
             else if (command.includes('scarica') || command.includes('download') || command.includes('salva brano') || command.includes('salva canzone') || command.includes('scarica il brano') || command.includes('scarica la canzone') || command.includes('metti download')) {
@@ -2969,7 +3011,7 @@
             }
             // COMANDO AIUTO
             else if (command.includes('aiuto') || command.includes('help') || command.includes('cosa puoi fare') || command.includes('comandi disponibili') || command.includes('quali comandi') || command.includes('dimmi i comandi') || command.includes('quali sono i comandi')) {
-                showSiriNotification('🎤 Comandi: riproduci, metti pausa, brano successivo, brano precedente, cerca, mi piace, rimuovi preferito, shuffle, repeat, volume, ai dj, apri home');
+                showSiriNotification('🎤 Comandi: riproduci, metti pausa, brano successivo, brano precedente, cerca, cerca playlist phonk, mi piace, rimuovi preferito, shuffle, repeat, volume, ai dj, apri home');
             }
         }
         
@@ -3181,7 +3223,6 @@
             const fsPlayer = document.getElementById('fullscreen-player');
             const modalOpen = document.querySelector('.modal-overlay.active');
             if (fsPlayer.classList.contains('active') || modalOpen) {
-                // Permetti scroll solo dentro il player o modale
                 const target = e.target;
                 if (!fsPlayer.contains(target) && !modalOpen?.contains(target)) {
                     e.preventDefault();
@@ -3214,4 +3255,4 @@
         };
     </script>
 </body>
-</html>
+</html> 
