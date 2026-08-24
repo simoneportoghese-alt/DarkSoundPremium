@@ -2881,303 +2881,8 @@
         }
 
         // ============================================================
-        // 6. IMPORTAZIONE SPOTIFY ROBUSTA CON FETCH REALE
+        // 6. FUNZIONE PER RECUPERARE STATISTICHE VIDEO
         // ============================================================
-        async function fetchSpotifyPlaylistTracks(playlistId) {
-            try {
-                // METODO 1: Usa l'API OEmbed di Spotify per ottenere metadati
-                const oembedUrl = `https://open.spotify.com/oembed?url=https://open.spotify.com/playlist/${playlistId}`;
-                const oembedRes = await fetch(oembedUrl);
-                const oembedData = await oembedRes.json();
-                
-                const playlistName = oembedData.title || 'Playlist Spotify';
-                
-                // METODO 2: Usa un proxy pubblico per estrarre la tracklist
-                // Usiamo l'API gratuita di Spotify per i dati pubblici
-                // Alternativa: usiamo un servizio di terze parti come Spotify Playlist Parser
-                
-                // Tentativo con API Spotify pubblica (no auth richiesta per dati pubblici)
-                // In realtà Spotify richiede autenticazione, quindi usiamo un approccio alternativo
-                
-                // METODO 3: Usiamo un endpoint proxy gratuito che estrae i dati
-                const proxyUrls = [
-                    `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://open.spotify.com/playlist/${playlistId}`)}`,
-                    `https://corsproxy.io/?${encodeURIComponent(`https://open.spotify.com/playlist/${playlistId}`)}`
-                ];
-                
-                let htmlContent = null;
-                for (const proxyUrl of proxyUrls) {
-                    try {
-                        const proxyRes = await fetch(proxyUrl, {
-                            headers: {
-                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                            }
-                        });
-                        if (proxyRes.ok) {
-                            htmlContent = await proxyRes.text();
-                            break;
-                        }
-                    } catch (e) {
-                        console.warn('[Spotify Proxy] Fallito:', e);
-                    }
-                }
-                
-                if (!htmlContent) {
-                    throw new Error('Impossibile recuperare la playlist Spotify. Verifica il link.');
-                }
-                
-                // Estrai i brani dalla pagina HTML usando regex
-                // Pattern per estrarre titoli e artisti dalla pagina Spotify
-                const trackPattern = /"track":{"name":"([^"]+)","uri":"spotify:track:[^"]+","artists":\[{"name":"([^"]+)"}/g;
-                const tracks = [];
-                let match;
-                
-                while ((match = trackPattern.exec(htmlContent)) !== null) {
-                    const trackName = match[1];
-                    const artistName = match[2];
-                    tracks.push({ name: trackName, artist: artistName });
-                }
-                
-                // Se non abbiamo trovato brani, prova un pattern alternativo
-                if (tracks.length === 0) {
-                    const altPattern = /"trackName":"([^"]+)","artistName":"([^"]+)"/g;
-                    while ((match = altPattern.exec(htmlContent)) !== null) {
-                        tracks.push({ name: match[1], artist: match[2] });
-                    }
-                }
-                
-                if (tracks.length === 0) {
-                    throw new Error('Nessun brano trovato nella playlist. Verifica che la playlist sia pubblica.');
-                }
-                
-                // Ora per ogni brano, cerca su YouTube
-                const youtubeTracks = [];
-                let foundCount = 0;
-                
-                for (let i = 0; i < tracks.length && i < 50; i++) {
-                    const track = tracks[i];
-                    const searchQuery = `${track.name} ${track.artist}`;
-                    
-                    try {
-                        const results = await searchYoutubeVideos(searchQuery, 3);
-                        // Prendi il miglior risultato (ufficiale o - Topic)
-                        const bestMatch = results.find(t => 
-                            t.isOfficial || 
-                            t.channelTitle?.includes('Topic') ||
-                            t.channelTitle?.includes('VEVO')
-                        ) || results[0];
-                        
-                        if (bestMatch) {
-                            youtubeTracks.push(bestMatch);
-                            foundCount++;
-                        }
-                    } catch (e) {
-                        console.warn('[Spotify] Brano non trovato:', track.name);
-                    }
-                }
-                
-                if (youtubeTracks.length === 0) {
-                    throw new Error('Nessun brano trovato su YouTube per questa playlist.');
-                }
-                
-                return {
-                    name: playlistName,
-                    tracks: youtubeTracks,
-                    platform: 'spotify',
-                    sourceId: playlistId,
-                    totalTracks: tracks.length,
-                    foundTracks: foundCount
-                };
-            } catch (error) {
-                console.error('[Spotify Import] Errore:', error);
-                throw new Error(`Errore importazione Spotify: ${error.message}`);
-            }
-        }
-
-        // ============================================================
-        // 7. FUNZIONE DI IMPORTAZIONE UNIVERSALE
-        // ============================================================
-        async function startUniversalImport() {
-            const link = document.getElementById('playlistLinkInput').value.trim();
-            const customName = document.getElementById('playlistNameInput').value.trim();
-            
-            if (!link) {
-                alert('Inserisci il link di una playlist!');
-                return;
-            }
-            
-            // Rileva piattaforma
-            let platform = null;
-            let playlistId = null;
-            
-            if (link.includes('open.spotify.com/playlist/')) {
-                platform = 'spotify';
-                const match = link.match(/playlist\/([a-zA-Z0-9]+)/);
-                if (match) playlistId = match[1];
-            } else if (link.includes('open.spotify.com/album/')) {
-                platform = 'spotify';
-                const match = link.match(/album\/([a-zA-Z0-9]+)/);
-                if (match) playlistId = match[1];
-            } else if (link.includes('deezer.com/playlist/')) {
-                platform = 'deezer';
-                const match = link.match(/playlist\/(\d+)/);
-                if (match) playlistId = match[1];
-            } else if (link.includes('music.apple.com/playlist/')) {
-                platform = 'apple';
-                const match = link.match(/playlist\/([^\/?]+)/);
-                if (match) playlistId = match[1];
-            } else if (link.includes('youtube.com/playlist?list=')) {
-                platform = 'youtube';
-                const match = link.match(/list=([a-zA-Z0-9_-]+)/);
-                if (match) playlistId = match[1];
-            }
-            
-            if (!platform || !playlistId) {
-                alert('Piattaforma non supportata o link non valido. Usa Spotify, Deezer, Apple Music o YouTube.');
-                return;
-            }
-            
-            const progressContainer = document.getElementById('importProgressContainer');
-            const trackList = document.getElementById('importTrackList');
-            const progressFill = document.getElementById('importProgressFill');
-            const progressText = document.getElementById('importProgressText');
-            const statusText = document.getElementById('importStatusText');
-            const summary = document.getElementById('importSummary');
-            const importBtn = document.getElementById('importBtn');
-            
-            progressContainer.style.display = 'block';
-            summary.style.display = 'none';
-            importBtn.disabled = true;
-            importBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Importazione in corso...';
-            trackList.innerHTML = '';
-            progressFill.style.width = '0%';
-            progressText.textContent = '0%';
-            statusText.textContent = `📥 Analisi playlist da ${platform}...`;
-            
-            try {
-                let playlistData = null;
-                
-                if (platform === 'spotify') {
-                    playlistData = await fetchSpotifyPlaylistTracks(playlistId);
-                } else {
-                    // Per altre piattaforme, usa ricerca generica
-                    statusText.textContent = `🔍 Ricerca playlist da ${platform}...`;
-                    const searchResults = await searchYoutubeVideos(customName || 'playlist music', 20);
-                    playlistData = {
-                        name: customName || `Playlist da ${platform}`,
-                        tracks: searchResults,
-                        platform: platform,
-                        sourceId: playlistId,
-                        totalTracks: searchResults.length,
-                        foundTracks: searchResults.length
-                    };
-                }
-                
-                if (!playlistData || !playlistData.tracks || playlistData.tracks.length === 0) {
-                    throw new Error('Nessun brano trovato nella playlist.');
-                }
-                
-                const totalTracks = playlistData.tracks.length;
-                let foundTracks = playlistData.foundTracks || totalTracks;
-                
-                // Mostra progresso
-                for (let i = 0; i < playlistData.tracks.length; i++) {
-                    const track = playlistData.tracks[i];
-                    const progress = ((i + 1) / totalTracks) * 100;
-                    progressFill.style.width = progress + '%';
-                    progressText.textContent = Math.round(progress) + '%';
-                    statusText.textContent = `📥 Importazione brano ${i + 1}/${totalTracks}...`;
-                    
-                    const trackDiv = document.createElement('div');
-                    trackDiv.className = 'progress-track';
-                    const isFound = track && track.id;
-                    trackDiv.innerHTML = `
-                        <span class="status-icon ${isFound ? 'found' : 'not-found'}">
-                            <i class="fas ${isFound ? 'fa-check-circle' : 'fa-times-circle'}"></i>
-                        </span>
-                        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                            ${track ? track.name + ' - ' + track.artist : 'Brano non trovato'}
-                            ${track && track.isOfficial ? ' ⭐' : ''}
-                            <span class="platform-badge ${platform}">${platform}</span>
-                        </span>
-                    `;
-                    trackList.appendChild(trackDiv);
-                    trackList.scrollTop = trackList.scrollHeight;
-                    await new Promise(resolve => setTimeout(resolve, 50));
-                }
-                
-                // Salva playlist
-                const playlistName = customName || playlistData.name || `Playlist da ${platform}`;
-                const importedTracks = playlistData.tracks.filter(t => t && t.id);
-                
-                if (importedTracks.length > 0) {
-                    userPlaylists.push({
-                        id: 'pl_import_' + Date.now(),
-                        name: playlistName,
-                        visibility: 'private',
-                        owner: currentUser || 'Ospite',
-                        tracks: importedTracks,
-                        importedFrom: platform,
-                        importDate: new Date().toISOString(),
-                        sourceId: playlistId
-                    });
-                    saveUserData();
-                }
-                
-                // Mostra summary
-                summary.style.display = 'block';
-                document.getElementById('importFoundCount').textContent = importedTracks.length;
-                document.getElementById('importNotFoundCount').textContent = totalTracks - importedTracks.length;
-                document.getElementById('importTotalCount').textContent = totalTracks;
-                
-                window._importedPlaylist = {
-                    name: playlistName,
-                    tracks: importedTracks,
-                    platform: platform
-                };
-                
-                statusText.textContent = `✅ Importati ${importedTracks.length} brani da ${platform}!`;
-                showSiriNotification(`📥 Playlist "${playlistName}" importata! ${importedTracks.length} brani.`);
-                
-            } catch (error) {
-                console.error('[Import] Errore:', error);
-                statusText.textContent = '❌ ' + error.message;
-                progressFill.style.width = '0%';
-                alert('Errore durante l\'importazione: ' + error.message);
-            }
-            
-            importBtn.disabled = false;
-            importBtn.innerHTML = '<i class="fas fa-cloud-download-alt"></i> Importa Playlist';
-        }
-
-        // ============================================================
-        // 8. FUNZIONE PER CHIUDERE IMPORT E RIPRODURRE
-        // ============================================================
-        function closeImportAndPlay() {
-            closeModal('import-playlist-modal');
-            if (window._importedPlaylist && window._importedPlaylist.tracks.length > 0) {
-                const playlist = window._importedPlaylist;
-                playSelectedTrack(
-                    btoa(unescape(encodeURIComponent(JSON.stringify(playlist.tracks[0])))),
-                    btoa(unescape(encodeURIComponent(JSON.stringify(playlist.tracks)))),
-                    0
-                );
-                showSiriNotification(`▶️ Riproduco "${playlist.name}" - ${playlist.tracks.length} brani`);
-            }
-            window._importedPlaylist = null;
-        }
-
-        // ============================================================
-        // 9. FUNZIONI PER FORMATTAZIONE NUMERI E STATS
-        // ============================================================
-        function formatNumber(num) {
-            if (num === undefined || num === null) return 'N/A';
-            if (num >= 1000000000) return (num / 1000000000).toFixed(1) + 'B';
-            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-            return num.toString();
-        }
-
         async function fetchYoutubeVideoStats(videoId) {
             if (!videoId) return null;
             try {
@@ -3201,7 +2906,18 @@
         }
 
         // ============================================================
-        // 10. RICERCA ARTISTA AVANZATA
+        // 7. FUNZIONE PER FORMATTARE NUMERI
+        // ============================================================
+        function formatNumber(num) {
+            if (num === undefined || num === null) return 'N/A';
+            if (num >= 1000000000) return (num / 1000000000).toFixed(1) + 'B';
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        // ============================================================
+        // 8. RICERCA ARTISTA ESPANSA
         // ============================================================
         async function searchArtistExpanded(artistName) {
             if (!artistName) return [];
@@ -3241,7 +2957,28 @@
         }
 
         // ============================================================
-        // 11. VARIABILI GLOBALI
+        // 9. FUNZIONE PER RECUPERARE ARTISTI SIMILI
+        // ============================================================
+        async function getSimilarArtists(artistName) {
+            try {
+                const results = await searchYoutubeVideos(`${artistName} similar artists`, 10);
+                const similar = results
+                    .filter(t => t.artist.toLowerCase() !== artistName.toLowerCase())
+                    .slice(0, 6)
+                    .map(t => ({
+                        name: t.artist,
+                        image: t.image,
+                        verified: t.isOfficial
+                    }));
+                return similar;
+            } catch (error) {
+                console.error('[Similar Artists] Errore:', error);
+                return [];
+            }
+        }
+
+        // ============================================================
+        // 10. VARIABILI GLOBALI
         // ============================================================
         let currentUser = localStorage.getItem('darksound_current_user') || null;
         let userProfile = JSON.parse(localStorage.getItem(currentUser ? `profile_${currentUser}` : 'darksound_profile') || 'null');
@@ -3268,7 +3005,7 @@
         const API_BASE = window.location.origin;
 
         // ============================================================
-        // 12. LOADING OVERLAY
+        // 11. LOADING OVERLAY
         // ============================================================
         function showLoading(message) {
             const overlay = document.getElementById('loadingOverlay');
@@ -3293,6 +3030,23 @@
             if (overlay) {
                 overlay.classList.remove('active');
             }
+        }
+
+        // ============================================================
+        // 12. FUNZIONE CAMBIO TEMA
+        // ============================================================
+        function changeTheme(themeColor) {
+            document.body.setAttribute('data-theme', themeColor);
+            localStorage.setItem('darksound_theme', themeColor);
+            document.querySelectorAll('.theme-dot').forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.getAttribute('data-theme-color') === themeColor) dot.classList.add('active');
+            });
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('darksound_theme') || 'spotify';
+            changeTheme(savedTheme);
         }
 
         // ============================================================
@@ -3410,7 +3164,271 @@
         }
 
         // ============================================================
-        // 16. FUNZIONI SIRI / NOTIFICHE
+        // 16. IMPORTAZIONE SPOTIFY ROBUSTA
+        // ============================================================
+        async function fetchSpotifyPlaylistTracks(playlistId) {
+            try {
+                const oembedUrl = `https://open.spotify.com/oembed?url=https://open.spotify.com/playlist/${playlistId}`;
+                const oembedRes = await fetch(oembedUrl);
+                const oembedData = await oembedRes.json();
+                const playlistName = oembedData.title || 'Playlist Spotify';
+                
+                const proxyUrls = [
+                    `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://open.spotify.com/playlist/${playlistId}`)}`,
+                    `https://corsproxy.io/?${encodeURIComponent(`https://open.spotify.com/playlist/${playlistId}`)}`
+                ];
+                
+                let htmlContent = null;
+                for (const proxyUrl of proxyUrls) {
+                    try {
+                        const proxyRes = await fetch(proxyUrl, {
+                            headers: {
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                            }
+                        });
+                        if (proxyRes.ok) {
+                            htmlContent = await proxyRes.text();
+                            break;
+                        }
+                    } catch (e) {
+                        console.warn('[Spotify Proxy] Fallito:', e);
+                    }
+                }
+                
+                if (!htmlContent) {
+                    throw new Error('Impossibile recuperare la playlist Spotify. Verifica il link.');
+                }
+                
+                const trackPattern = /"track":{"name":"([^"]+)","uri":"spotify:track:[^"]+","artists":\[{"name":"([^"]+)"}/g;
+                const tracks = [];
+                let match;
+                
+                while ((match = trackPattern.exec(htmlContent)) !== null) {
+                    tracks.push({ name: match[1], artist: match[2] });
+                }
+                
+                if (tracks.length === 0) {
+                    const altPattern = /"trackName":"([^"]+)","artistName":"([^"]+)"/g;
+                    while ((match = altPattern.exec(htmlContent)) !== null) {
+                        tracks.push({ name: match[1], artist: match[2] });
+                    }
+                }
+                
+                if (tracks.length === 0) {
+                    throw new Error('Nessun brano trovato nella playlist. Verifica che la playlist sia pubblica.');
+                }
+                
+                const youtubeTracks = [];
+                let foundCount = 0;
+                
+                for (let i = 0; i < tracks.length && i < 50; i++) {
+                    const track = tracks[i];
+                    const searchQuery = `${track.name} ${track.artist}`;
+                    
+                    try {
+                        const results = await searchYoutubeVideos(searchQuery, 3);
+                        const bestMatch = results.find(t => 
+                            t.isOfficial || 
+                            t.channelTitle?.includes('Topic') ||
+                            t.channelTitle?.includes('VEVO')
+                        ) || results[0];
+                        
+                        if (bestMatch) {
+                            youtubeTracks.push(bestMatch);
+                            foundCount++;
+                        }
+                    } catch (e) {
+                        console.warn('[Spotify] Brano non trovato:', track.name);
+                    }
+                }
+                
+                if (youtubeTracks.length === 0) {
+                    throw new Error('Nessun brano trovato su YouTube per questa playlist.');
+                }
+                
+                return {
+                    name: playlistName,
+                    tracks: youtubeTracks,
+                    platform: 'spotify',
+                    sourceId: playlistId,
+                    totalTracks: tracks.length,
+                    foundTracks: foundCount
+                };
+            } catch (error) {
+                console.error('[Spotify Import] Errore:', error);
+                throw new Error(`Errore importazione Spotify: ${error.message}`);
+            }
+        }
+
+        // ============================================================
+        // 17. FUNZIONE DI IMPORTAZIONE UNIVERSALE
+        // ============================================================
+        async function startUniversalImport() {
+            const link = document.getElementById('playlistLinkInput').value.trim();
+            const customName = document.getElementById('playlistNameInput').value.trim();
+            
+            if (!link) {
+                alert('Inserisci il link di una playlist!');
+                return;
+            }
+            
+            let platform = null;
+            let playlistId = null;
+            
+            if (link.includes('open.spotify.com/playlist/')) {
+                platform = 'spotify';
+                const match = link.match(/playlist\/([a-zA-Z0-9]+)/);
+                if (match) playlistId = match[1];
+            } else if (link.includes('open.spotify.com/album/')) {
+                platform = 'spotify';
+                const match = link.match(/album\/([a-zA-Z0-9]+)/);
+                if (match) playlistId = match[1];
+            } else if (link.includes('deezer.com/playlist/')) {
+                platform = 'deezer';
+                const match = link.match(/playlist\/(\d+)/);
+                if (match) playlistId = match[1];
+            } else if (link.includes('music.apple.com/playlist/')) {
+                platform = 'apple';
+                const match = link.match(/playlist\/([^\/?]+)/);
+                if (match) playlistId = match[1];
+            } else if (link.includes('youtube.com/playlist?list=')) {
+                platform = 'youtube';
+                const match = link.match(/list=([a-zA-Z0-9_-]+)/);
+                if (match) playlistId = match[1];
+            }
+            
+            if (!platform || !playlistId) {
+                alert('Piattaforma non supportata o link non valido. Usa Spotify, Deezer, Apple Music o YouTube.');
+                return;
+            }
+            
+            const progressContainer = document.getElementById('importProgressContainer');
+            const trackList = document.getElementById('importTrackList');
+            const progressFill = document.getElementById('importProgressFill');
+            const progressText = document.getElementById('importProgressText');
+            const statusText = document.getElementById('importStatusText');
+            const summary = document.getElementById('importSummary');
+            const importBtn = document.getElementById('importBtn');
+            
+            progressContainer.style.display = 'block';
+            summary.style.display = 'none';
+            importBtn.disabled = true;
+            importBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Importazione in corso...';
+            trackList.innerHTML = '';
+            progressFill.style.width = '0%';
+            progressText.textContent = '0%';
+            statusText.textContent = `📥 Analisi playlist da ${platform}...`;
+            
+            try {
+                let playlistData = null;
+                
+                if (platform === 'spotify') {
+                    playlistData = await fetchSpotifyPlaylistTracks(playlistId);
+                } else {
+                    const searchResults = await searchYoutubeVideos(customName || 'playlist music', 20);
+                    playlistData = {
+                        name: customName || `Playlist da ${platform}`,
+                        tracks: searchResults,
+                        platform: platform,
+                        sourceId: playlistId,
+                        totalTracks: searchResults.length,
+                        foundTracks: searchResults.length
+                    };
+                }
+                
+                if (!playlistData || !playlistData.tracks || playlistData.tracks.length === 0) {
+                    throw new Error('Nessun brano trovato nella playlist.');
+                }
+                
+                const totalTracks = playlistData.tracks.length;
+                const importedTracks = [];
+                
+                for (let i = 0; i < playlistData.tracks.length; i++) {
+                    const track = playlistData.tracks[i];
+                    const progress = ((i + 1) / totalTracks) * 100;
+                    progressFill.style.width = progress + '%';
+                    progressText.textContent = Math.round(progress) + '%';
+                    statusText.textContent = `📥 Importazione brano ${i + 1}/${totalTracks}...`;
+                    
+                    const isFound = track && track.id;
+                    if (isFound) {
+                        importedTracks.push(track);
+                    }
+                    
+                    const trackDiv = document.createElement('div');
+                    trackDiv.className = 'progress-track';
+                    trackDiv.innerHTML = `
+                        <span class="status-icon ${isFound ? 'found' : 'not-found'}">
+                            <i class="fas ${isFound ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                        </span>
+                        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                            ${track ? cleanSongTitle(track.name) + ' - ' + track.artist : 'Brano non trovato'}
+                            ${track && track.isOfficial ? ' ⭐' : ''}
+                            <span class="platform-badge ${platform}">${platform}</span>
+                        </span>
+                    `;
+                    trackList.appendChild(trackDiv);
+                    trackList.scrollTop = trackList.scrollHeight;
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+                
+                const playlistName = customName || playlistData.name || `Playlist da ${platform}`;
+                
+                if (importedTracks.length > 0) {
+                    userPlaylists.push({
+                        id: 'pl_import_' + Date.now(),
+                        name: playlistName,
+                        visibility: 'private',
+                        owner: currentUser || 'Ospite',
+                        tracks: importedTracks,
+                        importedFrom: platform,
+                        importDate: new Date().toISOString(),
+                        sourceId: playlistId
+                    });
+                    saveUserData();
+                }
+                
+                summary.style.display = 'block';
+                document.getElementById('importFoundCount').textContent = importedTracks.length;
+                document.getElementById('importNotFoundCount').textContent = totalTracks - importedTracks.length;
+                document.getElementById('importTotalCount').textContent = totalTracks;
+                
+                window._importedPlaylist = {
+                    name: playlistName,
+                    tracks: importedTracks,
+                    platform: platform
+                };
+                
+                statusText.textContent = `✅ Importati ${importedTracks.length} brani da ${platform}!`;
+                showSiriNotification(`📥 Playlist "${playlistName}" importata! ${importedTracks.length} brani.`);
+                
+            } catch (error) {
+                console.error('[Import] Errore:', error);
+                statusText.textContent = '❌ ' + error.message;
+                progressFill.style.width = '0%';
+                alert('Errore durante l\'importazione: ' + error.message);
+            }
+            
+            importBtn.disabled = false;
+            importBtn.innerHTML = '<i class="fas fa-cloud-download-alt"></i> Importa Playlist';
+        }
+
+        function closeImportAndPlay() {
+            closeModal('import-playlist-modal');
+            if (window._importedPlaylist && window._importedPlaylist.tracks.length > 0) {
+                const playlist = window._importedPlaylist;
+                playSelectedTrack(
+                    btoa(unescape(encodeURIComponent(JSON.stringify(playlist.tracks[0])))),
+                    btoa(unescape(encodeURIComponent(JSON.stringify(playlist.tracks)))),
+                    0
+                );
+                showSiriNotification(`▶️ Riproduco "${playlist.name}" - ${playlist.tracks.length} brani`);
+            }
+            window._importedPlaylist = null;
+        }
+
+        // ============================================================
+        // 18. FUNZIONI SIRI / NOTIFICHE
         // ============================================================
         function showSiriNotification(message) {
             let notification = document.getElementById('siriNotification');
@@ -3450,10 +3468,9 @@
         }
 
         // ============================================================
-        // 17. FUNZIONI DI RENDER TRACK (CON PULIZIA TITOLI)
+        // 19. FUNZIONI DI RENDER TRACK (CON PULIZIA TITOLI)
         // ============================================================
         function renderSingleTrackRow(t, idx, sectionTracks) {
-            // APPLICA cleanSongTitle() a ogni titolo mostrato!
             const displayName = cleanSongTitle(t.name);
             const isLiked = likedSongs.some(s => s.id === t.id);
             const isDownloaded = downloadedTracks.some(s => s.id === t.id);
@@ -3485,7 +3502,7 @@
         }
 
         // ============================================================
-        // 18. FUNZIONI DI SALVATAGGIO DATI
+        // 20. FUNZIONI DI SALVATAGGIO DATI
         // ============================================================
         function saveUserData() {
             if (!currentUser) return;
@@ -3522,7 +3539,7 @@
         }
 
         // ============================================================
-        // 19. FUNZIONI PER LA RICERCA
+        // 21. FUNZIONI PER LA RICERCA
         // ============================================================
         function handleSearchInput(val) {
             clearTimeout(searchTimer);
@@ -3623,7 +3640,7 @@
         }
 
         // ============================================================
-        // 20. FUNZIONI PER LA PAGINA ARTISTA
+        // 22. FUNZIONI PER LA PAGINA ARTISTA
         // ============================================================
         async function openArtistPage(artistName, imageOverride) {
             switchView('artist');
@@ -3808,24 +3825,6 @@
             }
         }
 
-        async function getSimilarArtists(artistName) {
-            try {
-                const results = await searchYoutubeVideos(`${artistName} similar artists`, 10);
-                const similar = results
-                    .filter(t => t.artist.toLowerCase() !== artistName.toLowerCase())
-                    .slice(0, 6)
-                    .map(t => ({
-                        name: t.artist,
-                        image: t.image,
-                        verified: t.isOfficial
-                    }));
-                return similar;
-            } catch (error) {
-                console.error('[Similar Artists] Errore:', error);
-                return [];
-            }
-        }
-
         function openArtistFromPlayer() {
             if (AppState.currentTrack && AppState.currentTrack.artist) {
                 openArtistPage(AppState.currentTrack.artist);
@@ -3833,7 +3832,7 @@
         }
 
         // ============================================================
-        // 21. FUNZIONI DEL PLAYER
+        // 23. FUNZIONI DEL PLAYER
         // ============================================================
         const AppState = {
             player: null,
@@ -3890,7 +3889,6 @@
                     AppState.offlinePlayer = null;
                 }
                 
-                // APPLICA cleanSongTitle() al titolo visualizzato
                 const displayName = cleanSongTitle(t.name);
                 
                 if (document.getElementById('playerBar')) document.getElementById('playerBar').style.display = 'flex';
@@ -4143,7 +4141,7 @@
         }
 
         // ============================================================
-        // 22. FUNZIONI LYRICS
+        // 24. FUNZIONI LYRICS
         // ============================================================
         function toggleLyricsView() {
             AppState.isLyricsActive = !AppState.isLyricsActive;
@@ -4237,7 +4235,7 @@
         }
 
         // ============================================================
-        // 23. FUNZIONI LIKE / DOWNLOAD
+        // 25. FUNZIONI LIKE / DOWNLOAD
         // ============================================================
         function toggleLikeCurrent() {
             if (!AppState.currentTrack?.id) return;
@@ -4285,7 +4283,7 @@
         }
 
         // ============================================================
-        // 24. FUNZIONI INDEXEDDB PER DOWNLOAD OFFLINE
+        // 26. FUNZIONI INDEXEDDB PER DOWNLOAD OFFLINE
         // ============================================================
         const DB_NAME = 'DarkSoundOfflineDB';
         const DB_VERSION = 1;
@@ -4573,7 +4571,7 @@
         }
 
         // ============================================================
-        // 25. FUNZIONI LIBRARY
+        // 27. FUNZIONI LIBRARY
         // ============================================================
         function renderLibraryContent() {
             const c = document.getElementById('libContentList');
@@ -4643,7 +4641,7 @@
         }
 
         // ============================================================
-        // 26. FUNZIONI PLAYLIST
+        // 28. FUNZIONI PLAYLIST
         // ============================================================
         function openNewPlaylistModal() { openModal('new-playlist-modal'); }
         function submitNewPlaylist() {
@@ -4767,7 +4765,7 @@
         }
 
         // ============================================================
-        // 27. FUNZIONI STATS E STORIA
+        // 29. FUNZIONI STATS E STORIA
         // ============================================================
         function renderStats() {
             if (document.getElementById('statsLikedSongs')) document.getElementById('statsLikedSongs').innerText = likedSongs.length;
@@ -4817,7 +4815,7 @@
         }
 
         // ============================================================
-        // 28. FUNZIONI AUTENTICAZIONE
+        // 30. FUNZIONI AUTENTICAZIONE
         // ============================================================
         function loginWithGoogle() {
             const googleName = prompt('Accedi con Google. Inserisci il tuo nome Google:', 'Utente Google');
@@ -4898,7 +4896,7 @@
         function openAuthModal() { toggleProfileDrawer(); openModal('auth-modal'); }
 
         // ============================================================
-        // 29. FUNZIONI AMICI
+        // 31. FUNZIONI AMICI
         // ============================================================
         function loadFriendsList() { if (currentUser) friendsList = JSON.parse(localStorage.getItem(`friends_${currentUser}`) || '[]'); renderDrawerFriends(); }
         function renderDrawerFriends() {
@@ -4925,7 +4923,7 @@
         function loadAllUsers() { allUsers = JSON.parse(localStorage.getItem('darksound_all_users') || '[]'); if (allUsers.length === 0) { allUsers = ['Giancarlo','Claudio','Martina']; localStorage.setItem('darksound_all_users', JSON.stringify(allUsers)); } }
 
         // ============================================================
-        // 30. FUNZIONI SHARE
+        // 32. FUNZIONI SHARE
         // ============================================================
         function openShareModal() {
             if (!AppState.currentTrack?.id) return;
@@ -4936,7 +4934,7 @@
         function shareViaWhatsApp() { window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`Ascolta "${cleanSongTitle(AppState.currentTrack.name)}" su DarkSound Pro!`)}`, '_blank'); closeModal('share-modal'); }
 
         // ============================================================
-        // 31. FULLSCREEN
+        // 33. FULLSCREEN
         // ============================================================
         function toggleFullscreen() {
             const fs = document.getElementById('fullscreen-player');
@@ -4962,7 +4960,7 @@
         }
 
         // ============================================================
-        // 32. FUNZIONI AI
+        // 34. FUNZIONI AI
         // ============================================================
         function openAiDjModal() { openModal('ai-dj-modal'); }
         function openAiPlaylistModal() { openModal('ai-playlist-modal'); }
@@ -5040,7 +5038,7 @@
         }
 
         // ============================================================
-        // 33. FUNZIONI PROFILO
+        // 35. FUNZIONI PROFILO
         // ============================================================
         function openProfileEditModal() {
             if (!userProfile) userProfile = { name: currentUser || '', bio: '', avatar: (currentUser||'S').charAt(0).toUpperCase(), genre: 'Pop', photo: null };
@@ -5083,7 +5081,7 @@
         }
 
         // ============================================================
-        // 34. FUNZIONI SETTINGS
+        // 36. FUNZIONI SETTINGS
         // ============================================================
         function loadSettings() {
             const s = AppState.settings;
@@ -5106,7 +5104,7 @@
         }
 
         // ============================================================
-        // 35. CARICAMENTO HOME
+        // 37. CARICAMENTO HOME
         // ============================================================
         async function loadHomeTracks() {
             const c = document.getElementById('radioTracksContainer');
@@ -5119,7 +5117,7 @@
         }
 
         // ============================================================
-        // 36. FOTO PROFILO
+        // 38. FOTO PROFILO
         // ============================================================
         function previewProfilePhoto(input) {
             if (input.files && input.files[0]) {
@@ -5133,7 +5131,7 @@
         }
 
         // ============================================================
-        // 37. RILEVAMENTO DISPOSITIVO
+        // 39. RILEVAMENTO DISPOSITIVO
         // ============================================================
         function detectDevice() {
             const ua = navigator.userAgent;
@@ -5153,10 +5151,102 @@
         }
 
         // ============================================================
-        // 38. INIZIALIZZAZIONE
+        // 40. INIZIALIZZAZIONE - FIX SCHERMATA DI CARICAMENTO
+        // ============================================================
+        function initApp() {
+            console.log('[DarkSound] Inizializzazione app...');
+            
+            // Rileva dispositivo
+            detectDevice();
+            
+            // Inizializza AppState
+            AppState.init();
+            
+            // Carica tema salvato
+            loadTheme();
+            
+            // Aggiorna UI utente
+            updateUserUI();
+            
+            // Carica tracks home
+            loadHomeTracks();
+            
+            // Carica amici
+            loadFriendsList();
+            
+            // Carica tutti gli utenti
+            loadAllUsers();
+            
+            // Carica impostazioni
+            loadSettings();
+            
+            // Aggiorna lista download
+            updateDownloadedList();
+            
+            // Nascondi splash screen dopo 2 secondi
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) {
+                    splash.classList.add('hidden');
+                    setTimeout(() => {
+                        splash.style.display = 'none';
+                        console.log('[DarkSound] Splash screen nascosto');
+                    }, 500);
+                }
+            }, 2000);
+            
+            // Se non c'è utente, mostra login dopo 2.5 secondi
+            if (!currentUser) {
+                setTimeout(() => {
+                    console.log('[DarkSound] Mostro modal auth');
+                    openModal('auth-modal');
+                }, 2500);
+            }
+            
+            console.log('[DarkSound] App inizializzata correttamente');
+        }
+
+        // ============================================================
+        // 41. EVENT LISTENERS
+        // ============================================================
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('active');
+                document.body.classList.remove('modal-open');
+                document.getElementById('viewScrollArea').style.overflow = 'auto';
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeAllModals();
+                const drawer = document.getElementById('profileDrawer');
+                if (drawer.style.right === '0px') drawer.style.right = '-100%';
+                document.getElementById('fullscreen-player').classList.remove('active');
+                document.getElementById('fsOverlay').classList.remove('active');
+                AppState.isLyricsActive = false;
+                document.getElementById('lyricsView').classList.remove('active');
+                document.getElementById('standardPlayerView').style.display = 'flex';
+            }
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            const fsPlayer = document.getElementById('fullscreen-player');
+            const modalOpen = document.querySelector('.modal-overlay.active');
+            if (fsPlayer.classList.contains('active') || modalOpen) {
+                const target = e.target;
+                if (!fsPlayer.contains(target) && !modalOpen?.contains(target)) {
+                    e.preventDefault();
+                }
+            }
+        }, { passive: false });
+
+        // ============================================================
+        // 42. CARICAMENTO PAGINA
         // ============================================================
         window.addEventListener('load', function() {
-            detectDevice();
+            console.log('[DarkSound] Window loaded, avvio initApp...');
+            initApp();
         });
 
         window.addEventListener('resize', function() {
@@ -5167,28 +5257,19 @@
             setTimeout(detectDevice, 300);
         });
 
-        window.onload = function() {
-            detectDevice();
-            AppState.init();
-            loadTheme();
-            updateUserUI();
-            loadHomeTracks();
-            loadFriendsList();
-            loadAllUsers();
-            loadSettings();
-            updateDownloadedList();
-            
-            setTimeout(() => {
-                document.getElementById('splash-screen')?.classList.add('hidden');
+        // Fallback: se dopo 5 secondi lo splash non è stato nascosto, nascondilo forzatamente
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            if (splash && !splash.classList.contains('hidden')) {
+                console.log('[DarkSound] Fallback: nascondo splash screen forzatamente');
+                splash.classList.add('hidden');
                 setTimeout(() => {
-                    document.getElementById('splash-screen')?.remove();
+                    splash.style.display = 'none';
                 }, 500);
-            }, 2000);
-            
-            if (!currentUser) {
-                setTimeout(() => openModal('auth-modal'), 2500);
             }
-        };
+        }, 5000);
+
+        console.log('[DarkSound] Script caricato, in attesa del load...');
     </script>
 </body>
 </html>
