@@ -1494,6 +1494,39 @@
             videoStats: {}
         };
 
+        // ============ FUNZIONE PER NASCONDERE LO SPLASH (DEFINITIVA) ============
+        function hideSplashScreen() {
+            console.log('[Splash] Tentativo di rimozione...');
+            const splash = document.getElementById('splash-screen');
+            if (!splash) {
+                console.log('[Splash] Elemento non trovato');
+                return;
+            }
+            
+            splash.style.display = 'none';
+            splash.style.opacity = '0';
+            splash.style.visibility = 'hidden';
+            splash.style.pointerEvents = 'none';
+            splash.classList.add('hidden');
+            splash.classList.add('force-hidden');
+            
+            console.log('[Splash] Rimozione eseguita con successo!');
+        }
+
+        // ============ FORZA RIMOZIONE SPLASH ============
+        function forceHideSplash() {
+            const splash = document.getElementById('splash-screen');
+            if (splash) {
+                splash.style.display = 'none !important';
+                splash.style.opacity = '0 !important';
+                splash.style.visibility = 'hidden !important';
+                splash.style.pointerEvents = 'none !important';
+                splash.classList.add('hidden');
+                splash.classList.add('force-hidden');
+                console.log('[Splash] Forzata rimozione!');
+            }
+        }
+
         // ============ RILEVAMENTO DISPOSITIVO ============
         function detectDevice() {
             const ua = navigator.userAgent;
@@ -1507,40 +1540,6 @@
             if (themeColor) themeColor.setAttribute('content', '#000000');
             if (window.navigator.standalone) document.body.classList.add('standalone-mode');
             return { isIPhone, isIPad, isAndroid, width, height };
-        }
-
-        // ============ FUNZIONE PER NASCONDERE LO SPLASH CON FALLBACK ============
-        let splashHidden = false;
-        
-        function hideSplashScreen() {
-            if (splashHidden) return;
-            splashHidden = true;
-            
-            const splash = document.getElementById('splash-screen');
-            if (splash) {
-                // Aggiungi classe hidden per transizione fluida
-                splash.classList.add('hidden');
-                
-                // Dopo la transizione, nascondi completamente
-                setTimeout(() => {
-                    splash.classList.add('force-hidden');
-                    splash.style.display = 'none';
-                }, 600);
-            }
-            
-            // FALLBACK: Se dopo 3 secondi lo splash è ancora visibile, forzane la rimozione
-            clearTimeout(window._splashFallback);
-            window._splashFallback = setTimeout(() => {
-                const splashEl = document.getElementById('splash-screen');
-                if (splashEl && splashEl.style.display !== 'none') {
-                    console.log('[Splash] Forzata rimozione dopo fallback');
-                    splashEl.classList.add('force-hidden');
-                    splashEl.style.display = 'none';
-                    splashEl.style.opacity = '0';
-                    splashEl.style.visibility = 'hidden';
-                    splashEl.style.pointerEvents = 'none';
-                }
-            }, 3000);
         }
 
         // ============ PULIZIA AVANZATA TITOLI YOUTUBE ============
@@ -3907,7 +3906,14 @@
         }
 
         // ============ INIZIALIZZAZIONE ============
-        window.onload = function() {
+        // Usiamo un unico evento DOMContentLoaded per inizializzare tutto
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('[DarkSound] Inizializzazione...');
+            
+            // Nascondi subito lo splash screen
+            hideSplashScreen();
+            
+            // Inizializza tutto
             detectDevice();
             AppState.init();
             loadTheme();
@@ -3919,29 +3925,31 @@
             initSiriIntegration();
             addSiriButtonToPlayer();
             
-            // Nascondi lo splash screen dopo il caricamento
-            setTimeout(hideSplashScreen, 1500);
-            
-            // Fallback di sicurezza: dopo 4 secondi forza la rimozione
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                if (splash && splash.style.display !== 'none') {
-                    console.log('[Splash] Forzata rimozione dopo timeout globale');
-                    splash.classList.add('force-hidden');
-                    splash.style.display = 'none';
-                }
-            }, 4000);
-            
-            // Se l'utente non è loggato, mostra il modale di login
+            // Se l'utente non è loggato, mostra il modale di login dopo 1 secondo
             if (!currentUser) {
-                setTimeout(() => {
-                    // Assicurati che lo splash sia nascosto prima di mostrare il modale
-                    setTimeout(() => {
-                        openModal('auth-modal');
-                    }, 500);
-                }, 2000);
+                setTimeout(function() {
+                    // Nascondi di nuovo lo splash (sicurezza)
+                    hideSplashScreen();
+                    openModal('auth-modal');
+                }, 1000);
             }
-        };
+            
+            console.log('[DarkSound] Inizializzazione completata!');
+        });
+
+        // Fallback di emergenza: se dopo 3 secondi lo splash è ancora visibile, rimuovilo
+        setTimeout(function() {
+            const splash = document.getElementById('splash-screen');
+            if (splash && splash.style.display !== 'none') {
+                console.log('[Splash] EMERGENZA: rimozione forzata dopo 3 secondi');
+                splash.style.display = 'none';
+                splash.style.opacity = '0';
+                splash.style.visibility = 'hidden';
+                splash.style.pointerEvents = 'none';
+                splash.classList.add('hidden');
+                splash.classList.add('force-hidden');
+            }
+        }, 3000);
     </script>
 </body>
 </html>
