@@ -24,7 +24,7 @@ app.use(express.json());
 // ============ VERIFICA CARTELLA PUBLIC ============
 const publicPath = path.join(__dirname, 'public');
 if (!fs.existsSync(publicPath)) {
-    console.error('❌ Cartella "public" non trovata!');
+    console.error('❌ Cartella "public" non trovata! Creazione...');
     fs.mkdirSync(publicPath, { recursive: true });
     console.log('✅ Cartella "public" creata');
 }
@@ -35,7 +35,7 @@ app.use(express.static(publicPath));
 // ============ CACHE RICERCHE ============
 const searchCache = new Map();
 
-// ============ ROTTA HEALTH CHECK (RISPOSTA IMMEDIATA) ============
+// ============ ROTTA HEALTH CHECK (PRIMA DI TUTTO) ============
 app.get('/health', (req, res) => {
     res.status(200).json({ 
         status: 'ok', 
@@ -118,6 +118,7 @@ const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`🕐 Avviato il: ${new Date().toISOString()}`);
     console.log(`📁 Directory: ${__dirname}`);
     console.log(`📄 Public path: ${publicPath}`);
+    console.log(`🔍 Health check disponibile su /health`);
 });
 
 // ============ KEEP-ALIVE PER RAILWAY ============
