@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = 8080;  // FORZATA A 8080
+const PORT = 8080;  // SOLO 8080, NIENTE ALTRO
 
 const INSTANCE_ID = Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 6);
 
@@ -23,15 +23,16 @@ app.use(express.static(publicPath));
 
 const searchCache = new Map();
 
+// ============ HEALTH CHECK ============
 app.get('/health', (req, res) => {
     res.status(200).json({ 
         status: 'ok', 
         instance: INSTANCE_ID, 
-        port: PORT,
-        uptime: Math.floor(process.uptime()) 
+        port: PORT
     });
 });
 
+// ============ ROTTE ============
 app.get('/', (req, res) => {
     const indexPath = path.join(publicPath, 'index.html');
     if (fs.existsSync(indexPath)) {
