@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -3163,6 +3164,7 @@
         <div class="fs-content" id="standardPlayerView">
             <img id="fsCover" class="fs-cover" src="">
             <h3 class="fs-title" id="fsTitle">-</h3>
+            <!-- CLICCANDO SU .fs-artist SI APRE LA PAGINA ARTISTA E SI CHIUDE IL FULLSCREEN -->
             <p class="fs-artist" id="fsArtist" onclick="openArtistFromPlayer()">-</p>
             <div class="fs-stats" id="fsStatsContainer">
                 <span><i class="fas fa-eye"></i> <span id="fsViews">-</span></span>
@@ -3218,6 +3220,7 @@
         </div>
         <div class="player-meta">
             <div class="p-title" id="playerTitle">-</div>
+            <!-- CLICCANDO SU .p-artist SI APRE LA PAGINA ARTISTA -->
             <div class="p-artist" id="playerArtist" onclick="openArtistFromPlayer()">-</div>
         </div>
         <div class="player-icons" onclick="event.stopPropagation()">
@@ -3232,6 +3235,191 @@
         <button class="nav-item" onclick="switchView('library', this)"><i class="fas fa-bookmark"></i><span>Libreria</span></button>
         <button class="nav-item" onclick="switchView('profile', this)"><i class="fas fa-user"></i><span>Profilo</span></button>
     </nav>
+
+    <!-- MODALI -->
+    <div id="auth-modal" class="modal-overlay">
+        <div class="modal-card" style="text-align:center;">
+            <div style="width:50px;height:50px;border-radius:16px;background:var(--gradient-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 12px auto;font-size:1.3rem;color:#fff;box-shadow:0 4px 24px var(--border-glow), 0 0 60px var(--glow-color);"><i class="fas fa-music"></i></div>
+            <h2>Accedi a DarkSound</h2>
+            <p style="color:var(--text-secondary);font-size:var(--font-size-small);margin-bottom:14px;line-height:1.5;">La tua musica, ovunque tu sia</p>
+            <button class="btn-google" onclick="loginWithGoogle()" style="margin-bottom:12px;"><i class="fab fa-google" style="color:#4285F4;"></i> Continua con Google</button>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div style="flex:1;height:1px;background:var(--nav-border);"></div><span style="color:var(--text-secondary);font-size:var(--font-size-small);font-weight:500;">oppure</span><div style="flex:1;height:1px;background:var(--nav-border);"></div></div>
+            <div class="modal-input"><label style="text-align:left;">Nome Utente</label><input type="text" id="authEmail" placeholder="mario_rossi"></div>
+            <div class="modal-input"><label style="text-align:left;">Password (opzionale)</label><input type="password" id="authPassword" placeholder="••••••••"></div>
+            <button class="btn-primary" onclick="proceedToOnboarding()">Accedi</button>
+            <button class="btn-secondary" onclick="closeModal('auth-modal')">Continua come Ospite</button>
+        </div>
+    </div>
+
+    <div id="onboarding-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>🎵 Benvenuto su DarkSound!</h2>
+            <p style="color:var(--text-secondary);font-size:var(--font-size-small);margin-bottom:12px;line-height:1.6;">Seleziona i tuoi generi preferiti e creeremo playlist personalizzate per te con l'IA.</p>
+            <div class="section-title" style="font-size:var(--font-size-small);">Passo 1: Scegli i tuoi generi</div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px;" id="genreGrid">
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:var(--hover-bg);border:1px solid var(--nav-border);border-radius:var(--radius-sm);color:var(--text-primary);cursor:pointer;font-size:var(--font-size-small);touch-action:manipulation;transition:all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);font-weight:500;font-family:var(--font-primary);">🎵 Pop</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:var(--hover-bg);border:1px solid var(--nav-border);border-radius:var(--radius-sm);color:var(--text-primary);cursor:pointer;font-size:var(--font-size-small);touch-action:manipulation;transition:all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);font-weight:500;font-family:var(--font-primary);">🎤 Rap</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:var(--hover-bg);border:1px solid var(--nav-border);border-radius:var(--radius-sm);color:var(--text-primary);cursor:pointer;font-size:var(--font-size-small);touch-action:manipulation;transition:all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);font-weight:500;font-family:var(--font-primary);">🎸 Rock</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:var(--hover-bg);border:1px solid var(--nav-border);border-radius:var(--radius-sm);color:var(--text-primary);cursor:pointer;font-size:var(--font-size-small);touch-action:manipulation;transition:all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);font-weight:500;font-family:var(--font-primary);">🎧 Techno</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:var(--hover-bg);border:1px solid var(--nav-border);border-radius:var(--radius-sm);color:var(--text-primary);cursor:pointer;font-size:var(--font-size-small);touch-action:manipulation;transition:all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);font-weight:500;font-family:var(--font-primary);">🔊 Phonk</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:var(--hover-bg);border:1px solid var(--nav-border);border-radius:var(--radius-sm);color:var(--text-primary);cursor:pointer;font-size:var(--font-size-small);touch-action:manipulation;transition:all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);font-weight:500;font-family:var(--font-primary);">🎷 Jazz</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:var(--hover-bg);border:1px solid var(--nav-border);border-radius:var(--radius-sm);color:var(--text-primary);cursor:pointer;font-size:var(--font-size-small);touch-action:manipulation;transition:all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);font-weight:500;font-family:var(--font-primary);">🌴 Latin</button>
+                <button class="genre-tag" onclick="toggleGenre(this)" style="padding:10px;background:var(--hover-bg);border:1px solid var(--nav-border);border-radius:var(--radius-sm);color:var(--text-primary);cursor:pointer;font-size:var(--font-size-small);touch-action:manipulation;transition:all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);font-weight:500;font-family:var(--font-primary);">🇰🇷 K-Pop</button>
+            </div>
+            <div class="section-title" style="font-size:var(--font-size-small);">Passo 2: Artisti preferiti</div>
+            <div class="modal-input"><label>Artista preferito</label><input type="text" id="favArtistInput" placeholder="Es. Travis Scott, Geolier, Lazza..."></div>
+            <div class="modal-input"><label>Altri artisti (separati da virgola)</label><input type="text" id="moreArtistsInput" placeholder="Sfera Ebbasta, Shiva, Kid Yugi..."></div>
+            <button class="btn-primary" onclick="completeOnboarding()">Crea la mia Radio e Playlist IA</button>
+        </div>
+    </div>
+
+    <div id="followed-artists-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Artisti che Segui</h2>
+            <div id="followedArtistsList" style="max-height:300px;overflow-y:auto;"></div>
+            <button class="btn-secondary" onclick="closeModal('followed-artists-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="profile-edit-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Modifica Profilo</h2>
+            <div class="modal-input"><label>Nome Utente</label><input type="text" id="editProfileName"></div>
+            <div class="modal-input"><label>Bio</label><input type="text" id="editProfileBio" placeholder="Scrivi qualcosa su di te..."></div>
+            <div class="modal-input"><label>Foto Profilo</label><input type="file" id="editProfilePhoto" accept="image/*" onchange="previewProfilePhoto(this)"></div>
+            <div id="profilePhotoPreview" style="margin-top:6px;text-align:center;"></div>
+            <div class="modal-input"><label>Genere</label><select id="editProfileGenre"><option>Pop</option><option>Rap</option><option>Rock</option><option>Techno</option><option>Jazz</option></select></div>
+            <button class="btn-primary" onclick="saveProfileChanges()">Salva</button>
+            <button class="btn-secondary" onclick="closeModal('profile-edit-modal')">Annulla</button>
+        </div>
+    </div>
+
+    <div id="add-friend-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Aggiungi Amico</h2>
+            <div class="modal-input"><label>Nome Utente</label><input type="text" id="addFriendInput" placeholder="Cerca un amico..."></div>
+            <div id="addFriendResults"></div>
+            <button class="btn-primary" onclick="searchFriend()">Cerca</button>
+            <button class="btn-secondary" onclick="closeModal('add-friend-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="share-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-weight:700;margin-bottom:8px;color:var(--text-primary);font-size:var(--font-size-large);">Condividi</h3>
+            <p id="shareTrackSubtitle" style="color:var(--text-secondary);font-size:var(--font-size-small);margin-bottom:12px;font-weight:500;"></p>
+            <button class="btn-primary" onclick="shareViaWhatsApp()" style="background:#25D366;color:#fff;box-shadow:0 4px 16px rgba(37,211,102,0.3);"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+            <button class="btn-secondary" onclick="copyTrackLink()"><i class="fas fa-link"></i> Copia Link</button>
+            <button class="btn-secondary" onclick="closeModal('share-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="playlist-select-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-weight:700;margin-bottom:10px;color:var(--text-primary);font-size:var(--font-size-large);">Aggiungi a playlist</h3>
+            <div id="playlistSelectList" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px;"></div>
+            <button class="btn-secondary" onclick="closeModal('playlist-select-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="new-playlist-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-weight:700;margin-bottom:10px;color:var(--text-primary);font-size:var(--font-size-large);">Crea Nuova Playlist</h3>
+            <div class="modal-input"><label>Nome</label><input type="text" id="newPlaylistName" placeholder="La mia playlist..."></div>
+            <div class="modal-input"><label>Visibilità</label><select id="newPlaylistVisibility"><option value="private">Privata</option><option value="public">Pubblica</option></select></div>
+            <button class="btn-primary" onclick="submitNewPlaylist()">Crea</button>
+            <button class="btn-secondary" onclick="closeModal('new-playlist-modal')">Annulla</button>
+        </div>
+    </div>
+
+    <div id="ai-dj-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>AI DJ</h2>
+            <p style="color:var(--text-secondary);font-size:var(--font-size-small);margin-bottom:12px;line-height:1.6;">"Ciao! Sono il tuo DJ virtuale. Creo un mix con le tue canzoni preferite!"</p>
+            <button class="btn-primary" onclick="runAiDjSelection()">Avvia Mix Automatico</button>
+            <button class="btn-secondary" onclick="closeModal('ai-dj-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <div id="ai-playlist-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Crea Playlist con IA</h2>
+            <div class="modal-input"><label>Scrivi un genere musicale</label><input type="text" id="aiPromptInput" placeholder="Es. Techno, Pop, Rap, Phonk..."></div>
+            <button class="btn-primary" onclick="generateAiPromptPlaylist()">Genera Mix</button>
+            <button class="btn-secondary" onclick="closeModal('ai-playlist-modal')">Annulla</button>
+        </div>
+    </div>
+
+    <div id="blend-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Crea Blend con un Amico</h2>
+            <div class="modal-input"><label>Seleziona amico</label><select id="blendFriendSelect"></select></div>
+            <button class="btn-primary" onclick="createBlendPlaylist()">Crea Playlist Blend</button>
+            <button class="btn-secondary" onclick="closeModal('blend-modal')">Chiudi</button>
+        </div>
+    </div>
+
+    <!-- MODALE IMPORT PLAYLIST -->
+    <div id="import-playlist-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width:420px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <h2 style="font-size:var(--font-size-large);font-weight:800;color:var(--text-primary);">📥 Importa Playlist</h2>
+                <i class="fas fa-times" style="cursor:pointer;color:var(--text-secondary);padding:8px;font-size:var(--icon-size);border-radius:50%;transition:all 0.3s ease;" onclick="closeModal('import-playlist-modal')" onmouseover="this.style.background='var(--hover-bg)'" onmouseout="this.style.background='transparent'"></i>
+            </div>
+            
+            <p style="color:var(--text-secondary);font-size:var(--font-size-small);margin-bottom:12px;line-height:1.6;">
+                Incolla il link di una playlist pubblica da Spotify, Deezer o Apple Music. 
+                <span style="color:var(--spotify-green);">100% gratuito!</span>
+            </p>
+            
+            <div class="modal-input">
+                <label><i class="fas fa-link"></i> Link Playlist</label>
+                <input type="text" id="playlistLinkInput" placeholder="https://open.spotify.com/playlist/...">
+            </div>
+            
+            <div class="modal-input">
+                <label><i class="fas fa-tag"></i> Nome Playlist (opzionale)</label>
+                <input type="text" id="playlistNameInput" placeholder="La mia nuova playlist...">
+            </div>
+            
+            <button class="btn-primary" onclick="startUniversalImport()" id="importBtn">
+                <i class="fas fa-cloud-download-alt"></i> Importa Playlist
+            </button>
+            
+            <div id="importProgressContainer" class="import-progress-container" style="display:none;">
+                <div id="importTrackList" style="max-height:200px;overflow-y:auto;margin-bottom:8px;"></div>
+                <div class="progress-bar-import">
+                    <div class="progress-fill" id="importProgressFill"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:var(--font-size-small);color:var(--text-secondary);">
+                    <span id="importProgressText">0%</span>
+                    <span id="importStatusText">Inizializzazione...</span>
+                </div>
+            </div>
+            
+            <div id="importSummary" class="import-summary" style="display:none;">
+                <div class="summary-stats">
+                    <span>✅ <span class="num" id="importFoundCount">0</span> trovati</span>
+                    <span>❌ <span class="num" id="importNotFoundCount">0</span> non trovati</span>
+                    <span>📊 <span class="num" id="importTotalCount">0</span> totali</span>
+                </div>
+                <button class="btn-primary" onclick="closeImportAndPlay()" style="margin-top:8px;font-size:var(--font-size-small);padding:8px;">
+                    <i class="fas fa-play"></i> Riproduci Playlist
+                </button>
+            </div>
+            
+            <button class="btn-secondary" onclick="closeModal('import-playlist-modal')" style="margin-top:8px;">Annulla</button>
+        </div>
+    </div>
+
+    <div id="add-to-playlist-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3 style="font-weight:700;margin-bottom:10px;color:var(--text-primary);font-size:var(--font-size-large);">Aggiungi brani</h3>
+            <div class="modal-input"><label>Cerca brano da aggiungere</label><input type="text" id="addToPlaylistSearch" placeholder="Cerca un brano..." oninput="searchForPlaylistAddition(this.value)"></div>
+            <div id="addToPlaylistResults" style="max-height:250px;overflow-y:auto;"></div>
+            <button class="btn-secondary" onclick="closeModal('add-to-playlist-modal')">Chiudi</button>
+        </div>
+    </div>
         <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         // ============ CHIAVE API YOUTUBE ============
@@ -3880,9 +4068,7 @@
         let currentArtistTracks = [];
         let currentArtistVerified = false;
 
-        // VERSIONE OTTIMIZZATA - CARICAMENTO PIÙ VELOCE E FLUIDO
         async function openArtistPage(artistName, imageOverride) {
-            // Cambia subito la vista per reattività immediata
             switchView('artist');
             currentArtistPage = artistName;
             
@@ -3890,29 +4076,22 @@
             document.getElementById('artistPageName').textContent = cleanName;
             document.getElementById('artistNameTitle').textContent = cleanName;
             
-            // Imposta subito l'immagine di copertina se disponibile
-            if (imageOverride) {
-                document.getElementById('artistHeroImg').src = imageOverride;
-            } else {
-                // Usa un placeholder generico
-                document.getElementById('artistHeroImg').src = `https://picsum.photos/seed/${encodeURIComponent(artistName)}/800/400`;
-            }
+            document.getElementById('artistTopTracksContainer').innerHTML = '<p style="color:var(--text-secondary);font-size:var(--font-size-small);">Caricamento brani...</p>';
+            document.getElementById('artistReleasesContainer').innerHTML = '<p style="color:var(--text-secondary);font-size:var(--font-size-small);">Caricamento...</p>';
+            document.getElementById('artistSimilarContainer').innerHTML = '<p style="color:var(--text-secondary);font-size:var(--font-size-small);grid-column:1/-1;">Caricamento...</p>';
             
-            // Mostra subito i container vuoti (invece di "Caricamento...")
-            document.getElementById('artistTopTracksContainer').innerHTML = '';
-            document.getElementById('artistReleasesContainer').innerHTML = '';
-            document.getElementById('artistSimilarContainer').innerHTML = '';
-            
-            // Carica i dati in background
             try {
                 const tracks = await searchArtistExpanded(artistName);
                 currentArtistTracks = tracks;
                 
                 if (tracks.length > 0) {
-                    // Aggiorna immagine con quella reale se disponibile
                     const heroImg = document.getElementById('artistHeroImg');
-                    if (tracks[0].image) {
+                    if (imageOverride) {
+                        heroImg.src = imageOverride;
+                    } else if (tracks[0].image) {
                         heroImg.src = tracks[0].image;
+                    } else {
+                        heroImg.src = `https://picsum.photos/seed/${encodeURIComponent(artistName)}/800/400`;
                     }
                     
                     currentArtistVerified = tracks.some(t => t.isOfficial);
@@ -3928,41 +4107,33 @@
                     );
                     document.getElementById('artistLikedCount').textContent = likedByArtist.length;
                     
-                    // Recupera statistiche in parallelo
-                    const statsPromises = [];
                     if (tracks[0] && tracks[0].id) {
-                        statsPromises.push(fetchYoutubeVideoStats(tracks[0].id));
-                    }
-                    if (tracks[0] && tracks[0].channelId) {
-                        statsPromises.push(
-                            fetch(`${YOUTUBE_API_BASE}/channels?part=statistics&id=${tracks[0].channelId}&key=${YOUTUBE_API_KEY}`)
-                                .then(r => r.json())
-                                .then(data => {
-                                    if (data.items && data.items.length > 0) {
-                                        const subs = data.items[0].statistics.subscriberCount;
-                                        if (subs) {
-                                            document.getElementById('artistFollowCount').textContent = formatNumber(parseInt(subs)) + ' follower';
-                                        }
-                                    }
-                                })
-                                .catch(() => {})
-                        );
-                    }
-                    
-                    // Attendi le statistiche (non bloccano il rendering)
-                    const statsResults = await Promise.allSettled(statsPromises);
-                    if (statsResults[0] && statsResults[0].status === 'fulfilled' && statsResults[0].value) {
-                        const stats = statsResults[0].value;
-                        if (stats.views && stats.views !== 'N/A') {
+                        const stats = await fetchYoutubeVideoStats(tracks[0].id);
+                        if (stats && stats.views && stats.views !== 'N/A') {
                             document.getElementById('artistMonthlyListeners').textContent = stats.views + ' ascoltatori mensili';
                         }
                     }
                     
-                    // Mostra brani popolari
+                    if (tracks[0] && tracks[0].channelId) {
+                        try {
+                            const channelResponse = await fetch(
+                                `${YOUTUBE_API_BASE}/channels?part=statistics&id=${tracks[0].channelId}&key=${YOUTUBE_API_KEY}`
+                            );
+                            const channelData = await channelResponse.json();
+                            if (channelData.items && channelData.items.length > 0) {
+                                const subs = channelData.items[0].statistics.subscriberCount;
+                                if (subs) {
+                                    document.getElementById('artistFollowCount').textContent = formatNumber(parseInt(subs)) + ' follower';
+                                }
+                            }
+                        } catch (e) {
+                            console.error('[Artist Followers] Errore:', e);
+                        }
+                    }
+                    
                     const topTracks = tracks.slice(0, 10);
                     document.getElementById('artistTopTracksContainer').innerHTML = topTracks.map((t, i) => renderArtistTrackRow(t, i)).join('');
                     
-                    // Mostra uscite popolari
                     const releases = tracks.slice(0, 6);
                     document.getElementById('artistReleasesContainer').innerHTML = releases.map(t => `
                         <div style="min-width:120px;flex-shrink:0;cursor:pointer;" onclick="playSelectedTrackFromArtist('${t.id}')">
@@ -3972,7 +4143,6 @@
                         </div>
                     `).join('');
                     
-                    // Artisti simili
                     const similar = await getSimilarArtists(artistName);
                     if (similar.length > 0) {
                         document.getElementById('artistSimilarContainer').innerHTML = similar.map(a => `
@@ -4101,7 +4271,6 @@
 
         // ============ FUNZIONE PER APRIRE ARTISTA DAL PLAYER ============
         // Questa funzione chiude il fullscreen, mostra la barra player e apre la pagina artista
-        // SENZA mostrare il messaggio di notifica
         function openArtistFromPlayer() {
             if (AppState.currentTrack && AppState.currentTrack.artist) {
                 // Chiudi il fullscreen se è aperto
@@ -4122,10 +4291,10 @@
                 // Assicurati che la barra player sia visibile
                 document.getElementById('playerBar').style.display = 'flex';
                 
-                // Apri la pagina dell'artista (senza messaggio di notifica)
+                // Apri la pagina dell'artista
                 openArtistPage(AppState.currentTrack.artist);
                 
-                // NOTA: showSiriNotification è stato RIMOSSO per evitare il messaggio di apertura profilo
+                showSiriNotification(`🎤 Apertura profilo di ${AppState.currentTrack.artist}...`);
             }
         }
 
