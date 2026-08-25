@@ -38,7 +38,7 @@ app.use(express.static(publicPath));
 // ============ CACHE RICERCHE ============
 const searchCache = new Map();
 
-// ============ ROTTA HEALTH CHECK ============
+// ============ ROTTA HEALTH CHECK (RISPOSTA IMMEDIATA) ============
 app.get('/health', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -51,6 +51,36 @@ app.get('/health', (req, res) => {
     });
 });
 
+// ============ ROTTA PER IL MANIFEST ============
+app.get('/manifest.json', (req, res) => {
+    const manifestPath = path.join(publicPath, 'manifest.json');
+    if (fs.existsSync(manifestPath)) {
+        res.sendFile(manifestPath);
+    } else {
+        res.status(200).json({
+            name: "DarkSound Pro",
+            short_name: "DarkSound",
+            description: "DarkSound Pro - Ultimate Edition",
+            start_url: "/",
+            display: "standalone",
+            background_color: "#000000",
+            theme_color: "#30d158",
+            icons: [
+                {
+                    src: "https://picsum.photos/192",
+                    sizes: "192x192",
+                    type: "image/png"
+                },
+                {
+                    src: "https://picsum.photos/512",
+                    sizes: "512x512",
+                    type: "image/png"
+                }
+            ]
+        });
+    }
+});
+
 // ============ ROTTA PRINCIPALE ============
 app.get('/', (req, res) => {
     const indexPath = path.join(publicPath, 'index.html');
@@ -60,7 +90,10 @@ app.get('/', (req, res) => {
         res.status(200).send(`
             <!DOCTYPE html>
             <html>
-            <head><title>DarkSound Pro</title></head>
+            <head>
+                <title>DarkSound Pro</title>
+                <link rel="manifest" href="/manifest.json">
+            </head>
             <body style="font-family:sans-serif;text-align:center;padding:50px;background:#121212;color:#fff;">
                 <h1>🎵 DarkSound Pro</h1>
                 <p>Server in esecuzione! 🚀</p>
