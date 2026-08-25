@@ -6,11 +6,11 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 8080;  // FORZATA A 8080
 
 const INSTANCE_ID = Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 6);
 
-console.log(`[${INSTANCE_ID}] 🚀 Avvio server...`);
+console.log(`[${INSTANCE_ID}] 🚀 Avvio server sulla porta ${PORT}...`);
 
 app.use(cors());
 app.use(express.json());
@@ -23,22 +23,24 @@ app.use(express.static(publicPath));
 
 const searchCache = new Map();
 
-// ============ ROTTA HEALTH CHECK (RISPOSTA IMMEDIATA) ============
 app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok', instance: INSTANCE_ID, uptime: Math.floor(process.uptime()) });
+    res.status(200).json({ 
+        status: 'ok', 
+        instance: INSTANCE_ID, 
+        port: PORT,
+        uptime: Math.floor(process.uptime()) 
+    });
 });
 
-// ============ ROTTA PRINCIPALE ============
 app.get('/', (req, res) => {
     const indexPath = path.join(publicPath, 'index.html');
     if (fs.existsSync(indexPath)) {
         res.sendFile(indexPath);
     } else {
-        res.send(`<h1>🎵 DarkSound Pro</h1><p>Server attivo! Instance: ${INSTANCE_ID}</p>`);
+        res.send(`<h1>🎵 DarkSound Pro</h1><p>Server attivo sulla porta ${PORT}! Instance: ${INSTANCE_ID}</p>`);
     }
 });
 
-// ============ ROTTA RICERCA ============
 app.get('/api/search', async (req, res) => {
     const query = req.query.q;
     if (!query) {
@@ -77,12 +79,14 @@ app.get('/api/search', async (req, res) => {
     }
 });
 
-// ============ AVVIO SERVER ============
+app.use((req, res) => {
+    res.status(404).json({ error: 'Rotta non trovata' });
+});
+
 const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`[${INSTANCE_ID}] ✅ Server in esecuzione su http://0.0.0.0:${PORT}`);
 });
 
-// ============ GESTIONE CHIUSURA ============
 process.on('SIGTERM', () => {
     console.log(`[${INSTANCE_ID}] 🛑 Chiusura...`);
     server.close(() => process.exit(0));
