@@ -3,42 +3,18 @@ const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 const cors = require('cors');
 const path = require('path');
-const fs = require('fs');
-
 const app = express();
-const PORT = 3000;  // <- CAMBIATO A 3000
-
-console.log('🚀 Avvio server sulla porta 3000...');
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-
-const publicPath = path.join(__dirname, 'public');
-if (!fs.existsSync(publicPath)) {
-    fs.mkdirSync(publicPath, { recursive: true });
-}
-app.use(express.static(publicPath));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const searchCache = new Map();
 
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok', uptime: Math.floor(process.uptime()) });
-});
-
-app.get('/', (req, res) => {
-    const indexPath = path.join(publicPath, 'index.html');
-    if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-    } else {
-        res.send('<h1>🎵 DarkSound Pro</h1><p>Server attivo!</p>');
-    }
-});
-
 app.get('/api/search', async (req, res) => {
     const query = req.query.q;
-    if (!query) {
-        return res.status(400).json({ error: 'Query mancante' });
-    }
+    if (!query) return res.json([]);
     
     const cacheKey = query.toLowerCase();
     if (searchCache.has(cacheKey)) {
@@ -54,7 +30,7 @@ app.get('/api/search', async (req, res) => {
             .filter(item => item.type === 'video')
             .map(item => ({
                 id: item.id,
-                name: item.title || 'Titolo sconosciuto',
+                name: item.title,
                 artist: item.author?.name || 'Sconosciuto',
                 image: item.bestThumbnail?.url || `https://picsum.photos/seed/${item.id}/200`,
                 duration: item.duration || '3:30'
@@ -67,20 +43,15 @@ app.get('/api/search', async (req, res) => {
         
         res.json(tracks);
     } catch (error) {
-        console.error('❌ Errore ricerca:', error.message);
-        res.status(500).json({ error: 'Errore nella ricerca', message: error.message });
+        console.error('Errore ricerca:', error);
+        res.json([]);
     }
 });
 
-app.use((req, res) => {
-    res.status(404).json({ error: 'Rotta non trovata' });
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Server in esecuzione su http://0.0.0.0:${PORT}`);
-});
-
-process.on('SIGTERM', () => {
-    console.log('🛑 Chiusura...');
-    server.close(() => process.exit(0));
+app.listen(PORT, () => {
+    console.log(`Server DarkSound in esecuzione su http://localhost:${PORT}`);
 });
