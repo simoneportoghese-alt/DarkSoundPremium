@@ -3,8 +3,7 @@
   "deploy": {
     "numReplicas": 1,
     "restartPolicyType": "NEVER",
-    "healthcheckPath": "/health",
-    "healthcheckTimeout": 60,
-    "healthcheckInterval": 30
+    "healthcheckPath": null,
+    "healthcheckTimeout": 0
   }
 }
