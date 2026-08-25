@@ -8,13 +8,16 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ============ ID UNIVOCO PER IL CONTAINER ============
+const INSTANCE_ID = Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 6);
+
 // ============ GESTIONE ERRORI GLOBALI ============
 process.on('uncaughtException', (err) => {
-    console.error('❌ Uncaught Exception:', err.message);
+    console.error(`[${INSTANCE_ID}] ❌ Uncaught Exception:`, err.message);
 });
 
 process.on('unhandledRejection', (err) => {
-    console.error('❌ Unhandled Rejection:', err.message);
+    console.error(`[${INSTANCE_ID}] ❌ Unhandled Rejection:`, err.message);
 });
 
 // ============ MIDDLEWARE ============
@@ -24,9 +27,9 @@ app.use(express.json());
 // ============ VERIFICA CARTELLA PUBLIC ============
 const publicPath = path.join(__dirname, 'public');
 if (!fs.existsSync(publicPath)) {
-    console.error('❌ Cartella "public" non trovata! Creazione...');
+    console.error(`[${INSTANCE_ID}] ❌ Cartella "public" non trovata! Creazione...`);
     fs.mkdirSync(publicPath, { recursive: true });
-    console.log('✅ Cartella "public" creata');
+    console.log(`[${INSTANCE_ID}] ✅ Cartella "public" creata`);
 }
 
 // ============ SERVI FILE STATICI ============
@@ -35,14 +38,16 @@ app.use(express.static(publicPath));
 // ============ CACHE RICERCHE ============
 const searchCache = new Map();
 
-// ============ ROTTA HEALTH CHECK (DEVE RISPOSTEDERE SUBITO) ============
+// ============ ROTTA HEALTH CHECK ============
 app.get('/health', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.status(200).json({ 
         status: 'ok', 
+        instance: INSTANCE_ID,
         uptime: Math.floor(process.uptime()),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        pid: process.pid
     });
 });
 
@@ -60,6 +65,7 @@ app.get('/', (req, res) => {
                 <h1>🎵 DarkSound Pro</h1>
                 <p>Server in esecuzione! 🚀</p>
                 <p style="color:#1db954;">✅ Container attivo</p>
+                <p style="color:#666;font-size:12px;">Instance: ${INSTANCE_ID}</p>
                 <p style="color:#666;font-size:12px;">Uptime: ${Math.floor(process.uptime())}s</p>
             </body>
             </html>
@@ -101,7 +107,7 @@ app.get('/api/search', async (req, res) => {
         
         res.json(tracks);
     } catch (error) {
-        console.error('❌ Errore ricerca:', error.message);
+        console.error(`[${INSTANCE_ID}] ❌ Errore ricerca:`, error.message);
         res.status(500).json({ 
             error: 'Errore nella ricerca', 
             message: error.message 
@@ -116,29 +122,29 @@ app.use((req, res) => {
 
 // ============ AVVIO SERVER ============
 const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Server DarkSound in esecuzione su http://0.0.0.0:${PORT}`);
-    console.log(`🕐 Avviato il: ${new Date().toISOString()}`);
-    console.log(`📁 Directory: ${__dirname}`);
-    console.log(`📄 Public path: ${publicPath}`);
-    console.log(`🔍 Health check disponibile su /health`);
+    console.log(`[${INSTANCE_ID}] ✅ Server DarkSound in esecuzione su http://0.0.0.0:${PORT}`);
+    console.log(`[${INSTANCE_ID}] 🕐 Avviato il: ${new Date().toISOString()}`);
+    console.log(`[${INSTANCE_ID}] 📁 Directory: ${__dirname}`);
+    console.log(`[${INSTANCE_ID}] 📄 Public path: ${publicPath}`);
+    console.log(`[${INSTANCE_ID}] 🔍 Health check disponibile su /health`);
+    console.log(`[${INSTANCE_ID}] 🆔 Instance ID: ${INSTANCE_ID}`);
 });
 
 // ============ KEEP-ALIVE PER RAILWAY ============
-// Ping ogni 15 secondi per mantenere il container attivo
 setInterval(() => {
-    console.log(`💓 Keep-alive ping: ${new Date().toISOString()} | Uptime: ${Math.floor(process.uptime())}s`);
+    console.log(`[${INSTANCE_ID}] 💓 Keep-alive ping: ${new Date().toISOString()} | Uptime: ${Math.floor(process.uptime())}s`);
 }, 15000);
 
 // ============ GESTIONE CHIUSURA GENTILE ============
 const gracefulShutdown = () => {
-    console.log('🛑 Ricevuto segnale di chiusura, chiusura server...');
+    console.log(`[${INSTANCE_ID}] 🛑 Ricevuto segnale di chiusura, chiusura server...`);
     server.close(() => {
-        console.log('✅ Server chiuso correttamente');
+        console.log(`[${INSTANCE_ID}] ✅ Server chiuso correttamente`);
         process.exit(0);
     });
     
     setTimeout(() => {
-        console.error('❌ Chiusura forzata dopo timeout');
+        console.error(`[${INSTANCE_ID}] ❌ Chiusura forzata dopo timeout`);
         process.exit(1);
     }, 3000);
 };
