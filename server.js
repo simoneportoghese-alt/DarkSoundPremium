@@ -24,7 +24,7 @@ process.on('unhandledRejection', (err) => {
 app.use(cors());
 app.use(express.json());
 
-// ============ SERVI FILE STATICI (PRIMA DI TUTTO) ============
+// ============ VERIFICA CARTELLA PUBLIC ============
 const publicPath = path.join(__dirname, 'public');
 if (!fs.existsSync(publicPath)) {
     console.error(`[${INSTANCE_ID}] ❌ Cartella "public" non trovata! Creazione...`);
@@ -38,7 +38,7 @@ app.use(express.static(publicPath));
 // ============ CACHE RICERCHE ============
 const searchCache = new Map();
 
-// ============ ROTTA HEALTH CHECK (MOLTO VELOCE - PRIMA DI TUTTO) ============
+// ============ ROTTA HEALTH CHECK (PRIMA DI TUTTO) ============
 app.get('/health', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -48,6 +48,18 @@ app.get('/health', (req, res) => {
         uptime: Math.floor(process.uptime()),
         timestamp: new Date().toISOString()
     });
+});
+
+// ============ ROTTE PER SAFARI ============
+app.get('/apple-touch-icon.png', (req, res) => {
+    res.setHeader('Content-Type', 'image/png');
+    // SVG come fallback
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><rect width="180" height="180" fill="#1db954"/><text x="90" y="120" font-size="80" text-anchor="middle" fill="white">🎵</text></svg>`;
+    res.send(Buffer.from(svg));
+});
+
+app.get('/apple-touch-icon-precomposed.png', (req, res) => {
+    res.redirect('/apple-touch-icon.png');
 });
 
 // ============ ROTTA PER IL MANIFEST ============
@@ -84,6 +96,7 @@ app.get('/', (req, res) => {
             <head>
                 <title>DarkSound Pro</title>
                 <link rel="manifest" href="/manifest.json">
+                <link rel="apple-touch-icon" href="/apple-touch-icon.png">
             </head>
             <body style="font-family:sans-serif;text-align:center;padding:50px;background:#121212;color:#fff;">
                 <h1>🎵 DarkSound Pro</h1>
@@ -144,7 +157,7 @@ app.use((req, res) => {
     res.status(404).json({ error: 'Rotta non trovata' });
 });
 
-// ============ AVVIO SERVER (IMMEDIATO) ============
+// ============ AVVIO SERVER ============
 const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`[${INSTANCE_ID}] ✅ Server DarkSound in esecuzione su http://0.0.0.0:${PORT}`);
     console.log(`[${INSTANCE_ID}] 🆔 Instance ID: ${INSTANCE_ID}`);
@@ -153,7 +166,7 @@ const server = app.listen(PORT, '0.0.0.0', () => {
 // ============ KEEP-ALIVE PER RAILWAY ============
 setInterval(() => {
     console.log(`[${INSTANCE_ID}] 💓 Keep-alive ping: ${new Date().toISOString()} | Uptime: ${Math.floor(process.uptime())}s`);
-}, 10000); // Ogni 10 secondi invece di 15
+}, 10000);
 
 // ============ GESTIONE CHIUSURA GENTILE ============
 const gracefulShutdown = () => {
