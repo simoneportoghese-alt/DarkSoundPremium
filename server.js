@@ -38,7 +38,7 @@ app.use(express.static(publicPath));
 // ============ CACHE RICERCHE ============
 const searchCache = new Map();
 
-// ============ ROTTA HEALTH CHECK (MOLTO VELOCE) ============
+// ============ ROTTA HEALTH CHECK (MOLTO VELOCE - PRIMA DI TUTTO) ============
 app.get('/health', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -153,7 +153,7 @@ const server = app.listen(PORT, '0.0.0.0', () => {
 // ============ KEEP-ALIVE PER RAILWAY ============
 setInterval(() => {
     console.log(`[${INSTANCE_ID}] 💓 Keep-alive ping: ${new Date().toISOString()} | Uptime: ${Math.floor(process.uptime())}s`);
-}, 15000);
+}, 10000); // Ogni 10 secondi invece di 15
 
 // ============ GESTIONE CHIUSURA GENTILE ============
 const gracefulShutdown = () => {
