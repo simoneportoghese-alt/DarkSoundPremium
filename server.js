@@ -6,11 +6,9 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = 8080;  // SOLO 8080, NIENTE ALTRO
+const PORT = 3000;  // <- CAMBIATO A 3000
 
-const INSTANCE_ID = Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 6);
-
-console.log(`[${INSTANCE_ID}] 🚀 Avvio server sulla porta ${PORT}...`);
+console.log('🚀 Avvio server sulla porta 3000...');
 
 app.use(cors());
 app.use(express.json());
@@ -23,22 +21,16 @@ app.use(express.static(publicPath));
 
 const searchCache = new Map();
 
-// ============ HEALTH CHECK ============
 app.get('/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'ok', 
-        instance: INSTANCE_ID, 
-        port: PORT
-    });
+    res.status(200).json({ status: 'ok', uptime: Math.floor(process.uptime()) });
 });
 
-// ============ ROTTE ============
 app.get('/', (req, res) => {
     const indexPath = path.join(publicPath, 'index.html');
     if (fs.existsSync(indexPath)) {
         res.sendFile(indexPath);
     } else {
-        res.send(`<h1>🎵 DarkSound Pro</h1><p>Server attivo sulla porta ${PORT}! Instance: ${INSTANCE_ID}</p>`);
+        res.send('<h1>🎵 DarkSound Pro</h1><p>Server attivo!</p>');
     }
 });
 
@@ -75,7 +67,7 @@ app.get('/api/search', async (req, res) => {
         
         res.json(tracks);
     } catch (error) {
-        console.error(`[${INSTANCE_ID}] ❌ Errore ricerca:`, error.message);
+        console.error('❌ Errore ricerca:', error.message);
         res.status(500).json({ error: 'Errore nella ricerca', message: error.message });
     }
 });
@@ -85,10 +77,10 @@ app.use((req, res) => {
 });
 
 const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`[${INSTANCE_ID}] ✅ Server in esecuzione su http://0.0.0.0:${PORT}`);
+    console.log(`✅ Server in esecuzione su http://0.0.0.0:${PORT}`);
 });
 
 process.on('SIGTERM', () => {
-    console.log(`[${INSTANCE_ID}] 🛑 Chiusura...`);
+    console.log('🛑 Chiusura...');
     server.close(() => process.exit(0));
 });
