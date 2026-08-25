@@ -3,41 +3,66 @@ const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ============ GESTIONE ERRORI GLOBALI ============
 process.on('uncaughtException', (err) => {
-    console.error('❌ Uncaught Exception:', err);
+    console.error('❌ Uncaught Exception:', err.message);
 });
 
 process.on('unhandledRejection', (err) => {
-    console.error('❌ Unhandled Rejection:', err);
+    console.error('❌ Unhandled Rejection:', err.message);
 });
 
 // ============ MIDDLEWARE ============
 app.use(cors());
 app.use(express.json());
 
-// ============ STATIC FILES ============
-// Assicurati che la cartella public esista
-app.use(express.static(path.join(__dirname, 'public')));
+// ============ VERIFICA CARTELLA PUBLIC ============
+const publicPath = path.join(__dirname, 'public');
+if (!fs.existsSync(publicPath)) {
+    console.error('❌ Cartella "public" non trovata!');
+    fs.mkdirSync(publicPath, { recursive: true });
+    console.log('✅ Cartella "public" creata');
+}
 
-// ============ CACHE ============
+// ============ SERVI FILE STATICI ============
+app.use(express.static(publicPath));
+
+// ============ CACHE RICERCHE ============
 const searchCache = new Map();
 
-// ============ ROTTA HEALTH CHECK (OBLIGATORIA) ============
+// ============ ROTTA HEALTH CHECK (RISPOSTA IMMEDIATA) ============
 app.get('/health', (req, res) => {
     res.status(200).json({ 
         status: 'ok', 
-        uptime: process.uptime(),
+        uptime: Math.floor(process.uptime()),
         timestamp: new Date().toISOString()
     });
 });
 
 // ============ ROTTA PRINCIPALE ============
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    const indexPath = path.join(publicPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        res.status(200).send(`
+            <!DOCTYPE html>
+            <html>
+            <head><title>DarkSound Pro</title></head>
+            <body style="font-family:sans-serif;text-align:center;padding:50px;background:#121212;color:#fff;">
+                <h1>🎵 DarkSound Pro</h1>
+                <p>Server in esecuzione! 🚀</p>
+                <p style="color:#1db954;">✅ Container attivo</p>
+                <p style="color:#666;font-size:12px;">Uptime: ${Math.floor(process.uptime())}s</p>
+            </body>
+            </html>
+        `);
+    }
 });
 
 // ============ ROTTA RICERCA ============
@@ -56,14 +81,7 @@ app.get('/api/search', async (req, res) => {
     }
     
     try {
-        // Timeout per la ricerca (5 secondi)
-        const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error('Timeout ricerca')), 5000);
-        });
-        
-        const searchPromise = ytsr(query, { limit: 20 });
-        const searchResults = await Promise.race([searchPromise, timeoutPromise]);
-        
+        const searchResults = await ytsr(query, { limit: 20 });
         const tracks = searchResults.items
             .filter(item => item.type === 'video')
             .map(item => ({
@@ -99,13 +117,14 @@ const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ Server DarkSound in esecuzione su http://0.0.0.0:${PORT}`);
     console.log(`🕐 Avviato il: ${new Date().toISOString()}`);
     console.log(`📁 Directory: ${__dirname}`);
+    console.log(`📄 Public path: ${publicPath}`);
 });
 
 // ============ KEEP-ALIVE PER RAILWAY ============
-// Invia un ping ogni 30 secondi per mantenere il container attivo
+// Ping ogni 25 secondi per mantenere il container attivo
 setInterval(() => {
     console.log(`💓 Keep-alive ping: ${new Date().toISOString()} | Uptime: ${Math.floor(process.uptime())}s`);
-}, 30000);
+}, 25000);
 
 // ============ GESTIONE CHIUSURA GENTILE ============
 const gracefulShutdown = () => {
@@ -115,11 +134,10 @@ const gracefulShutdown = () => {
         process.exit(0);
     });
     
-    // Forza la chiusura dopo 5 secondi se il server non si chiude
     setTimeout(() => {
         console.error('❌ Chiusura forzata dopo timeout');
         process.exit(1);
-    }, 5000);
+    }, 3000);
 };
 
 process.on('SIGTERM', gracefulShutdown);
