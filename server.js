@@ -25,13 +25,10 @@ const searchCache = new Map();
 
 // ============ ROTTA HEALTH CHECK (OBLIGATORIA PER RAILWAY) ============
 app.get('/health', (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.status(200).json({ 
         status: 'ok', 
         instance: INSTANCE_ID,
-        uptime: Math.floor(process.uptime()),
-        timestamp: new Date().toISOString()
+        uptime: Math.floor(process.uptime())
     });
 });
 
