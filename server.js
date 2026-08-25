@@ -7,7 +7,6 @@ const PORT = process.env.PORT || 8080;
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- PROXY CORS INTEGRATO ---
-// Invece di un file separato, gestiamo la rotta /api/proxy qui dentro
 app.get('/api/proxy', async (req, res) => {
     const targetUrl = req.query.url;
     if (!targetUrl) {
@@ -17,7 +16,11 @@ app.get('/api/proxy', async (req, res) => {
     try {
         const response = await fetch(targetUrl, {
             headers: {
-                'User-Agent': 'Mozilla/5.0'
+                'User-Agent': 'Mozilla/5.0',
+                
+                // ➔ LA TUA CHIAVE / AIzaSyB7NTILkaZE7RDC5YBWyJw9N6q5ASGIhlk ➔
+                // (Se il servizio richiede un formato diverso, es. 'x-api-key': 'chiave_segreta_12345', modificalo qui)
+                'Authorization': `Bearer chiave_segreta_12345`
             }
         });
         
@@ -40,7 +43,7 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// IMPORTANTE: '0.0.0.0' permette a Railway di fare il bind corretto del traffico esterno
+// Binding corretto per Railway
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ DarkSound Pro running on port ${PORT}`);
 });
