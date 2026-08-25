@@ -35,18 +35,14 @@ app.use(express.static(publicPath));
 // ============ CACHE RICERCHE ============
 const searchCache = new Map();
 
-// ============ ROTTA HEALTH CHECK (PRIMA DI TUTTO) ============
+// ============ ROTTA HEALTH CHECK (DEVE RISPOSTEDERE SUBITO) ============
 app.get('/health', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
     res.status(200).json({ 
         status: 'ok', 
         uptime: Math.floor(process.uptime()),
-        timestamp: new Date().toISOString(),
-        memory: process.memoryUsage(),
-        version: '1.0.0'
+        timestamp: new Date().toISOString()
     });
 });
 
@@ -125,7 +121,6 @@ const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`📁 Directory: ${__dirname}`);
     console.log(`📄 Public path: ${publicPath}`);
     console.log(`🔍 Health check disponibile su /health`);
-    console.log(`🚀 Pronto per ricevere richieste!`);
 });
 
 // ============ KEEP-ALIVE PER RAILWAY ============
@@ -142,7 +137,6 @@ const gracefulShutdown = () => {
         process.exit(0);
     });
     
-    // Forza la chiusura dopo 3 secondi
     setTimeout(() => {
         console.error('❌ Chiusura forzata dopo timeout');
         process.exit(1);
