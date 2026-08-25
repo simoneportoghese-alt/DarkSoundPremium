@@ -2,8 +2,6 @@
   "$schema": "https://railway.app/railway.schema.json",
   "deploy": {
     "numReplicas": 1,
-    "restartPolicyType": "NEVER",
-    "healthcheckPath": null,
-    "healthcheckTimeout": 0
+    "restartPolicyType": "NEVER"
   }
 }
