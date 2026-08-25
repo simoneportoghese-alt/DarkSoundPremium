@@ -8,28 +8,31 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ============ ID UNIVOCO ============
 const INSTANCE_ID = Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 6);
 
 console.log(`[${INSTANCE_ID}] 🚀 Avvio server...`);
 
-// ============ MIDDLEWARE ============
 app.use(cors());
 app.use(express.json());
 
-// ============ PUBLIC PATH ============
 const publicPath = path.join(__dirname, 'public');
 if (!fs.existsSync(publicPath)) {
-    console.log(`[${INSTANCE_ID}] 📁 Creazione cartella public...`);
     fs.mkdirSync(publicPath, { recursive: true });
 }
-
 app.use(express.static(publicPath));
 
-// ============ CACHE ============
 const searchCache = new Map();
 
-// ============ ROTTE SAFARI ============
+// ============ ROTTE ============
+
+app.get('/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'ok', 
+        instance: INSTANCE_ID,
+        uptime: Math.floor(process.uptime())
+    });
+});
+
 app.get('/apple-touch-icon.png', (req, res) => {
     res.setHeader('Content-Type', 'image/png');
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><rect width="180" height="180" fill="#1db954"/><text x="90" y="120" font-size="80" text-anchor="middle" fill="white">🎵</text></svg>`;
@@ -51,7 +54,6 @@ app.get('/manifest.json', (req, res) => {
     }
 });
 
-// ============ HOME ============
 app.get('/', (req, res) => {
     const indexPath = path.join(publicPath, 'index.html');
     if (fs.existsSync(indexPath)) {
@@ -61,7 +63,6 @@ app.get('/', (req, res) => {
     }
 });
 
-// ============ API SEARCH ============
 app.get('/api/search', async (req, res) => {
     const query = req.query.q;
     if (!query) {
@@ -100,17 +101,14 @@ app.get('/api/search', async (req, res) => {
     }
 });
 
-// ============ FALLBACK ============
 app.use((req, res) => {
     res.status(404).json({ error: 'Rotta non trovata' });
 });
 
-// ============ AVVIO SERVER ============
 const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`[${INSTANCE_ID}] ✅ Server in esecuzione su http://0.0.0.0:${PORT}`);
 });
 
-// ============ CHIUSURA ============
 process.on('SIGTERM', () => {
     console.log(`[${INSTANCE_ID}] 🛑 Chiusura...`);
     server.close(() => process.exit(0));
