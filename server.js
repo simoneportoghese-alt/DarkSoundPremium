@@ -29,16 +29,6 @@ app.use(express.static(publicPath));
 // ============ CACHE ============
 const searchCache = new Map();
 
-// ============ HEALTH CHECK (RISPOSTA IMMEDIATA) ============
-app.get('/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'ok', 
-        instance: INSTANCE_ID,
-        uptime: Math.floor(process.uptime()),
-        timestamp: new Date().toISOString()
-    });
-});
-
 // ============ ROTTE SAFARI ============
 app.get('/apple-touch-icon.png', (req, res) => {
     res.setHeader('Content-Type', 'image/png');
@@ -119,11 +109,6 @@ app.use((req, res) => {
 const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`[${INSTANCE_ID}] ✅ Server in esecuzione su http://0.0.0.0:${PORT}`);
 });
-
-// ============ KEEP-ALIVE ============
-setInterval(() => {
-    console.log(`[${INSTANCE_ID}] 💓 Keep-alive | Uptime: ${Math.floor(process.uptime())}s`);
-}, 15000);
 
 // ============ CHIUSURA ============
 process.on('SIGTERM', () => {
