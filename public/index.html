@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -3427,7 +3427,6 @@
             
             let cleaned = title;
             
-            // Pattern da rimuovere (conserva Slowed, Sped Up, Reverb)
             const patternsToRemove = [
                 /\[Official\s*(Music\s*)?Video\]/gi,
                 /\[Official\s*Audio\]/gi,
@@ -3490,7 +3489,6 @@
             
             let cleaned = name;
             
-            // Rimuovi suffissi automatici
             const suffixes = [
                 /\s*-\s*Topic$/i,
                 /\s*-\s*VEVO$/i,
@@ -3514,11 +3512,8 @@
                 cleaned = cleaned.replace(suffix, '');
             }
             
-            // Rimuovi parentesi residue
             cleaned = cleaned.replace(/\([^)]*\)/g, '').trim();
             cleaned = cleaned.replace(/\[[^\]]*\]/g, '').trim();
-            
-            // Rimuovi spazi multipli e caratteri speciali extra
             cleaned = cleaned.replace(/\s{2,}/g, ' ').trim();
             cleaned = cleaned.replace(/^[^a-zA-Z0-9]+/, '').trim();
             cleaned = cleaned.replace(/[^a-zA-Z0-9]+$/, '').trim();
@@ -3532,7 +3527,6 @@
             let artist = cleanArtistName(channelTitle || 'Artista sconosciuto');
             let title = cleaned;
             
-            // Cerca di estrarre artista - titolo dal titolo pulito
             const dashMatch = cleaned.match(/^(.+?)\s*[-–—]\s*(.+)$/);
             if (dashMatch) {
                 artist = cleanArtistName(dashMatch[1].trim());
@@ -3558,7 +3552,6 @@
                 }
             }
             
-            // Rimuovi parentesi residue dal titolo ma conserva (Slowed), (Sped Up) ecc.
             const versionPatterns = [
                 /\(Slowed\s*\+\s*Reverb\)/gi,
                 /\(Slowed\)/gi,
@@ -3585,12 +3578,10 @@
             
             if (!title) title = cleaned;
             
-            // Riattacca le versioni modificate
             if (versions.length > 0) {
                 title = title + ' ' + versions.join(' ');
             }
             
-            // Pulisci nuovamente l'artista
             artist = cleanArtistName(artist);
             
             return { artist, title };
@@ -3605,7 +3596,6 @@
                 );
                 const data = await response.json();
                 if (data.items && data.items.length > 0) {
-                    const channel = data.items[0];
                     return true;
                 }
                 return false;
@@ -4074,6 +4064,11 @@
         let currentArtistVerified = false;
 
         async function openArtistPage(artistName, imageOverride) {
+            // CHIUDI IL LETTORE PRIMA DI APRIRE LA PAGINA ARTISTA
+            if (document.getElementById('fullscreen-player').classList.contains('active')) {
+                toggleFullscreen();
+            }
+            
             switchView('artist');
             currentArtistPage = artistName;
             
@@ -4274,9 +4269,19 @@
             }
         }
 
-        // ============ FUNZIONE PER APRIRE ARTISTA DAL PLAYER ============
+        // ============ FUNZIONE PER APRIRE ARTISTA DAL PLAYER - MODIFICATA ============
         function openArtistFromPlayer() {
             if (AppState.currentTrack && AppState.currentTrack.artist) {
+                // Chiudi il lettore fullscreen
+                if (document.getElementById('fullscreen-player').classList.contains('active')) {
+                    toggleFullscreen();
+                }
+                // Chiudi la player bar
+                const playerBar = document.getElementById('playerBar');
+                if (playerBar) {
+                    playerBar.style.display = 'none';
+                }
+                // Apri la pagina dell'artista
                 openArtistPage(AppState.currentTrack.artist);
             }
         }
