@@ -1,15 +1,10 @@
 {
-  "name": "darksound-pro",
+  "name": "darksound",
   "version": "1.0.0",
-  "description": "DarkSound Pro - Ultimate Edition",
-  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "ytdl-core": "^4.11.5",
-    "ytsr": "^3.5.3"
+    "express": "^4.18.2"
   }
 }
