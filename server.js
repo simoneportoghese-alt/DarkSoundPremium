@@ -23,38 +23,12 @@ app.use(express.static(publicPath));
 
 const searchCache = new Map();
 
-// ============ ROTTA HEALTH CHECK (OBLIGATORIA PER RAILWAY) ============
+// ============ ROTTA HEALTH CHECK (RISPOSTA IMMEDIATA) ============
 app.get('/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'ok', 
-        instance: INSTANCE_ID,
-        uptime: Math.floor(process.uptime())
-    });
+    res.status(200).json({ status: 'ok', instance: INSTANCE_ID, uptime: Math.floor(process.uptime()) });
 });
 
-// ============ ROTTE ============
-
-app.get('/apple-touch-icon.png', (req, res) => {
-    res.setHeader('Content-Type', 'image/png');
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><rect width="180" height="180" fill="#1db954"/><text x="90" y="120" font-size="80" text-anchor="middle" fill="white">🎵</text></svg>`;
-    res.send(Buffer.from(svg));
-});
-
-app.get('/manifest.json', (req, res) => {
-    const manifestPath = path.join(publicPath, 'manifest.json');
-    if (fs.existsSync(manifestPath)) {
-        res.sendFile(manifestPath);
-    } else {
-        res.json({
-            name: "DarkSound Pro",
-            short_name: "DarkSound",
-            display: "standalone",
-            background_color: "#000000",
-            theme_color: "#30d158"
-        });
-    }
-});
-
+// ============ ROTTA PRINCIPALE ============
 app.get('/', (req, res) => {
     const indexPath = path.join(publicPath, 'index.html');
     if (fs.existsSync(indexPath)) {
@@ -64,6 +38,7 @@ app.get('/', (req, res) => {
     }
 });
 
+// ============ ROTTA RICERCA ============
 app.get('/api/search', async (req, res) => {
     const query = req.query.q;
     if (!query) {
@@ -102,14 +77,12 @@ app.get('/api/search', async (req, res) => {
     }
 });
 
-app.use((req, res) => {
-    res.status(404).json({ error: 'Rotta non trovata' });
-});
-
+// ============ AVVIO SERVER ============
 const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`[${INSTANCE_ID}] ✅ Server in esecuzione su http://0.0.0.0:${PORT}`);
 });
 
+// ============ GESTIONE CHIUSURA ============
 process.on('SIGTERM', () => {
     console.log(`[${INSTANCE_ID}] 🛑 Chiusura...`);
     server.close(() => process.exit(0));
