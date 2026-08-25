@@ -35,12 +35,20 @@ app.use(express.static(publicPath));
 // ============ CACHE RICERCHE ============
 const searchCache = new Map();
 
-// ============ ROTTA HEALTH CHECK (PRIMA DI TUTTO) ============
+// ============ ROTTA HEALTH CHECK (CON HEADER PER RAILWAY) ============
 app.get('/health', (req, res) => {
+    // Header specifici per Railway
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    
     res.status(200).json({ 
         status: 'ok', 
         uptime: Math.floor(process.uptime()),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        memory: process.memoryUsage(),
+        version: '1.0.0'
     });
 });
 
@@ -119,13 +127,14 @@ const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`📁 Directory: ${__dirname}`);
     console.log(`📄 Public path: ${publicPath}`);
     console.log(`🔍 Health check disponibile su /health`);
+    console.log(`🚀 Pronto per ricevere richieste!`);
 });
 
 // ============ KEEP-ALIVE PER RAILWAY ============
-// Ping ogni 25 secondi per mantenere il container attivo
+// Ping ogni 15 secondi per mantenere il container attivo
 setInterval(() => {
     console.log(`💓 Keep-alive ping: ${new Date().toISOString()} | Uptime: ${Math.floor(process.uptime())}s`);
-}, 25000);
+}, 15000);
 
 // ============ GESTIONE CHIUSURA GENTILE ============
 const gracefulShutdown = () => {
@@ -135,6 +144,7 @@ const gracefulShutdown = () => {
         process.exit(0);
     });
     
+    // Forza la chiusura dopo 3 secondi
     setTimeout(() => {
         console.error('❌ Chiusura forzata dopo timeout');
         process.exit(1);
