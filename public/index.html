@@ -3631,8 +3631,9 @@
             if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
             return num.toString();
         }
+
         // ============================================================
-        // 🎵 RICERCA BRANI (USA YOUTUBE + BRANI LOCALI COME BACKUP)
+        // 🎵 RICERCA BRANI SU YOUTUBE
         // ============================================================
         async function searchYoutubeVideos(query, maxResults = 20) {
             if (!query || query.trim().length === 0) {
@@ -3640,12 +3641,24 @@
             }
             
             try {
+                console.log('[YouTube] Ricerca:', query);
+                
                 const response = await fetch(
                     `${YOUTUBE_API_BASE}/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=${maxResults * 2}&key=${YOUTUBE_API_KEY}`
                 );
+                
+                console.log('[YouTube] Status:', response.status);
+                
+                if (!response.ok) {
+                    console.error('[YouTube] Errore HTTP:', response.status);
+                    return getLocalTracks(query, maxResults);
+                }
+                
                 const data = await response.json();
+                console.log('[YouTube] Risultati:', data.items?.length || 0);
                 
                 if (!data.items || data.items.length === 0) {
+                    console.log('[YouTube] Nessun risultato, uso locali');
                     return getLocalTracks(query, maxResults);
                 }
                 
@@ -3701,23 +3714,29 @@
                         rawTitle: snippet.title,
                         publishedAt: snippet.publishedAt,
                         verified: isOfficial,
-                        isOfficial: isOfficial
+                        isOfficial: isOfficial,
+                        isYouTube: true
                     });
                 }
                 
                 if (videos.length === 0) {
+                    console.log('[YouTube] Nessun video valido, uso locali');
                     return getLocalTracks(query, maxResults);
                 }
                 
-                return videos
+                const sorted = videos
                     .sort((a, b) => {
                         if (a.isOfficial && !b.isOfficial) return -1;
                         if (!a.isOfficial && b.isOfficial) return 1;
                         return 0;
                     })
                     .slice(0, maxResults);
+                
+                console.log('[YouTube] Trovati:', sorted.length, 'brani');
+                return sorted;
+                
             } catch (error) {
-                console.error('[YouTube Search] Errore:', error);
+                console.error('[YouTube] Errore:', error.message);
                 return getLocalTracks(query, maxResults);
             }
         }
@@ -3726,6 +3745,13 @@
         // 📦 FUNZIONE PER BRANI LOCALI (BACKUP)
         // ============================================================
         function getLocalTracks(query, maxResults = 20) {
+            console.log('[Local] Ricerca:', query);
+            
+            if (!query || query.trim().length === 0) {
+                const shuffled = [...LOCAL_TRACKS].sort(() => Math.random() - 0.5);
+                return shuffled.slice(0, maxResults);
+            }
+            
             const q = query.toLowerCase();
             let results = LOCAL_TRACKS.filter(t => 
                 t.name.toLowerCase().includes(q) || 
@@ -3733,9 +3759,11 @@
             );
             
             if (results.length === 0) {
-                results = [...LOCAL_TRACKS].sort(() => Math.random() - 0.5);
+                const shuffled = [...LOCAL_TRACKS].sort(() => Math.random() - 0.5);
+                results = shuffled.slice(0, maxResults);
             }
             
+            console.log('[Local] Trovati:', results.length, 'brani');
             return results.slice(0, maxResults);
         }
 
@@ -4021,7 +4049,6 @@
                 
                 showSiriNotification(`⬇️ Download di "${track.name}"...`);
                 
-                // Simuliamo il download per ora
                 const audioBlob = new Blob(['Dummy audio data'], { type: 'audio/mpeg' });
                 
                 await saveTrackToIndexedDB(track, audioBlob);
@@ -4221,7 +4248,6 @@
                     );
                     document.getElementById('artistLikedCount').textContent = likedByArtist.length;
                     
-                    // 🔥 CARICA STATISTICHE DEL CANALE PER I FOLLOWER
                     if (tracks[0] && tracks[0].channelId) {
                         try {
                             const channelStats = await fetchChannelStats(tracks[0].channelId);
@@ -4422,8 +4448,7 @@
         let currentPlaylistToAddTo = null;
         let scrollPositions = {};
         const API_BASE = window.location.origin;
-
-        // ============================================================
+                // ============================================================
         // ⏳ LOADING OVERLAY
         // ============================================================
         function showLoading(message) {
@@ -4848,7 +4873,7 @@
                 
                 let html = '';
                 if (artists.length > 0) {
-                    html += `<div class="section-title">Artisti</div>`;
+                    html += `<div class="section-title">🎤 Artisti</div>`;
                     html += artists.map(a => {
                         const safeArtist = a.name.replace(/'/g, "\\'");
                         const verifiedBadge = a.verified ? `<span class="verified-badge"><i class="fas fa-check"></i></span>` : '';
@@ -4862,14 +4887,14 @@
                     }).join('');
                 }
                 if (tracks.length > 0) {
-                    html += `<div class="section-title">Brani</div>`;
+                    html += `<div class="section-title">🎵 Brani</div>`;
                     html += tracks.slice(0, 25).map((t, i) => renderSingleTrackRow(t, i, tracks)).join('');
                 }
-                if (html === '') html = '<p style="color:var(--text-secondary);font-weight:500;">Nessun risultato trovato.</p>';
+                if (html === '') html = '<div class="empty-state"><i class="fas fa-search" style="color:#333;"></i>Nessun risultato trovato per "' + query + '"</div>';
                 container.innerHTML = html;
             } catch(e) {
                 console.error('[Search] Errore:', e);
-                container.innerHTML = '<p style="color:#f15e6c;font-weight:500;">❌ Errore nella ricerca.</p>';
+                container.innerHTML = '<p style="color:#f15e6c;font-weight:500;">❌ Errore nella ricerca. Riprova.</p>';
             }
         }
 
@@ -4985,51 +5010,59 @@
                 // 🔥 CREA UN PLAYER AUDIO HTML5
                 const audio = new Audio();
                 
-                // Se il brano ha un URL audio locale, usalo
-                if (t.audio) {
+                // Se il brano è da YouTube, usa un proxy
+                if (t.isYouTube || t.id?.startsWith('yt_')) {
+                    audio.src = `https://www.youtube.com/watch?v=${t.id}`;
+                } else if (t.audio) {
                     audio.src = t.audio;
                 } else {
-                    // Altrimenti usa un audio di esempio
                     audio.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
                 }
                 
-                // Salva il player nello stato
                 AppState.player = audio;
                 AppState.playerReady = true;
                 
-                // Eventi del player
-                audio.addEventListener('play', () => {
+                const onPlay = () => {
                     AppState.isPlaying = true;
                     updatePlayIcons(true);
                     updateEqualizer(true);
                     startProgressTracker();
-                });
+                };
                 
-                audio.addEventListener('pause', () => {
+                const onPause = () => {
                     AppState.isPlaying = false;
                     updatePlayIcons(false);
                     updateEqualizer(false);
                     clearInterval(progressInterval);
-                });
+                };
                 
-                audio.addEventListener('ended', () => {
+                const onEnded = () => {
                     if (AppState.repeat) {
                         audio.currentTime = 0;
                         audio.play();
                     } else {
                         nextTrack();
                     }
-                });
+                };
                 
-                audio.addEventListener('timeupdate', () => {
+                const onTimeUpdate = () => {
                     const progress = (audio.currentTime / audio.duration) * 100 || 0;
                     document.getElementById('progressBarFill').style.width = Math.min(100, progress) + '%';
                     document.getElementById('currentTime').textContent = formatTime(audio.currentTime);
                     document.getElementById('totalDuration').textContent = formatTime(audio.duration);
-                });
+                };
                 
-                // Avvia la riproduzione
-                audio.play();
+                audio.addEventListener('play', onPlay);
+                audio.addEventListener('pause', onPause);
+                audio.addEventListener('ended', onEnded);
+                audio.addEventListener('timeupdate', onTimeUpdate);
+                
+                audio.play().catch(err => {
+                    console.warn('[Player] Errore play:', err);
+                    showSiriNotification('⚠️ Impossibile riprodurre, uso audio demo');
+                    audio.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+                    audio.play();
+                });
                 
                 // Aggiorna UI
                 if (document.getElementById('playerBar')) document.getElementById('playerBar').style.display = 'flex';
@@ -5041,8 +5074,7 @@
                 if (document.getElementById('fsCover')) document.getElementById('fsCover').src = t.image;
                 if (document.getElementById('canvasBgLayer')) document.getElementById('canvasBgLayer').style.backgroundImage = `url('${t.image}')`;
                 
-                // 🔥 CARICA STATISTICHE VIDEO (se disponibili)
-                if (t.id && !t.id.startsWith('it') && !t.id.startsWith('us') && !t.id.startsWith('ph')) {
+                if (t.id && !t.id.startsWith('it') && !t.id.startsWith('us') && !t.id.startsWith('ph') && !t.id.startsWith('te') && !t.id.startsWith('ro') && !t.id.startsWith('re')) {
                     fetchYoutubeVideoStats(t.id).then(stats => {
                         if (stats) {
                             t.stats = stats;
@@ -5052,7 +5084,6 @@
                         }
                     });
                 } else {
-                    // Per i brani locali, mostra dati fittizi
                     document.getElementById('fsViews').textContent = '1.2M';
                     document.getElementById('fsLikes').textContent = '45K';
                     document.getElementById('fsStatsContainer').style.display = 'flex';
@@ -5065,6 +5096,8 @@
                 addToHistory(t);
                 loadLyricsForCurrentTrack();
                 
+                showSiriNotification(`▶️ ${t.name} - ${t.artist}`);
+                
             } catch(err) { 
                 console.error('[Player] Errore:', err); 
                 showSiriNotification('❌ Errore nella riproduzione');
@@ -5072,7 +5105,7 @@
         }
 
         // ============================================================
-        // ⏯️ TOGGLE PLAY (PER IL NUOVO PLAYER)
+        // ⏯️ TOGGLE PLAY
         // ============================================================
         function togglePlay() {
             if (!AppState.player) return;
@@ -5136,45 +5169,48 @@
                     AppState.player = null;
                 }
                 
-                // 🔥 RIAVVIA CON IL NUOVO BRANO
                 const audio = new Audio();
                 audio.src = t.audio || 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
                 AppState.player = audio;
                 AppState.playerReady = true;
                 
-                audio.addEventListener('play', () => {
+                const onPlay = () => {
                     AppState.isPlaying = true;
                     updatePlayIcons(true);
                     updateEqualizer(true);
                     startProgressTracker();
-                });
+                };
                 
-                audio.addEventListener('pause', () => {
+                const onPause = () => {
                     AppState.isPlaying = false;
                     updatePlayIcons(false);
                     updateEqualizer(false);
                     clearInterval(progressInterval);
-                });
+                };
                 
-                audio.addEventListener('ended', () => {
+                const onEnded = () => {
                     if (AppState.repeat) {
                         audio.currentTime = 0;
                         audio.play();
                     } else {
                         nextTrack();
                     }
-                });
+                };
                 
-                audio.addEventListener('timeupdate', () => {
+                const onTimeUpdate = () => {
                     const progress = (audio.currentTime / audio.duration) * 100 || 0;
                     document.getElementById('progressBarFill').style.width = Math.min(100, progress) + '%';
                     document.getElementById('currentTime').textContent = formatTime(audio.currentTime);
                     document.getElementById('totalDuration').textContent = formatTime(audio.duration);
-                });
+                };
+                
+                audio.addEventListener('play', onPlay);
+                audio.addEventListener('pause', onPause);
+                audio.addEventListener('ended', onEnded);
+                audio.addEventListener('timeupdate', onTimeUpdate);
                 
                 audio.play();
                 
-                // Aggiorna UI
                 if (document.getElementById('playerBar')) document.getElementById('playerBar').style.display = 'flex';
                 if (document.getElementById('playerTitle')) document.getElementById('playerTitle').innerText = t.name;
                 if (document.getElementById('playerArtist')) document.getElementById('playerArtist').innerText = t.artist;
@@ -6088,7 +6124,6 @@
                 console.log('[Home] YouTube fallito, uso brani locali');
             }
             
-            // 🔥 SE YOUTUBE FALLISCE, USA BRANI LOCALI!
             const shuffled = [...LOCAL_TRACKS].sort(() => Math.random() - 0.5);
             renderTracksList(shuffled.slice(0, 15), 'radioTracksContainer', shuffled.slice(0, 15));
         }
