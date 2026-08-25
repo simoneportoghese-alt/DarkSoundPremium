@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -3643,84 +3642,114 @@
         }
 
         // ============ RICERCA AVANZATA CON FILTRO ANTI-SPAZZATURA ============
+        // === MODIFICA: AGGIUNTO TIMEOUT (5 secondi) E RETRY (1 tentativo) ===
         async function searchYoutubeVideos(query, maxResults = 20) {
             if (!query || query.trim().length === 0) {
                 query = 'top hits music';
             }
             
-            try {
-                const response = await fetch(
-                    `${YOUTUBE_API_BASE}/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=${maxResults * 2}&key=${YOUTUBE_API_KEY}`
-                );
-                const data = await response.json();
+            // Funzione interna per eseguire la ricerca con timeout
+            const performSearch = async (searchQuery, attempt = 1) => {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 secondi timeout
                 
-                if (!data.items) return [];
-                
-                const videos = [];
-                const seenIds = new Set();
-                const spamKeywords = [
-                    'reaction', 'reacting', 'reacts', 'reaction video',
-                    'tutorial', 'how to', 'lesson', 'guide',
-                    'cover by', 'cover of', 'karaoke', 'instrumental cover',
-                    'tribute', 'fan made', 'fan cover', 'amateur',
-                    'lyrics', 'lyric video', 'with lyrics', 'text',
-                    'status', 'whatsapp status', 'edit audio',
-                    'soundtrack', 'score', 'background music',
-                    'compilation', 'mix', 'megamix'
-                ];
-                
-                for (const item of data.items) {
-                    const videoId = item.id.videoId;
-                    if (seenIds.has(videoId)) continue;
-                    seenIds.add(videoId);
-                    
-                    const snippet = item.snippet;
-                    const titleLower = snippet.title.toLowerCase();
-                    const channelLower = snippet.channelTitle?.toLowerCase() || '';
-                    
-                    let isSpam = false;
-                    for (const keyword of spamKeywords) {
-                        if (titleLower.includes(keyword) || channelLower.includes(keyword)) {
-                            isSpam = true;
-                            break;
-                        }
-                    }
-                    if (isSpam) continue;
-                    
-                    const { artist, title } = extractArtistAndTitle(
-                        snippet.title,
-                        snippet.channelTitle
+                try {
+                    const response = await fetch(
+                        `${YOUTUBE_API_BASE}/search?part=snippet&q=${encodeURIComponent(searchQuery)}&type=video&maxResults=${maxResults * 2}&key=${YOUTUBE_API_KEY}`,
+                        { signal: controller.signal }
                     );
+                    clearTimeout(timeoutId);
                     
-                    const isOfficial = snippet.channelTitle?.includes('Topic') || 
-                                      snippet.channelTitle?.includes('VEVO') ||
-                                      snippet.channelTitle?.includes('Official') ||
-                                      snippet.channelTitle?.includes('Music');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
                     
-                    videos.push({
-                        id: videoId,
-                        name: title,
-                        artist: artist,
-                        channelTitle: snippet.channelTitle,
-                        channelId: snippet.channelId,
-                        image: snippet.thumbnails.medium?.url || snippet.thumbnails.default?.url || '',
-                        stats: { views: 'N/A', likes: 'N/A' },
-                        rawTitle: snippet.title,
-                        publishedAt: snippet.publishedAt,
-                        verified: isOfficial,
-                        isOfficial: isOfficial
-                    });
+                    const data = await response.json();
+                    
+                    if (!data.items) return [];
+                    
+                    const videos = [];
+                    const seenIds = new Set();
+                    const spamKeywords = [
+                        'reaction', 'reacting', 'reacts', 'reaction video',
+                        'tutorial', 'how to', 'lesson', 'guide',
+                        'cover by', 'cover of', 'karaoke', 'instrumental cover',
+                        'tribute', 'fan made', 'fan cover', 'amateur',
+                        'lyrics', 'lyric video', 'with lyrics', 'text',
+                        'status', 'whatsapp status', 'edit audio',
+                        'soundtrack', 'score', 'background music',
+                        'compilation', 'mix', 'megamix'
+                    ];
+                    
+                    for (const item of data.items) {
+                        const videoId = item.id.videoId;
+                        if (seenIds.has(videoId)) continue;
+                        seenIds.add(videoId);
+                        
+                        const snippet = item.snippet;
+                        const titleLower = snippet.title.toLowerCase();
+                        const channelLower = snippet.channelTitle?.toLowerCase() || '';
+                        
+                        let isSpam = false;
+                        for (const keyword of spamKeywords) {
+                            if (titleLower.includes(keyword) || channelLower.includes(keyword)) {
+                                isSpam = true;
+                                break;
+                            }
+                        }
+                        if (isSpam) continue;
+                        
+                        const { artist, title } = extractArtistAndTitle(
+                            snippet.title,
+                            snippet.channelTitle
+                        );
+                        
+                        const isOfficial = snippet.channelTitle?.includes('Topic') || 
+                                          snippet.channelTitle?.includes('VEVO') ||
+                                          snippet.channelTitle?.includes('Official') ||
+                                          snippet.channelTitle?.includes('Music');
+                        
+                        videos.push({
+                            id: videoId,
+                            name: title,
+                            artist: artist,
+                            channelTitle: snippet.channelTitle,
+                            channelId: snippet.channelId,
+                            image: snippet.thumbnails.medium?.url || snippet.thumbnails.default?.url || '',
+                            stats: { views: 'N/A', likes: 'N/A' },
+                            rawTitle: snippet.title,
+                            publishedAt: snippet.publishedAt,
+                            verified: isOfficial,
+                            isOfficial: isOfficial
+                        });
+                    }
+                    
+                    return videos
+                        .sort((a, b) => {
+                            if (a.isOfficial && !b.isOfficial) return -1;
+                            if (!a.isOfficial && b.isOfficial) return 1;
+                            return 0;
+                        })
+                        .slice(0, maxResults);
+                        
+                } catch (error) {
+                    clearTimeout(timeoutId);
+                    console.error(`[YouTube Search] Tentativo ${attempt} fallito:`, error.message);
+                    
+                    // Se è il primo tentativo e l'errore è di timeout o rete, riprova una volta
+                    if (attempt === 1 && (error.name === 'AbortError' || error.name === 'TypeError' || error.message.includes('fetch'))) {
+                        console.log(`[YouTube Search] Riprovo... (tentativo 2)`);
+                        return performSearch(searchQuery, 2);
+                    }
+                    
+                    return [];
                 }
-                
-                return videos
-                    .sort((a, b) => {
-                        if (a.isOfficial && !b.isOfficial) return -1;
-                        if (!a.isOfficial && b.isOfficial) return 1;
-                        return 0;
-                    })
-                    .slice(0, maxResults);
+            };
+            
+            try {
+                return await performSearch(query);
             } catch (error) {
-                console.error('[YouTube Search] Errore:', error);
+                console.error('[YouTube Search] Errore finale:', error);
                 return [];
             }
         }
@@ -4270,10 +4299,8 @@
         }
 
         // ============ FUNZIONE PER APRIRE ARTISTA DAL PLAYER ============
-        // Questa funzione chiude il fullscreen, mostra la barra player e apre la pagina artista
         function openArtistFromPlayer() {
             if (AppState.currentTrack && AppState.currentTrack.artist) {
-                // Chiudi il fullscreen se è aperto
                 const fs = document.getElementById('fullscreen-player');
                 const overlay = document.getElementById('fsOverlay');
                 if (fs.classList.contains('active')) {
@@ -4288,12 +4315,8 @@
                     }, 300);
                 }
                 
-                // Assicurati che la barra player sia visibile
                 document.getElementById('playerBar').style.display = 'flex';
-                
-                // Apri la pagina dell'artista
                 openArtistPage(AppState.currentTrack.artist);
-                
                 showSiriNotification(`🎤 Apertura profilo di ${AppState.currentTrack.artist}...`);
             }
         }
