@@ -1,5 +1,5 @@
 {
-  "name": "darksound-premium",
+  "name": "darksound-pro",
   "version": "1.0.0",
   "description": "DarkSound Pro - Ultimate Edition",
   "main": "server.js",
@@ -11,8 +11,5 @@
     "cors": "^2.8.5",
     "ytdl-core": "^4.11.5",
     "ytsr": "^3.5.3"
-  },
-  "engines": {
-    "node": ">=16.0.0"
   }
 }
