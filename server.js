@@ -35,14 +35,12 @@ app.use(express.static(publicPath));
 // ============ CACHE RICERCHE ============
 const searchCache = new Map();
 
-// ============ ROTTA HEALTH CHECK (CON HEADER PER RAILWAY) ============
+// ============ ROTTA HEALTH CHECK (PRIMA DI TUTTO) ============
 app.get('/health', (req, res) => {
-    // Header specifici per Railway
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
-    
     res.status(200).json({ 
         status: 'ok', 
         uptime: Math.floor(process.uptime()),
