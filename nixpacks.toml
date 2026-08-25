@@ -6,3 +6,11 @@ cmds = ["npm install"]
 
 [start]
 cmd = "node server.js"
+
+[metrics]
+cpuTarget = 0.5
+memTarget = 0.5
+
+# Disabilita health check
+[healthcheck]
+enabled = false
