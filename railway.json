@@ -13,6 +13,6 @@
       "policy": "always",
       "maxRetries": 10
     },
-    "startupDelay": 10
+    "startupDelay": 15
   }
 }
