@@ -24,7 +24,7 @@ process.on('unhandledRejection', (err) => {
 app.use(cors());
 app.use(express.json());
 
-// ============ VERIFICA CARTELLA PUBLIC ============
+// ============ SERVI FILE STATICI (PRIMA DI TUTTO) ============
 const publicPath = path.join(__dirname, 'public');
 if (!fs.existsSync(publicPath)) {
     console.error(`[${INSTANCE_ID}] ❌ Cartella "public" non trovata! Creazione...`);
@@ -38,7 +38,7 @@ app.use(express.static(publicPath));
 // ============ CACHE RICERCHE ============
 const searchCache = new Map();
 
-// ============ ROTTA HEALTH CHECK (RISPOSTA IMMEDIATA) ============
+// ============ ROTTA HEALTH CHECK (MOLTO VELOCE) ============
 app.get('/health', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -46,8 +46,7 @@ app.get('/health', (req, res) => {
         status: 'ok', 
         instance: INSTANCE_ID,
         uptime: Math.floor(process.uptime()),
-        timestamp: new Date().toISOString(),
-        pid: process.pid
+        timestamp: new Date().toISOString()
     });
 });
 
@@ -66,16 +65,8 @@ app.get('/manifest.json', (req, res) => {
             background_color: "#000000",
             theme_color: "#30d158",
             icons: [
-                {
-                    src: "https://picsum.photos/192",
-                    sizes: "192x192",
-                    type: "image/png"
-                },
-                {
-                    src: "https://picsum.photos/512",
-                    sizes: "512x512",
-                    type: "image/png"
-                }
+                { src: "https://picsum.photos/192", sizes: "192x192", type: "image/png" },
+                { src: "https://picsum.photos/512", sizes: "512x512", type: "image/png" }
             ]
         });
     }
@@ -153,13 +144,9 @@ app.use((req, res) => {
     res.status(404).json({ error: 'Rotta non trovata' });
 });
 
-// ============ AVVIO SERVER ============
+// ============ AVVIO SERVER (IMMEDIATO) ============
 const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`[${INSTANCE_ID}] ✅ Server DarkSound in esecuzione su http://0.0.0.0:${PORT}`);
-    console.log(`[${INSTANCE_ID}] 🕐 Avviato il: ${new Date().toISOString()}`);
-    console.log(`[${INSTANCE_ID}] 📁 Directory: ${__dirname}`);
-    console.log(`[${INSTANCE_ID}] 📄 Public path: ${publicPath}`);
-    console.log(`[${INSTANCE_ID}] 🔍 Health check disponibile su /health`);
     console.log(`[${INSTANCE_ID}] 🆔 Instance ID: ${INSTANCE_ID}`);
 });
 
