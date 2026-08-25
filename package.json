@@ -1,15 +1,9 @@
 {
-  "name": "darksound-pro",
-  "version": "3.0.0",
-  "description": "DarkSound Pro - Ultimate Music Experience",
-  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node proxy.js"
   },
   "dependencies": {
-    "express": "^4.18.2"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "express": "^4.18.2",
+    "node-fetch": "^2.6.7"
   }
 }
