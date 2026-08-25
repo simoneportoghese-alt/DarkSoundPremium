@@ -18,15 +18,34 @@ process.on('unhandledRejection', (err) => {
 // ============ MIDDLEWARE ============
 app.use(cors());
 app.use(express.json());
+
+// ============ STATIC FILES ============
+// Assicurati che la cartella public esista
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ============ CACHE ============
 const searchCache = new Map();
 
+// ============ ROTTA HEALTH CHECK (OBLIGATORIA) ============
+app.get('/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'ok', 
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString()
+    });
+});
+
+// ============ ROTTA PRINCIPALE ============
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // ============ ROTTA RICERCA ============
 app.get('/api/search', async (req, res) => {
     const query = req.query.q;
-    if (!query) return res.json([]);
+    if (!query) {
+        return res.status(400).json({ error: 'Query mancante' });
+    }
     
     const cacheKey = query.toLowerCase();
     if (searchCache.has(cacheKey)) {
@@ -37,7 +56,14 @@ app.get('/api/search', async (req, res) => {
     }
     
     try {
-        const searchResults = await ytsr(query, { limit: 20 });
+        // Timeout per la ricerca (5 secondi)
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Timeout ricerca')), 5000);
+        });
+        
+        const searchPromise = ytsr(query, { limit: 20 });
+        const searchResults = await Promise.race([searchPromise, timeoutPromise]);
+        
         const tracks = searchResults.items
             .filter(item => item.type === 'video')
             .map(item => ({
@@ -56,22 +82,16 @@ app.get('/api/search', async (req, res) => {
         res.json(tracks);
     } catch (error) {
         console.error('❌ Errore ricerca:', error.message);
-        res.status(500).json({ error: 'Errore nella ricerca', message: error.message });
+        res.status(500).json({ 
+            error: 'Errore nella ricerca', 
+            message: error.message 
+        });
     }
 });
 
-// ============ ROTTA STATO / HEALTH CHECK ============
-app.get('/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'ok', 
-        uptime: process.uptime(),
-        timestamp: new Date().toISOString()
-    });
-});
-
-// ============ ROTTA PRINCIPALE ============
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// ============ ROTTA FALLBACK ============
+app.use((req, res) => {
+    res.status(404).json({ error: 'Rotta non trovata' });
 });
 
 // ============ AVVIO SERVER ============
@@ -82,24 +102,25 @@ const server = app.listen(PORT, '0.0.0.0', () => {
 });
 
 // ============ KEEP-ALIVE PER RAILWAY ============
-// Invia un ping ogni 60 secondi per mantenere il container attivo
+// Invia un ping ogni 30 secondi per mantenere il container attivo
 setInterval(() => {
     console.log(`💓 Keep-alive ping: ${new Date().toISOString()} | Uptime: ${Math.floor(process.uptime())}s`);
-}, 60000);
+}, 30000);
 
-// ============ GESTIONE CHIUSURA ============
-process.on('SIGTERM', () => {
-    console.log('🛑 SIGTERM ricevuto, chiusura server...');
+// ============ GESTIONE CHIUSURA GENTILE ============
+const gracefulShutdown = () => {
+    console.log('🛑 Ricevuto segnale di chiusura, chiusura server...');
     server.close(() => {
         console.log('✅ Server chiuso correttamente');
         process.exit(0);
     });
-});
+    
+    // Forza la chiusura dopo 5 secondi se il server non si chiude
+    setTimeout(() => {
+        console.error('❌ Chiusura forzata dopo timeout');
+        process.exit(1);
+    }, 5000);
+};
 
-process.on('SIGINT', () => {
-    console.log('🛑 SIGINT ricevuto, chiusura server...');
-    server.close(() => {
-        console.log('✅ Server chiuso correttamente');
-        process.exit(0);
-    });
-});
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
