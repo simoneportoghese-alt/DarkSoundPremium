@@ -57,7 +57,7 @@
             --glow-intensity: 0.3;
         }
 
-        /* ============ TEMA SPOTIFY ORIGINALE ============ */
+        /* ============ TEMA SPOTIFY ORIGINALE MIGLIORATO ============ */
         [data-theme="spotify"] {
             --spotify-green: #1db954;
             --spotify-green-hover: #1ed760;
@@ -3163,6 +3163,7 @@
         <div class="fs-content" id="standardPlayerView">
             <img id="fsCover" class="fs-cover" src="">
             <h3 class="fs-title" id="fsTitle">-</h3>
+            <!-- CLICCANDO SU .fs-artist SI APRE LA PAGINA ARTISTA E SI CHIUDE IL FULLSCREEN -->
             <p class="fs-artist" id="fsArtist" onclick="openArtistFromPlayer()">-</p>
             <div class="fs-stats" id="fsStatsContainer">
                 <span><i class="fas fa-eye"></i> <span id="fsViews">-</span></span>
@@ -3218,6 +3219,7 @@
         </div>
         <div class="player-meta">
             <div class="p-title" id="playerTitle">-</div>
+            <!-- CLICCANDO SU .p-artist SI APRE LA PAGINA ARTISTA -->
             <div class="p-artist" id="playerArtist" onclick="openArtistFromPlayer()">-</div>
         </div>
         <div class="player-icons" onclick="event.stopPropagation()">
@@ -3417,71 +3419,18 @@
             <button class="btn-secondary" onclick="closeModal('add-to-playlist-modal')">Chiudi</button>
         </div>
     </div>
-
-    <script src="https://www.youtube.com/iframe_api"></script>
+        <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        // ============================================================
-        // 🎵 DATABASE LOCALE DI BRANI (BACKUP SE YOUTUBE NON FUNZIONA)
-        // ============================================================
-        const LOCAL_TRACKS = [
-            // 🇮🇹 ITALIA - Trap/Rap
-            { id: 'it1', name: 'Karma', artist: 'Geolier', image: 'https://picsum.photos/seed/geolier/100' },
-            { id: 'it2', name: 'Senza cuore', artist: 'Geolier', image: 'https://picsum.photos/seed/geolier2/100' },
-            { id: 'it3', name: 'Mille Volte', artist: 'Lazza', image: 'https://picsum.photos/seed/lazza/100' },
-            { id: 'it4', name: 'Cenere', artist: 'Lazza', image: 'https://picsum.photos/seed/lazza2/100' },
-            { id: 'it5', name: 'Gelato', artist: 'Sfera Ebbasta', image: 'https://picsum.photos/seed/sfera/100' },
-            { id: 'it6', name: 'Tesla', artist: 'Sfera Ebbasta', image: 'https://picsum.photos/seed/sfera2/100' },
-            { id: 'it7', name: 'Take It Easy', artist: 'Shiva', image: 'https://picsum.photos/seed/shiva/100' },
-            { id: 'it8', name: 'Meglio Di Te', artist: 'Shiva', image: 'https://picsum.photos/seed/shiva2/100' },
-            { id: 'it9', name: 'Tatuaggi', artist: 'Kid Yugi', image: 'https://picsum.photos/seed/kid/100' },
-            { id: 'it10', name: 'Luna Piena', artist: 'Kid Yugi', image: 'https://picsum.photos/seed/kid2/100' },
-            
-            // 🇺🇸 USA - Hip Hop
-            { id: 'us1', name: 'FE!N', artist: 'Travis Scott', image: 'https://picsum.photos/seed/travis/100' },
-            { id: 'us2', name: 'MELTDOWN', artist: 'Travis Scott', image: 'https://picsum.photos/seed/travis2/100' },
-            { id: 'us3', name: 'SICKO MODE', artist: 'Travis Scott', image: 'https://picsum.photos/seed/travis3/100' },
-            { id: 'us4', name: 'HUMBLE.', artist: 'Kendrick Lamar', image: 'https://picsum.photos/seed/kendrick/100' },
-            { id: 'us5', name: 'All The Stars', artist: 'Kendrick Lamar', image: 'https://picsum.photos/seed/kendrick2/100' },
-            { id: 'us6', name: 'Without Me', artist: 'Eminem', image: 'https://picsum.photos/seed/eminem/100' },
-            { id: 'us7', name: 'Lose Yourself', artist: 'Eminem', image: 'https://picsum.photos/seed/eminem2/100' },
-            { id: 'us8', name: 'Blinding Lights', artist: 'The Weeknd', image: 'https://picsum.photos/seed/weeknd/100' },
-            { id: 'us9', name: 'Starboy', artist: 'The Weeknd', image: 'https://picsum.photos/seed/weeknd2/100' },
-            
-            // 🔊 PHONK
-            { id: 'ph1', name: 'METAMORPHOSIS', artist: 'INTERWORLD', image: 'https://picsum.photos/seed/phonk1/100' },
-            { id: 'ph2', name: 'PHONKY TOWN', artist: 'PlayaPhonk', image: 'https://picsum.photos/seed/phonk2/100' },
-            { id: 'ph3', name: 'RAVE', artist: 'Dxrk', image: 'https://picsum.photos/seed/phonk3/100' },
-            { id: 'ph4', name: 'SCARFACE', artist: 'Hensonn', image: 'https://picsum.photos/seed/phonk4/100' },
-            
-            // 🎧 TECHNO
-            { id: 'te1', name: 'Sandstorm', artist: 'Darude', image: 'https://picsum.photos/seed/techno1/100' },
-            { id: 'te2', name: 'Levels', artist: 'Avicii', image: 'https://picsum.photos/seed/techno2/100' },
-            { id: 'te3', name: 'Animals', artist: 'Martin Garrix', image: 'https://picsum.photos/seed/techno3/100' },
-            { id: 'te4', name: 'Titanium', artist: 'David Guetta', image: 'https://picsum.photos/seed/techno4/100' },
-            
-            // 🎸 ROCK
-            { id: 'ro1', name: 'Bohemian Rhapsody', artist: 'Queen', image: 'https://picsum.photos/seed/rock1/100' },
-            { id: 'ro2', name: 'Smells Like Teen Spirit', artist: 'Nirvana', image: 'https://picsum.photos/seed/rock2/100' },
-            { id: 'ro3', name: 'Back In Black', artist: 'AC/DC', image: 'https://picsum.photos/seed/rock3/100' },
-            
-            // 🌴 REGGAETON
-            { id: 're1', name: 'Despacito', artist: 'Luis Fonsi', image: 'https://picsum.photos/seed/reggaeton1/100' },
-            { id: 're2', name: 'Dákiti', artist: 'Bad Bunny', image: 'https://picsum.photos/seed/reggaeton2/100' },
-            { id: 're3', name: 'Tití Me Preguntó', artist: 'Bad Bunny', image: 'https://picsum.photos/seed/reggaeton3/100' },
-        ];
-
-        // ============================================================
-        // 🔑 CONFIGURAZIONE API YOUTUBE
-        // ============================================================
-        const YOUTUBE_API_KEY = 'AIzaSyB7NTILkaZE7RDC5YBWyJw9N6q5ASGIhlk';
+        // ============ CHIAVE API YOUTUBE ============
+        const YOUTUBE_API_KEY = 'AIzaSyDOh8sQF9HyE74x2xq9cg4gZZw9ajnNp4g';
         const YOUTUBE_API_BASE = 'https://www.googleapis.com/youtube/v3';
 
-        // ============================================================
-        // 🛠️ FUNZIONI DI SUPPORTO
-        // ============================================================
+        // ============ PULIZIA RIGOROSA TITOLI E ARTISTI ============
         function cleanYouTubeTitle(title) {
             if (!title) return 'Titolo sconosciuto';
+            
             let cleaned = title;
+            
             const patternsToRemove = [
                 /\[Official\s*(Music\s*)?Video\]/gi,
                 /\[Official\s*Audio\]/gi,
@@ -3524,20 +3473,26 @@
                 /\s*-\s*$/,
                 /\s{2,}/g
             ];
+            
             for (const pattern of patternsToRemove) {
                 cleaned = cleaned.replace(pattern, '');
             }
+            
             cleaned = cleaned.replace(/\(\s*\)/g, '').trim();
             cleaned = cleaned.replace(/\[\s*\]/g, '').trim();
             cleaned = cleaned.replace(/^[^a-zA-Z0-9]+/, '').trim();
             cleaned = cleaned.replace(/[^a-zA-Z0-9]+$/, '').trim();
             cleaned = cleaned.replace(/\s{2,}/g, ' ').trim();
+            
             return cleaned || 'Titolo sconosciuto';
         }
 
+        // ============ PULIZIA RIGOROSA NOME ARTISTA ============
         function cleanArtistName(name) {
             if (!name) return 'Artista sconosciuto';
+            
             let cleaned = name;
+            
             const suffixes = [
                 /\s*-\s*Topic$/i,
                 /\s*-\s*VEVO$/i,
@@ -3556,21 +3511,26 @@
                 /\s*Team$/i,
                 /\s*Network$/i
             ];
+            
             for (const suffix of suffixes) {
                 cleaned = cleaned.replace(suffix, '');
             }
+            
             cleaned = cleaned.replace(/\([^)]*\)/g, '').trim();
             cleaned = cleaned.replace(/\[[^\]]*\]/g, '').trim();
             cleaned = cleaned.replace(/\s{2,}/g, ' ').trim();
             cleaned = cleaned.replace(/^[^a-zA-Z0-9]+/, '').trim();
             cleaned = cleaned.replace(/[^a-zA-Z0-9]+$/, '').trim();
+            
             return cleaned || 'Artista sconosciuto';
         }
 
+        // ============ FUNZIONE PER ESTRARRE ARTISTA E TITOLO CON PULIZIA ============
         function extractArtistAndTitle(originalTitle, channelTitle) {
             let cleaned = cleanYouTubeTitle(originalTitle);
             let artist = cleanArtistName(channelTitle || 'Artista sconosciuto');
             let title = cleaned;
+            
             const dashMatch = cleaned.match(/^(.+?)\s*[-–—]\s*(.+)$/);
             if (dashMatch) {
                 artist = cleanArtistName(dashMatch[1].trim());
@@ -3595,6 +3555,7 @@
                     }
                 }
             }
+            
             const versionPatterns = [
                 /\(Slowed\s*\+\s*Reverb\)/gi,
                 /\(Slowed\)/gi,
@@ -3605,6 +3566,7 @@
                 /\(8D\s*Audio\)/gi,
                 /\(Remix\)/gi
             ];
+            
             const versions = [];
             for (const pattern of versionPatterns) {
                 const match = title.match(pattern);
@@ -3613,17 +3575,41 @@
                     title = title.replace(pattern, '');
                 }
             }
+            
             title = title.replace(/\([^)]*\)/g, '').trim();
             title = title.replace(/\[[^\]]*\]/g, '').trim();
             title = title.replace(/\s{2,}/g, ' ').trim();
+            
             if (!title) title = cleaned;
+            
             if (versions.length > 0) {
                 title = title + ' ' + versions.join(' ');
             }
+            
             artist = cleanArtistName(artist);
+            
             return { artist, title };
         }
 
+        // ============ FUNZIONE PER VERIFICARE CANALE UFFICIALE ============
+        async function checkChannelVerification(channelId) {
+            if (!channelId) return false;
+            try {
+                const response = await fetch(
+                    `${YOUTUBE_API_BASE}/channels?part=snippet&id=${channelId}&key=${YOUTUBE_API_KEY}`
+                );
+                const data = await response.json();
+                if (data.items && data.items.length > 0) {
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('[Verification] Errore:', error);
+                return false;
+            }
+        }
+
+        // ============ FUNZIONE PER FORMATTARE NUMERI ============
         function formatNumber(num) {
             if (num === undefined || num === null) return 'N/A';
             if (num >= 1000000000) return (num / 1000000000).toFixed(1) + 'B';
@@ -3632,35 +3618,42 @@
             return num.toString();
         }
 
-        // ============================================================
-        // 🎵 RICERCA BRANI SU YOUTUBE
-        // ============================================================
+        // ============ FUNZIONE PER RECUPERARE STATISTICHE VIDEO ============
+        async function fetchYoutubeVideoStats(videoId) {
+            if (!videoId) return null;
+            try {
+                const response = await fetch(
+                    `${YOUTUBE_API_BASE}/videos?part=statistics&id=${videoId}&key=${YOUTUBE_API_KEY}`
+                );
+                const data = await response.json();
+                if (data.items && data.items.length > 0) {
+                    const stats = data.items[0].statistics;
+                    return {
+                        views: stats.viewCount ? formatNumber(parseInt(stats.viewCount)) : 'N/A',
+                        likes: stats.likeCount ? formatNumber(parseInt(stats.likeCount)) : 'N/A',
+                        comments: stats.commentCount ? formatNumber(parseInt(stats.commentCount)) : 'N/A'
+                    };
+                }
+                return null;
+            } catch (error) {
+                console.error('[YouTube Stats] Errore:', error);
+                return null;
+            }
+        }
+
+        // ============ RICERCA AVANZATA CON FILTRO ANTI-SPAZZATURA ============
         async function searchYoutubeVideos(query, maxResults = 20) {
             if (!query || query.trim().length === 0) {
                 query = 'top hits music';
             }
             
             try {
-                console.log('[YouTube] Ricerca:', query);
-                
                 const response = await fetch(
                     `${YOUTUBE_API_BASE}/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=${maxResults * 2}&key=${YOUTUBE_API_KEY}`
                 );
-                
-                console.log('[YouTube] Status:', response.status);
-                
-                if (!response.ok) {
-                    console.error('[YouTube] Errore HTTP:', response.status);
-                    return getLocalTracks(query, maxResults);
-                }
-                
                 const data = await response.json();
-                console.log('[YouTube] Risultati:', data.items?.length || 0);
                 
-                if (!data.items || data.items.length === 0) {
-                    console.log('[YouTube] Nessun risultato, uso locali');
-                    return getLocalTracks(query, maxResults);
-                }
+                if (!data.items) return [];
                 
                 const videos = [];
                 const seenIds = new Set();
@@ -3714,155 +3707,24 @@
                         rawTitle: snippet.title,
                         publishedAt: snippet.publishedAt,
                         verified: isOfficial,
-                        isOfficial: isOfficial,
-                        isYouTube: true
+                        isOfficial: isOfficial
                     });
                 }
                 
-                if (videos.length === 0) {
-                    console.log('[YouTube] Nessun video valido, uso locali');
-                    return getLocalTracks(query, maxResults);
-                }
-                
-                const sorted = videos
+                return videos
                     .sort((a, b) => {
                         if (a.isOfficial && !b.isOfficial) return -1;
                         if (!a.isOfficial && b.isOfficial) return 1;
                         return 0;
                     })
                     .slice(0, maxResults);
-                
-                console.log('[YouTube] Trovati:', sorted.length, 'brani');
-                return sorted;
-                
             } catch (error) {
-                console.error('[YouTube] Errore:', error.message);
-                return getLocalTracks(query, maxResults);
+                console.error('[YouTube Search] Errore:', error);
+                return [];
             }
         }
 
-        // ============================================================
-        // 📦 FUNZIONE PER BRANI LOCALI (BACKUP)
-        // ============================================================
-        function getLocalTracks(query, maxResults = 20) {
-            console.log('[Local] Ricerca:', query);
-            
-            if (!query || query.trim().length === 0) {
-                const shuffled = [...LOCAL_TRACKS].sort(() => Math.random() - 0.5);
-                return shuffled.slice(0, maxResults);
-            }
-            
-            const q = query.toLowerCase();
-            let results = LOCAL_TRACKS.filter(t => 
-                t.name.toLowerCase().includes(q) || 
-                t.artist.toLowerCase().includes(q)
-            );
-            
-            if (results.length === 0) {
-                const shuffled = [...LOCAL_TRACKS].sort(() => Math.random() - 0.5);
-                results = shuffled.slice(0, maxResults);
-            }
-            
-            console.log('[Local] Trovati:', results.length, 'brani');
-            return results.slice(0, maxResults);
-        }
-
-        // ============================================================
-        // 👁️ STATISTICHE VIDEO (views, likes)
-        // ============================================================
-        async function fetchYoutubeVideoStats(videoId) {
-            if (!videoId) return null;
-            try {
-                const response = await fetch(
-                    `${YOUTUBE_API_BASE}/videos?part=statistics&id=${videoId}&key=${YOUTUBE_API_KEY}`
-                );
-                const data = await response.json();
-                if (data.items && data.items.length > 0) {
-                    const stats = data.items[0].statistics;
-                    return {
-                        views: formatNumber(parseInt(stats.viewCount || 0)),
-                        likes: formatNumber(parseInt(stats.likeCount || 0)),
-                        comments: formatNumber(parseInt(stats.commentCount || 0))
-                    };
-                }
-                return null;
-            } catch (error) {
-                console.error('[YouTube Stats] Errore:', error);
-                return null;
-            }
-        }
-
-        // ============================================================
-        // 👥 FOLLOWER ARTISTI (subscribers del canale)
-        // ============================================================
-        async function fetchChannelStats(channelId) {
-            if (!channelId) return null;
-            try {
-                const response = await fetch(
-                    `${YOUTUBE_API_BASE}/channels?part=statistics&id=${channelId}&key=${YOUTUBE_API_KEY}`
-                );
-                const data = await response.json();
-                if (data.items && data.items.length > 0) {
-                    const stats = data.items[0].statistics;
-                    return {
-                        subscribers: formatNumber(parseInt(stats.subscriberCount || 0)),
-                        views: formatNumber(parseInt(stats.viewCount || 0)),
-                        videos: formatNumber(parseInt(stats.videoCount || 0))
-                    };
-                }
-                return null;
-            } catch (error) {
-                console.error('[Channel Stats] Errore:', error);
-                return null;
-            }
-        }
-
-        // ============================================================
-        // 📝 TESTI CANZONI (LRC API - GRATUITA)
-        // ============================================================
-        async function fetchLyrics(trackName, artistName) {
-            try {
-                const response = await fetch(
-                    `https://lrclib.net/api/search?track_name=${encodeURIComponent(trackName)}&artist_name=${encodeURIComponent(artistName)}`
-                );
-                const data = await response.json();
-                if (data && data.length > 0) {
-                    const match = data.find(i => i.syncedLyrics) || data[0];
-                    return {
-                        synced: match.syncedLyrics || null,
-                        plain: match.plainLyrics || null
-                    };
-                }
-                return null;
-            } catch (error) {
-                console.error('[Lyrics] Errore:', error);
-                return null;
-            }
-        }
-
-        // ============================================================
-        // 🔍 FUNZIONE PER VERIFICARE CANALE UFFICIALE
-        // ============================================================
-        async function checkChannelVerification(channelId) {
-            if (!channelId) return false;
-            try {
-                const response = await fetch(
-                    `${YOUTUBE_API_BASE}/channels?part=snippet&id=${channelId}&key=${YOUTUBE_API_KEY}`
-                );
-                const data = await response.json();
-                if (data.items && data.items.length > 0) {
-                    return true;
-                }
-                return false;
-            } catch (error) {
-                console.error('[Verification] Errore:', error);
-                return false;
-            }
-        }
-
-        // ============================================================
-        // 🎵 FUNZIONE PER RICERCA ARTISTA ESPANSA
-        // ============================================================
+        // ============ FUNZIONE PER RICERCA ARTISTA ESPANSA ============
         async function searchArtistExpanded(artistName) {
             if (!artistName) return [];
             
@@ -3902,9 +3764,7 @@
             }
         }
 
-        // ============================================================
-        // 👥 FUNZIONE PER RECUPERARE ARTISTI SIMILI
-        // ============================================================
+        // ============ FUNZIONE PER RECUPERARE ARTISTI SIMILI ============
         async function getSimilarArtists(artistName) {
             try {
                 const results = await searchYoutubeVideos(`${artistName} similar artists`, 10);
@@ -3923,9 +3783,7 @@
             }
         }
 
-        // ============================================================
-        // 💾 INDEXEDDB PER DOWNLOAD OFFLINE
-        // ============================================================
+        // ============ INDEXEDDB PER DOWNLOAD OFFLINE ============
         const DB_NAME = 'DarkSoundOfflineDB';
         const DB_VERSION = 1;
         const STORE_NAME = 'downloadedTracks';
@@ -4034,9 +3892,7 @@
             }
         }
 
-        // ============================================================
-        // 📥 FUNZIONE PER SCARICARE E SALVARE IN INDEXEDDB
-        // ============================================================
+        // ============ FUNZIONE PER SCARICARE E SALVARE IN INDEXEDDB ============
         async function downloadAndSaveTrack(track) {
             if (!track || !track.id) return false;
             
@@ -4049,7 +3905,19 @@
                 
                 showSiriNotification(`⬇️ Download di "${track.name}"...`);
                 
-                const audioBlob = new Blob(['Dummy audio data'], { type: 'audio/mpeg' });
+                const audioUrl = `https://www.youtube.com/watch?v=${track.id}`;
+                const response = await fetch(`https://www.youtube.com/watch?v=${track.id}`, {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                    }
+                });
+                
+                const audioResponse = await fetch(
+                    `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://www.youtube.com/watch?v=${track.id}`)}`
+                );
+                
+                const html = await audioResponse.text();
+                const audioBlob = new Blob([html], { type: 'audio/mpeg' });
                 
                 await saveTrackToIndexedDB(track, audioBlob);
                 await updateDownloadedList();
@@ -4063,9 +3931,7 @@
             }
         }
 
-        // ============================================================
-        // ▶️ FUNZIONE PER RIPRODURRE DA INDEXEDDB
-        // ============================================================
+        // ============ FUNZIONE PER RIPRODURRE DA INDEXEDDB ============
         async function playFromIndexedDB(trackId) {
             try {
                 const trackData = await getTrackFromIndexedDB(trackId);
@@ -4094,9 +3960,7 @@
             }
         }
 
-        // ============================================================
-        // 🎵 FUNZIONE PER RIPRODURRE BRANO OFFLINE
-        // ============================================================
+        // ============ FUNZIONE PER RIPRODURRE BRANO OFFLINE ============
         function playOfflineTrack(track) {
             const audio = new Audio(track.audioUrl);
             
@@ -4141,9 +4005,7 @@
             showSiriNotification(`▶️ Riproduco offline: ${track.name} - ${track.artist}`);
         }
 
-        // ============================================================
-        // 🔄 FUNZIONE PER TOGGLIERE DOWNLOAD
-        // ============================================================
+        // ============ FUNZIONE PER TOGGLIERE DOWNLOAD ============
         async function toggleDownloadTrack(track) {
             if (!track || !track.id) return;
             
@@ -4160,9 +4022,7 @@
             }
         }
 
-        // ============================================================
-        // 📋 FUNZIONE PER AGGIORNARE LISTA DOWNLOAD
-        // ============================================================
+        // ============ FUNZIONE PER AGGIORNARE LISTA DOWNLOAD ============
         async function updateDownloadedList() {
             const downloaded = await getAllDownloadedTracks();
             const downloadsList = document.getElementById('downloadsList');
@@ -4202,9 +4062,7 @@
             }
         }
 
-        // ============================================================
-        // 🎤 FUNZIONI PER LA PAGINA ARTISTA
-        // ============================================================
+        // ============ FUNZIONI PER LA PAGINA ARTISTA ============
         let currentArtistPage = '';
         let currentArtistTracks = [];
         let currentArtistVerified = false;
@@ -4248,12 +4106,24 @@
                     );
                     document.getElementById('artistLikedCount').textContent = likedByArtist.length;
                     
+                    if (tracks[0] && tracks[0].id) {
+                        const stats = await fetchYoutubeVideoStats(tracks[0].id);
+                        if (stats && stats.views && stats.views !== 'N/A') {
+                            document.getElementById('artistMonthlyListeners').textContent = stats.views + ' ascoltatori mensili';
+                        }
+                    }
+                    
                     if (tracks[0] && tracks[0].channelId) {
                         try {
-                            const channelStats = await fetchChannelStats(tracks[0].channelId);
-                            if (channelStats) {
-                                document.getElementById('artistFollowCount').textContent = channelStats.subscribers + ' follower';
-                                document.getElementById('artistMonthlyListeners').textContent = channelStats.views + ' visualizzazioni totali';
+                            const channelResponse = await fetch(
+                                `${YOUTUBE_API_BASE}/channels?part=statistics&id=${tracks[0].channelId}&key=${YOUTUBE_API_KEY}`
+                            );
+                            const channelData = await channelResponse.json();
+                            if (channelData.items && channelData.items.length > 0) {
+                                const subs = channelData.items[0].statistics.subscriberCount;
+                                if (subs) {
+                                    document.getElementById('artistFollowCount').textContent = formatNumber(parseInt(subs)) + ' follower';
+                                }
                             }
                         } catch (e) {
                             console.error('[Artist Followers] Errore:', e);
@@ -4398,11 +4268,11 @@
             }
         }
 
-        // ============================================================
-        // 🎵 FUNZIONE PER APRIRE ARTISTA DAL PLAYER
-        // ============================================================
+        // ============ FUNZIONE PER APRIRE ARTISTA DAL PLAYER ============
+        // Questa funzione chiude il fullscreen, mostra la barra player e apre la pagina artista
         function openArtistFromPlayer() {
             if (AppState.currentTrack && AppState.currentTrack.artist) {
+                // Chiudi il fullscreen se è aperto
                 const fs = document.getElementById('fullscreen-player');
                 const overlay = document.getElementById('fsOverlay');
                 if (fs.classList.contains('active')) {
@@ -4417,15 +4287,17 @@
                     }, 300);
                 }
                 
+                // Assicurati che la barra player sia visibile
                 document.getElementById('playerBar').style.display = 'flex';
+                
+                // Apri la pagina dell'artista
                 openArtistPage(AppState.currentTrack.artist);
+                
                 showSiriNotification(`🎤 Apertura profilo di ${AppState.currentTrack.artist}...`);
             }
         }
 
-        // ============================================================
-        // 📦 VARIABILI GLOBALI
-        // ============================================================
+        // ============ VARIABILI GLOBALI ============
         let currentUser = localStorage.getItem('darksound_current_user') || null;
         let userProfile = JSON.parse(localStorage.getItem(currentUser ? `profile_${currentUser}` : 'darksound_profile') || 'null');
         let userPreferences = JSON.parse(localStorage.getItem(currentUser ? `prefs_${currentUser}` : 'darksound_prefs') || 'null');
@@ -4448,9 +4320,8 @@
         let currentPlaylistToAddTo = null;
         let scrollPositions = {};
         const API_BASE = window.location.origin;
-                // ============================================================
-        // ⏳ LOADING OVERLAY
-        // ============================================================
+
+        // ============ LOADING OVERLAY ============
         function showLoading(message) {
             const overlay = document.getElementById('loadingOverlay');
             const text = document.getElementById('loadingText');
@@ -4476,9 +4347,7 @@
             }
         }
 
-        // ============================================================
-        // 🎨 FUNZIONE CAMBIO TEMA
-        // ============================================================
+        // ============ FUNZIONE CAMBIO TEMA ============
         function changeTheme(themeColor) {
             document.body.setAttribute('data-theme', themeColor);
             localStorage.setItem('darksound_theme', themeColor);
@@ -4493,9 +4362,7 @@
             changeTheme(savedTheme);
         }
 
-        // ============================================================
-        // 🧭 NAVIGAZIONE
-        // ============================================================
+        // ============ NAVIGAZIONE ============
         function switchView(viewName, btnElement) {
             const currentActiveView = document.querySelector('.view.active');
             if (currentActiveView) {
@@ -4543,7 +4410,6 @@
         function openHelpView() { toggleProfileDrawer(); switchView('help'); }
         function openAboutView() { toggleProfileDrawer(); switchView('about'); }
         function openLikedSongs() { switchView('liked-songs'); renderLikedSongsView(); }
-        
         function openFollowedArtistsModal() {
             toggleProfileDrawer();
             const container = document.getElementById('followedArtistsList');
@@ -4562,9 +4428,7 @@
             openModal('followed-artists-modal');
         }
 
-        // ============================================================
-        // 🪟 MODALI
-        // ============================================================
+        // ============ MODALI ============
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -4589,9 +4453,7 @@
             document.getElementById('viewScrollArea').style.overflow = 'auto';
         }
 
-        // ============================================================
-        // 📥 MODAL IMPORT PLAYLIST
-        // ============================================================
+        // ============ MODAL IMPORT PLAYLIST ============
         function openImportPlaylistModal() {
             toggleProfileDrawer();
             document.getElementById('playlistLinkInput').value = '';
@@ -4608,9 +4470,7 @@
             openModal('import-playlist-modal');
         }
 
-        // ============================================================
-        // 🔍 RILEVAMENTO PIATTAFORMA
-        // ============================================================
+        // ============ RILEVAMENTO PIATTAFORMA ============
         function detectPlatformFromLink(link) {
             if (!link) return null;
             if (link.includes('open.spotify.com/playlist/')) return 'spotify';
@@ -4620,9 +4480,7 @@
             return null;
         }
 
-        // ============================================================
-        // 🌐 IMPORT UNIVERSALE
-        // ============================================================
+        // ============ IMPORT UNIVERSALE ============
         async function startUniversalImport() {
             const link = document.getElementById('playlistLinkInput').value.trim();
             const customName = document.getElementById('playlistNameInput').value.trim();
@@ -4747,9 +4605,7 @@
             window._importedPlaylist = null;
         }
 
-        // ============================================================
-        // 💾 SALVA DATI UTENTE
-        // ============================================================
+        // ============ RESTANTI FUNZIONI ============
         function saveUserData() {
             if (!currentUser) return;
             localStorage.setItem(`liked_${currentUser}`, JSON.stringify(likedSongs));
@@ -4784,9 +4640,7 @@
             if (currentUser && document.getElementById('homeWelcomeTitle')) document.getElementById('homeWelcomeTitle').innerText = `Ciao, ${name}`;
         }
 
-        // ============================================================
-        // 🔔 FUNZIONI SIRI
-        // ============================================================
+        // ============ FUNZIONI SIRI ============
         function showSiriNotification(message) {
             let notification = document.getElementById('siriNotification');
             if (!notification) {
@@ -4825,9 +4679,7 @@
             }, 3000);
         }
 
-        // ============================================================
-        // 🔍 FUNZIONI PER LA RICERCA
-        // ============================================================
+        // ============ FUNZIONI PER LA RICERCA ============
         function handleSearchInput(val) {
             clearTimeout(searchTimer);
             const results = document.getElementById('searchResultsContainer');
@@ -4873,7 +4725,7 @@
                 
                 let html = '';
                 if (artists.length > 0) {
-                    html += `<div class="section-title">🎤 Artisti</div>`;
+                    html += `<div class="section-title">Artisti</div>`;
                     html += artists.map(a => {
                         const safeArtist = a.name.replace(/'/g, "\\'");
                         const verifiedBadge = a.verified ? `<span class="verified-badge"><i class="fas fa-check"></i></span>` : '';
@@ -4887,14 +4739,14 @@
                     }).join('');
                 }
                 if (tracks.length > 0) {
-                    html += `<div class="section-title">🎵 Brani</div>`;
+                    html += `<div class="section-title">Brani</div>`;
                     html += tracks.slice(0, 25).map((t, i) => renderSingleTrackRow(t, i, tracks)).join('');
                 }
-                if (html === '') html = '<div class="empty-state"><i class="fas fa-search" style="color:#333;"></i>Nessun risultato trovato per "' + query + '"</div>';
+                if (html === '') html = '<p style="color:var(--text-secondary);font-weight:500;">Nessun risultato trovato.</p>';
                 container.innerHTML = html;
             } catch(e) {
                 console.error('[Search] Errore:', e);
-                container.innerHTML = '<p style="color:#f15e6c;font-weight:500;">❌ Errore nella ricerca. Riprova.</p>';
+                container.innerHTML = '<p style="color:#f15e6c;font-weight:500;">❌ Errore nella ricerca.</p>';
             }
         }
 
@@ -4905,9 +4757,7 @@
             document.getElementById('btnCountriesView').classList.toggle('active', view === 'countries');
         }
 
-        // ============================================================
-        // 🎵 RENDER TRACK ROW
-        // ============================================================
+        // ============ RENDER TRACK ROW (SENZA BADGE) ============
         function renderSingleTrackRow(t, idx, sectionTracks) {
             const isLiked = likedSongs.some(s => s.id === t.id);
             const isDownloaded = downloadedTracks.some(s => s.id === t.id);
@@ -4938,17 +4788,13 @@
                 : tracks.map((t, i) => renderSingleTrackRow(t, i, sectionTracks)).join('');
         }
 
-        // ============================================================
-        // 🔄 TOGGLE DOWNLOAD DA LISTA
-        // ============================================================
+        // ============ TOGGLE DOWNLOAD DA LISTA ============
         async function toggleDownloadTrackFromList(trackJson) {
             const t = JSON.parse(decodeURIComponent(escape(atob(trackJson))));
             await toggleDownloadTrack(t);
         }
 
-        // ============================================================
-        // 🎮 FUNZIONI PLAYER
-        // ============================================================
+        // ============ FUNZIONI PLAYER ============
         const AppState = {
             player: null,
             offlinePlayer: null,
@@ -4990,9 +4836,7 @@
             }
         };
 
-        // ============================================================
-        // ▶️ FUNZIONI DI RIPRODUZIONE (CON AUDIO HTML5)
-        // ============================================================
+        // ============ FUNZIONI DI RIPRODUZIONE ============
         function playSelectedTrack(encodedTrack, encodedQueue, index) {
             try {
                 const t = JSON.parse(decodeURIComponent(escape(atob(encodedTrack))));
@@ -5007,64 +4851,6 @@
                     AppState.offlinePlayer = null;
                 }
                 
-                // 🔥 CREA UN PLAYER AUDIO HTML5
-                const audio = new Audio();
-                
-                // Se il brano è da YouTube, usa un proxy
-                if (t.isYouTube || t.id?.startsWith('yt_')) {
-                    audio.src = `https://www.youtube.com/watch?v=${t.id}`;
-                } else if (t.audio) {
-                    audio.src = t.audio;
-                } else {
-                    audio.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
-                }
-                
-                AppState.player = audio;
-                AppState.playerReady = true;
-                
-                const onPlay = () => {
-                    AppState.isPlaying = true;
-                    updatePlayIcons(true);
-                    updateEqualizer(true);
-                    startProgressTracker();
-                };
-                
-                const onPause = () => {
-                    AppState.isPlaying = false;
-                    updatePlayIcons(false);
-                    updateEqualizer(false);
-                    clearInterval(progressInterval);
-                };
-                
-                const onEnded = () => {
-                    if (AppState.repeat) {
-                        audio.currentTime = 0;
-                        audio.play();
-                    } else {
-                        nextTrack();
-                    }
-                };
-                
-                const onTimeUpdate = () => {
-                    const progress = (audio.currentTime / audio.duration) * 100 || 0;
-                    document.getElementById('progressBarFill').style.width = Math.min(100, progress) + '%';
-                    document.getElementById('currentTime').textContent = formatTime(audio.currentTime);
-                    document.getElementById('totalDuration').textContent = formatTime(audio.duration);
-                };
-                
-                audio.addEventListener('play', onPlay);
-                audio.addEventListener('pause', onPause);
-                audio.addEventListener('ended', onEnded);
-                audio.addEventListener('timeupdate', onTimeUpdate);
-                
-                audio.play().catch(err => {
-                    console.warn('[Player] Errore play:', err);
-                    showSiriNotification('⚠️ Impossibile riprodurre, uso audio demo');
-                    audio.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
-                    audio.play();
-                });
-                
-                // Aggiorna UI
                 if (document.getElementById('playerBar')) document.getElementById('playerBar').style.display = 'flex';
                 if (document.getElementById('playerTitle')) document.getElementById('playerTitle').innerText = t.name;
                 if (document.getElementById('playerArtist')) document.getElementById('playerArtist').innerText = t.artist;
@@ -5074,7 +4860,7 @@
                 if (document.getElementById('fsCover')) document.getElementById('fsCover').src = t.image;
                 if (document.getElementById('canvasBgLayer')) document.getElementById('canvasBgLayer').style.backgroundImage = `url('${t.image}')`;
                 
-                if (t.id && !t.id.startsWith('it') && !t.id.startsWith('us') && !t.id.startsWith('ph') && !t.id.startsWith('te') && !t.id.startsWith('ro') && !t.id.startsWith('re')) {
+                if (t.id) {
                     fetchYoutubeVideoStats(t.id).then(stats => {
                         if (stats) {
                             t.stats = stats;
@@ -5083,10 +4869,16 @@
                             document.getElementById('fsStatsContainer').style.display = 'flex';
                         }
                     });
-                } else {
-                    document.getElementById('fsViews').textContent = '1.2M';
-                    document.getElementById('fsLikes').textContent = '45K';
+                }
+                
+                if (t.stats) {
+                    if (document.getElementById('fsViews')) document.getElementById('fsViews').innerText = t.stats.views || 'N/A';
+                    if (document.getElementById('fsLikes')) document.getElementById('fsLikes').innerText = t.stats.likes || 'N/A';
                     document.getElementById('fsStatsContainer').style.display = 'flex';
+                } else {
+                    document.getElementById('fsStatsContainer').style.display = 'flex';
+                    document.getElementById('fsViews').textContent = 'Caricamento...';
+                    document.getElementById('fsLikes').textContent = 'Caricamento...';
                 }
                 
                 updateEqualizer(true);
@@ -5096,25 +4888,40 @@
                 addToHistory(t);
                 loadLyricsForCurrentTrack();
                 
-                showSiriNotification(`▶️ ${t.name} - ${t.artist}`);
-                
-            } catch(err) { 
-                console.error('[Player] Errore:', err); 
-                showSiriNotification('❌ Errore nella riproduzione');
-            }
+                if (AppState.player && AppState.playerReady) {
+                    AppState.player.loadVideoById({videoId: t.id, suggestedQuality: 'hd720'});
+                    AppState.player.playVideo();
+                    AppState.isPlaying = true;
+                    updatePlayIcons(true);
+                } else {
+                    const ytContainer = document.getElementById('youtube-player');
+                    ytContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${t.id}?autoplay=1&enablejsapi=1&origin=${window.location.origin}&playsinline=1&controls=0&rel=0&vq=hd720"></iframe>`;
+                    AppState.isPlaying = true;
+                    updatePlayIcons(true);
+                }
+            } catch(err) { console.error('[Player] Errore:', err); }
         }
 
-        // ============================================================
-        // ⏯️ TOGGLE PLAY
-        // ============================================================
         function togglePlay() {
-            if (!AppState.player) return;
+            if (AppState.isOffline && AppState.offlinePlayer) {
+                if (AppState.isPlaying) {
+                    AppState.offlinePlayer.pause();
+                    AppState.isPlaying = false;
+                } else {
+                    AppState.offlinePlayer.play();
+                    AppState.isPlaying = true;
+                }
+                updatePlayIcons(AppState.isPlaying);
+                updateEqualizer(AppState.isPlaying);
+                return;
+            }
             
+            if (!AppState.player) return;
             if (AppState.isPlaying) {
-                AppState.player.pause();
+                AppState.player.pauseVideo();
                 AppState.isPlaying = false;
             } else {
-                AppState.player.play();
+                AppState.player.playVideo();
                 AppState.isPlaying = true;
             }
             updatePlayIcons(AppState.isPlaying);
@@ -5136,9 +4943,34 @@
             }
         }
 
-        // ============================================================
-        // ⏭️ FUNZIONI NAVIGAZIONE TRACK
-        // ============================================================
+        function onYouTubeIframeAPIReady() {
+            AppState.player = new YT.Player('youtube-player', {
+                height: '1', width: '1',
+                playerVars: { autoplay: 1, controls: 0, enablejsapi: 1, rel: 0, playsinline: 1, origin: window.location.origin, vq: 'hd720' },
+                events: {
+                    onReady: () => { AppState.playerReady = true; },
+                    onStateChange: (e) => {
+                        if (e.data === YT.PlayerState.PLAYING) {
+                            AppState.isPlaying = true;
+                            updatePlayIcons(true);
+                            updateEqualizer(true);
+                            startProgressTracker();
+                        }
+                        if (e.data === YT.PlayerState.PAUSED) {
+                            AppState.isPlaying = false;
+                            updatePlayIcons(false);
+                            updateEqualizer(false);
+                            clearInterval(progressInterval);
+                        }
+                        if (e.data === YT.PlayerState.ENDED) {
+                            if (AppState.repeat) { AppState.player.seekTo(0); AppState.player.playVideo(); }
+                            else { nextTrack(); }
+                        }
+                    }
+                }
+            });
+        }
+
         function nextTrack() {
             const q = AppState.queue;
             const i = AppState.queueIndex;
@@ -5164,52 +4996,10 @@
                 AppState.currentTrack = t;
                 AppState.isOffline = false;
                 
-                if (AppState.player) {
-                    AppState.player.pause();
-                    AppState.player = null;
+                if (AppState.offlinePlayer) {
+                    AppState.offlinePlayer.pause();
+                    AppState.offlinePlayer = null;
                 }
-                
-                const audio = new Audio();
-                audio.src = t.audio || 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
-                AppState.player = audio;
-                AppState.playerReady = true;
-                
-                const onPlay = () => {
-                    AppState.isPlaying = true;
-                    updatePlayIcons(true);
-                    updateEqualizer(true);
-                    startProgressTracker();
-                };
-                
-                const onPause = () => {
-                    AppState.isPlaying = false;
-                    updatePlayIcons(false);
-                    updateEqualizer(false);
-                    clearInterval(progressInterval);
-                };
-                
-                const onEnded = () => {
-                    if (AppState.repeat) {
-                        audio.currentTime = 0;
-                        audio.play();
-                    } else {
-                        nextTrack();
-                    }
-                };
-                
-                const onTimeUpdate = () => {
-                    const progress = (audio.currentTime / audio.duration) * 100 || 0;
-                    document.getElementById('progressBarFill').style.width = Math.min(100, progress) + '%';
-                    document.getElementById('currentTime').textContent = formatTime(audio.currentTime);
-                    document.getElementById('totalDuration').textContent = formatTime(audio.duration);
-                };
-                
-                audio.addEventListener('play', onPlay);
-                audio.addEventListener('pause', onPause);
-                audio.addEventListener('ended', onEnded);
-                audio.addEventListener('timeupdate', onTimeUpdate);
-                
-                audio.play();
                 
                 if (document.getElementById('playerBar')) document.getElementById('playerBar').style.display = 'flex';
                 if (document.getElementById('playerTitle')) document.getElementById('playerTitle').innerText = t.name;
@@ -5220,17 +5010,38 @@
                 if (document.getElementById('fsCover')) document.getElementById('fsCover').src = t.image;
                 if (document.getElementById('canvasBgLayer')) document.getElementById('canvasBgLayer').style.backgroundImage = `url('${t.image}')`;
                 
+                if (t.id) {
+                    fetchYoutubeVideoStats(t.id).then(stats => {
+                        if (stats) {
+                            t.stats = stats;
+                            document.getElementById('fsViews').textContent = stats.views || 'N/A';
+                            document.getElementById('fsLikes').textContent = stats.likes || 'N/A';
+                        }
+                    });
+                }
+                
+                if (t.stats) {
+                    if (document.getElementById('fsViews')) document.getElementById('fsViews').innerText = t.stats.views || 'N/A';
+                    if (document.getElementById('fsLikes')) document.getElementById('fsLikes').innerText = t.stats.likes || 'N/A';
+                    document.getElementById('fsStatsContainer').style.display = 'flex';
+                } else {
+                    document.getElementById('fsStatsContainer').style.display = 'flex';
+                    document.getElementById('fsViews').textContent = 'Caricamento...';
+                    document.getElementById('fsLikes').textContent = 'Caricamento...';
+                }
+                
                 updateEqualizer(true);
                 updateLikeButtonUI();
                 updateDownloadButtonUI();
                 addToHistory(t);
                 loadLyricsForCurrentTrack();
+                if (AppState.player && AppState.playerReady) {
+                    AppState.player.loadVideoById({videoId: t.id, suggestedQuality: 'hd720'});
+                    AppState.player.playVideo();
+                }
             }
         }
 
-        // ============================================================
-        // 🔀 SHUFFLE / REPEAT
-        // ============================================================
         function toggleShuffle() {
             AppState.shuffle = !AppState.shuffle;
             const shuffleBtn = document.getElementById('shuffleBtn');
@@ -5249,15 +5060,28 @@
             }
         }
 
-        // ============================================================
-        // 📊 PROGRESS TRACKER
-        // ============================================================
         function startProgressTracker() {
             clearInterval(progressInterval);
             progressInterval = setInterval(() => {
-                if (AppState.player && AppState.isPlaying) {
-                    const cur = AppState.player.currentTime || 0;
-                    const dur = AppState.player.duration || 0;
+                if (AppState.isOffline && AppState.offlinePlayer) {
+                    const audio = AppState.offlinePlayer;
+                    const cur = audio.currentTime || 0;
+                    const dur = audio.duration || 0;
+                    if (dur) {
+                        const fill = document.getElementById('progressBarFill');
+                        const currentTime = document.getElementById('currentTime');
+                        const totalDuration = document.getElementById('totalDuration');
+                        if (fill) fill.style.width = ((cur/dur)*100) + '%';
+                        if (currentTime) currentTime.innerText = formatTime(cur);
+                        if (totalDuration) totalDuration.innerText = formatTime(dur);
+                        updateActiveLyric(cur);
+                    }
+                    return;
+                }
+                
+                if (AppState.player?.getCurrentTime && AppState.player?.getDuration) {
+                    const cur = AppState.player.getCurrentTime();
+                    const dur = AppState.player.getDuration();
                     if (dur) {
                         const fill = document.getElementById('progressBarFill');
                         const currentTime = document.getElementById('currentTime');
@@ -5281,13 +5105,10 @@
                 return;
             }
             
-            if (!AppState.player) return;
             const bg = document.getElementById('progressBarBg');
             const rect = bg.getBoundingClientRect();
             const ratio = (event.clientX - rect.left) / rect.width;
-            if (AppState.player.duration) {
-                AppState.player.currentTime = AppState.player.duration * Math.min(1, Math.max(0, ratio));
-            }
+            if (AppState.player?.getDuration) AppState.player.seekTo(AppState.player.getDuration() * ratio, true);
         }
 
         function formatTime(s) {
@@ -5308,9 +5129,7 @@
             }
         }
 
-        // ============================================================
-        // 📝 LYRICS
-        // ============================================================
+        // ============ LYRICS ============
         function toggleLyricsView() {
             AppState.isLyricsActive = !AppState.isLyricsActive;
             const lyricsView = document.getElementById('lyricsView');
@@ -5331,20 +5150,15 @@
             if (!container) return;
             container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;font-weight:500;animation:pulseGlow 1.5s ease-in-out infinite;">📝 Ricerca testo...</p>';
             AppState.parsedSyncedLyrics = [];
-            
-            if (!AppState.currentTrack) return;
-            
             try {
-                const lyrics = await fetchLyrics(
-                    AppState.currentTrack.name,
-                    AppState.currentTrack.artist
-                );
-                
-                if (lyrics) {
-                    if (lyrics.synced) {
-                        parseSyncedLyrics(lyrics.synced);
-                    } else if (lyrics.plain) {
-                        renderPlainLyrics(lyrics.plain);
+                const res = await fetch(`https://lrclib.net/api/search?track_name=${encodeURIComponent(AppState.currentTrack?.name || '')}&artist_name=${encodeURIComponent(AppState.currentTrack?.artist || '')}`);
+                const data = await res.json();
+                if (data && data.length > 0) {
+                    const matched = data.find(i => i.syncedLyrics) || data[0];
+                    if (matched.syncedLyrics) {
+                        parseSyncedLyrics(matched.syncedLyrics);
+                    } else if (matched.plainLyrics) {
+                        renderPlainLyrics(matched.plainLyrics);
                     } else {
                         container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;font-weight:500;">Testo non disponibile.</p>';
                     }
@@ -5352,7 +5166,6 @@
                     container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;font-weight:500;">Nessun testo trovato.</p>';
                 }
             } catch(e) {
-                console.error('[Lyrics] Errore:', e);
                 container.innerHTML = '<p style="color:var(--text-secondary);text-align:center;font-weight:500;">❌ Errore nel caricamento del testo.</p>';
             }
         }
@@ -5385,9 +5198,7 @@
                 AppState.offlinePlayer.currentTime = t;
                 return;
             }
-            if (AppState.player) {
-                AppState.player.currentTime = Math.min(t, AppState.player.duration || 0);
-            }
+            if (AppState.player?.seekTo) AppState.player.seekTo(t, true);
         }
 
         function updateActiveLyric(currentTime) {
@@ -5413,9 +5224,7 @@
             });
         }
 
-        // ============================================================
-        // ❤️ LIKE / DOWNLOAD
-        // ============================================================
+        // ============ LIKE / DOWNLOAD ============
         function toggleLikeCurrent() {
             if (!AppState.currentTrack?.id) return;
             const exists = likedSongs.findIndex(s => s.id === AppState.currentTrack.id);
@@ -5487,9 +5296,7 @@
             }, 3000);
         }
 
-        // ============================================================
-        // 📚 LIBRARY
-        // ============================================================
+        // ============ LIBRARY ============
         function renderLibraryContent() {
             const c = document.getElementById('libContentList');
             if (!c) return;
@@ -5560,9 +5367,7 @@
             }
         }
 
-        // ============================================================
-        // 📁 FUNZIONI PLAYLIST
-        // ============================================================
+        // ============ FUNZIONI PLAYLIST ============
         function openNewPlaylistModal() { openModal('new-playlist-modal'); }
         function submitNewPlaylist() {
             const name = document.getElementById('newPlaylistName').value.trim();
@@ -5696,9 +5501,7 @@
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
         }
 
-        // ============================================================
-        // 📊 FUNZIONI STATS E STORIA
-        // ============================================================
+        // ============ FUNZIONI STATS E STORIA ============
         function renderStats() {
             if (document.getElementById('statsLikedSongs')) document.getElementById('statsLikedSongs').innerText = likedSongs.length;
             if (document.getElementById('statsPlaylists')) document.getElementById('statsPlaylists').innerText = userPlaylists.length + autoPlaylists.length;
@@ -5749,9 +5552,7 @@
             localStorage.setItem('darksound_listening_minutes', listeningMinutes.toString());
         }
 
-        // ============================================================
-        // 🔐 FUNZIONI AUTENTICAZIONE
-        // ============================================================
+        // ============ FUNZIONI AUTENTICAZIONE ============
         function loginWithGoogle() {
             const googleName = prompt('Accedi con Google. Inserisci il tuo nome Google:', 'Utente Google');
             if (googleName && googleName.trim()) {
@@ -5833,9 +5634,7 @@
 
         function openAuthModal() { toggleProfileDrawer(); openModal('auth-modal'); }
 
-        // ============================================================
-        // 👥 FUNZIONI AMICI
-        // ============================================================
+        // ============ FUNZIONI AMICI ============
         function loadFriendsList() { if (currentUser) friendsList = JSON.parse(localStorage.getItem(`friends_${currentUser}`) || '[]'); renderDrawerFriends(); }
         function renderDrawerFriends() {
             const c = document.getElementById('drawerFriendsList');
@@ -5867,9 +5666,7 @@
         }
         function loadAllUsers() { allUsers = JSON.parse(localStorage.getItem('darksound_all_users') || '[]'); if (allUsers.length === 0) { allUsers = ['Giancarlo','Claudio','Martina']; localStorage.setItem('darksound_all_users', JSON.stringify(allUsers)); } }
 
-        // ============================================================
-        // 📤 FUNZIONI SHARE
-        // ============================================================
+        // ============ FUNZIONI SHARE ============
         function openShareModal() {
             if (!AppState.currentTrack?.id) return;
             document.getElementById('shareTrackSubtitle').innerText = `${AppState.currentTrack.name} - ${AppState.currentTrack.artist}`;
@@ -5886,9 +5683,7 @@
             closeModal('share-modal'); 
         }
 
-        // ============================================================
-        // 📱 FULLSCREEN
-        // ============================================================
+        // ============ FULLSCREEN ============
         function toggleFullscreen() {
             const fs = document.getElementById('fullscreen-player');
             const overlay = document.getElementById('fsOverlay');
@@ -5912,9 +5707,7 @@
             }
         }
 
-        // ============================================================
-        // 🤖 FUNZIONI PER AI
-        // ============================================================
+        // ============ FUNZIONI PER AI ============
         function openAiDjModal() { openModal('ai-dj-modal'); }
         function openAiPlaylistModal() { openModal('ai-playlist-modal'); }
         function openBlendModal() {
@@ -5994,9 +5787,7 @@
             }
         }
 
-        // ============================================================
-        // 👤 FUNZIONI PROFILO
-        // ============================================================
+        // ============ FUNZIONI PROFILO ============
         function openProfileEditModal() {
             if (!userProfile) userProfile = { name: currentUser || '', bio: '', avatar: (currentUser||'S').charAt(0).toUpperCase(), genre: 'Pop', photo: null };
             document.getElementById('editProfileName').value = userProfile.name || '';
@@ -6042,9 +5833,7 @@
             }
         }
 
-        // ============================================================
-        // 🎵 FUNZIONI PER LA RICERCA GENERE
-        // ============================================================
+        // ============ FUNZIONI PER LA RICERCA GENERE ============
         const MUSIC_ENCYCLOPEDIA = {
             'Phonk': { title: '🔊 Phonk' },
             'Techno': { title: '🎧 Techno' },
@@ -6081,9 +5870,7 @@
             });
         }
 
-        // ============================================================
-        // ⚙️ FUNZIONI SETTINGS
-        // ============================================================
+        // ============ FUNZIONI SETTINGS ============
         function loadSettings() {
             const s = AppState.settings;
             if (document.getElementById('toggleAutoplay')) document.getElementById('toggleAutoplay').className = s.autoplay ? 'toggle-switch active' : 'toggle-switch';
@@ -6106,31 +5893,18 @@
             }
         }
 
-        // ============================================================
-        // 🏠 CARICAMENTO HOME
-        // ============================================================
+        // ============ CARICAMENTO HOME ============
         async function loadHomeTracks() {
             const c = document.getElementById('radioTracksContainer');
-            
+            const query = userPreferences?.artist !== 'Hit Italia' ? userPreferences?.artist : (userPreferences?.genres?.[0] || 'Hit Italia');
             try {
-                const query = userPreferences?.artist !== 'Hit Italia' ? userPreferences?.artist : (userPreferences?.genres?.[0] || 'Hit Italia');
                 const tracks = await searchYoutubeVideos(query + ' music hits', 15);
-                
-                if (tracks && tracks.length > 0) {
-                    renderTracksList(tracks.slice(0, 15), 'radioTracksContainer', tracks.slice(0, 15));
-                    return;
-                }
-            } catch(e) {
-                console.log('[Home] YouTube fallito, uso brani locali');
-            }
-            
-            const shuffled = [...LOCAL_TRACKS].sort(() => Math.random() - 0.5);
-            renderTracksList(shuffled.slice(0, 15), 'radioTracksContainer', shuffled.slice(0, 15));
+                if (tracks.length === 0) { c.innerHTML = '<p style="color:var(--text-secondary);font-weight:500;">Nessun brano.</p>'; return; }
+                renderTracksList(tracks.slice(0, 15), 'radioTracksContainer', tracks.slice(0, 15));
+            } catch(e) { c.innerHTML = '<p style="color:var(--text-secondary);font-weight:500;">❌ Errore nel caricamento.</p>'; }
         }
 
-        // ============================================================
-        // 📸 FOTO PROFILO
-        // ============================================================
+        // ============ FOTO PROFILO ============
         function previewProfilePhoto(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -6142,9 +5916,7 @@
             }
         }
 
-        // ============================================================
-        // 📱 RILEVAMENTO DISPOSITIVO
-        // ============================================================
+        // ============ RILEVAMENTO DISPOSITIVO ============
         function detectDevice() {
             const ua = navigator.userAgent;
             const width = window.innerWidth;
@@ -6162,9 +5934,7 @@
             return { isIPhone, isIPad, isAndroid, width, height, isDynamicIsland };
         }
 
-        // ============================================================
-        // 🎯 EVENT LISTENERS
-        // ============================================================
+        // ============ EVENT LISTENERS ============
         document.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal-overlay')) {
                 e.target.classList.remove('active');
@@ -6186,9 +5956,7 @@
             }
         });
 
-        // ============================================================
-        // 🚀 INIZIALIZZAZIONE
-        // ============================================================
+        // ============ INIZIALIZZAZIONE ============
         window.addEventListener('load', function() {
             detectDevice();
         });
